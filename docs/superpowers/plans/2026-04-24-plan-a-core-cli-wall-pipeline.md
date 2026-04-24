@@ -18,6 +18,10 @@
 - No Python code, no `src/`, no dependencies installed yet
 - Python is **not installed** on the system (per pre-work exploration)
 
+## Current progress
+
+**13/21 tasks complete** as of the latest commit. See `README.md` for the per-task status list. Remaining: Task 14 (`apply_profile`) through Task 21 (lint + full suite).
+
 ## File structure (created during this plan)
 
 ```
