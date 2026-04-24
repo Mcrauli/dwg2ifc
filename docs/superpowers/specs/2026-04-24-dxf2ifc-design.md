@@ -347,14 +347,13 @@ Findings from the Solibri `Talo2000.classification` + RT 10-10962 Talo 2000 Hank
 |-------------|--------|---------|
 | **Units** | YTV osa 3 ARK, line 204 | "Rakennusten tietomallien mittayksikkönä käytetään **millimetriä**" — mm is required |
 | **Talo2000 classification** | YTV osa 3 ARK, line 847 | "Talo2000 nimikkeistön kaltaiset tyyppimerkinnät ovat **pakollisia** rakennusosien tunnistamista varten" — Talo2000 classification is mandatory |
-| **IFC schema minimum** | YTV osa 1, line 203 | "vähintään IFC 2x3 sertifioitujen mallinnusohjelmien käyttö on sallittua, mutta hankekohtaisesti tähän voidaan asettaa erityisvaatimuksia" — IFC 2x3 minimum, project may require newer |
-| **IFC schema in practice** | Granlund / MagiCAD reference model | **IFC 2x3 is what real Finnish refrigeration designers output** (verified via IFC metadata on cold-system components). This promotes IFC 2x3 output from Phase 2 to MVP priority for interoperability. |
-| **System classification** | Same Granlund model | Cold-system components carry a `Järjestelmä`/`IfcSystem` grouping (e.g. "Kylmäjärjestelmä 3_1") that logically joins pipes, equipment, cable trays belonging to the same refrigeration circuit. Profile rules may specify a default system name to apply. |
+| **IFC schema minimum** | YTV osa 1, line 203 | "vähintään IFC 2x3 sertifioitujen mallinnusohjelmien käyttö on sallittua, mutta hankekohtaisesti tähän voidaan asettaa erityisvaatimuksia" — IFC 2x3 is the minimum; IFC 4 is fully compliant and is what this tool targets. |
+| **System classification** | Granlund / MagiCAD reference model | Cold-system components carry a `Järjestelmä`/`IfcSystem` grouping (e.g. "Kylmäjärjestelmä 3_1") that logically joins pipes, equipment, cable trays belonging to the same refrigeration circuit. Profile rules may specify a default system name to apply. |
 | **Storey modelling** | YTV osa 3 ARK | Each floor modelled as own level; multi-storey walls sliced per-storey |
 | **Wall/slab type codes** | YTV osa 3 ARK, line 868 | US/VK/VS for walls; AP/VP/YP for horizontal structures — these map to Talo2000 codes as listed in the table above |
 
 **Impact on spec:**
-- **IFC 2x3 output now moved into MVP** (was Phase 2) — real Finnish refrigeration BIM models (e.g. Granlund/MagiCAD) are published in IFC 2x3 and our converter should produce the same format for interoperability. IFC 4 output stays as an option (or default, per user choice at convert time) but IFC 2x3 is the primary target.
+- **IFC 4 is the only output schema.** YTV 2012 permits IFC 2x3 as a minimum, but IFC 4 is fully compliant and gives us the correct MEP entities (`IfcEvaporator`, `IfcCondenser`, `IfcCompressor`) that 2x3 lacks. We deliberately go beyond the Granlund/MagiCAD 2x3 baseline rather than match it — the goal is a *better* BIM deliverable with correct classifications, not a bug-for-bug copy of existing Finnish practice.
 - Units fixed at millimetres
 - Talo2000 classification generated for every building element (not optional)
 - `IfcSystem` grouping supported: pipes, equipment, cable trays belonging to the same refrigeration circuit can be tagged with a common system name and grouped under an `IfcSystem` entity in the output.
@@ -372,7 +371,6 @@ Verification tasks — done as first tasks in implementation, reference models d
 5. **Talo2000 21xx / 23xx / 25xx sub-codes** — currently wildcard `21` / `23` / `25` for MEP categories. Obtain detailed sub-codes from RT-kortisto, Solibri MEP classification (if separate from `Talo2000.classification`), or by inspecting reference IFC models' `IfcClassificationReference` values.
 6. **Property sets** — MVP ships standard IFC psets (`PSet_WallCommon`, `PSet_SlabCommon`, etc.). Verify YTV-mandated property list per entity type by reading YTV osa 5 RAK, TATE supplements, and by comparing to Granlund model property sets.
 7. **Cold-room shell (1352)** — currently `IfcBuildingElementProxy`. Verify: is this how "Kylmähuone-elementit" are delivered in real BIM, or are they modelled as walls + slabs + door (decomposed into building elements)?
-8. **IFC 2x3 vs IFC 4 default** — spec says both supported, user picks at convert time. Default: IFC 2x3 based on Granlund reference. Verify: is IFC 4 enough at some receiver ends that it should be the suggested default in GUI for new projects?
 
 Each verification produces either a confirmation (no change) or a profile TOML edit + commit. Tracked as discrete tasks in the implementation plan.
 

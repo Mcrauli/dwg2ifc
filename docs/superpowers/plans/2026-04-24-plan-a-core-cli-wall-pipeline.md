@@ -609,7 +609,7 @@ class Profile(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: str
-    ifc_schema: Literal["IFC4", "IFC2X3"]
+    ifc_schema: Literal["IFC4"]
     rules: list[Rule]
 ```
 

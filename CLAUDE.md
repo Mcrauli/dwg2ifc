@@ -26,7 +26,7 @@ DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Mu
 | Scope | Kylmäsäilytystila + LVI/putket: seinät, laatat, ovet, hyllyt, putket, kaapelihyllyt, kylmälaitteet |
 | Jakelumuoto | Desktop-appi GUI:lla (+ CLI rinnalla) |
 | Tech stack | **Python 3.12 + PySide6** (ifcopenshell ja ezdxf ovat Python-natiivia) |
-| IFC-skeema | **IFC 2x3 default + IFC 4 vaihtoehto** (Granlund tuottaa 2x3, yhteensopivuus) |
+| IFC-skeema | **IFC 4 ainoa tavoite** — moderni skeema, oikeat MEP-entiteetit (`IfcEvaporator` / `IfcCondenser` / `IfcCompressor`), parempi Talo2000-integraatio. YTV sallii 2x3-minimin, mutta me tähtäämme korkeammalle. |
 | Layer-mappaus | Hybridi: sisäänrakennettu "Kylmälaite Talo2000" -oletusprofiili + käyttäjän TOML-ylikirjoitukset |
 | Geometria | Hybridi: 3D-solidit käytetään suoraan, 2D-viivat ekstrudoidaan layer-default-korkeuksiin |
 
@@ -57,7 +57,7 @@ Lähteet: Solibri `Talo2000.classification` (Java-serialisoitu binääri) + RT 1
 
 - **Yksiköt:** millimetri pakollinen (osa 3 ARK, rivi 204)
 - **Talo2000-luokittelu:** pakollinen rakennusosille (osa 3 ARK, rivi 847)
-- **IFC-skeema:** vähintään IFC 2x3 julkisissa hankkeissa (osa 1 rivi 203). Granlund tuottaa IFC 2x3 → MVP-pakollinen.
+- **IFC-skeema:** vähintään IFC 2x3 julkisissa hankkeissa (osa 1 rivi 203). Me tuotamme **IFC 4:n** — se täyttää YTV-minimin ja tuo oikeat MEP-entiteetit kylmälaitteille.
 - **Kerrosmallinnus:** per-kerros-eristetty, monitasoiset seinät pilkotaan kerroskorkuisiin siivuihin
 - **Seinätyypit:** US, VK, VS / horizontal: AP, VP, YP (Talo2000-lyhenteet suoraan)
 
@@ -124,7 +124,7 @@ Vaiheet tiivistettynä:
 ## Plans B–F (kirjoitetaan myöhemmin)
 
 - **Plan B:** Laajenna Plan A kattamaan kaikki 11 element-tyyppiä (slabs, doors, windows, putket, hyllyt, kaapelihyllyt, proxies, laitteet)
-- **Plan C:** IFC 2x3 output + IfcSystem-ryhmittely
+- **Plan C:** `IfcSystem`-ryhmittely kylmäjärjestelmille (putket, laitteet, kaapelihyllyt samaan järjestelmään)
 - **Plan D:** PySide6 GUI joka wrappaa CLI-corea (MainWindow, Preview, layer-listaus)
 - **Plan E:** Packaging — PyInstaller .exe Windowsille + GitHub Releases
 - **Plan F:** Spec verifiointi-taskit (avaa Solibri, vahvista tai päivitä profiili per spec § "Verification")
