@@ -1,0 +1,17 @@
+# Default "Kylmälaite Talo2000" profile.
+# Plan A ships only the exterior wall rule. Plan B adds all other entity types.
+# Talo2000 codes verified against Solibri Talo2000.classification and
+# RT 10-10962 Talo 2000 Hankenimikkeistö (see design spec § "YTV 2012 sources reviewed").
+
+[profile]
+name = "Kylmälaite Talo2000 v1"
+ifc_schema = "IFC4"
+
+[[rules]]
+layer_pattern = "KYL-ULKOSEINA*"
+ifc_type = "IfcWall"
+predefined_type = "STANDARD"
+talo2000_code = "1241"
+talo2000_name = "Ulkoseinät"
+default_height_mm = 3000
+default_thickness_mm = 200
