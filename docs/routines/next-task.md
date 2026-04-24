@@ -14,17 +14,19 @@ and verifiable.
 - `git pull --rebase origin master`. If the rebase conflicts, abort with
   `git rebase --abort` and STOP — report the conflict and leave resolution to
   Lauri. Never force-push.
-- Read `README.md` — the "Plan A edistyminen" list is the source of truth for
-  which task is next. The first `⏳` entry is your task.
-- Read the project `CLAUDE.md` for context if you do not already have it.
+- Read **`PROGRESS.md`** — this is the authoritative volatile state. Its
+  "Current task" section names the next task; its "Blockers" section is
+  checked next.
+- Read the project `CLAUDE.md` for stable context (decisions, Talo2000
+  table, YTV findings).
 - Read the matching task section in
   `docs/superpowers/plans/2026-04-24-plan-a-core-cli-wall-pipeline.md` —
   it has the failing test, the implementation, and the commit message.
 
 ### 2. Check for blockers
 
-If the next task has a **blocker** comment in the README ("odottaa Lauria:
-…" or similar), STOP. Do not attempt to proceed around it. Report:
+If `PROGRESS.md` "Blockers" has any open entry, or the current task carries
+a blocker note, STOP. Do not attempt to proceed around it. Report:
 
 ```
 BLOCKED on Task N: <blocker text>.
@@ -66,16 +68,22 @@ Set-Location $HOME\work\dxf2ifc
 Both must pass. (Task 21 formalises this as a gate; earlier tasks should
 still honour it.)
 
-### 6. Update the README progress list
+### 6. Update PROGRESS.md
 
-After the commit succeeds, edit `README.md`:
+After the commit succeeds, edit `PROGRESS.md`:
 
-- Change the finished task's `⏳` to `✅` and append the 7-char short SHA.
-- Example: `- ✅ Task 14 — \`apply_profile\` mapper (SHA abc1234)`
-- If the task was partial, mark it `🟡 Task N — … (partial, SHA abc1234)`
-  and leave the next task as `⏳`.
+- Move the finished task from "Remaining tasks" into the "Completed tasks"
+  table with its 7-char short SHA.
+- Update "Current task" to point to the next ⏳ task (plan section, first
+  step, files to touch, commit subject from the plan).
+- Update the "Last synced" timestamp and SHA at the top.
+- If you split a task (partial), add a new row labelled `14a`, `14b`, etc.
+  to reflect reality and leave the remainder in "Remaining tasks".
+- Also bump `README.md`'s header line — "**13/21** tehtävää valmis" — so the
+  user-facing status reflects the new count. Do not re-introduce the long
+  per-task checklist; `PROGRESS.md` is the source of truth.
 
-Commit this README update with subject `Mark Task N complete`.
+Commit these updates with subject `Mark Task N complete in PROGRESS.md`.
 
 ### 7. Push
 
@@ -93,7 +101,8 @@ End with a one-paragraph summary:
 
 ```
 Task N (<name>) complete.
-SHA: <short SHA of the feat commit>
+Feat SHA: <short SHA of the feat commit>
+PROGRESS SHA: <short SHA of the PROGRESS.md commit>
 Tests: <X> passed, <Y> warnings.
 Next: Task N+1 (<name>).
 ```
@@ -119,5 +128,6 @@ After Task 21 passes:
 
 1. Tag the repo: `git tag -a v0.1.0-plan-a -m "Plan A complete"` and push
    the tag.
-2. Update README's milestone table to show Plan A ✅.
+2. Update `README.md`'s milestone table to show Plan A ✅ and set
+   `PROGRESS.md`'s "Current task" to `Plan A complete — awaiting Plan B`.
 3. STOP. Writing Plan B is Lauri's call, not the routine's.

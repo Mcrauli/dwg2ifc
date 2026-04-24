@@ -10,14 +10,14 @@ DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Mu
 - **Kohderyhmä:** muut kylmä-/LVI-suunnittelijat jotka piirtävät AutoCADilla mutta tarvitsevat IFC-luovutuksen Talo2000-koodeilla
 - **Greenfield:** uusi projekti, ei liity olemassa olevaan `~/work/autocad-lisp-ohjeet`-repoon (LISP-työkalusivusto)
 
-## Status (2026-04-24)
+## Status
 
 - ✅ Design-spec valmis: `docs/superpowers/specs/2026-04-24-dxf2ifc-design.md`
 - ✅ Plan A kirjoitettu: `docs/superpowers/plans/2026-04-24-plan-a-core-cli-wall-pipeline.md` (21 tehtävää)
-- ⏳ Plan A ei vielä toteutettu — **ensimmäinen tehtävä on Python 3.12 + uv asennus**
+- 🟢 Plan A **13/21 valmis** — seuraava tehtävä ja SHA-historia: **`PROGRESS.md`** (autoritatiivinen volatile state)
 - ⏳ Plans B–F kirjoittamatta (yksi per milestone, ks. Seuraavat plans alla)
-- ⏳ Ei remote-repoa vielä (ei GitHub-repoa `Mcrauli/dxf2ifc`)
-- 7 commitia paikallisesti `main`-branchissa
+- ✅ Remote: `https://github.com/Mcrauli/dxf2ifc` (PRIVATE, default branch `master`)
+- 🔁 Routine-agentti `trig_014mxffDUvDZkafKftutpgwo` pyörii 3× päivässä (08/14/20 Helsinki), ohje: `docs/routines/next-task.md`
 
 ## Päätetyt valinnat (brainstormauksen jälkeen)
 
@@ -168,13 +168,11 @@ Vaiheet tiivistettynä:
 
 ## Seuraava askel
 
-**Plan A jatkoa** — 13/21 tehtävää valmis (ks. `README.md`:n "Plan A edistyminen" -lista). Seuraava: Task 14 (`apply_profile` mapper).
+**Plan A jatkoa** — Current task ja completed-SHA:t: **`PROGRESS.md`** (autoritatiivinen). Lyhyt status `README.md`:n yläosassa.
 
-**Scheduled-ajoon:** lue `docs/routines/next-task.md`. Se kertoo routine-agentille miten edetä yksi tehtävä per ajo (pull → pick next ⏳ → TDD → commit → README update → push).
+**Scheduled-ajoon:** `docs/routines/next-task.md` ohjaa routine-agenttia: pull-rebase → read PROGRESS.md:n "Current task" → TDD plan:n mukaan → commit → päivitä PROGRESS.md + README:n header → push.
 
-**Manuaaliseen ajoon:** voit käyttää **subagent-driven-development**-skilliä tai tehdä itse plan-tiedoston ohjeiden mukaan.
-
-Plan-tiedostossa jokaisen tehtävän vaiheet ovat checkbox-muodossa `- [ ]` jotka voit merkitä toteutuessaan.
+**Manuaaliseen ajoon:** lue PROGRESS.md → avaa plan A:n vastaava Task-sektio → käytä **subagent-driven-development**-skilliä tai tee itse.
 
 ## Kun Plan A on ylhäällä
 
