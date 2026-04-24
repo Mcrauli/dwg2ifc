@@ -120,11 +120,17 @@ CLI (`src/dxf2ifc/cli.py`) is a parallel entry point to GUI; both call the same 
 | 1313 | Erityisväliseinät | — | `IfcWall` PredefinedType=`PARTITIONING` |
 | 1315 | Väliovet | VO | `IfcDoor` |
 | 1316 | Erityisovet | — | `IfcDoor` |
-| 1331 | Vakiokiintokalusteet | — | `IfcFurniture` |
+| 1331 | Vakiokiintokalusteet (sis. kylmälaitehyllyt LEVY & TIKAS) | — | `IfcFurniture` |
 | 1334 | Vakiolaitteet | — | `IfcBuildingElementProxy` or `IfcFurnishingElement` |
-| 1352 | Kylmähuone-elementit | — | `IfcBuildingElementProxy` (cold room shell) |
-| 21xx | Putkiosat (sub-codes TBD) | — | `IfcPipeSegment` |
-| 25xx | Laiteosat (sub-codes TBD) | — | `IfcUnitaryEquipment` or `IfcFlowMovingDevice` |
+| 1352 | Kylmähuone-elementit (koko kylmähuoneen kuorielementti) | — | `IfcBuildingElementProxy` |
+| 21xx | Putkiosat — alakoodit TBD | — | `IfcPipeSegment` (eri PredefinedType per käyttö) |
+| 21xx | Kylmäaineputkistot (LT IMU / MT IMU / MT NESTE) | — | `IfcPipeSegment` PredefinedType=`GASPIPE` |
+| 21xx | Kylmälaiteviemärit (kondenssivesi / sulatusvesi kylmähuoneista) | — | `IfcPipeSegment` PredefinedType=`DRAINPIPE` |
+| 25xx | Laiteosat — alakoodit TBD | — | tyyppikohtainen IFC-entiteetti alla |
+| 25xx | Kylmälaite-höyrystin (evaporator) | — | **`IfcEvaporator`** |
+| 25xx | Kylmälaite-lauhdutin (condenser) | — | **`IfcCondenser`** |
+| 25xx | Kylmälaite-kompressori | — | **`IfcCompressor`** |
+| 25xx | Kylmäainesäiliö / muu laite | — | `IfcUnitaryEquipment` |
 
 TOML example (using verified codes):
 
@@ -187,26 +193,78 @@ talo2000_code = "1331"
 talo2000_name = "Vakiokiintokalusteet"
 block_handling = "geometry_direct"
 
+# --- Refrigerant piping (LT IMU / MT IMU / MT NESTE from Putkityokalu 3PTK) ---
+
 [[rules]]
 layer_pattern = "LT IMU"
 ifc_type = "IfcPipeSegment"
 predefined_type = "GASPIPE"
-talo2000_code = "21"  # TBD: specific sub-code
-talo2000_name = "Putkiosat (kylmäaineputkistot)"
+talo2000_code = "21"  # TBD: specific sub-code for kylmäaineputkistot
+talo2000_name = "Putkiosat — kylmäaineputkistot (LT imu)"
 
 [[rules]]
 layer_pattern = "MT IMU"
 ifc_type = "IfcPipeSegment"
 predefined_type = "GASPIPE"
 talo2000_code = "21"  # TBD
+talo2000_name = "Putkiosat — kylmäaineputkistot (MT imu)"
 
 [[rules]]
 layer_pattern = "MT NESTE"
 ifc_type = "IfcPipeSegment"
 predefined_type = "GASPIPE"
 talo2000_code = "21"  # TBD
+talo2000_name = "Putkiosat — kylmäaineputkistot (MT neste)"
 
-# ... continues with doors, compressors, evaporators, drainage etc.
+# --- Refrigeration drainage pipes (condensate + defrost water) ---
+# Lauri's upcoming LISP for kylmälaiteviemärit will draw on this layer.
+
+[[rules]]
+layer_pattern = "KYL-VIEMARI*"
+ifc_type = "IfcPipeSegment"
+predefined_type = "DRAINPIPE"
+talo2000_code = "21"  # TBD: specific sub-code for kylmälaiteviemärit
+talo2000_name = "Putkiosat — kylmälaiteviemärit"
+
+# --- Refrigeration equipment (KYL-HOYRYSTIN, KYL-LAUHDUTIN, KYL-KOMPRESSORI) ---
+# IFC 4 has dedicated entities for these — no need for proxy.
+
+[[rules]]
+layer_pattern = "KYL-HOYRYSTIN"
+ifc_type = "IfcEvaporator"
+# PredefinedType values: DIRECTEXPANSION, DIRECTEXPANSIONBRAZEDPLATE,
+#   DIRECTEXPANSIONSHELLANDTUBE, DIRECTEXPANSIONTUBEINTUBE,
+#   FLOODEDSHELLANDTUBE, SHELLANDCOIL, USERDEFINED, NOTDEFINED
+predefined_type = "DIRECTEXPANSION"
+talo2000_code = "25"  # TBD: specific sub-code for kylmälaitteet
+talo2000_name = "Laiteosat — kylmälaite-höyrystin"
+block_handling = "geometry_direct"
+
+[[rules]]
+layer_pattern = "KYL-LAUHDUTIN"
+ifc_type = "IfcCondenser"
+# PredefinedType values: AIRCOOLED, EVAPORATIVECOOLED, WATERCOOLED, etc.
+predefined_type = "AIRCOOLED"
+talo2000_code = "25"  # TBD
+talo2000_name = "Laiteosat — kylmälaite-lauhdutin"
+block_handling = "geometry_direct"
+
+[[rules]]
+layer_pattern = "KYL-KOMPRESSORI"
+ifc_type = "IfcCompressor"
+# PredefinedType values: DYNAMIC, RECIPROCATING, ROTARY, SCROLL, etc.
+predefined_type = "RECIPROCATING"
+talo2000_code = "25"  # TBD
+talo2000_name = "Laiteosat — kylmälaite-kompressori"
+block_handling = "geometry_direct"
+
+# --- Cold room shell (kylmähuone-elementti, 1352) ---
+
+[[rules]]
+layer_pattern = "KYL-KYLMAHUONE*"
+ifc_type = "IfcBuildingElementProxy"
+talo2000_code = "1352"
+talo2000_name = "Kylmähuone-elementit"
 ```
 
 Schema validation of profile TOML via `pydantic` — fail fast with a clear error on malformed profiles.
@@ -233,30 +291,35 @@ dxf2ifc list-layers input.dxf
 
 **In MVP:**
 - DXF reading (LINE, LWPOLYLINE, 3DSOLID, INSERT)
-- Default profile with 6 layer groups:
-  1. External wall (`IfcWall`, Talo2000 1211)
-  2. Partition wall (`IfcWall`, Talo2000 1221)
-  3. Floor / upper slab (`IfcSlab`, Talo2000 1231/1232)
-  4. Door (`IfcDoor`, Talo2000 1311)
-  5. Refrigerant pipe LT IMU / MT IMU / MT NESTE (`IfcPipeSegment`, Talo2000 2241)
-  6. KLHYLLY shelves (`IfcFurniture`, Talo2000 145)
+- Default profile rules covering all refrigeration-design elements:
+  1. External walls (`IfcWall`, Talo2000 **1241**)
+  2. Partition walls (`IfcWall`, Talo2000 **1311** / kantavat 1232)
+  3. Slabs — base (AP) / mid (VP) / upper (YP) (`IfcSlab`, Talo2000 **1221** / **1235** / **1236**)
+  4. Doors — exterior / interior (`IfcDoor`, Talo2000 **1243** / **1315**)
+  5. Windows (`IfcWindow`, Talo2000 **1242**)
+  6. Refrigerant pipes LT IMU / MT IMU / MT NESTE from 3PTK (`IfcPipeSegment` GASPIPE, Talo2000 21 — sub TBD)
+  7. Refrigeration drainage (KYL-VIEMARI*) (`IfcPipeSegment` DRAINPIPE, Talo2000 21 — sub TBD)
+  8. KLHYLLY shelves LEVY / TIKAS (`IfcFurniture`, Talo2000 **1331**)
+  9. Cold room shell (KYL-KYLMAHUONE*) (`IfcBuildingElementProxy`, Talo2000 **1352**)
+  10. Refrigeration equipment: evaporator (`IfcEvaporator`), condenser (`IfcCondenser`), compressor (`IfcCompressor`), all Talo2000 25 — sub TBD
 - 2D→3D extrude (lines → walls at default height)
 - 3D solids passed through directly
-- GUI: open DXF → shows layers → pick profile → Convert → save IFC
-- Basic property sets (`PSet_WallCommon`, `PSet_SlabCommon`, `PSet_DoorCommon`)
-- `IfcClassificationReference` for every Talo2000 code
+- Block-reference handling (INSERT → IFC entity with preserved placement/rotation/scale)
+- GUI: open DXF → shows detected layers → pick profile → Convert → save IFC
+- Basic property sets (`PSet_WallCommon`, `PSet_SlabCommon`, `PSet_DoorCommon`, `PSet_PipeSegmentOccurrence`, etc.)
+- `IfcClassificationReference` for every Talo2000 code (mandatory per YTV)
 - CLI: basic conversion
 - Windows single-file .exe via PyInstaller
 
 **Out of MVP (Phase 2+):**
 - GUI-based profile editing — initially load/swap TOML files only
-- Drainage pipes (waiting for Lauri's upcoming LISP tool)
-- Compressors, evaporators (requires block naming convention decision)
+- IFC 2x3 output (for YTV 2012 minimum compliance)
 - `IfcMaterial` and `PSet_MaterialCommon`
 - Quantity sets (`BaseQuantities`)
 - 3D preview in GUI
 - macOS / Linux builds
 - Multilingual UI
+- Story inference from Z coordinates (single-story default in MVP)
 
 ## YTV 2012 / Talo2000 sources reviewed (2026-04-24)
 
