@@ -29,6 +29,9 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/dxf2ifc"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml" = "dxf2ifc/profiles/default_kylmalaite_talo2000.toml"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
