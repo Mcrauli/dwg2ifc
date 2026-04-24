@@ -132,6 +132,12 @@ talo2000_code = "2241"
 talo2000_name = "Kylmäaineputkistot"
 
 [[rules]]
+layer_pattern = "MT IMU"
+ifc_type = "IfcPipeSegment"
+predefined_type = "GASPIPE"
+talo2000_code = "2241"
+
+[[rules]]
 layer_pattern = "MT NESTE"
 ifc_type = "IfcPipeSegment"
 predefined_type = "GASPIPE"
@@ -147,12 +153,20 @@ block_handling = "geometry_direct"
 # ... continues with cold-storage equipment, doors, slabs, drainage pipes etc.
 ```
 
+Talo2000 codes in the example above (`1211`, `1221`, `1231`, `1232`, `1311`, `2241`, `145`) are preliminary placeholders based on my understanding of the hierarchy; they must be verified against the official Rakennustieto Oy Talo2000 nomenclature before the default profile ships. This verification is tracked in Open Questions #1.
+
 Schema validation of profile TOML via `pydantic` — fail fast with a clear error on malformed profiles.
 
+**Profile loading at runtime**: the default profile ships inside the package (`src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml`) and is accessed via `importlib.resources.files()` so it works identically whether installed via pip or packaged in a PyInstaller .exe. Custom profiles loaded from user-selected file paths.
+
 ### 6. `gui/` — PySide6 GUI
-- **MainWindow**: file pickers (DXF open, IFC save), profile dropdown (shipped default + "load custom…"), Convert button, status log
-- **MappingEditor**: table view of detected layers alongside mapping rules, allows editing per row and saving a new profile (Phase 2 of MVP — initially the default profile is immutable and custom profiles live in TOML)
-- **Preview**: textual list of detected entities by layer shown before conversion
+
+**MVP (v0.1) contains:**
+- **MainWindow**: file pickers (DXF open, IFC save), profile dropdown (shipped default + "load custom…" TOML file picker), Convert button, status log
+- **Preview**: textual list of detected entities by layer shown before conversion (read-only)
+
+**Phase 2 adds:**
+- **MappingEditor**: table view of detected layers alongside mapping rules, allows editing per row and saving a new profile TOML
 
 ### 7. `cli.py`
 ```
