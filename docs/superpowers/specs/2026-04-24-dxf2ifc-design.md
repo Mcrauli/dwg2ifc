@@ -359,6 +359,23 @@ Findings from the Solibri `Talo2000.classification` + RT 10-10962 Talo 2000 Hank
 - Talo2000 classification generated for every building element (not optional)
 - `IfcSystem` grouping supported: pipes, equipment, cable trays belonging to the same refrigeration circuit can be tagged with a common system name and grouped under an `IfcSystem` entity in the output.
 
+## Verification during implementation
+
+The profile ships with best-effort IFC type / Talo2000 code choices based on the Solibri classification, the Hankenimikkeistö RT card, YTV 2012 osat 1/3/4, and one Granlund/MagiCAD reference model. Before the default profile is locked for v0.1 release, each rule must be verified against a real Finnish BIM reference (Granlund, Sweco, Ramboll projects opened in Solibri or a similar IFC viewer).
+
+Verification tasks — done as first tasks in implementation, reference models drawn from Lauri's own Solibri project library:
+
+1. **Storage shelves (KLHYLLY LEVY / TIKAS)** — currently mapped to `IfcFurniture` + Talo2000 1331. Verify by checking an existing cold-room BIM model: what IFC type does the reference designer use for permanent cold-storage shelving? Candidates: `IfcFurniture` / `IfcSystemFurnitureElement` / `IfcBuildingElementProxy` / `IfcDiscreteAccessory`.
+2. **Refrigeration equipment (evaporator / condenser / compressor)** — Granlund reference did not include these in the IFC export. Implementation priority: *ship the mappings as aspirational in the profile*, skip actual geometry testing for MVP, revisit when a reference model exists or when Lauri adds LISP tools for these.
+3. **Drainage pipes (KYL-VIEMARI*)** — mapped to `IfcPipeSegment` DRAINPIPE. Verify predefined type choice against Granlund or Sweco reference; candidates include DRAINPIPE, SEWAGEPIPE, CONDENSATE.
+4. **Refrigerant pipes (LT IMU / MT IMU / MT NESTE)** — mapped to `IfcPipeSegment` GASPIPE. Verify against reference: Granlund may use GASPIPE or a USERDEFINED value with system name.
+5. **Talo2000 21xx / 23xx / 25xx sub-codes** — currently wildcard `21` / `23` / `25` for MEP categories. Obtain detailed sub-codes from RT-kortisto, Solibri MEP classification (if separate from `Talo2000.classification`), or by inspecting reference IFC models' `IfcClassificationReference` values.
+6. **Property sets** — MVP ships standard IFC psets (`PSet_WallCommon`, `PSet_SlabCommon`, etc.). Verify YTV-mandated property list per entity type by reading YTV osa 5 RAK, TATE supplements, and by comparing to Granlund model property sets.
+7. **Cold-room shell (1352)** — currently `IfcBuildingElementProxy`. Verify: is this how "Kylmähuone-elementit" are delivered in real BIM, or are they modelled as walls + slabs + door (decomposed into building elements)?
+8. **IFC 2x3 vs IFC 4 default** — spec says both supported, user picks at convert time. Default: IFC 2x3 based on Granlund reference. Verify: is IFC 4 enough at some receiver ends that it should be the suggested default in GUI for new projects?
+
+Each verification produces either a confirmation (no change) or a profile TOML edit + commit. Tracked as discrete tasks in the implementation plan.
+
 ## Open questions (resolve at implementation kickoff)
 
 1. **Detailed MEP Talo2000 sub-codes**: The 21xx (Putkiosat) and 25xx (Laiteosat) sub-codes are not fully detailed in the Hankenimikkeistö — top-level only. Need to check either the YTV osa 4 TATE in detail, RT cards, or the Solibri MEP classification if available. Affects pipe layers (LT IMU, MT IMU, MT NESTE) and equipment blocks (compressors, evaporators). MVP can ship with parent category codes (21 Putkiosat, 25 Laiteosat) and refine later.
