@@ -41,3 +41,15 @@ class EntityRecord:
     attributes: dict[str, Any] = field(default_factory=dict)
     block_name: str | None = None
     xform: Any | None = None
+
+
+@dataclass
+class MappedEntity(EntityRecord):
+    """An EntityRecord plus the IFC type and Talo2000 classification
+    resolved by the profile mapper."""
+
+    ifc_type: str = ""
+    predefined_type: str | None = None
+    talo2000_code: str = ""
+    talo2000_name: str = ""
+    extra_props: dict[str, Any] = field(default_factory=dict)

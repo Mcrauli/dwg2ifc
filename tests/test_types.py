@@ -35,3 +35,25 @@ def test_entity_record_holds_layer_type_geometry():
     assert rec.layer == "KYL-ULKOSEINA"
     assert rec.dxf_type == "LINE"
     assert rec.geometry is line
+
+
+def test_mapped_entity_extends_entity_record():
+    from dxf2ifc.core.types import MappedEntity
+
+    line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(1000, 0, 0))
+    mapped = MappedEntity(
+        layer="KYL-ULKOSEINA",
+        dxf_type="LINE",
+        geometry=line,
+        attributes={},
+        block_name=None,
+        xform=None,
+        ifc_type="IfcWall",
+        predefined_type="STANDARD",
+        talo2000_code="1241",
+        talo2000_name="Ulkoseinät",
+        extra_props={"default_height_mm": 3000},
+    )
+    assert mapped.ifc_type == "IfcWall"
+    assert mapped.talo2000_code == "1241"
+    assert mapped.extra_props["default_height_mm"] == 3000
