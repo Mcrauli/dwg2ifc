@@ -131,6 +131,7 @@ CLI (`src/dxf2ifc/cli.py`) is a parallel entry point to GUI; both call the same 
 | 25xx | Kylmälaite-lauhdutin (condenser) | — | **`IfcCondenser`** |
 | 25xx | Kylmälaite-kompressori | — | **`IfcCompressor`** |
 | 25xx | Kylmäainesäiliö / muu laite | — | `IfcUnitaryEquipment` |
+| 23xx | Kaapelihyllyt (sähkö kylmälaitteille) | — | `IfcFlowSegment` + `IfcCableCarrierSegmentType`, PredefinedType=`CABLETRUNKINGSEGMENT` |
 
 TOML example (using verified codes):
 
@@ -265,6 +266,23 @@ layer_pattern = "KYL-KYLMAHUONE*"
 ifc_type = "IfcBuildingElementProxy"
 talo2000_code = "1352"
 talo2000_name = "Kylmähuone-elementit"
+
+# --- Cable trays for refrigeration electrical (kaapelihyllyt) ---
+# Verified against Granlund / MagiCAD BIM model: they use
+# IfcFlowSegment + IfcCableCarrierSegmentType with
+# PredefinedType CABLETRUNKINGSEGMENT.
+
+[[rules]]
+layer_pattern = "KYL-KAAPELIHYLLY*"
+ifc_type = "IfcFlowSegment"
+ifc_type_entity = "IfcCableCarrierSegmentType"
+predefined_type = "CABLETRUNKINGSEGMENT"
+talo2000_code = "23"  # TBD: Sähköosat sub-code
+talo2000_name = "Sähköosat — kaapelihyllyt"
+system_name = "Kylmäjärjestelmä"  # Granlund convention
+
+# Also carries a system classification property (IfcSystem) linking
+# all cold-related elements together under the same logical system.
 ```
 
 Schema validation of profile TOML via `pydantic` — fail fast with a clear error on malformed profiles.
@@ -302,6 +320,7 @@ dxf2ifc list-layers input.dxf
   8. KLHYLLY shelves LEVY / TIKAS (`IfcFurniture`, Talo2000 **1331**)
   9. Cold room shell (KYL-KYLMAHUONE*) (`IfcBuildingElementProxy`, Talo2000 **1352**)
   10. Refrigeration equipment: evaporator (`IfcEvaporator`), condenser (`IfcCondenser`), compressor (`IfcCompressor`), all Talo2000 25 — sub TBD
+  11. Cable trays (KYL-KAAPELIHYLLY*) (`IfcFlowSegment` + `IfcCableCarrierSegmentType`, CABLETRUNKINGSEGMENT, Talo2000 23 — sub TBD)
 - 2D→3D extrude (lines → walls at default height)
 - 3D solids passed through directly
 - Block-reference handling (INSERT → IFC entity with preserved placement/rotation/scale)
@@ -313,7 +332,6 @@ dxf2ifc list-layers input.dxf
 
 **Out of MVP (Phase 2+):**
 - GUI-based profile editing — initially load/swap TOML files only
-- IFC 2x3 output (for YTV 2012 minimum compliance)
 - `IfcMaterial` and `PSet_MaterialCommon`
 - Quantity sets (`BaseQuantities`)
 - 3D preview in GUI
@@ -330,13 +348,16 @@ Findings from the Solibri `Talo2000.classification` + RT 10-10962 Talo 2000 Hank
 | **Units** | YTV osa 3 ARK, line 204 | "Rakennusten tietomallien mittayksikkönä käytetään **millimetriä**" — mm is required |
 | **Talo2000 classification** | YTV osa 3 ARK, line 847 | "Talo2000 nimikkeistön kaltaiset tyyppimerkinnät ovat **pakollisia** rakennusosien tunnistamista varten" — Talo2000 classification is mandatory |
 | **IFC schema minimum** | YTV osa 1, line 203 | "vähintään IFC 2x3 sertifioitujen mallinnusohjelmien käyttö on sallittua, mutta hankekohtaisesti tähän voidaan asettaa erityisvaatimuksia" — IFC 2x3 minimum, project may require newer |
+| **IFC schema in practice** | Granlund / MagiCAD reference model | **IFC 2x3 is what real Finnish refrigeration designers output** (verified via IFC metadata on cold-system components). This promotes IFC 2x3 output from Phase 2 to MVP priority for interoperability. |
+| **System classification** | Same Granlund model | Cold-system components carry a `Järjestelmä`/`IfcSystem` grouping (e.g. "Kylmäjärjestelmä 3_1") that logically joins pipes, equipment, cable trays belonging to the same refrigeration circuit. Profile rules may specify a default system name to apply. |
 | **Storey modelling** | YTV osa 3 ARK | Each floor modelled as own level; multi-storey walls sliced per-storey |
 | **Wall/slab type codes** | YTV osa 3 ARK, line 868 | US/VK/VS for walls; AP/VP/YP for horizontal structures — these map to Talo2000 codes as listed in the table above |
 
 **Impact on spec:**
-- IFC 4 remains MVP choice (user decision), with **IFC 2x3 output as Phase 2** for compatibility with clients requiring YTV 2012 minimum compliance
+- **IFC 2x3 output now moved into MVP** (was Phase 2) — real Finnish refrigeration BIM models (e.g. Granlund/MagiCAD) are published in IFC 2x3 and our converter should produce the same format for interoperability. IFC 4 output stays as an option (or default, per user choice at convert time) but IFC 2x3 is the primary target.
 - Units fixed at millimetres
 - Talo2000 classification generated for every building element (not optional)
+- `IfcSystem` grouping supported: pipes, equipment, cable trays belonging to the same refrigeration circuit can be tagged with a common system name and grouped under an `IfcSystem` entity in the output.
 
 ## Open questions (resolve at implementation kickoff)
 
