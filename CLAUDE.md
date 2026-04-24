@@ -168,9 +168,11 @@ Vaiheet tiivistettynä:
 
 ## Seuraava askel
 
-**Toteuta Plan A** — aloita Task 1 (Python 3.12 + uv -asennus). Suositus: **subagent-driven-development**-skill — lähetä fresh-subagent per tehtävä, review välissä. Säästää pääistunnon kontekstia.
+**Plan A jatkoa** — 13/21 tehtävää valmis (ks. `README.md`:n "Plan A edistyminen" -lista). Seuraava: Task 14 (`apply_profile` mapper).
 
-Vaihtoehto: **executing-plans**-skill (inline execution) jos haluat seurata jokaista vaihetta suoraan.
+**Scheduled-ajoon:** lue `docs/routines/next-task.md`. Se kertoo routine-agentille miten edetä yksi tehtävä per ajo (pull → pick next ⏳ → TDD → commit → README update → push).
+
+**Manuaaliseen ajoon:** voit käyttää **subagent-driven-development**-skilliä tai tehdä itse plan-tiedoston ohjeiden mukaan.
 
 Plan-tiedostossa jokaisen tehtävän vaiheet ovat checkbox-muodossa `- [ ]` jotka voit merkitä toteutuessaan.
 
