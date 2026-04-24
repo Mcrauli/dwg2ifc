@@ -101,59 +101,113 @@ CLI (`src/dxf2ifc/cli.py`) is a parallel entry point to GUI; both call the same 
 - Final `file.write(output_path)` → .ifc
 
 ### 5. `profiles/default_kylmalaite_talo2000.toml`
-TOML layout:
+
+**Talo2000 codes verified** against Solibri's Talo2000.classification and the RT 10-10962 Talo2000 Hankenimikkeistö. Building-element codes (12xx, 13xx) are final. MEP codes (21xx piping, 25xx equipment) require further verification against RT cards — marked as `TBD` in the profile until confirmed.
+
+**Key codes from sources (2026-04-24):**
+
+| Talo2000 | Name | Common abbrev | IFC type |
+|----------|------|---------------|----------|
+| 1221 | Alapohjalaatat | AP | `IfcSlab` PredefinedType=`FLOOR` |
+| 1232 | Kantavat seinät | VK | `IfcWall` PredefinedType=`STANDARD` |
+| 1235 | Välipohjat | VP | `IfcSlab` PredefinedType=`FLOOR` |
+| 1236 | Yläpohjat | YP | `IfcSlab` PredefinedType=`ROOF` |
+| 1241 | Ulkoseinät | US | `IfcWall` PredefinedType=`STANDARD` |
+| 1242 | Ikkunat | — | `IfcWindow` |
+| 1243 | Ulko-ovet | — | `IfcDoor` |
+| 1311 | Väliseinät | VS | `IfcWall` PredefinedType=`PARTITIONING` |
+| 1312 | Lasiväliseinät | — | `IfcWall` PredefinedType=`PARTITIONING` |
+| 1313 | Erityisväliseinät | — | `IfcWall` PredefinedType=`PARTITIONING` |
+| 1315 | Väliovet | VO | `IfcDoor` |
+| 1316 | Erityisovet | — | `IfcDoor` |
+| 1331 | Vakiokiintokalusteet | — | `IfcFurniture` |
+| 1334 | Vakiolaitteet | — | `IfcBuildingElementProxy` or `IfcFurnishingElement` |
+| 1352 | Kylmähuone-elementit | — | `IfcBuildingElementProxy` (cold room shell) |
+| 21xx | Putkiosat (sub-codes TBD) | — | `IfcPipeSegment` |
+| 25xx | Laiteosat (sub-codes TBD) | — | `IfcUnitaryEquipment` or `IfcFlowMovingDevice` |
+
+TOML example (using verified codes):
+
 ```toml
 [profile]
 name = "Kylmälaite Talo2000 v1"
 ifc_schema = "IFC4"
 
 [[rules]]
-layer_pattern = "KYL-SEINA*"
+layer_pattern = "KYL-ULKOSEINA*"
+ifc_type = "IfcWall"
+predefined_type = "STANDARD"
+talo2000_code = "1241"
+talo2000_name = "Ulkoseinät"
+default_height_mm = 3000
+default_thickness_mm = 200
+
+[[rules]]
+layer_pattern = "KYL-VALISEINA*"
 ifc_type = "IfcWall"
 predefined_type = "PARTITIONING"
-talo2000_code = "1221"
+talo2000_code = "1311"
 talo2000_name = "Väliseinät"
 default_height_mm = 3000
 default_thickness_mm = 100
 
 [[rules]]
-layer_pattern = "KYL-ULKOSEINA*"
-ifc_type = "IfcWall"
-predefined_type = "STANDARD"
-talo2000_code = "1211"
-default_height_mm = 3000
+layer_pattern = "KYL-ALAPOHJA*"
+ifc_type = "IfcSlab"
+predefined_type = "FLOOR"
+talo2000_code = "1221"
+talo2000_name = "Alapohjalaatat"
+default_thickness_mm = 150
+
+[[rules]]
+layer_pattern = "KYL-YLAPOHJA*"
+ifc_type = "IfcSlab"
+predefined_type = "ROOF"
+talo2000_code = "1236"
+talo2000_name = "Yläpohjat"
 default_thickness_mm = 200
+
+[[rules]]
+layer_pattern = "KYL-KYLMAHUONE*"
+ifc_type = "IfcBuildingElementProxy"
+talo2000_code = "1352"
+talo2000_name = "Kylmähuone-elementit"
+
+[[rules]]
+layer_pattern = "KYL-LEVYHYLLY"
+ifc_type = "IfcFurniture"
+talo2000_code = "1331"
+talo2000_name = "Vakiokiintokalusteet"
+block_handling = "geometry_direct"
+
+[[rules]]
+layer_pattern = "KYL-TIKASHYLLY"
+ifc_type = "IfcFurniture"
+talo2000_code = "1331"
+talo2000_name = "Vakiokiintokalusteet"
+block_handling = "geometry_direct"
 
 [[rules]]
 layer_pattern = "LT IMU"
 ifc_type = "IfcPipeSegment"
 predefined_type = "GASPIPE"
-talo2000_code = "2241"
-talo2000_name = "Kylmäaineputkistot"
+talo2000_code = "21"  # TBD: specific sub-code
+talo2000_name = "Putkiosat (kylmäaineputkistot)"
 
 [[rules]]
 layer_pattern = "MT IMU"
 ifc_type = "IfcPipeSegment"
 predefined_type = "GASPIPE"
-talo2000_code = "2241"
+talo2000_code = "21"  # TBD
 
 [[rules]]
 layer_pattern = "MT NESTE"
 ifc_type = "IfcPipeSegment"
 predefined_type = "GASPIPE"
-talo2000_code = "2241"
+talo2000_code = "21"  # TBD
 
-[[rules]]
-layer_pattern = "KYL-LEVYHYLLY"
-ifc_type = "IfcFurniture"
-talo2000_code = "145"
-talo2000_name = "Kiinteät kalusteet"
-block_handling = "geometry_direct"
-
-# ... continues with cold-storage equipment, doors, slabs, drainage pipes etc.
+# ... continues with doors, compressors, evaporators, drainage etc.
 ```
-
-Talo2000 codes in the example above (`1211`, `1221`, `1231`, `1232`, `1311`, `2241`, `145`) are preliminary placeholders based on my understanding of the hierarchy; they must be verified against the official Rakennustieto Oy Talo2000 nomenclature before the default profile ships. This verification is tracked in Open Questions #1.
 
 Schema validation of profile TOML via `pydantic` — fail fast with a clear error on malformed profiles.
 
@@ -204,12 +258,30 @@ dxf2ifc list-layers input.dxf
 - macOS / Linux builds
 - Multilingual UI
 
+## YTV 2012 / Talo2000 sources reviewed (2026-04-24)
+
+Findings from the Solibri `Talo2000.classification` + RT 10-10962 Talo 2000 Hankenimikkeistö + YTV 2012 osat 1, 3, 4:
+
+| Requirement | Source | Finding |
+|-------------|--------|---------|
+| **Units** | YTV osa 3 ARK, line 204 | "Rakennusten tietomallien mittayksikkönä käytetään **millimetriä**" — mm is required |
+| **Talo2000 classification** | YTV osa 3 ARK, line 847 | "Talo2000 nimikkeistön kaltaiset tyyppimerkinnät ovat **pakollisia** rakennusosien tunnistamista varten" — Talo2000 classification is mandatory |
+| **IFC schema minimum** | YTV osa 1, line 203 | "vähintään IFC 2x3 sertifioitujen mallinnusohjelmien käyttö on sallittua, mutta hankekohtaisesti tähän voidaan asettaa erityisvaatimuksia" — IFC 2x3 minimum, project may require newer |
+| **Storey modelling** | YTV osa 3 ARK | Each floor modelled as own level; multi-storey walls sliced per-storey |
+| **Wall/slab type codes** | YTV osa 3 ARK, line 868 | US/VK/VS for walls; AP/VP/YP for horizontal structures — these map to Talo2000 codes as listed in the table above |
+
+**Impact on spec:**
+- IFC 4 remains MVP choice (user decision), with **IFC 2x3 output as Phase 2** for compatibility with clients requiring YTV 2012 minimum compliance
+- Units fixed at millimetres
+- Talo2000 classification generated for every building element (not optional)
+
 ## Open questions (resolve at implementation kickoff)
 
-1. **Talo2000 code source document**: use official Rakennustieto Oy Talo2000 nomenclature? Default: codes lifted from public YTV 2012 and RT-kortisto; Lauri confirms exact codes as we populate the profile.
-2. **Storey inference**: single-storey default. Can later derive from Z coordinate or add a user setting.
-3. **Doors and windows in DXF**: door geometry is typically a block reference. Decide whether users must use a specific block name prefix (e.g. "DOOR-") or go purely by layer.
-4. **Default heights / thicknesses**: profile carries defaults, but users must be able to override per project. GUI addresses this in Phase 2.
+1. **Detailed MEP Talo2000 sub-codes**: The 21xx (Putkiosat) and 25xx (Laiteosat) sub-codes are not fully detailed in the Hankenimikkeistö — top-level only. Need to check either the YTV osa 4 TATE in detail, RT cards, or the Solibri MEP classification if available. Affects pipe layers (LT IMU, MT IMU, MT NESTE) and equipment blocks (compressors, evaporators). MVP can ship with parent category codes (21 Putkiosat, 25 Laiteosat) and refine later.
+2. **YTV-mandated property sets**: YTV 2012 references `IfcPropertySet` but specific pset requirements per entity type are not fully itemised in the first three PDFs reviewed. Need to check osa 5 RAK and the TATE supplements. MVP ships with standard IFC psets (`PSet_WallCommon`, `PSet_SlabCommon`, `PSet_DoorCommon`) and iterates.
+3. **Storey inference**: single-storey default. Can later derive from Z coordinate or add a user setting.
+4. **Doors and windows in DXF**: door geometry is typically a block reference. Decide whether users must use a specific block name prefix (e.g. "DOOR-") or go purely by layer.
+5. **Default heights / thicknesses**: profile carries defaults, users must be able to override per project. GUI addresses this in Phase 2.
 
 ## File structure
 

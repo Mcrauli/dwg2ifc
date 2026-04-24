@@ -41,3 +41,4 @@ Thumbs.db
 test_output/
 *.dxf.backup
 *.ifc.tmp
+tmp/
