@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 42 — orchestrator dispatch + integraatiotesti KYL-LEVY.
+**Current task:** Plan B Task 43 — lisää default-profiiliin INSERT-säännöt `HOYRYSTIN/LAUHDUTIN/KOMPRESSORI` → `IfcEvaporator/IfcCondenser/IfcCompressor 25xx`.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää convert_dxf:ään `elif m.ifc_type == "IfcBuildingElementProxy"` haara → add_building_element_proxy. Integraatiotesti KYL-LEVY-LWPOLYLINE → IfcBuildingElementProxy + 1352.
+**Seuraavaksi:** aktivoi `default_kylmalaite_talo2000.toml`:n placeholder Section 11 säännöt KYL-HOYRYSTIN/KYL-LAUHDUTIN/KYL-KOMPRESSORI (INSERT, IfcEvaporator/IfcCondenser/IfcCompressor, talo2000_code "2510"/"2520"/"2530"). Lisää loader-testi.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (41/50)
+## Plan B status (42/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -80,7 +80,7 @@
 - [x] Task 39: default-profiilin KYL-LEVY*/KYL-NURKKA*-säännöt (`9fdd6c4`)
 - [x] Task 40: `panel_to_proxy_solid` testi + impl (`02077bd`)
 - [x] Task 41: `ifc_writer.add_building_element_proxy` (`5fc61c6`)
-- [ ] Task 42: orchestrator dispatch + integraatiotesti KYL-LEVY
+- [x] Task 42: orchestrator dispatch + integraatiotesti KYL-LEVY (`be47f57`)
 
 ### Section 11: Kylmälaitteet (25xx)
 - [ ] Task 43: default-profiilin HOYRYSTIN/LAUHDUTIN/KOMPRESSORI-INSERT-säännöt
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 41/50 — Sectionit 1–9 valmis, Section 10 etenee (3/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 42/50 — Sectionit 1–10 valmis. Seuraavaksi Section 11 (Kylmälaitteet).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -137,7 +137,8 @@
 - Plan B Task 39: aktivoi KYL-LEVY*/KYL-NURKKA* POLYLINE-säännöt default-profiiliin (IfcBuildingElementProxy 1352) (`9fdd6c4`). 15 loader-testiä passed.
 - Plan B Task 40: PanelExtrusion-dataclass + panel_to_proxy_solid (`02077bd`). 28 geometry-testiä passed.
 - Plan B Task 41: add_building_element_proxy tuottaa IfcBuildingElementProxy + arbitrary closed profile -extrusion (`5fc61c6`). 37 ifc_writer-testiä passed.
+- Plan B Task 42: convert_dxf dispatchaa IfcBuildingElementProxy + integraatiotesti KYL-LEVY → 1352 (`be47f57`). 10 integration-testiä passed. ✅ Section 10 valmis.
 
-**Kesken:** Plan B Task 42–50 (9 jäljellä).
+**Kesken:** Plan B Task 43–50 (8 jäljellä).
 
 **Blokkerit:** ei.
