@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 22 — dispatchaa orchestrator window-rule blokit `add_window`-kutsuun ja laajenna integraatiotesti yhdellä IKKUNA-blokilla.
+**Current task:** Plan B Task 23 — lisää default-profiiliin LINE-säännöt `LT IMU`, `MT IMU`, `MT NESTE` → `IfcPipeSegment` Talo2000 21xx -alakoodeilla (placeholder kunnes RT-tarkennus saatavilla) ja DN-attribuuttikenttä.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää convert_dxf:ään `elif m.ifc_type == "IfcWindow"` haara joka kutsuu add_window + add_talo2000_classification. Lisää integraatiotesti (KYL-IKKUNA + IKKUNA-blokki) joka varmistaa IfcWindow + 1242 + IFC-validation.
+**Seuraavaksi:** aktivoi `default_kylmalaite_talo2000.toml`:n placeholder Section 6 putkisäännöt LT IMU/MT IMU/MT NESTE (LINE entity_kind, IfcPipeSegment, predefined_type REFRIGERATION, talo2000_code "2151" placeholder, talo2000_name "Putkiosat — kylmäimu/keski-imu/nesteputki"). Lisää loader-testi joka varmistaa kolme uutta sääntöä.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (21/50)
+## Plan B status (22/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -50,7 +50,7 @@
 - [x] Task 19: default-profiilin IKKUNA-INSERT-sääntö (`d5451df`)
 - [x] Task 20: `tests/test_mapper.py` IKKUNA-mappaustesti (`2902de2`)
 - [x] Task 21: `ifc_writer.add_window` (`4488a48`)
-- [ ] Task 22: orchestrator dispatch + integraatiotesti IKKUNA
+- [x] Task 22: orchestrator dispatch + integraatiotesti IKKUNA (`5db11be`)
 
 ### Section 6: Kylmäputket (21xx, IfcPipeSegment)
 - [ ] Task 23: default-profiilin LT IMU / MT IMU / MT NESTE -säännöt
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 21/50 — Sectionit 1–4 valmis, Section 5 etenee (3/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 22/50 — Sectionit 1–5 valmis. Seuraavaksi Section 6 (Kylmäputket).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -117,7 +117,8 @@
 - Plan B Task 19: aktivoi KYL-IKKUNA INSERT-sääntö default-profiiliin (IfcWindow 1242) (`d5451df`). 10 loader-testiä passed.
 - Plan B Task 20: mapper-testi joka mappaa IKKUNA INSERT default-profiililla → IfcWindow 1242 (`2902de2`). 12 mapper-testiä passed.
 - Plan B Task 21: add_window tuottaa IfcWindow + OverallHeight/Width + box-extrusion (`4488a48`). 21 ifc_writer-testiä passed.
+- Plan B Task 22: convert_dxf dispatchaa IfcWindow + integraatiotesti IKKUNA BLOCK+INSERT → 1242 (`5db11be`). 5 integration-testiä passed. ✅ Section 5 valmis.
 
-**Kesken:** Plan B Task 22–50 (29 jäljellä).
+**Kesken:** Plan B Task 23–50 (28 jäljellä).
 
 **Blokkerit:** ei.
