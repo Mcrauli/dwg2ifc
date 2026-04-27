@@ -196,6 +196,35 @@ def test_lt_imu_roundtrip_produces_ifcpipesegment_with_talo2000_2151(tmp_path: P
     assert errors == [], f"IFC validation errors: {errors}"
 
 
+def test_kyl_viemari_lattia_roundtrip_produces_drainpipe(tmp_path: Path):
+    dxf = tmp_path / "kyl_viemari.dxf"
+    _write_single_line_dxf(dxf, layer="KYL-VIEMARI-LATTIA")
+    out = tmp_path / "kyl_viemari.ifc"
+
+    convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
+
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4"
+    pipes = ifc.by_type("IfcPipeSegment")
+    assert len(pipes) == 1
+    pipe = pipes[0]
+    assert pipe.PredefinedType == "USERDEFINED"
+    assert pipe.ObjectType == "DRAINPIPE"
+
+    drain_types = [t for t in ifc.by_type("IfcPipeSegmentType") if t.ElementType == "DRAINPIPE"]
+    assert len(drain_types) == 1
+
+    refs = ifc.by_type("IfcClassificationReference")
+    talo = [r for r in refs if r.Identification == "2160"]
+    assert len(talo) == 1
+    assert talo[0].ReferencedSource.Name == "Talo2000"
+
+    logger = ifcopenshell.validate.json_logger()
+    ifcopenshell.validate.validate(ifc, logger=logger)
+    errors = [e for e in logger.statements if e.get("level") == "ERROR"]
+    assert errors == [], f"IFC validation errors: {errors}"
+
+
 def test_partition_wall_roundtrip_produces_partitioning_ifcwall(tmp_path: Path):
     dxf = tmp_path / "partition_wall.dxf"
     _write_single_line_dxf(dxf, layer="KYL-VALISEINA")
