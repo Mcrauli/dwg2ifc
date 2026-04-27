@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Plan D — PySide6 GUI (kirjoitettavana, Mode B).
+**Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D plan-kirjoitus, section 1/N.
+**Current task:** Plan D Task 1 — lisää PySide6 + pytest-qt -depsit pyproject.toml:n optional-extras-blokkiin.
 
-**Mode:** B (plan-kirjoitus, section 7/7).
+**Mode:** A (implementointi).
 
-**Seuraavaksi:** B1-B2 — luo `docs/superpowers/plans/2026-04-27-plan-d-pyside6-gui.md` skeleton (frontmatter + intro + section-otsikot, ~30 riviä). Sectionit alustavasti: 1) Bootstrap (PySide6 deps + main entry), 2) Brand assets (fontit + QSS), 3) MainWindow + layout, 4) Convert flow (DXF picker + run + status), 5) Profile editor UI, 6) Layer preview/list, 7) Polish + packaging hooks. Numerointi globaali sectionien täytön jälkeen.
+**Seuraavaksi:** muokkaa `pyproject.toml`:n `[project.optional-dependencies]`: uusi extra `gui = ["PySide6>=6.7"]` ja `dev`:hen `pytest-qt>=4.4`. Aja `uv sync --extra gui --extra dev`, kirjoita `tests/test_gui_smoke.py` jossa `from PySide6 import QtWidgets` (offscreen QPA). Commit + push.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,6 +94,47 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
+## Plan D status (0/25)
+
+### Section 1: Bootstrap & dependencies
+- [ ] Task 1: PySide6 + pytest-qt deps + smoke import
+- [ ] Task 2: gui/app.py `run()` + placeholder QMainWindow + qtbot offscreen testi
+- [ ] Task 3: `dxf2ifc-gui` console-script + `gui/__main__.py`
+
+### Section 2: Brand assets
+- [ ] Task 4: Inter / Space Grotesk / JetBrains Mono fontit + LICENSES
+- [ ] Task 5: `gui/style.qss` värit + typografia + valid-style testi
+- [ ] Task 6: `gui/theme.py` `apply_theme(app)` + font registration testi
+
+### Section 3: MainWindow + layout
+- [ ] Task 7: `MainWindow` (otsikkorivi + QSplitter + QStatusBar)
+- [ ] Task 8: `set_status(text, level)` info/success/error + QSS
+- [ ] Task 9: menubar (Open DXF, Quit, About)
+
+### Section 4: Convert flow
+- [ ] Task 10: `FilePanel` (DXF input + IFC output + Convert)
+- [ ] Task 11: `ConvertWorker(QObject)` taustasäikeessä + signaalit
+- [ ] Task 12: kytke Convert-nappi + statusbar-päivitys
+- [ ] Task 13: integraatiotesti simple_wall.dxf → IFC GUI:n kautta
+
+### Section 5: Layer preview
+- [ ] Task 14: `dxf_reader.list_layers(dxf_path)`
+- [ ] Task 15: `LayerTable` widget (Layer/IFC/Talo2000/System)
+- [ ] Task 16: kytke LayerTable MainWindow:n vasempaan paneeliin
+
+### Section 6: Profile editor
+- [ ] Task 17: `profiles/loader.dump_profile(profile, path)` round-trip
+- [ ] Task 18: `ProfileEditorDialog` rules-listalla + Add/Edit/Remove/Save
+- [ ] Task 19: `RuleEditDialog` lomake + pydantic-validointi
+- [ ] Task 20: kytke menubariin + end-to-end custom-rule testi
+
+### Section 7: Polish + packaging hooks
+- [ ] Task 21: `gui/about.py` show_about
+- [ ] Task 22: `gui/recent_files.py` QSettings:n kautta + Open recent
+- [ ] Task 23: pytest-qt config + offscreen QPA + shared QApplication
+- [ ] Task 24: README "GUI"-osio + screenshot placeholder
+- [ ] Task 25: plan-loppupiste — pytest, ruff, coverage, docs status
+
 ## Plan C status (12/12) ✅
 
 ### Section 1: Profiili — system_name -arvot ✅
@@ -118,7 +159,7 @@
 - [x] Task 11: full_kylmaelement -testi varmistaa neljä IfcSystem-ryhmää (`7e09716`)
 - [x] Task 12: ruff clean + 151 passed + 91 % coverage + README/CLAUDE.md "Plan C valmis"
 
-**Viimeisin tila:** Plan A 21/21 + Plan B 50/50 valmis. Plan C 11/12 — vain plan-loppupiste Task 12 jäljellä.
+**Viimeisin tila:** Plan A 21/21 + Plan B 50/50 + Plan C 12/12 valmis. Plan D 0/25 — Mode B kirjoitus valmis (skeleton + 7 sectionia + 25 taskia), implementaatio alkaa Task 1:llä Mode A:ssa.
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -182,7 +223,8 @@
 - Plan C Task 10: convert_dxf luo IfcSystem-entiteetit kerätyistä nimistä ja kutsuu assign_to_system per nimi; integraatiotesti varmistaa IfcRelAssignsToGroup-jäsenyydet (`288bac6`). 13 integration-testiä passed. ✅ Section 4 valmis.
 - Plan C Task 11: full-fixture-testi joka varmistaa neljä IfcSystem-ryhmää ja että jokaisella ≥1 jäsen IfcRelAssignsToGroup:n kautta (`7e09716`). 4 integration_full-testiä passed.
 - Plan C Task 12: plan-loppupiste — pytest 151 passed, coverage 91 %, ruff clean; README + CLAUDE.md status päivitetty Plan C valmiiksi (`8cc4fc3`). 🎉 Plan C 12/12.
+- Plan D Mode B: skeleton + 7 sectionia + 25 task-riviä (kommitit B2 → S7), CLAUDE.md "Plans B–F"-lista päivitetty (`7433ae8` → ...). PROGRESS.md sisältää nyt täyden Plan D -checklistin.
 
-**Kesken:** Plan D plan-kirjoitus alkaa Mode B:nä.
+**Kesken:** Plan D Task 1–25 (25 jäljellä, Mode A alkaa).
 
 **Blokkerit:** ei.
