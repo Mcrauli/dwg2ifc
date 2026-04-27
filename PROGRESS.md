@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 9 — lisää default-profiiliin säännöt `KYL-ALAPOHJA → IfcSlab FLOOR 1221`, `KYL-VALIPOHJA → IfcSlab FLOOR 1235`, `KYL-YLAPOHJA → IfcSlab ROOF 1236`.
+**Current task:** Plan B Task 10 — laajenna `dxf_reader.py` lukemaan suljetut LWPOLYLINE-entiteetit (lähtökohta laattareunalle) ja palauttamaan `PolygonGeometry`-tyyppi `types.py`:ssä.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** poista kommentit Section 3 -placeholderista `default_kylmalaite_talo2000.toml`:ssa (KYL-ALAPOHJA, KYL-VALIPOHJA, KYL-YLAPOHJA — kaikki POLYLINE-säännöt). Lisää failing test `tests/test_profile_loader.py`:hen joka varmistaa kaikki kolme slab-rule:a (ifc_type/predefined_type/talo2000_code). Pytest, commit + push, PROGRESS.md → Task 10.
+**Seuraavaksi:** lue `src/dxf2ifc/core/types.py` ja `src/dxf2ifc/core/dxf_reader.py` + `tests/test_dxf_reader.py`. Lisää `PolygonGeometry` types.py:hen (vertices: list[Point3D], closed: bool). Lisää failing test joka generoi DXF:n suljetulla LWPOLYLINE:lla layerilla `KYL-ALAPOHJA` ja varmistaa että `read_dxf` palauttaa EntityRecord:n geometry=PolygonGeometry. Päivitä reader. Pytest, commit + push, PROGRESS.md → Task 11.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (8/50)
+## Plan B status (9/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -33,7 +33,7 @@
 - [x] Task 8: integraatiotesti VS-viivalla → IfcWall PARTITIONING 1311 (`f051083`)
 
 ### Section 3: Laatat AP / VP / YP (1221 / 1235 / 1236)
-- [ ] Task 9: default-profiilin laattasäännöt
+- [x] Task 9: default-profiilin laattasäännöt (`62f0f2e`)
 - [ ] Task 10: `dxf_reader.py` LWPOLYLINE-luku + `PolygonGeometry`-tyyppi
 - [ ] Task 11: `polygon_to_slab_extrusion` testi + impl
 - [ ] Task 12: `ifc_writer.add_slab` + classification
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 8/50 — Sectionit 1–2 valmis, Section 3 alkamassa.
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 9/50 — Sectionit 1–2 valmis, Section 3 etenee (1/5).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -104,7 +104,8 @@
 - Plan B Task 6: mapper-test joka varmistaa partition-mappingin default-profiililla (`cb77e9c`). 11 mapper-testiä passed.
 - Plan B Task 7: `add_wall` ottaa explicit `predefined_type`-kwargia (default STANDARD), orchestrator forwardaa MappedEntity.predefined_type:n (`b101565`). 9 ifc_writer-testiä passed.
 - Plan B Task 8: integraatiotesti joka generoi KYL-VALISEINA-DXF:n ezdxf:llä, ajaa convert_dxf:n ja varmistaa IfcWall PARTITIONING + Talo2000 1311 (`f051083`). 2 integration-testiä passed. ✅ Section 2 valmis.
+- Plan B Task 9: aktivoi slab-säännöt KYL-ALAPOHJA/VALIPOHJA/YLAPOHJA default-profiiliin (1221 FLOOR / 1235 FLOOR / 1236 ROOF) (`62f0f2e`). 8 loader-testiä passed.
 
-**Kesken:** Plan B Task 9–50 (42 jäljellä).
+**Kesken:** Plan B Task 10–50 (41 jäljellä).
 
 **Blokkerit:** ei.
