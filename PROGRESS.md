@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 24 — kirjoita `tests/test_geometry.py`:hen `line_to_pipe_segment` -failing test ja toteuta funktio joka tuottaa cylinder-extrudoidun geometrian DN-halkaisijalla.
+**Current task:** Plan B Task 25 — lisää `ifc_writer.add_pipe_segment` (IfcPipeSegment + IfcPipeSegmentType refrigeranttipredefined + Talo2000) + test_ifc_writer.py-kattavuus.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää `geometry.py`:hen `PipeSegmentExtrusion`-dataclass (anchor: Point3D, angle_rad, length_mm, diameter_mm) ja `line_to_pipe_segment(line, *, diameter_mm)`. Failing test ensin (4 vaihtoehtoa: dims, anchor, angle, diameter), sitten impl.
+**Seuraavaksi:** kirjoita failing test (IfcPipeSegment luotu, predefined_type REFRIGERATION, sweep-extrudointi pyöreällä profiililla, container storey:hin). Toteuta sitten add_pipe_segment(ifc, mapped, *, parent_storey, predefined_type="REFRIGERATION") IfcCircleProfileDef:llä + IfcExtrudedAreaSolidilla.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (23/50)
+## Plan B status (24/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -54,7 +54,7 @@
 
 ### Section 6: Kylmäputket (21xx, IfcPipeSegment)
 - [x] Task 23: default-profiilin LT IMU / MT IMU / MT NESTE -säännöt (`5db22b1`)
-- [ ] Task 24: `line_to_pipe_segment` testi + impl
+- [x] Task 24: `line_to_pipe_segment` testi + impl (`9f1a51c`)
 - [ ] Task 25: `ifc_writer.add_pipe_segment` + IfcPipeSegmentType
 - [ ] Task 26: orchestrator dispatch + integraatiotesti LT IMU
 
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 23/50 — Sectionit 1–5 valmis, Section 6 etenee (1/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 24/50 — Sectionit 1–5 valmis, Section 6 etenee (2/4).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -119,7 +119,8 @@
 - Plan B Task 21: add_window tuottaa IfcWindow + OverallHeight/Width + box-extrusion (`4488a48`). 21 ifc_writer-testiä passed.
 - Plan B Task 22: convert_dxf dispatchaa IfcWindow + integraatiotesti IKKUNA BLOCK+INSERT → 1242 (`5db11be`). 5 integration-testiä passed. ✅ Section 5 valmis.
 - Plan B Task 23: aktivoi LT IMU / MT IMU / MT NESTE -säännöt default-profiiliin (IfcPipeSegment REFRIGERATION 2151/2152/2153 + DN pset_overrides) (`5db22b1`). 11 loader-testiä passed.
+- Plan B Task 24: PipeSegmentExtrusion-dataclass + line_to_pipe_segment (`9f1a51c`). 16 geometry-testiä passed.
 
-**Kesken:** Plan B Task 24–50 (27 jäljellä).
+**Kesken:** Plan B Task 25–50 (26 jäljellä).
 
 **Blokkerit:** ei.
