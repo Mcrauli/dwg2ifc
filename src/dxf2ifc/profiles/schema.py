@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class Rule(BaseModel):
@@ -40,7 +40,21 @@ class Rule(BaseModel):
     block_handling: Literal["geometry_direct", "extrude"] | None = Field(
         default=None, description="How to handle INSERT entities on this layer."
     )
+    extrusion_height: float | None = Field(
+        default=None,
+        description="Extrusion height (mm) used when 2D geometry needs lifting to 3D.",
+    )
+    pset_overrides: dict[str, dict[str, Any]] = Field(
+        default_factory=dict,
+        description="IFC PropertySet overrides keyed by Pset name → {prop: value}.",
+    )
     system_name: str | None = Field(default=None, description="Optional IfcSystem grouping name.")
+
+    @model_validator(mode="after")
+    def _require_block_name_for_insert(self) -> "Rule":
+        if self.entity_kind == "INSERT" and not self.block_name:
+            raise ValueError("block_name is required when entity_kind == 'INSERT'")
+        return self
 
 
 class Profile(BaseModel):

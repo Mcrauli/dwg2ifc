@@ -72,6 +72,41 @@ def test_rule_rejects_unknown_entity_kind():
         )
 
 
+def test_rule_insert_without_block_name_raises():
+    with pytest.raises(ValidationError):
+        Rule(
+            layer_pattern="KYL-OVET",
+            ifc_type="IfcDoor",
+            talo2000_code="1243",
+            talo2000_name="Ulko-ovet",
+            entity_kind="INSERT",
+        )
+
+
+def test_rule_accepts_extrusion_height_and_pset_overrides():
+    rule = Rule(
+        layer_pattern="KYL-ULKOSEINA*",
+        ifc_type="IfcWall",
+        talo2000_code="1241",
+        talo2000_name="Ulkoseinät",
+        extrusion_height=2700.0,
+        pset_overrides={"Pset_WallCommon": {"IsExternal": True}},
+    )
+    assert rule.extrusion_height == 2700.0
+    assert rule.pset_overrides == {"Pset_WallCommon": {"IsExternal": True}}
+
+
+def test_rule_pset_overrides_defaults_to_empty_dict():
+    rule = Rule(
+        layer_pattern="KYL-ULKOSEINA*",
+        ifc_type="IfcWall",
+        talo2000_code="1241",
+        talo2000_name="Ulkoseinät",
+    )
+    assert rule.extrusion_height is None
+    assert rule.pset_overrides == {}
+
+
 def test_profile_holds_rules():
     profile = Profile(
         name="test",
