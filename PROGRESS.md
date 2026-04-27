@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Plan C — IfcSystem-ryhmittely (skeleton committed `93f01fc`, 5 sectionia).
+**Current plan:** Plan C — IfcSystem-ryhmittely (kirjoitettu `ec20cea`, 12 tehtävää, 5 sectionia).
 
-**Current task:** Plan C Mode B section 2/5 — täytä Section 2 (Mapper — system_name extra_propsiin) task-rivit.
+**Current task:** Plan C Task 1 — lisää `system_name = "Refrigeration LT"` LT IMU -sääntöön ja `"Refrigeration MT"` MT IMU + MT NESTE -sääntöihin default-profiilissa, päivitä loader-testi.
 
-**Mode:** B (plan-kirjoitus, section 2/5).
+**Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää 1-2 task-riviä Plan C:n Section 2:een (mapper.apply_profile välittää system_name → extra_props["system_name"], jos sitä ei vielä ole; failing-test mapper-testiin). commit + push, sitten section 3.
+**Seuraavaksi:** profile TOML:iin system_name-kentät, loader-testi varmistaa.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,31 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-**Viimeisin tila:** Plan A 21/21 valmis. **Plan B 50/50 valmis** ✅. Seuraavana Plan C (kirjoittamatta).
+## Plan C status (0/12)
+
+### Section 1: Profiili — system_name -arvot
+- [ ] Task 1: LT IMU "Refrigeration LT" + MT IMU/MT NESTE "Refrigeration MT"
+- [ ] Task 2: KYL-VIEMARI* "Drainage" + KAAPELIHYLLY* "Cable carriers"
+- [ ] Task 3: HOYRYSTIN/LAUHDUTIN/KOMPRESSORI "Refrigeration plant"
+
+### Section 2: Mapper — system_name extra_propsiin
+- [ ] Task 4: failing test custom Profile + apply_profile system_name extra_propsiin
+- [ ] Task 5: default-profiili mapper-testi neljälle uniikille system_namelle
+
+### Section 3: ifc_writer.add_system + group assignment
+- [ ] Task 6: `add_system` failing test
+- [ ] Task 7: `add_system` toteutus + caching per name
+- [ ] Task 8: `assign_to_system`-helper + testi
+
+### Section 4: Orchestrator — kerää ja kytke
+- [ ] Task 9: convert_dxf kerää {system_name → products} + testi
+- [ ] Task 10: orchestrator luo IfcSystem-objektit ja kytkee + integraatiotesti
+
+### Section 5: Integraatio + lint
+- [ ] Task 11: full_kylmaelement -testi varmistaa neljä IfcSystem-ryhmää
+- [ ] Task 12: ruff clean + coverage ≥85 % + README/CLAUDE.md "Plan C valmis"
+
+**Viimeisin tila:** Plan A 21/21 valmis. **Plan B 50/50 valmis** ✅. Plan C kirjoitettu (12 tehtävää, `ec20cea`), Mode A Task 1 alkaa.
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -146,7 +170,8 @@
 - Plan B Task 48: tests/test_integration_full.py joka varmistaa kaikki Section 2–11 Talo2000-koodit + IFC-validointi (`536fa50`). 3 testiä passed.
 - Plan B Task 49: ruff format kolmelle uudelle tiedostolle, koko suite 143 passed, coverage 91 % (`cab7ea7`).
 - Plan B Task 50: README + CLAUDE.md status-päivitys Plan B valmiiksi (`2494841`). 🎉 Plan B 50/50.
+- Plan C kirjoitettu (Mode B): skeleton + 12 tehtävää 5 sectionia (`93f01fc` → `5586361` → `3f0dd6c` → `ec20cea`). CLAUDE.md "Plans B–F" -lista päivitetty.
 
-**Kesken:** Plan C kirjoitettava (Mode B).
+**Kesken:** Plan C 0/12 (Mode A Task 1 alkaa).
 
 **Blokkerit:** ei.

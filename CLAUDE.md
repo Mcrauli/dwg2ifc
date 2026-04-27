@@ -16,7 +16,7 @@ DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Mu
 - ✅ Plan A kirjoitettu: `docs/superpowers/plans/2026-04-24-plan-a-core-cli-wall-pipeline.md` (21 tehtävää)
 - ✅ Plan A **21/21 valmis** (yhteenveto: `54140a5`).
 - ✅ Plan B **50/50 valmis** (`2026-04-27-plan-b-full-element-set.md`) — kaikki Talo2000-elementtityypit tuettuna (US/VS/AP/VP/YP, ovet, ikkunat, kylmäputket, viemäri, hyllyt, kaapelihyllyt, kylmähuone-paneelit, kylmälaitteet). 143 testiä passed, coverage 91 %, ifcopenshell.validate ei-ERROR. Loppupisteen SHA: `cab7ea7`.
-- 🔜 Seuraavana Plan C (IfcSystem-ryhmittely) — kirjoittamatta. Plans D–F samoin.
+- ✅ Plan C kirjoitettu (`2026-04-27-plan-c-ifcsystem-grouping.md`, 12 tehtävää). Toteutus kesken (PROGRESS.md). Plans D–F kirjoittamatta.
 - 🟢 Volatile state ja per-task SHA-historia: **`PROGRESS.md`**.
 - ✅ Remote: `https://github.com/Mcrauli/dxf2ifc` (PRIVATE, default branch `master`)
 - 🔁 Routine-agentti `trig_014mxffDUvDZkafKftutpgwo` pyörii 3× päivässä (08/14/20 Helsinki), ohje: `docs/routines/next-task.md`
@@ -125,8 +125,8 @@ Vaiheet tiivistettynä:
 
 ## Plans B–F (kirjoitetaan myöhemmin)
 
-- **Plan B:** ✅ kirjoitettu `docs/superpowers/plans/2026-04-27-plan-b-full-element-set.md` (50 tehtävää, 12 sectionia). Laajentaa Plan A:n pipelinen kattamaan kaikki 10 jäljellä olevaa Talo2000-elementtityyppiä (slabs, doors, windows, putket, hyllyt, kaapelihyllyt, proxies, laitteet). Toteutus kesken — ks. `PROGRESS.md`.
-- **Plan C:** `IfcSystem`-ryhmittely kylmäjärjestelmille (putket, laitteet, kaapelihyllyt samaan järjestelmään)
+- **Plan B:** ✅ valmis (`docs/superpowers/plans/2026-04-27-plan-b-full-element-set.md`, 50/50 tehtävää, ending SHA `2494841`). Laajentaa Plan A:n pipelinen kattamaan kaikki 10 muuta Talo2000-elementtityyppiä; full-fixture-integraatiotesti varmistaa 11 Talo2000-koodia + IFC-validointi.
+- **Plan C:** ✅ kirjoitettu `docs/superpowers/plans/2026-04-27-plan-c-ifcsystem-grouping.md` (12 tehtävää, 5 sectionia). `IfcSystem`-ryhmittely kylmäjärjestelmille (Refrigeration LT/MT, Drainage, Cable carriers, Refrigeration plant). Toteutus kesken — ks. `PROGRESS.md`.
 - **Plan D:** PySide6 GUI joka wrappaa CLI-corea (MainWindow, Preview, layer-listaus). Sis. **TOML-profiilin editori UI:ssa**: oletusprofiili (Kylmälaite Talo2000) ship-attuna, mutta UI tukee custom-rules joilla käyttäjä voi lisätä omia layer→IFC-mappauksia ilman tiedoston muokkaamista käsin.
 - **Plan E:** Packaging — PyInstaller .exe Windowsille + GitHub Releases
 - **Plan F:** Spec verifiointi-taskit (avaa Solibri, vahvista tai päivitä profiili per spec § "Verification")
