@@ -6,7 +6,7 @@ from pathlib import Path
 import ezdxf
 import pytest
 
-from dxf2ifc.core.dxf_reader import read_dxf
+from dxf2ifc.core.dxf_reader import list_layers, read_dxf
 from dxf2ifc.core.types import BlockInstance, LineGeometry, PolygonGeometry, Point3D
 
 
@@ -95,3 +95,25 @@ def test_read_skips_open_lwpolyline(tmp_path: Path):
     doc.saveas(str(dxf))
     records = read_dxf(dxf)
     assert records == []
+
+
+def test_list_layers_returns_unique_sorted_names_from_modelspace(tmp_path: Path):
+    dxf = tmp_path / "two_layers.dxf"
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name="LT IMU")
+    doc.layers.add(name="KYL-VIEMARI-LATTIA")
+    msp = doc.modelspace()
+    msp.add_line((0.0, 0.0, 0.0), (1.0, 0.0, 0.0), dxfattribs={"layer": "LT IMU"})
+    msp.add_line(
+        (0.0, 1.0, 0.0), (1.0, 1.0, 0.0), dxfattribs={"layer": "KYL-VIEMARI-LATTIA"}
+    )
+    msp.add_line((0.0, 2.0, 0.0), (1.0, 2.0, 0.0), dxfattribs={"layer": "LT IMU"})
+    doc.saveas(str(dxf))
+
+    layers = list_layers(dxf)
+    assert layers == ["KYL-VIEMARI-LATTIA", "LT IMU"]
+
+
+def test_list_layers_on_simple_wall_fixture(fixtures_dir: Path):
+    layers = list_layers(fixtures_dir / "simple_wall.dxf")
+    assert "KYL-ULKOSEINA" in layers

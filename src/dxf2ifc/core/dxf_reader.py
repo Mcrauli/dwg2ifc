@@ -19,6 +19,13 @@ from dxf2ifc.core.types import (
 )
 
 
+def list_layers(path: str | Path) -> list[str]:
+    """Return the unique layer names referenced by model-space entities, sorted."""
+    doc = ezdxf.readfile(str(path))
+    layers = {entity.dxf.layer for entity in doc.modelspace()}
+    return sorted(layers)
+
+
 def read_dxf(path: str | Path) -> list[EntityRecord]:
     """Parse a DXF and return every supported entity in model space."""
     doc = ezdxf.readfile(str(path))
