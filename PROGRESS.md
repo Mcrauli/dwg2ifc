@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 3 — `dxf2ifc-gui` console-script + `gui/__main__.py`.
+**Current task:** Plan D Task 4 — Inter / Space Grotesk / JetBrains Mono fontit `assets/fonts/`-kansioon + LICENSES.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää `pyproject.toml`:n `[project.scripts]`-blokkiin `dxf2ifc-gui = "dxf2ifc.gui.app:run"` ja luo `src/dxf2ifc/gui/__main__.py` joka kutsuu `run()`:ia. Smoke-testi (`tests/test_gui_main_module.py`) varmistaa että `python -m dxf2ifc.gui --help` (tai vastaava no-op) ei kaadu importissa — voidaan testata ajamalla subprocess offscreen-platformilla, mutta nopeampi tapa: mockaa `run()`, importtaa `dxf2ifc.gui.__main__` ja tarkista että moduli kutsuu `run()`:ia.
+**Seuraavaksi:** lataa Inter (400/500/600/700), Space Grotesk (500/600/700) ja JetBrains Mono (500) -OFL-lisensoidut TTF-tiedostot `assets/fonts/`-kansioon, kirjoita `assets/fonts/LICENSES.md` jossa kolme OFL-lisenssiä. Lisää `pyproject.toml`:n hatchling-targetin `force-include` -säännöt jotta fontit pakataan wheeliin. Failing-test (`tests/test_font_assets.py`) varmistaa että odotetut font-tiedostot löytyvät ja LICENSES.md sisältää "SIL Open Font License". Huom: sandbox ei välttämättä saa fonttitiedostoja netistä; tee placeholder TTF:t jos lataus epäonnistuu, ja merkitse Lauri voi korvata ne myöhemmin oikeilla. Asiakkaan halutessa, voidaan ladata Google Fontsista (https://fonts.google.com).
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,12 +94,12 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (2/25)
+## Plan D status (3/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
 - [x] Task 2: gui/app.py `run()` + placeholder QMainWindow + qtbot offscreen testi (`f87b09e`)
-- [ ] Task 3: `dxf2ifc-gui` console-script + `gui/__main__.py`
+- [x] Task 3: `dxf2ifc-gui` console-script + `gui/__main__.py` (`ce1cba8`)
 
 ### Section 2: Brand assets
 - [ ] Task 4: Inter / Space Grotesk / JetBrains Mono fontit + LICENSES
@@ -226,7 +226,8 @@
 - Plan D Mode B: skeleton + 7 sectionia + 25 task-riviä (kommitit B2 → S7), CLAUDE.md "Plans B–F"-lista päivitetty (`7433ae8` → ...). PROGRESS.md sisältää nyt täyden Plan D -checklistin.
 - Plan D Task 1: PySide6>=6.7 ja pytest-qt>=4.4 -depsit pyproject.tomlin gui+dev-extrojen alle, smoke-testi `tests/test_gui_smoke.py` (`10d50c2`). 2 smoketestiä passed (vaatii libEGL.so.1 hostissa).
 - Plan D Task 2: `gui/app.py` `MainWindow` + `run()` + qtbot-testi (`f87b09e`). 2 gui-app-testiä passed.
+- Plan D Task 3: `dxf2ifc-gui` console-script + `gui/__main__.py` (`ce1cba8`). 2 main-module-testiä passed. ✅ Section 1 valmis.
 
-**Kesken:** Plan D Task 3–25 (23 jäljellä).
+**Kesken:** Plan D Task 4–25 (22 jäljellä, Section 2+ alkaa).
 
 **Blokkerit:** ei.
