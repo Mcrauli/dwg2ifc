@@ -117,7 +117,7 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 
 - [x] Task 43: lisää default-profiiliin INSERT-säännöt `HOYRYSTIN → IfcEvaporator`, `LAUHDUTIN → IfcCondenser`, `KOMPRESSORI → IfcCompressor` Talo2000 25xx -alakoodeilla (placeholder kunnes RT-tarkennus saatavilla) (Plan A vastaava: Task 6).
 - [x] Task 44: kirjoita `tests/test_mapper.py`:hen failing test joka mappaa kunkin blokin oikeaan IFC-tyyppiin + Talo2000-koodiin (Plan A vastaava: Task 14).
-- [ ] Task 45: lisää `ifc_writer.add_cooling_equipment` joka dispatchaa IFC-tyypin perusteella (IfcEvaporator/IfcCondenser/IfcCompressor) + box-representation + Talo2000 + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
+- [x] Task 45: lisää `ifc_writer.add_cooling_equipment` joka dispatchaa IFC-tyypin perusteella (IfcEvaporator/IfcCondenser/IfcCompressor) + box-representation + Talo2000 + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
 - [ ] Task 46: dispatchaa orchestrator equipment-rule blokit `add_cooling_equipment`-kutsuun ja laajenna integraatiotesti yhdellä HOYRYSTIN-blokilla (Plan A vastaava: Task 18 + 20).
 
 ## Section 12: Integraatio + lint

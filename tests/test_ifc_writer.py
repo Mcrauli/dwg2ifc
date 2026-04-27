@@ -3,10 +3,12 @@
 from pathlib import Path
 
 import ifcopenshell
+import pytest
 
 from dxf2ifc.core.ifc_writer import (
     add_building_element_proxy,
     add_cable_carrier_segment,
+    add_cooling_equipment,
     add_door,
     add_furniture,
     add_pipe_segment,
@@ -610,6 +612,110 @@ def test_add_building_element_proxy_placed_under_storey():
         if r.RelatingStructure == storey
     ]
     assert any(proxy in rel.RelatedElements for rel in rels)
+
+
+def _cooling_mapped_entity(
+    *,
+    layer: str,
+    block_name: str,
+    ifc_type: str,
+    talo_code: str,
+    talo_name: str,
+) -> MappedEntity:
+    block = BlockInstance(insertion_point=Point3D(1000, 1000, 200))
+    return MappedEntity(
+        layer=layer,
+        dxf_type="INSERT",
+        geometry=block,
+        block_name=block_name,
+        ifc_type=ifc_type,
+        predefined_type=None,
+        talo2000_code=talo_code,
+        talo2000_name=talo_name,
+        extra_props={
+            "default_width_mm": 800.0,
+            "default_depth_mm": 600.0,
+            "default_height_mm": 1200.0,
+        },
+    )
+
+
+@pytest.fixture
+def _cooling_storey():
+    ifc = build_ifc_project_skeleton(project_name="Cooling Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    return ifc, storey
+
+
+def test_add_cooling_equipment_creates_ifcevaporator(_cooling_storey):
+    ifc, storey = _cooling_storey
+    mapped = _cooling_mapped_entity(
+        layer="KYL-HOYRYSTIN-CR-30",
+        block_name="HOYRYSTIN",
+        ifc_type="IfcEvaporator",
+        talo_code="2510",
+        talo_name="Laiteosat — höyrystin",
+    )
+    ev = add_cooling_equipment(ifc, mapped, parent_storey=storey)
+    assert ev.is_a("IfcEvaporator")
+    assert ev.Name == "KYL-HOYRYSTIN-CR-30"
+
+
+def test_add_cooling_equipment_creates_ifccondenser(_cooling_storey):
+    ifc, storey = _cooling_storey
+    mapped = _cooling_mapped_entity(
+        layer="KYL-LAUHDUTIN",
+        block_name="LAUHDUTIN",
+        ifc_type="IfcCondenser",
+        talo_code="2520",
+        talo_name="Laiteosat — lauhdutin",
+    )
+    cond = add_cooling_equipment(ifc, mapped, parent_storey=storey)
+    assert cond.is_a("IfcCondenser")
+
+
+def test_add_cooling_equipment_creates_ifccompressor(_cooling_storey):
+    ifc, storey = _cooling_storey
+    mapped = _cooling_mapped_entity(
+        layer="KYL-KOMPRESSORI",
+        block_name="KOMPRESSORI",
+        ifc_type="IfcCompressor",
+        talo_code="2530",
+        talo_name="Laiteosat — kompressori",
+    )
+    comp = add_cooling_equipment(ifc, mapped, parent_storey=storey)
+    assert comp.is_a("IfcCompressor")
+
+
+def test_add_cooling_equipment_placed_under_storey(_cooling_storey):
+    ifc, storey = _cooling_storey
+    mapped = _cooling_mapped_entity(
+        layer="KYL-HOYRYSTIN",
+        block_name="HOYRYSTIN",
+        ifc_type="IfcEvaporator",
+        talo_code="2510",
+        talo_name="Laiteosat — höyrystin",
+    )
+    ev = add_cooling_equipment(ifc, mapped, parent_storey=storey)
+    rels = [
+        r
+        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
+        if r.RelatingStructure == storey
+    ]
+    assert any(ev in rel.RelatedElements for rel in rels)
+
+
+def test_add_cooling_equipment_rejects_unsupported_ifc_type(_cooling_storey):
+    ifc, storey = _cooling_storey
+    mapped = _cooling_mapped_entity(
+        layer="KYL-X",
+        block_name="X",
+        ifc_type="IfcWall",
+        talo_code="0",
+        talo_name="x",
+    )
+    with pytest.raises(ValueError):
+        add_cooling_equipment(ifc, mapped, parent_storey=storey)
 
 
 def test_add_talo2000_classification_attaches_reference():

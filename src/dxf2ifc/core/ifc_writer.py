@@ -826,6 +826,102 @@ def add_building_element_proxy(
     return proxy
 
 
+_COOLING_EQUIPMENT_CLASSES = frozenset({"IfcEvaporator", "IfcCondenser", "IfcCompressor"})
+
+
+def add_cooling_equipment(
+    ifc,
+    mapped: MappedEntity,
+    *,
+    parent_storey,
+) -> object:
+    """Create an IfcEvaporator / IfcCondenser / IfcCompressor from a
+    BlockInstance-bearing MappedEntity. The selected IFC class comes from
+    ``mapped.ifc_type``; the body is a width × depth × height extrusion
+    using extra_props defaults that match storage furniture.
+    """
+    if mapped.ifc_type not in _COOLING_EQUIPMENT_CLASSES:
+        raise ValueError(
+            f"add_cooling_equipment requires ifc_type in {sorted(_COOLING_EQUIPMENT_CLASSES)}, "
+            f"got {mapped.ifc_type!r}"
+        )
+    if not isinstance(mapped.geometry, BlockInstance):
+        raise TypeError(
+            "add_cooling_equipment expects BlockInstance, "
+            f"got {type(mapped.geometry).__name__}"
+        )
+
+    width = float(mapped.extra_props.get("default_width_mm", 800.0))
+    depth = float(mapped.extra_props.get("default_depth_mm", 600.0))
+    height = float(mapped.extra_props.get("default_height_mm", 1200.0))
+    box = block_to_furniture_box(
+        mapped.geometry, width_mm=width, depth_mm=depth, height_mm=height
+    )
+
+    product = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class=mapped.ifc_type,
+        name=mapped.layer,
+    )
+
+    matrix = _z_rotation_matrix(box.anchor.x, box.anchor.y, box.anchor.z, box.angle_rad)
+    ifcopenshell.api.run(
+        "geometry.edit_object_placement",
+        ifc,
+        product=product,
+        matrix=matrix,
+    )
+
+    model_ctx = [
+        c
+        for c in ifc.by_type("IfcGeometricRepresentationSubContext")
+        if c.ContextIdentifier == "Body"
+    ][0]
+    rect = ifc.create_entity(
+        "IfcRectangleProfileDef",
+        ProfileType="AREA",
+        ProfileName=None,
+        Position=ifc.create_entity(
+            "IfcAxis2Placement2D",
+            Location=ifc.create_entity(
+                "IfcCartesianPoint",
+                Coordinates=(box.width_mm / 2.0, box.depth_mm / 2.0),
+            ),
+        ),
+        XDim=box.width_mm,
+        YDim=box.depth_mm,
+    )
+    extruded = ifc.create_entity(
+        "IfcExtrudedAreaSolid",
+        SweptArea=rect,
+        Position=ifc.create_entity(
+            "IfcAxis2Placement3D",
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
+        ),
+        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
+        Depth=box.height_mm,
+    )
+    shape = ifc.create_entity(
+        "IfcShapeRepresentation",
+        ContextOfItems=model_ctx,
+        RepresentationIdentifier="Body",
+        RepresentationType="SweptSolid",
+        Items=[extruded],
+    )
+    product.Representation = ifc.create_entity(
+        "IfcProductDefinitionShape", Representations=[shape]
+    )
+
+    ifcopenshell.api.run(
+        "spatial.assign_container",
+        ifc,
+        products=[product],
+        relating_structure=parent_storey,
+    )
+    return product
+
+
 def _ensure_cable_carrier_segment_type(ifc, requested_type: str, enum_value: str) -> object:
     """Return (creating once per file) an IfcCableCarrierSegmentType."""
     for t in ifc.by_type("IfcCableCarrierSegmentType"):
