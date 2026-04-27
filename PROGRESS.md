@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 47 — `tests/fixtures/full_kylmaelement.dxf` (kaikki section 2–11 elementtityypit).
+**Current task:** Plan B Task 48 — `tests/test_integration_full.py` (kaikki Talo2000-koodit löytyvät IFC:stä).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** kirjoita conftest- tai fixture-helper joka generoi DXF:n ezdxf:llä joka sisältää kaikki section 2–11 element-tyypit (US-LINE, VS-LINE, ALAPOHJA-LWPOLYLINE, OVI-INSERT, IKKUNA-INSERT, LT IMU -LINE, KYL-VIEMARI-LINE, KYL-LEVYHYLLY-INSERT, KAAPELIHYLLY-LINE, KYL-LEVY-LWPOLYLINE, HOYRYSTIN-INSERT). Tallennus tests/fixtures/.
+**Seuraavaksi:** lisää testi joka käyttää full_kylmaelement_dxf fixtureä, ajaa convert_dxf:n ja varmistaa että kaikki Talo2000-koodit (1241/1311/1221/1243/1242/2151/2160/1331/2380/1352/2510) löytyvät IFC:stä, ja että ifcopenshell.validate ei tuota virheitä.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (46/50)
+## Plan B status (47/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -89,12 +89,12 @@
 - [x] Task 46: orchestrator dispatch + integraatiotesti HOYRYSTIN (`1ba3a65`)
 
 ### Section 12: Integraatio + lint
-- [ ] Task 47: `tests/fixtures/full_kylmaelement.dxf` (kaikki section 2–11 elementtityypit)
+- [x] Task 47: `tests/fixtures/full_kylmaelement.dxf` (kaikki section 2–11 elementtityypit) (`58ac2e4`)
 - [ ] Task 48: `tests/test_integration_full.py` (kaikki Talo2000-koodit löytyvät IFC:stä)
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 46/50 — Sectionit 1–11 valmis. Seuraavaksi Section 12 (integraatio + lint).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 47/50 — Sectionit 1–11 valmis, Section 12 etenee (1/4).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -142,7 +142,8 @@
 - Plan B Task 44: mapper-testit kylmälaite INSERT-mappauksille (`c4fce3e`). 18 mapper-testiä passed.
 - Plan B Task 45: add_cooling_equipment dispatcher IfcEvaporator/IfcCondenser/IfcCompressor box-extrusion (`e0e2c25`). 42 ifc_writer-testiä passed.
 - Plan B Task 46: convert_dxf dispatchaa cooling equipment + integraatiotesti KYL-HOYRYSTIN HOYRYSTIN → IfcEvaporator 2510 (`1ba3a65`). 11 integration-testiä passed. ✅ Section 11 valmis.
+- Plan B Task 47: full_kylmaelement_dxf conftest-fixture (kaikki Section 2–11 elementit) (`58ac2e4`).
 
-**Kesken:** Plan B Task 47–50 (4 jäljellä).
+**Kesken:** Plan B Task 48–50 (3 jäljellä).
 
 **Blokkerit:** ei.
