@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 18 — `ProfileEditorDialog` rules-listalla + Add/Edit/Remove/Save.
+**Current task:** Plan D Task 19 — `RuleEditDialog` lomake + pydantic-validointi.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** luo `gui/profile_editor.py` `ProfileEditorDialog(QDialog)`. Sisältö: QTableView jossa `Profile.rules`-listan kaikki säännöt (kolumnit Layer pattern, IFC type, Predefined, Talo2000 code, Talo2000 name, System), toolbar-napit Add/Edit/Remove/Save profile…. Save kutsuu `dump_profile`. Failing-test varmistaa että default-profile:n kaikki säännöt näkyvät QTableView:ssä (rivimäärä == profile.rules määrä).
+**Seuraavaksi:** luo `gui/rule_dialog.py` `RuleEditDialog(QDialog)` jossa lomake yhdelle `Rule`-objektille: QLineEdit layer_pattern + talo2000_code + talo2000_name, QComboBox ifc_type (Plan A–C käytetyt arvot) + entity_kind (LINE/POLYLINE/INSERT). OK-nappi disabloitu kun pydantic-validointi heittäisi (esim. INSERT ilman block_namea). `rule()` palauttaa pydanticin Rule-instanssin. Failing-test varmistaa että invalid-INSERT (ilman block_name) → OK-nappi disabloituna ja että valid-Rule → enabled + rule()-metodi palauttaa kelvollisen Rule:n.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (17/25)
+## Plan D status (18/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -124,7 +124,7 @@
 
 ### Section 6: Profile editor
 - [x] Task 17: `profiles/loader.dump_profile(profile, path)` round-trip (`0e96db4`)
-- [ ] Task 18: `ProfileEditorDialog` rules-listalla + Add/Edit/Remove/Save
+- [x] Task 18: `ProfileEditorDialog` rules-listalla + Add/Edit/Remove/Save (`de6d9ad`)
 - [ ] Task 19: `RuleEditDialog` lomake + pydantic-validointi
 - [ ] Task 20: kytke menubariin + end-to-end custom-rule testi
 
@@ -241,7 +241,8 @@
 - Plan D Task 15: `gui/layer_table.py` `LayerTable(QTableWidget)` 4 kolumnia (Layer/IFC/Talo2000/System), `set_layers(layers, profile)`, JetBrains Mono Layer/Talo2000-kolumneille (`6633e6e`). 2 layer-table-testiä passed.
 - Plan D Task 16: kytkin LayerTable MainWindow:n vasempaan paneeliin file_panel:n alle, editingFinished triggeröi list_layers + set_layers (`5d6ed4a`). 10 gui-app-testiä passed. ✅ Section 5 valmis.
 - Plan D Task 17: `profiles/loader.dump_profile(profile, path)` + `tomli-w` runtime-dep, round-trip-testit (`0e96db4`). 18 loader-testiä passed.
+- Plan D Task 18: `gui/profile_editor.py` `ProfileEditorDialog` + custom QAbstractTableModel + Add/Edit/Remove/Save-toolbar (Save → dump_profile + profile_saved-signaali) (`de6d9ad`). 3 profile-editor-testiä passed.
 
-**Kesken:** Plan D Task 18–25 (8 jäljellä).
+**Kesken:** Plan D Task 19–25 (7 jäljellä).
 
 **Blokkerit:** ei.
