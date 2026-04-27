@@ -110,6 +110,15 @@ def test_load_default_profile_has_storage_furniture_rules():
     assert profile.rules.index(tikas_v) < profile.rules.index(tikas)
 
 
+def test_load_default_profile_has_cable_carrier_rule():
+    profile = load_default_profile()
+    by_layer = {r.layer_pattern: r for r in profile.rules}
+    cable = by_layer["KAAPELIHYLLY*"]
+    assert cable.ifc_type == "IfcCableCarrierSegment"
+    assert cable.predefined_type == "CABLETRUNKINGSEGMENT"
+    assert cable.talo2000_code == "2380"
+
+
 def test_load_default_profile_has_partition_wall_rules():
     profile = load_default_profile()
     by_layer = {r.layer_pattern: r for r in profile.rules}

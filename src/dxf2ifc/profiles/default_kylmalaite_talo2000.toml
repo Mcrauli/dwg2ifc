@@ -169,12 +169,12 @@ talo2000_code = "1331"
 talo2000_name = "Vakiokiintokalusteet"
 
 # Section 9: Kaapelihyllyt (23xx)
-# [[rules]]
-# layer_pattern = "KAAPELIHYLLY*"
-# ifc_type = "IfcCableCarrierSegment"
-# predefined_type = "CABLETRUNKINGSEGMENT"
-# talo2000_code = "23xx"
-# talo2000_name = "Sähköosat — kaapelihyllyt"
+[[rules]]
+layer_pattern = "KAAPELIHYLLY*"
+ifc_type = "IfcCableCarrierSegment"
+predefined_type = "CABLETRUNKINGSEGMENT"
+talo2000_code = "2380"
+talo2000_name = "Sähköosat — kaapelihyllyt"
 
 # Section 10: Kylmähuone-elementit (1352, IfcBuildingElementProxy)
 # [[rules]]
