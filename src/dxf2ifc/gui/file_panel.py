@@ -1,0 +1,63 @@
+"""Widget that lets the user pick a DXF input + IFC output and request conversion."""
+
+from __future__ import annotations
+
+from PySide6 import QtCore, QtWidgets
+
+
+class FilePanel(QtWidgets.QWidget):
+    convert_requested = QtCore.Signal(str, str)
+
+    def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
+        super().__init__(parent)
+        layout = QtWidgets.QGridLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setHorizontalSpacing(8)
+        layout.setVerticalSpacing(10)
+
+        layout.addWidget(self._caption("DXF input"), 0, 0)
+        self.input_edit = QtWidgets.QLineEdit()
+        self.input_edit.setPlaceholderText("Path to .dxf")
+        layout.addWidget(self.input_edit, 0, 1)
+        self.browse_input_button = QtWidgets.QPushButton("Browse…")
+        self.browse_input_button.setProperty("secondary", "true")
+        self.browse_input_button.clicked.connect(self._on_browse_input)
+        layout.addWidget(self.browse_input_button, 0, 2)
+
+        layout.addWidget(self._caption("IFC output"), 1, 0)
+        self.output_edit = QtWidgets.QLineEdit()
+        self.output_edit.setPlaceholderText("Path to .ifc")
+        layout.addWidget(self.output_edit, 1, 1)
+        self.browse_output_button = QtWidgets.QPushButton("Browse…")
+        self.browse_output_button.setProperty("secondary", "true")
+        self.browse_output_button.clicked.connect(self._on_browse_output)
+        layout.addWidget(self.browse_output_button, 1, 2)
+
+        self.convert_button = QtWidgets.QPushButton("Convert")
+        self.convert_button.setProperty("primary", "true")
+        self.convert_button.clicked.connect(self._on_convert)
+        layout.addWidget(self.convert_button, 2, 1, 1, 2)
+
+        layout.setColumnStretch(1, 1)
+
+    def _caption(self, text: str) -> QtWidgets.QLabel:
+        label = QtWidgets.QLabel(text)
+        label.setProperty("role", "caption")
+        return label
+
+    def _on_browse_input(self) -> None:
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Open DXF", "", "DXF files (*.dxf)"
+        )
+        if path:
+            self.input_edit.setText(path)
+
+    def _on_browse_output(self) -> None:
+        path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self, "Save IFC", "", "IFC files (*.ifc)"
+        )
+        if path:
+            self.output_edit.setText(path)
+
+    def _on_convert(self) -> None:
+        self.convert_requested.emit(self.input_edit.text(), self.output_edit.text())
