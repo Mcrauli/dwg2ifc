@@ -1,4 +1,5 @@
 """Unit tests for core.types dataclasses."""
+
 from dxf2ifc.core.types import EntityRecord, LineGeometry, Point3D
 
 

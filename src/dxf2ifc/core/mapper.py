@@ -1,4 +1,5 @@
 """Match DXF entities against profile rules and produce MappedEntity objects."""
+
 from __future__ import annotations
 
 from fnmatch import fnmatch
@@ -12,9 +13,7 @@ def layer_matches(pattern: str, layer: str) -> bool:
     return fnmatch(layer.casefold(), pattern.casefold())
 
 
-def apply_profile(
-    entities: list[EntityRecord], profile: Profile
-) -> list[MappedEntity]:
+def apply_profile(entities: list[EntityRecord], profile: Profile) -> list[MappedEntity]:
     """Match each entity's layer against profile rules (first match wins)
     and return a list of MappedEntity.
 

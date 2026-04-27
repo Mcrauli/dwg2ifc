@@ -1,4 +1,5 @@
 """Unit tests for profiles.loader."""
+
 from pathlib import Path
 
 import pytest

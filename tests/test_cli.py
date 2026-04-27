@@ -1,4 +1,5 @@
 """Unit tests for CLI entry point."""
+
 import os
 import subprocess
 import sys

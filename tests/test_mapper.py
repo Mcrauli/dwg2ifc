@@ -1,4 +1,5 @@
 """Unit tests for core.mapper."""
+
 import pytest
 
 from dxf2ifc.core.mapper import apply_profile, layer_matches

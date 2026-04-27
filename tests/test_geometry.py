@@ -1,4 +1,5 @@
 """Unit tests for core.geometry."""
+
 from dxf2ifc.core.geometry import WallExtrusion, line_to_wall_extrusion
 from dxf2ifc.core.types import LineGeometry, Point3D
 

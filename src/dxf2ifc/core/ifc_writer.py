@@ -4,6 +4,7 @@ Plan A covers: IfcProject/Site/Building/Storey hierarchy, IfcUnitAssignment
 (millimetres), single IfcWall creation with classification reference.
 Plan B extends with slabs, doors, windows, pipes, furniture, etc.
 """
+
 from __future__ import annotations
 
 import math
@@ -52,21 +53,15 @@ def build_ifc_project_skeleton(
         parent=context,
     )
 
-    site = ifcopenshell.api.run(
-        "root.create_entity", ifc, ifc_class="IfcSite", name=site_name
-    )
+    site = ifcopenshell.api.run("root.create_entity", ifc, ifc_class="IfcSite", name=site_name)
     building = ifcopenshell.api.run(
         "root.create_entity", ifc, ifc_class="IfcBuilding", name=building_name
     )
     storey = ifcopenshell.api.run(
         "root.create_entity", ifc, ifc_class="IfcBuildingStorey", name=storey_name
     )
-    ifcopenshell.api.run(
-        "aggregate.assign_object", ifc, products=[site], relating_object=project
-    )
-    ifcopenshell.api.run(
-        "aggregate.assign_object", ifc, products=[building], relating_object=site
-    )
+    ifcopenshell.api.run("aggregate.assign_object", ifc, products=[site], relating_object=project)
+    ifcopenshell.api.run("aggregate.assign_object", ifc, products=[building], relating_object=site)
     ifcopenshell.api.run(
         "aggregate.assign_object", ifc, products=[storey], relating_object=building
     )
@@ -84,15 +79,11 @@ def add_wall(ifc, mapped: MappedEntity, *, parent_storey) -> object:
     parent_storey via IfcRelContainedInSpatialStructure.
     """
     if not isinstance(mapped.geometry, LineGeometry):
-        raise TypeError(
-            f"add_wall expects LineGeometry, got {type(mapped.geometry).__name__}"
-        )
+        raise TypeError(f"add_wall expects LineGeometry, got {type(mapped.geometry).__name__}")
 
     height = float(mapped.extra_props.get("default_height_mm", 3000.0))
     thickness = float(mapped.extra_props.get("default_thickness_mm", 200.0))
-    ext = line_to_wall_extrusion(
-        mapped.geometry, thickness_mm=thickness, height_mm=height
-    )
+    ext = line_to_wall_extrusion(mapped.geometry, thickness_mm=thickness, height_mm=height)
 
     wall = ifcopenshell.api.run(
         "root.create_entity",
@@ -102,9 +93,7 @@ def add_wall(ifc, mapped: MappedEntity, *, parent_storey) -> object:
         predefined_type=mapped.predefined_type,
     )
 
-    matrix = _z_rotation_matrix(
-        ext.anchor.x, ext.anchor.y, ext.anchor.z, ext.angle_rad
-    )
+    matrix = _z_rotation_matrix(ext.anchor.x, ext.anchor.y, ext.anchor.z, ext.angle_rad)
     ifcopenshell.api.run(
         "geometry.edit_object_placement",
         ifc,
@@ -123,9 +112,7 @@ def add_wall(ifc, mapped: MappedEntity, *, parent_storey) -> object:
         ProfileName=None,
         Position=ifc.create_entity(
             "IfcAxis2Placement2D",
-            Location=ifc.create_entity(
-                "IfcCartesianPoint", Coordinates=(ext.length_mm / 2.0, 0.0)
-            ),
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(ext.length_mm / 2.0, 0.0)),
         ),
         XDim=ext.length_mm,
         YDim=ext.thickness_mm,
@@ -135,13 +122,9 @@ def add_wall(ifc, mapped: MappedEntity, *, parent_storey) -> object:
         SweptArea=rect,
         Position=ifc.create_entity(
             "IfcAxis2Placement3D",
-            Location=ifc.create_entity(
-                "IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)
-            ),
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
         ),
-        ExtrudedDirection=ifc.create_entity(
-            "IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)
-        ),
+        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
         Depth=ext.height_mm,
     )
     shape = ifc.create_entity(
@@ -151,9 +134,7 @@ def add_wall(ifc, mapped: MappedEntity, *, parent_storey) -> object:
         RepresentationType="SweptSolid",
         Items=[extruded],
     )
-    product_definition = ifc.create_entity(
-        "IfcProductDefinitionShape", Representations=[shape]
-    )
+    product_definition = ifc.create_entity("IfcProductDefinitionShape", Representations=[shape])
     wall.Representation = product_definition
 
     ifcopenshell.api.run(
@@ -223,7 +204,5 @@ def convert_dxf(
     for m in mapped:
         if m.ifc_type == "IfcWall":
             wall = add_wall(ifc, m, parent_storey=storey)
-            add_talo2000_classification(
-                ifc, wall, code=m.talo2000_code, name=m.talo2000_name
-            )
+            add_talo2000_classification(ifc, wall, code=m.talo2000_code, name=m.talo2000_name)
     write_ifc(ifc, output_path)

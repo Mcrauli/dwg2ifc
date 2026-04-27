@@ -1,4 +1,5 @@
 """Command-line interface for dxf2ifc."""
+
 from __future__ import annotations
 
 import argparse
@@ -15,9 +16,7 @@ def build_parser() -> argparse.ArgumentParser:
         prog="dxf2ifc",
         description="Convert AutoCAD DXF drawings to IFC 4 with Talo2000 classification.",
     )
-    parser.add_argument(
-        "--version", action="version", version=f"dxf2ifc {__version__}"
-    )
+    parser.add_argument("--version", action="version", version=f"dxf2ifc {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     convert = subparsers.add_parser("convert", help="Convert a DXF file to IFC.")
@@ -36,9 +35,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.command == "convert":
-        profile = (
-            load_profile(args.profile) if args.profile else load_default_profile()
-        )
+        profile = load_profile(args.profile) if args.profile else load_default_profile()
         convert_dxf(
             dxf_path=args.input,
             output_path=args.output,

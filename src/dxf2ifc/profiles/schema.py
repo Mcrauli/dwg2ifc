@@ -1,4 +1,5 @@
 """Pydantic models validating the mapping profile TOML."""
+
 from __future__ import annotations
 
 from typing import Literal
@@ -31,9 +32,7 @@ class Rule(BaseModel):
     block_handling: Literal["geometry_direct", "extrude"] | None = Field(
         default=None, description="How to handle INSERT entities on this layer."
     )
-    system_name: str | None = Field(
-        default=None, description="Optional IfcSystem grouping name."
-    )
+    system_name: str | None = Field(default=None, description="Optional IfcSystem grouping name.")
 
 
 class Profile(BaseModel):

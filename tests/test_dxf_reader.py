@@ -1,4 +1,5 @@
 """Unit tests for core.dxf_reader."""
+
 from pathlib import Path
 
 from dxf2ifc.core.dxf_reader import read_dxf

@@ -2,6 +2,7 @@
 
 Plan A handles only LINE entities. Plan B extends with LWPOLYLINE, 3DSOLID, INSERT.
 """
+
 from __future__ import annotations
 
 from pathlib import Path

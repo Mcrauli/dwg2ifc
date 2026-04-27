@@ -1,4 +1,5 @@
 """Load a mapping profile from a TOML file."""
+
 from __future__ import annotations
 
 import tomllib

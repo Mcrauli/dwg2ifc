@@ -1,4 +1,5 @@
 """Unit tests for profiles.schema pydantic models."""
+
 import pytest
 from pydantic import ValidationError
 

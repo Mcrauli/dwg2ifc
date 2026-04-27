@@ -1,9 +1,18 @@
 """Unit tests for core.ifc_writer."""
+
 from pathlib import Path
 
 import ifcopenshell
 
-from dxf2ifc.core.ifc_writer import build_ifc_project_skeleton, write_ifc
+from dxf2ifc.core.ifc_writer import (
+    add_talo2000_classification,
+    add_wall,
+    build_ifc_project_skeleton,
+    convert_dxf,
+    write_ifc,
+)
+from dxf2ifc.core.types import LineGeometry, MappedEntity, Point3D
+from dxf2ifc.profiles.loader import load_default_profile
 
 
 def test_build_project_creates_ifc4_file_with_hierarchy(tmp_path: Path):
@@ -40,10 +49,6 @@ def test_write_ifc_produces_file(tmp_path: Path):
     assert len(reloaded.by_type("IfcProject")) == 1
 
 
-from dxf2ifc.core.ifc_writer import add_wall, add_talo2000_classification
-from dxf2ifc.core.types import LineGeometry, MappedEntity, Point3D
-
-
 def _wall_mapped_entity() -> MappedEntity:
     line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(5000, 0, 0))
     return MappedEntity(
@@ -74,9 +79,7 @@ def test_add_wall_placed_under_storey():
     walls = ifc.by_type("IfcWall")
     assert len(walls) == 1
     rels = [
-        r
-        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
-        if r.RelatingStructure == storey
+        r for r in ifc.by_type("IfcRelContainedInSpatialStructure") if r.RelatingStructure == storey
     ]
     assert any(wall in rel.RelatedElements for rel in rels)
 
@@ -91,10 +94,6 @@ def test_add_talo2000_classification_attaches_reference():
     assert any(r.Identification == "1241" for r in refs)
     classifications = ifc.by_type("IfcClassification")
     assert any(c.Name == "Talo2000" for c in classifications)
-
-
-from dxf2ifc.core.ifc_writer import convert_dxf
-from dxf2ifc.profiles.loader import load_default_profile
 
 
 def test_convert_dxf_produces_ifc_with_wall(fixtures_dir: Path, tmp_path: Path):

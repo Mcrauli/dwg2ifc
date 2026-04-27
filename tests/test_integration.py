@@ -1,4 +1,5 @@
 """End-to-end integration test: DXF -> CLI -> IFC validated by ifcopenshell."""
+
 import os
 import subprocess
 import sys

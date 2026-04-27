@@ -3,6 +3,7 @@
 Plan A: 2D line -> WallExtrusion (length, thickness, height, rotation, anchor).
 Plan B adds polyline -> slab, 3DSOLID pass-through, block placement.
 """
+
 from __future__ import annotations
 
 import math
