@@ -281,6 +281,30 @@ def test_kaapelihylly_roundtrip_produces_cable_carrier_segment(tmp_path: Path):
     assert errors == [], f"IFC validation errors: {errors}"
 
 
+def test_kyl_levy_roundtrip_produces_building_element_proxy(tmp_path: Path):
+    dxf = tmp_path / "kyl_levy.dxf"
+    _write_closed_lwpolyline_dxf(dxf, layer="KYL-LEVY")
+    out = tmp_path / "kyl_levy.ifc"
+
+    convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
+
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4"
+    proxies = ifc.by_type("IfcBuildingElementProxy")
+    assert len(proxies) == 1
+    assert proxies[0].Name == "KYL-LEVY"
+
+    refs = ifc.by_type("IfcClassificationReference")
+    talo = [r for r in refs if r.Identification == "1352"]
+    assert len(talo) == 1
+    assert talo[0].ReferencedSource.Name == "Talo2000"
+
+    logger = ifcopenshell.validate.json_logger()
+    ifcopenshell.validate.validate(ifc, logger=logger)
+    errors = [e for e in logger.statements if e.get("level") == "ERROR"]
+    assert errors == [], f"IFC validation errors: {errors}"
+
+
 def test_partition_wall_roundtrip_produces_partitioning_ifcwall(tmp_path: Path):
     dxf = tmp_path / "partition_wall.dxf"
     _write_single_line_dxf(dxf, layer="KYL-VALISEINA")

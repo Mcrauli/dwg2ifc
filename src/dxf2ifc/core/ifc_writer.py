@@ -981,4 +981,9 @@ def convert_dxf(
                 predefined_type=m.predefined_type or "CABLETRUNKINGSEGMENT",
             )
             add_talo2000_classification(ifc, seg, code=m.talo2000_code, name=m.talo2000_name)
+        elif m.ifc_type == "IfcBuildingElementProxy":
+            proxy = add_building_element_proxy(ifc, m, parent_storey=storey)
+            add_talo2000_classification(
+                ifc, proxy, code=m.talo2000_code, name=m.talo2000_name
+            )
     write_ifc(ifc, output_path)
