@@ -26,7 +26,7 @@ Plan A 21/21 + Plan B 50/50 valmis (master `2494841`). 143 testiä passed, cover
 
 ## Section 1: Profiili — system_name -arvot
 
-- [ ] Task 1: lisää `system_name = "Refrigeration LT"` LT IMU -sääntöön ja `"Refrigeration MT"` MT IMU + MT NESTE -sääntöihin default-profiilissa, päivitä loader-testi.
+- [x] Task 1: lisää `system_name = "Refrigeration LT"` LT IMU -sääntöön ja `"Refrigeration MT"` MT IMU + MT NESTE -sääntöihin default-profiilissa, päivitä loader-testi.
 - [ ] Task 2: lisää `system_name = "Drainage"` KYL-VIEMARI*-sääntöön ja `"Cable carriers"` KAAPELIHYLLY*-sääntöön, päivitä loader-testi.
 - [ ] Task 3: lisää `system_name = "Refrigeration plant"` HOYRYSTIN/LAUHDUTIN/KOMPRESSORI INSERT-sääntöihin, päivitä loader-testi.
 

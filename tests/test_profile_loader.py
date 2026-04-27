@@ -76,11 +76,14 @@ def test_load_default_profile_has_pipe_segment_rules():
     assert lt.ifc_type == "IfcPipeSegment"
     assert lt.predefined_type == "REFRIGERATION"
     assert lt.talo2000_code == "2151"
+    assert lt.system_name == "Refrigeration LT"
     assert lt.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 22.0
     mt_imu = by_layer["MT IMU"]
     assert mt_imu.talo2000_code == "2152"
+    assert mt_imu.system_name == "Refrigeration MT"
     mt_neste = by_layer["MT NESTE"]
     assert mt_neste.talo2000_code == "2153"
+    assert mt_neste.system_name == "Refrigeration MT"
     assert mt_neste.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 12.0
 
 
