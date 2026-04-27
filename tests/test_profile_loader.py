@@ -22,6 +22,19 @@ def test_load_default_profile_has_exterior_wall_rule():
     assert wall_rules[0].talo2000_code == "1241"
 
 
+def test_load_default_profile_has_partition_wall_rules():
+    profile = load_default_profile()
+    by_layer = {r.layer_pattern: r for r in profile.rules}
+    valiseina = by_layer["KYL-VALISEINA*"]
+    assert valiseina.ifc_type == "IfcWall"
+    assert valiseina.predefined_type == "PARTITIONING"
+    assert valiseina.talo2000_code == "1311"
+    lasi = by_layer["KYL-LASIVALISEINA*"]
+    assert lasi.ifc_type == "IfcWall"
+    assert lasi.predefined_type == "PARTITIONING"
+    assert lasi.talo2000_code == "1312"
+
+
 def test_load_profile_from_file(tmp_path: Path):
     toml_content = """
 [profile]

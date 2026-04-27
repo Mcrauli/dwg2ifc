@@ -22,23 +22,23 @@ default_thickness_mm = 200
 # -----------------------------------------------------------------------------
 
 # Section 2: VS / lasiväliseinät (1311 / 1312)
-# [[rules]]
-# layer_pattern = "KYL-VALISEINA*"
-# ifc_type = "IfcWall"
-# predefined_type = "PARTITIONING"
-# talo2000_code = "1311"
-# talo2000_name = "Väliseinät"
-# default_height_mm = 3000
-# default_thickness_mm = 100
-#
-# [[rules]]
-# layer_pattern = "KYL-LASIVALISEINA*"
-# ifc_type = "IfcWall"
-# predefined_type = "PARTITIONING"
-# talo2000_code = "1312"
-# talo2000_name = "Lasiväliseinät"
-# default_height_mm = 3000
-# default_thickness_mm = 50
+[[rules]]
+layer_pattern = "KYL-VALISEINA*"
+ifc_type = "IfcWall"
+predefined_type = "PARTITIONING"
+talo2000_code = "1311"
+talo2000_name = "Väliseinät"
+default_height_mm = 3000
+default_thickness_mm = 100
+
+[[rules]]
+layer_pattern = "KYL-LASIVALISEINA*"
+ifc_type = "IfcWall"
+predefined_type = "PARTITIONING"
+talo2000_code = "1312"
+talo2000_name = "Lasiväliseinät"
+default_height_mm = 3000
+default_thickness_mm = 50
 
 # Section 3: Laatat AP / VP / YP (1221 / 1235 / 1236)
 # [[rules]]
