@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 8 — päivitä integraatiotestifixtuuri (DXF) sisältämään yksi VS-viiva ja varmista että IFC:ssä syntyy IfcWall PARTITIONING -elementti Talo2000 1311 -classification refillä.
+**Current task:** Plan B Task 9 — lisää default-profiiliin säännöt `KYL-ALAPOHJA → IfcSlab FLOOR 1221`, `KYL-VALIPOHJA → IfcSlab FLOOR 1235`, `KYL-YLAPOHJA → IfcSlab ROOF 1236`.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lue `tests/conftest.py` (fixtures_dir + simple_wall.dxf-fixture, jos generoidaan ezdxf:llä) sekä `tests/fixtures/simple_wall.dxf` taustamuotoinen polun käyttö. Lisää `tests/test_integration.py`:hen testi joka generoi ad-hoc DXF:n (esim. ezdxf:llä) jossa on yksi LINE layerilla `KYL-VALISEINA`, ajaa `convert_dxf` ja varmistaa että tuotetussa IFC:ssä on yksi `IfcWall` PredefinedType=PARTITIONING ja Talo2000-koodi 1311. Pytest, commit + push, PROGRESS.md → Task 9 (Section 2 valmis, Section 3 alkaa).
+**Seuraavaksi:** poista kommentit Section 3 -placeholderista `default_kylmalaite_talo2000.toml`:ssa (KYL-ALAPOHJA, KYL-VALIPOHJA, KYL-YLAPOHJA — kaikki POLYLINE-säännöt). Lisää failing test `tests/test_profile_loader.py`:hen joka varmistaa kaikki kolme slab-rule:a (ifc_type/predefined_type/talo2000_code). Pytest, commit + push, PROGRESS.md → Task 10.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (7/50)
+## Plan B status (8/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -26,11 +26,11 @@
 - [x] Task 3: päivitä `profiles/loader.py` säilyttämään uudet kentät + `tests/test_profile_schema.py` (`a8cbe50`)
 - [x] Task 4: laajenna default TOML kommentoiduilla placeholder-säännöillä joka elementtityypille (`35c18f6`)
 
-### Section 2: VS / lasiväliseinät (1311 / 1312)
+### Section 2: VS / lasiväliseinät (1311 / 1312) ✅
 - [x] Task 5: default-profiilin VS- ja lasiväliseinä-säännöt (`97ab1b0`)
 - [x] Task 6: failing test `tests/test_mapper.py` partition-säännöille (`cb77e9c`)
 - [x] Task 7: `ifc_writer.add_wall` + `predefined_type` -parametri (`b101565`)
-- [ ] Task 8: integraatiotesti VS-viivalla → IfcWall PARTITIONING 1311
+- [x] Task 8: integraatiotesti VS-viivalla → IfcWall PARTITIONING 1311 (`f051083`)
 
 ### Section 3: Laatat AP / VP / YP (1221 / 1235 / 1236)
 - [ ] Task 9: default-profiilin laattasäännöt
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 7/50 — Section 1 valmis, Section 2 etenee (3/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 8/50 — Sectionit 1–2 valmis, Section 3 alkamassa.
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -103,7 +103,8 @@
 - Plan B Task 5: aktivoi KYL-VALISEINA ja KYL-LASIVALISEINA -säännöt default-profiiliin (PARTITIONING 1311/1312) (`97ab1b0`). 7 loader-testiä passed.
 - Plan B Task 6: mapper-test joka varmistaa partition-mappingin default-profiililla (`cb77e9c`). 11 mapper-testiä passed.
 - Plan B Task 7: `add_wall` ottaa explicit `predefined_type`-kwargia (default STANDARD), orchestrator forwardaa MappedEntity.predefined_type:n (`b101565`). 9 ifc_writer-testiä passed.
+- Plan B Task 8: integraatiotesti joka generoi KYL-VALISEINA-DXF:n ezdxf:llä, ajaa convert_dxf:n ja varmistaa IfcWall PARTITIONING + Talo2000 1311 (`f051083`). 2 integration-testiä passed. ✅ Section 2 valmis.
 
-**Kesken:** Plan B Task 8–50 (43 jäljellä).
+**Kesken:** Plan B Task 9–50 (42 jäljellä).
 
 **Blokkerit:** ei.
