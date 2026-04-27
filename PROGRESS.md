@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 49 — ruff clean + ≥85 % coverage.
+**Current task:** Plan B Task 50 — README.md + CLAUDE.md status-päivitys (Plan B valmis).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** aja `pytest -q --tb=short --cov=src/dxf2ifc --cov-report=term-missing` koko suiteen ja varmista että kaikki menee läpi + coverage ≥85 %. Sitten `ruff check . && ruff format --check .`. Korjaa havainnot.
+**Seuraavaksi:** päivitä CLAUDE.md "Status"-osio (Plan B 50/50 valmis, lista kommit-SHA:t) ja README.md headline (Plan B valmis -merkki). Sen jälkeen Plan-loppupiste + transition kohti Plan C:tä.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (48/50)
+## Plan B status (49/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -91,10 +91,10 @@
 ### Section 12: Integraatio + lint
 - [x] Task 47: `tests/fixtures/full_kylmaelement.dxf` (kaikki section 2–11 elementtityypit) (`58ac2e4`)
 - [x] Task 48: `tests/test_integration_full.py` (kaikki Talo2000-koodit löytyvät IFC:stä) (`536fa50`)
-- [ ] Task 49: ruff clean + ≥85 % coverage
+- [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 48/50 — Sectionit 1–11 valmis, Section 12 etenee (2/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 49/50 — Sectionit 1–11 valmis, Section 12 etenee (3/4).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -144,7 +144,8 @@
 - Plan B Task 46: convert_dxf dispatchaa cooling equipment + integraatiotesti KYL-HOYRYSTIN HOYRYSTIN → IfcEvaporator 2510 (`1ba3a65`). 11 integration-testiä passed. ✅ Section 11 valmis.
 - Plan B Task 47: full_kylmaelement_dxf conftest-fixture (kaikki Section 2–11 elementit) (`58ac2e4`).
 - Plan B Task 48: tests/test_integration_full.py joka varmistaa kaikki Section 2–11 Talo2000-koodit + IFC-validointi (`536fa50`). 3 testiä passed.
+- Plan B Task 49: ruff format kolmelle uudelle tiedostolle, koko suite 143 passed, coverage 91 % (`cab7ea7`).
 
-**Kesken:** Plan B Task 49–50 (2 jäljellä).
+**Kesken:** Plan B Task 50 (1 jäljellä).
 
 **Blokkerit:** ei.
