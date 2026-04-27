@@ -1,1 +1,1 @@
-🟡 Siirtyi Plan B → Plan C, Mode B (skeleton)
+🟢 dxf2ifc valmis (1h 9min): Plan B 50/50 ✅ (143 testiä, 91% cov), Plan C kirjoitettu + 8/12 toteutettu (Sections 1-3 valmiita, system_name profiilissa + mapper + add_system/assign_to_system writer). SHAt: 2494841/cab7ea7 (Plan B), ec20cea (Plan C plan), 76c32ff (Plan C 8/12). Seuraavaksi: Plan C Task 9 — convert_dxf orchestrator kerää {system_name → products} ja kytke. Blokkerit: ei
