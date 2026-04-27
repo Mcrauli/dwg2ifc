@@ -142,29 +142,31 @@ talo2000_name = "Putkiosat — viemäri"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 110.0 } }
 
 # Section 8: Varastointihyllyt (1331, IfcFurniture)
-# [[rules]]
-# layer_pattern = "KYL-LEVYHYLLY*"
-# entity_kind = "INSERT"
-# block_name = "KLHYLLY-LEVY"
-# ifc_type = "IfcFurniture"
-# talo2000_code = "1331"
-# talo2000_name = "Vakiokiintokalusteet"
-#
-# [[rules]]
-# layer_pattern = "KYL-TIKASHYLLY*"
-# entity_kind = "INSERT"
-# block_name = "KLHYLLY-TIKAS"
-# ifc_type = "IfcFurniture"
-# talo2000_code = "1331"
-# talo2000_name = "Vakiokiintokalusteet"
-#
-# [[rules]]
-# layer_pattern = "KYL-TIKASHYLLY-V*"
-# entity_kind = "INSERT"
-# block_name = "KLHYLLYV"
-# ifc_type = "IfcFurniture"
-# talo2000_code = "1331"
-# talo2000_name = "Vakiokiintokalusteet"
+# Vertikaalinen tikashylly (KYL-TIKASHYLLY-V*) on listattu ennen KYL-TIKASHYLLY*
+# että first-match resolvoi sen oikein.
+[[rules]]
+layer_pattern = "KYL-TIKASHYLLY-V*"
+entity_kind = "INSERT"
+block_name = "KLHYLLYV"
+ifc_type = "IfcFurniture"
+talo2000_code = "1331"
+talo2000_name = "Vakiokiintokalusteet"
+
+[[rules]]
+layer_pattern = "KYL-TIKASHYLLY*"
+entity_kind = "INSERT"
+block_name = "KLHYLLY-TIKAS"
+ifc_type = "IfcFurniture"
+talo2000_code = "1331"
+talo2000_name = "Vakiokiintokalusteet"
+
+[[rules]]
+layer_pattern = "KYL-LEVYHYLLY*"
+entity_kind = "INSERT"
+block_name = "KLHYLLY-LEVY"
+ifc_type = "IfcFurniture"
+talo2000_code = "1331"
+talo2000_name = "Vakiokiintokalusteet"
 
 # Section 9: Kaapelihyllyt (23xx)
 # [[rules]]

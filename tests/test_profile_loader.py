@@ -94,6 +94,22 @@ def test_load_default_profile_has_drainpipe_rule():
     assert drain.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 110.0
 
 
+def test_load_default_profile_has_storage_furniture_rules():
+    profile = load_default_profile()
+    by_layer = {r.layer_pattern: r for r in profile.rules}
+    levy = by_layer["KYL-LEVYHYLLY*"]
+    assert levy.entity_kind == "INSERT"
+    assert levy.block_name == "KLHYLLY-LEVY"
+    assert levy.ifc_type == "IfcFurniture"
+    assert levy.talo2000_code == "1331"
+    tikas = by_layer["KYL-TIKASHYLLY*"]
+    assert tikas.block_name == "KLHYLLY-TIKAS"
+    tikas_v = by_layer["KYL-TIKASHYLLY-V*"]
+    assert tikas_v.block_name == "KLHYLLYV"
+    # Vertical rule must precede horizontal rule for first-match resolution.
+    assert profile.rules.index(tikas_v) < profile.rules.index(tikas)
+
+
 def test_load_default_profile_has_partition_wall_rules():
     profile = load_default_profile()
     by_layer = {r.layer_pattern: r for r in profile.rules}
