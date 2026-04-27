@@ -51,6 +51,10 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 valmis (master `8cc4fc3`). 151 testi�
 
 ## Section 5: Layer preview & mapping list
 
+- [ ] Task 14: lisää `core/dxf_reader.py`:hen `list_layers(dxf_path) -> list[str]` -helper joka palauttaa DXF-tiedoston uniikit layer-nimet aakkosjärjestyksessä. Testi käyttää olemassa olevaa simple_wall.dxf-fixtureä.
+- [ ] Task 15: lisää `gui/layer_table.py`:hen `LayerTable(QTableWidget)`-widget jonka kolumnit ovat `Layer`, `IFC type`, `Talo2000`, `System`. `set_layers(layers, profile)` resolvoi jokaisen layerin profiilia vastaan (`mapper.layer_matches`) ja täyttää rivit; jos rule ei löydy, kolumnit "—". JetBrains Mono -fontti `Layer`/`Talo2000`-kolumnille. Testi varmistaa että default-profiili tuottaa odotetut arvot kahdelle DXF-layerille.
+- [ ] Task 16: kytke `LayerTable` `MainWindow`:n vasempaan paneeliin ja päivitä se aina kun DXF-input-line-edit muuttuu validiksi tiedostoksi (käytä `QFileSystemWatcher` tai `editingFinished`-signaali). Testi varmistaa että polun asettamisen jälkeen taulussa on ≥1 rivi.
+
 ## Section 6: Profile editor (custom layer-säännöt)
 
 ## Section 7: Polish, packaging hooks, dokumentaatio
