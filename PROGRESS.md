@@ -2,11 +2,11 @@
 
 **Current plan:** Plan C — IfcSystem-ryhmittely (skeleton committed `93f01fc`, 5 sectionia).
 
-**Current task:** Plan C Mode B section 1/5 — täytä Section 1 (Profiili — system_name -arvot) task-rivit.
+**Current task:** Plan C Mode B section 2/5 — täytä Section 2 (Mapper — system_name extra_propsiin) task-rivit.
 
-**Mode:** B (plan-kirjoitus, section 1/5).
+**Mode:** B (plan-kirjoitus, section 2/5).
 
-**Seuraavaksi:** lisä task-rivit Plan C:n Section 1 -osioon (3-5 task:ia profiilin system_name-aktivoinnista LT IMU/MT IMU/MT NESTE/KYL-VIEMARI/KAAPELIHYLLY/HOYRYSTIN/LAUHDUTIN/KOMPRESSORI). commit + push, sitten section 2.
+**Seuraavaksi:** lisää 1-2 task-riviä Plan C:n Section 2:een (mapper.apply_profile välittää system_name → extra_props["system_name"], jos sitä ei vielä ole; failing-test mapper-testiin). commit + push, sitten section 3.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
