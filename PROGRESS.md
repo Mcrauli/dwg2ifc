@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 20 — kytke ProfileEditorDialog menubariin + end-to-end testi.
+**Current task:** Plan D Task 21 — `gui/about.py` show_about-dialog.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** luo `gui/rule_dialog.py` `RuleEditDialog(QDialog)` jossa lomake yhdelle `Rule`-objektille: QLineEdit layer_pattern + talo2000_code + talo2000_name, QComboBox ifc_type (Plan A–C käytetyt arvot) + entity_kind (LINE/POLYLINE/INSERT). OK-nappi disabloitu kun pydantic-validointi heittäisi (esim. INSERT ilman block_namea). `rule()` palauttaa pydanticin Rule-instanssin. Failing-test varmistaa että invalid-INSERT (ilman block_name) → OK-nappi disabloituna ja että valid-Rule → enabled + rule()-metodi palauttaa kelvollisen Rule:n.
+**Seuraavaksi:** luo `gui/about.py` `show_about(parent)` joka avaa modaalisen QDialog:n: brand-otsikko, versionumero (`importlib.metadata.version("dxf2ifc")`), MIT-lisenssi, GitHub-URL. Failing-test varmistaa että dialog sisältää "dxf2ifc" + versiotekstin tunnistettavasti.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (19/25)
+## Plan D status (20/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -126,7 +126,7 @@
 - [x] Task 17: `profiles/loader.dump_profile(profile, path)` round-trip (`0e96db4`)
 - [x] Task 18: `ProfileEditorDialog` rules-listalla + Add/Edit/Remove/Save (`de6d9ad`)
 - [x] Task 19: `RuleEditDialog` lomake + pydantic-validointi (`f77acb1`)
-- [ ] Task 20: kytke menubariin + end-to-end custom-rule testi
+- [x] Task 20: kytke menubariin + end-to-end custom-rule testi (`1e7f38f`)
 
 ### Section 7: Polish + packaging hooks
 - [ ] Task 21: `gui/about.py` show_about
@@ -243,7 +243,8 @@
 - Plan D Task 17: `profiles/loader.dump_profile(profile, path)` + `tomli-w` runtime-dep, round-trip-testit (`0e96db4`). 18 loader-testiä passed.
 - Plan D Task 18: `gui/profile_editor.py` `ProfileEditorDialog` + custom QAbstractTableModel + Add/Edit/Remove/Save-toolbar (Save → dump_profile + profile_saved-signaali) (`de6d9ad`). 3 profile-editor-testiä passed.
 - Plan D Task 19: `gui/rule_dialog.py` `RuleEditDialog` QFormLayout + live-pydantic-validointi (OK disabloitu invalid-INSERT-no-block_name) (`f77acb1`). 3 rule-dialog-testiä passed.
+- Plan D Task 20: kytkin ProfileEditorDialog MainWindow:n Profile-menubariin + `apply_profile_from_path` joka load_profile + päivitä layer_table + statusbar (`1e7f38f`). 12 gui-app-testiä passed. ✅ Section 6 valmis.
 
-**Kesken:** Plan D Task 20–25 (6 jäljellä).
+**Kesken:** Plan D Task 21–25 (5 jäljellä, Section 7).
 
 **Blokkerit:** ei.
