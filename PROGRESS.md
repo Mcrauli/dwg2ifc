@@ -4,9 +4,9 @@
 
 **Current task:** Plan B kirjoitusvaihe (Mode B, section 1/12).
 
-**Mode:** B (plan-kirjoitus, section 7/12: Viemäriputket)
+**Mode:** B (plan-kirjoitus, section 8/12: Varastointihyllyt)
 
-**Seuraavaksi:** täytä Plan B Section 7 -alle 3–5 task-riviä joka kattaa KYL-VIEMARI* → IfcPipeSegment DRAINPIPE. Reuse pipe-segment lisäämällä DRAINPIPE PredefinedType. Sitten PROGRESS.md → section 8/12.
+**Seuraavaksi:** täytä Plan B Section 8 -alle 3–5 task-riviä joka kattaa KYL-LEVYHYLLY / KYL-TIKASHYLLY / KLHYLLYV → IfcFurniture (1331). INSERT-block-rule, korkeus/leveys-bounding box. Sitten PROGRESS.md → section 9/12.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (SHA-historia README + commit-log)
