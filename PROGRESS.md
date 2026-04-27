@@ -1,22 +1,43 @@
 # PROGRESS
 
-**Current plan:** Plan A — Core CLI wall pipeline ✅ valmis (21/21).
+**Current plan:** Plan B — Full element set (skeleton committed `6eb66ce`).
 
-**Current task:** Plan B kirjoittamatta. Seuraavaksi joko aloita Plan B:n kirjoittaminen `docs/superpowers/plans/`-kansioon (kattaa loput 10 elementtityyppiä: VS-väliseinät, AP/VP/YP-laatat, ovet, ikkunat, kylmäputket, viemäriputket, hyllyt, kaapelihyllyt, kylmäelementit, kylmälaitteet) tai aja manuaalisesti `python -m dxf2ifc convert <dxf> <out.ifc>` Solibri-tarkistusta varten.
+**Current task:** Plan B kirjoitusvaihe (Mode B, section 1/12).
 
-**Seuraavaksi:** kirjoita `docs/superpowers/plans/2026-04-27-plan-b-full-element-set.md`. Käytä Plan A:n rakennetta (per-task: failing test → impl → pass → commit) ja kopioi sama pipeline-kaava kullekin uudelle ifc_type-haaralle. Arvio 30–40 tehtävää. Kun Plan B kirjoitettu, päivitä PROGRESS.md (Current task = Plan B Task 1) ja jatka TDD-rytmillä.
+**Mode:** B (plan-kirjoitus, section 1/12: Profile-skeeman laajennus)
 
-**Tämän session muutokset (Plan A loppuun):**
-- Task 15 (`6c63c22`) — `WallExtrusion` + `line_to_wall_extrusion` (geometry.py).
-- Task 16 (`05e8aca`) — `build_ifc_project_skeleton` + `write_ifc` (IFC 4, mm-yksiköt). Pudotettu `angle=`-kwarg `unit.assign_unit`-kutsusta koska ifcopenshell 0.8.x API ei hyväksy sitä.
-- Task 17 (`6283cc6`) — `add_wall` (IfcExtrudedAreaSolid + spatial container) + `add_talo2000_classification` (IfcClassificationReference, IfcRelAssociatesClassification).
-- Task 18 (`ea5a9a2`) — `convert_dxf` orchestrator (read_dxf → apply_profile → build skeleton → add walls → write).
-- Task 19 (`3fd647b`) — argparse CLI + `__main__.py`. `python -m dxf2ifc convert input.dxf output.ifc [--profile p.toml]`.
-- Task 20 (`3da2df0`) — integration test ajaa CLI:n subprocessina ja validoi IFC:n `ifcopenshell.validate.validate()`-kutsulla (ei ERROR-tason virheitä).
-- Task 21 (`54140a5`) — `ruff check` clean, `ruff format` ajettu kaikkiin tiedostoihin, E402 korjattu test_ifc_writer.py:ssä. 41 testiä passed, 84 % coverage (CLI-moduuli mittaa 0 % subprocess-ajossa, mutta sen sisältö katetaan CLI-/integraatio-testeissä).
+**Seuraavaksi:** täytä `docs/superpowers/plans/2026-04-27-plan-b-full-element-set.md` Section 1 -alle 3–5 task-riviä (profile-skeema, BLOCK-rule-tuki, attribuuttimappauksen testit). Yhden rivin kuvauksia, ei koodia. Sitten vaihda PROGRESS.md → "section 2/12" ja jatka.
 
-**Viimeisin tila:** Plan A 21/21 master-branchissa, viimeisin SHA `54140a5`. Remote `https://github.com/Mcrauli/dxf2ifc` synkassa. Kaikki 41 testiä passed, ruff clean.
+## Plan A status (21/21) ✅
+- [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (SHA-historia README + commit-log)
+- [x] Task 15 — `WallExtrusion` + `line_to_wall_extrusion` (`6c63c22`)
+- [x] Task 16 — `build_ifc_project_skeleton` + `write_ifc` (`05e8aca`)
+- [x] Task 17 — `add_wall` + `add_talo2000_classification` (`6283cc6`)
+- [x] Task 18 — `convert_dxf` orchestrator (`ea5a9a2`)
+- [x] Task 19 — argparse CLI + `__main__.py` (`3fd647b`)
+- [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
+- [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-**Kesken:** ei mitään. Plan A:n self-review checklist plan-tiedoston lopussa todettu suoritetuksi.
+## Plan B status (skeleton, 0/N)
+- [ ] Section 1: Profile-skeeman laajennus
+- [ ] Section 2: VS / lasiväliseinät (1311 / 1312)
+- [ ] Section 3: Laatat AP / VP / YP (1221 / 1235 / 1236)
+- [ ] Section 4: Ovet (1243 / 1315 / 1316)
+- [ ] Section 5: Ikkunat (1242)
+- [ ] Section 6: Kylmäputket (21xx)
+- [ ] Section 7: Viemäriputket (21xx DRAINPIPE)
+- [ ] Section 8: Varastointihyllyt (1331)
+- [ ] Section 9: Kaapelihyllyt (23xx)
+- [ ] Section 10: Kylmähuone-elementit (1352)
+- [ ] Section 11: Kylmälaitteet (25xx)
+- [ ] Section 12: Integraatio + lint
+
+**Viimeisin tila:** Plan A valmis. Plan B skeleton master-branchissa (`6eb66ce`). Mode B aloitettu, sectionit 12 kpl.
+
+**Tämän session muutokset:**
+- Plan B skeleton-tiedosto luotu (`6eb66ce`).
+- Käynnissä: section 1 -sisällön kirjoitus.
+
+**Kesken:** Plan B sectionien sisältö (1/12 → 12/12).
 
 **Blokkerit:** ei.
