@@ -94,13 +94,13 @@ talo2000_code = "1316"
 talo2000_name = "Erityisovet"
 
 # Section 5: Ikkunat (1242)
-# [[rules]]
-# layer_pattern = "KYL-IKKUNA*"
-# entity_kind = "INSERT"
-# block_name = "IKKUNA"
-# ifc_type = "IfcWindow"
-# talo2000_code = "1242"
-# talo2000_name = "Ikkunat"
+[[rules]]
+layer_pattern = "KYL-IKKUNA*"
+entity_kind = "INSERT"
+block_name = "IKKUNA"
+ifc_type = "IfcWindow"
+talo2000_code = "1242"
+talo2000_name = "Ikkunat"
 
 # Section 6: Kylmäputket (21xx, IfcPipeSegment REFRIGERATION)
 # [[rules]]

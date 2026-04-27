@@ -58,6 +58,17 @@ def test_load_default_profile_has_door_rules():
     assert erityis.talo2000_code == "1316"
 
 
+def test_load_default_profile_has_window_rule():
+    profile = load_default_profile()
+    by_layer = {r.layer_pattern: r for r in profile.rules}
+    ikkuna = by_layer["KYL-IKKUNA*"]
+    assert ikkuna.entity_kind == "INSERT"
+    assert ikkuna.block_name == "IKKUNA"
+    assert ikkuna.ifc_type == "IfcWindow"
+    assert ikkuna.talo2000_code == "1242"
+    assert ikkuna.talo2000_name == "Ikkunat"
+
+
 def test_load_default_profile_has_partition_wall_rules():
     profile = load_default_profile()
     by_layer = {r.layer_pattern: r for r in profile.rules}
