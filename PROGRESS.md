@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 12 — lisää `ifc_writer.add_slab` joka tuottaa IfcSlab + PredefinedType (FLOOR/ROOF) + Talo2000-classification, ja test_ifc_writer.py-kattavuus.
+**Current task:** Plan B Task 13 — laajenna `convert_dxf` orchestrator dispatchaamaan slab-rule entiteetit `add_slab`-kutsuun.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää `add_slab(ifc, mapped, *, parent_storey, predefined_type='FLOOR')` -funktio `src/dxf2ifc/core/ifc_writer.py`:n. Sen on rakennettava IfcArbitraryClosedProfileDef IfcPolylineen ja IfcExtrudedAreaSolid alas (negative Z). Failing test `tests/test_ifc_writer.py`:hen joka rakentaa MappedEntityn polygongeometryllä ja kutsuu add_slab → varmistaa IfcSlab.PredefinedType + base_z + Talo2000-koodi. Pytest, commit + push, PROGRESS.md → Task 13.
+**Seuraavaksi:** päivitä `convert_dxf` `src/dxf2ifc/core/ifc_writer.py`:ssa: kun `m.ifc_type == 'IfcSlab'`, kutsu `add_slab(ifc, m, parent_storey=storey, predefined_type=m.predefined_type or 'FLOOR')` ja sitten `add_talo2000_classification`. Lisää integraatiotesti joka generoi DXF:n suljetulla LWPOLYLINE:lla layerilla `KYL-ALAPOHJA`, ajaa convert_dxf, ja varmistaa IfcSlab + 1221-classification. Pytest test_integration.py + test_ifc_writer.py, commit + push, PROGRESS.md → Task 14 (Section 4 alkaa).
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (11/50)
+## Plan B status (12/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -36,7 +36,7 @@
 - [x] Task 9: default-profiilin laattasäännöt (`62f0f2e`)
 - [x] Task 10: `dxf_reader.py` LWPOLYLINE-luku + `PolygonGeometry`-tyyppi (`5d10e66`)
 - [x] Task 11: `polygon_to_slab_extrusion` testi + impl (`88517c7`)
-- [ ] Task 12: `ifc_writer.add_slab` + classification
+- [x] Task 12: `ifc_writer.add_slab` + classification (`3d9e15f`)
 - [ ] Task 13: orchestrator dispatch slab-rule
 
 ### Section 4: Ovet (1243 / 1315 / 1316)
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 11/50 — Sectionit 1–2 valmis, Section 3 etenee (3/5).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 12/50 — Sectionit 1–2 valmis, Section 3 etenee (4/5).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -107,7 +107,8 @@
 - Plan B Task 9: aktivoi slab-säännöt KYL-ALAPOHJA/VALIPOHJA/YLAPOHJA default-profiiliin (1221 FLOOR / 1235 FLOOR / 1236 ROOF) (`62f0f2e`). 8 loader-testiä passed.
 - Plan B Task 10: PolygonGeometry types.py:hen + dxf_reader lukemaan suljetut LWPOLYLINE-entiteetit (`5d10e66`). 11 reader+types-testiä passed.
 - Plan B Task 11: SlabExtrusion-dataclass + polygon_to_slab_extrusion (`88517c7`). 8 geometry-testiä passed.
+- Plan B Task 12: add_slab tuottaa IfcSlab + extruded outline + spatial containment (`3d9e15f`). 12 ifc_writer-testiä passed.
 
-**Kesken:** Plan B Task 12–50 (39 jäljellä).
+**Kesken:** Plan B Task 13–50 (38 jäljellä).
 
 **Blokkerit:** ei.
