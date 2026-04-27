@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 31 — lisää default-profiiliin INSERT-säännöt `KYL-LEVYHYLLY → IfcFurniture 1331`, `KYL-TIKASHYLLY → IfcFurniture 1331`, `KLHYLLYV → IfcFurniture 1331` korkeus/leveys/syvyys-attribuuttimappauksella.
+**Current task:** Plan B Task 32 — kirjoita `tests/test_geometry.py`:hen `block_to_furniture_box` -failing test ja toteuta funktio joka tuottaa IfcFurniture-paramater-laatikon.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** aktivoi `default_kylmalaite_talo2000.toml`:n placeholder Section 8 hyllysäännöt KYL-LEVYHYLLY/KYL-TIKASHYLLY/KYL-TIKASHYLLY-V (kaikki INSERT, IfcFurniture, 1331 Vakiokiintokalusteet, block_name vastaavasti). Lisää loader-testi.
+**Seuraavaksi:** lisää `geometry.py`:hen `FurnitureBoxExtrusion`-dataclass tai re-use DoorBoxExtrusion-rakenne ja `block_to_furniture_box(block, *, width_mm, depth_mm, height_mm)`. Failing test 4 vaihtoehtoa, sitten impl.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (30/50)
+## Plan B status (31/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -65,7 +65,7 @@
 - [x] Task 30: integraatiotesti KYL-VIEMARI-LATTIA (`a07f315`)
 
 ### Section 8: Varastointihyllyt (1331, IfcFurniture)
-- [ ] Task 31: default-profiilin KYL-LEVYHYLLY/TIKASHYLLY/KLHYLLYV-säännöt
+- [x] Task 31: default-profiilin KYL-LEVYHYLLY/TIKASHYLLY/KLHYLLYV-säännöt (`8d5b662`)
 - [ ] Task 32: `block_to_furniture_box` testi + impl
 - [ ] Task 33: `ifc_writer.add_furniture`
 - [ ] Task 34: orchestrator dispatch + integraatiotesti KYL-LEVYHYLLY
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 30/50 — Sectionit 1–7 valmis. Seuraavaksi Section 8 (Varastointihyllyt).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 31/50 — Sectionit 1–7 valmis, Section 8 etenee (1/4).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -126,7 +126,8 @@
 - Plan B Task 28: layer_matches wildcard-suffix regression-testit KYL-VIEMARI*:lle (`8904ce1`). 17 mapper-testiä passed.
 - Plan B Task 29: add_pipe_segment-testit DRAINPIPE-arvolle (USERDEFINED + ObjectType + jaettu IfcPipeSegmentType) (`1bc2082`). 27 ifc_writer-testiä passed.
 - Plan B Task 30: integraatiotesti KYL-VIEMARI-LATTIA → IfcPipeSegment DRAINPIPE + 2160 (`a07f315`). 7 integration-testiä passed. ✅ Section 7 valmis.
+- Plan B Task 31: aktivoi KYL-LEVYHYLLY/TIKASHYLLY/TIKASHYLLY-V INSERT-säännöt default-profiiliin (IfcFurniture 1331) (`8d5b662`). 13 loader-testiä passed.
 
-**Kesken:** Plan B Task 31–50 (20 jäljellä).
+**Kesken:** Plan B Task 32–50 (19 jäljellä).
 
 **Blokkerit:** ei.
