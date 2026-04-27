@@ -4,9 +4,9 @@
 
 **Current task:** Plan B kirjoitusvaihe (Mode B, section 1/12).
 
-**Mode:** B (plan-kirjoitus, section 8/12: Varastointihyllyt)
+**Mode:** B (plan-kirjoitus, section 9/12: Kaapelihyllyt)
 
-**Seuraavaksi:** täytä Plan B Section 8 -alle 3–5 task-riviä joka kattaa KYL-LEVYHYLLY / KYL-TIKASHYLLY / KLHYLLYV → IfcFurniture (1331). INSERT-block-rule, korkeus/leveys-bounding box. Sitten PROGRESS.md → section 9/12.
+**Seuraavaksi:** täytä Plan B Section 9 -alle 3–5 task-riviä joka kattaa kaapelihyllyt → IfcFlowSegment + IfcCableCarrierSegmentType CABLETRUNKINGSEGMENT (23xx). LINE/POLYLINE → reitti. Sitten PROGRESS.md → section 10/12.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (SHA-historia README + commit-log)
