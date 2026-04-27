@@ -6,6 +6,7 @@ import ifcopenshell
 
 from dxf2ifc.core.ifc_writer import (
     add_door,
+    add_pipe_segment,
     add_slab,
     add_talo2000_classification,
     add_wall,
@@ -331,6 +332,71 @@ def test_add_window_defaults_predefined_type_to_window():
     mapped = _window_mapped_entity(predefined_type=None)
     window = add_window(ifc, mapped, parent_storey=storey)
     assert window.PredefinedType == "WINDOW"
+
+
+def _pipe_mapped_entity(
+    *,
+    layer: str = "LT IMU",
+    talo_code: str = "2151",
+    talo_name: str = "Putkiosat — kylmäimu",
+    diameter_mm: float = 22.0,
+    predefined_type: str | None = "REFRIGERATION",
+) -> MappedEntity:
+    line = LineGeometry(start=Point3D(0, 0, 1500), end=Point3D(2000, 0, 1500))
+    return MappedEntity(
+        layer=layer,
+        dxf_type="LINE",
+        geometry=line,
+        ifc_type="IfcPipeSegment",
+        predefined_type=predefined_type,
+        talo2000_code=talo_code,
+        talo2000_name=talo_name,
+        extra_props={"default_diameter_mm": diameter_mm},
+    )
+
+
+def test_add_pipe_segment_creates_ifcpipesegment():
+    ifc = build_ifc_project_skeleton(project_name="Pipe Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    pipe = add_pipe_segment(ifc, _pipe_mapped_entity(), parent_storey=storey)
+    assert pipe.is_a("IfcPipeSegment")
+    # IFC4 IfcPipeSegmentTypeEnum has no REFRIGERATION; USERDEFINED carries it.
+    assert pipe.PredefinedType == "USERDEFINED"
+    assert pipe.ObjectType == "REFRIGERATION"
+    assert pipe.Name == "LT IMU"
+    assert pipe.Representation is not None
+
+
+def test_add_pipe_segment_creates_ifcpipesegmenttype_with_predefined_type():
+    ifc = build_ifc_project_skeleton(project_name="Pipe Type")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    add_pipe_segment(ifc, _pipe_mapped_entity(), parent_storey=storey)
+    types = ifc.by_type("IfcPipeSegmentType")
+    assert len(types) >= 1
+    refrig = [t for t in types if t.ElementType == "REFRIGERATION"]
+    assert len(refrig) == 1
+    assert refrig[0].PredefinedType == "USERDEFINED"
+
+
+def test_add_pipe_segment_placed_under_storey():
+    ifc = build_ifc_project_skeleton(project_name="Pipe Storey")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    pipe = add_pipe_segment(ifc, _pipe_mapped_entity(), parent_storey=storey)
+    rels = [
+        r
+        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
+        if r.RelatingStructure == storey
+    ]
+    assert any(pipe in rel.RelatedElements for rel in rels)
+
+
+def test_add_pipe_segment_uses_native_enum_when_valid():
+    ifc = build_ifc_project_skeleton(project_name="Rigid Pipe")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    pipe = add_pipe_segment(
+        ifc, _pipe_mapped_entity(), parent_storey=storey, predefined_type="RIGIDSEGMENT"
+    )
+    assert pipe.PredefinedType == "RIGIDSEGMENT"
 
 
 def test_add_talo2000_classification_attaches_reference():

@@ -17,6 +17,7 @@ import ifcopenshell.guid
 from dxf2ifc.core.dxf_reader import read_dxf
 from dxf2ifc.core.geometry import (
     door_block_to_box,
+    line_to_pipe_segment,
     line_to_wall_extrusion,
     polygon_to_slab_extrusion,
 )
@@ -434,6 +435,139 @@ def add_window(
         relating_structure=parent_storey,
     )
     return window
+
+
+_IFC_PIPE_SEGMENT_TYPES = frozenset(
+    {"CULVERT", "FLEXIBLESEGMENT", "RIGIDSEGMENT", "GUTTER", "SPOOL"}
+)
+
+
+def add_pipe_segment(
+    ifc,
+    mapped: MappedEntity,
+    *,
+    parent_storey,
+    predefined_type: str = "REFRIGERATION",
+) -> object:
+    """Create an IfcPipeSegment from a MappedEntity whose geometry is a LineGeometry.
+
+    The pipe is rendered as a circular extrusion (IfcCircleProfileDef along
+    +X swept by length_mm) anchored at the line's start. The diameter is
+    pulled from extra_props['default_diameter_mm'] (default 22 mm). An
+    IfcPipeSegmentType matching the requested predefined_type is created
+    once per file and re-used for subsequent pipes.
+
+    IFC4 only allows {CULVERT, FLEXIBLESEGMENT, RIGIDSEGMENT, GUTTER,
+    SPOOL} as IfcPipeSegmentTypeEnum values. Any other token (e.g. the
+    medium-oriented "REFRIGERATION") is mapped to USERDEFINED and stored
+    on ElementType for round-tripping in downstream tools.
+    """
+    if not isinstance(mapped.geometry, LineGeometry):
+        raise TypeError(
+            f"add_pipe_segment expects LineGeometry, got {type(mapped.geometry).__name__}"
+        )
+
+    diameter = float(mapped.extra_props.get("default_diameter_mm", 22.0))
+    ext = line_to_pipe_segment(mapped.geometry, diameter_mm=diameter)
+
+    is_userdefined = predefined_type not in _IFC_PIPE_SEGMENT_TYPES
+    enum_value = "USERDEFINED" if is_userdefined else predefined_type
+
+    pipe = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class="IfcPipeSegment",
+        name=mapped.layer,
+        predefined_type=enum_value,
+    )
+
+    pipe_type = _ensure_pipe_segment_type(ifc, predefined_type, enum_value)
+    ifcopenshell.api.run("type.assign_type", ifc, related_objects=[pipe], relating_type=pipe_type)
+
+    # type.assign_type clears occurrence-level enums (IFC4 lets the type
+    # carry the canonical value). Re-apply them so callers can query
+    # pipe.PredefinedType directly.
+    pipe.PredefinedType = enum_value
+    if is_userdefined:
+        pipe.ObjectType = predefined_type
+
+    matrix = _z_rotation_matrix(ext.anchor.x, ext.anchor.y, ext.anchor.z, ext.angle_rad)
+    ifcopenshell.api.run(
+        "geometry.edit_object_placement",
+        ifc,
+        product=pipe,
+        matrix=matrix,
+    )
+
+    model_ctx = [
+        c
+        for c in ifc.by_type("IfcGeometricRepresentationSubContext")
+        if c.ContextIdentifier == "Body"
+    ][0]
+    circle = ifc.create_entity(
+        "IfcCircleProfileDef",
+        ProfileType="AREA",
+        Position=ifc.create_entity(
+            "IfcAxis2Placement2D",
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0)),
+        ),
+        Radius=ext.diameter_mm / 2.0,
+    )
+    extruded = ifc.create_entity(
+        "IfcExtrudedAreaSolid",
+        SweptArea=circle,
+        Position=ifc.create_entity(
+            "IfcAxis2Placement3D",
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
+            Axis=ifc.create_entity("IfcDirection", DirectionRatios=(1.0, 0.0, 0.0)),
+            RefDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 1.0, 0.0)),
+        ),
+        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
+        Depth=ext.length_mm,
+    )
+    shape = ifc.create_entity(
+        "IfcShapeRepresentation",
+        ContextOfItems=model_ctx,
+        RepresentationIdentifier="Body",
+        RepresentationType="SweptSolid",
+        Items=[extruded],
+    )
+    pipe.Representation = ifc.create_entity(
+        "IfcProductDefinitionShape", Representations=[shape]
+    )
+
+    ifcopenshell.api.run(
+        "spatial.assign_container",
+        ifc,
+        products=[pipe],
+        relating_structure=parent_storey,
+    )
+    return pipe
+
+
+def _ensure_pipe_segment_type(ifc, requested_type: str, enum_value: str) -> object:
+    """Return (creating once per file) an IfcPipeSegmentType matching the
+    requested medium. If the requested type is not part of
+    IfcPipeSegmentTypeEnum, USERDEFINED is used and ElementType records
+    the original token (e.g. 'REFRIGERATION').
+    """
+    for t in ifc.by_type("IfcPipeSegmentType"):
+        if enum_value == "USERDEFINED":
+            if t.PredefinedType == "USERDEFINED" and t.ElementType == requested_type:
+                return t
+        elif t.PredefinedType == enum_value:
+            return t
+
+    pipe_type = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class="IfcPipeSegmentType",
+        name=f"PipeSegmentType_{requested_type}",
+        predefined_type=enum_value,
+    )
+    if enum_value == "USERDEFINED":
+        pipe_type.ElementType = requested_type
+    return pipe_type
 
 
 def _z_rotation_matrix(x: float, y: float, z: float, angle: float) -> list[list[float]]:
