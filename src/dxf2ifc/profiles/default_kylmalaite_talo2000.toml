@@ -15,3 +15,192 @@ talo2000_code = "1241"
 talo2000_name = "Ulkoseinät"
 default_height_mm = 3000
 default_thickness_mm = 200
+
+# -----------------------------------------------------------------------------
+# Plan B placeholder rules — uncomment + complete when each section is built.
+# Each block lists the target Talo2000 code and the section that activates it.
+# -----------------------------------------------------------------------------
+
+# Section 2: VS / lasiväliseinät (1311 / 1312)
+# [[rules]]
+# layer_pattern = "KYL-VALISEINA*"
+# ifc_type = "IfcWall"
+# predefined_type = "PARTITIONING"
+# talo2000_code = "1311"
+# talo2000_name = "Väliseinät"
+# default_height_mm = 3000
+# default_thickness_mm = 100
+#
+# [[rules]]
+# layer_pattern = "KYL-LASIVALISEINA*"
+# ifc_type = "IfcWall"
+# predefined_type = "PARTITIONING"
+# talo2000_code = "1312"
+# talo2000_name = "Lasiväliseinät"
+# default_height_mm = 3000
+# default_thickness_mm = 50
+
+# Section 3: Laatat AP / VP / YP (1221 / 1235 / 1236)
+# [[rules]]
+# layer_pattern = "KYL-ALAPOHJA*"
+# entity_kind = "POLYLINE"
+# ifc_type = "IfcSlab"
+# predefined_type = "FLOOR"
+# talo2000_code = "1221"
+# talo2000_name = "Alapohjalaatat"
+# default_thickness_mm = 200
+#
+# [[rules]]
+# layer_pattern = "KYL-VALIPOHJA*"
+# entity_kind = "POLYLINE"
+# ifc_type = "IfcSlab"
+# predefined_type = "FLOOR"
+# talo2000_code = "1235"
+# talo2000_name = "Välipohjat"
+# default_thickness_mm = 250
+#
+# [[rules]]
+# layer_pattern = "KYL-YLAPOHJA*"
+# entity_kind = "POLYLINE"
+# ifc_type = "IfcSlab"
+# predefined_type = "ROOF"
+# talo2000_code = "1236"
+# talo2000_name = "Yläpohjat"
+# default_thickness_mm = 300
+
+# Section 4: Ovet — ulko-, väli-, erityisovet (1243 / 1315 / 1316)
+# [[rules]]
+# layer_pattern = "KYL-OVET-ULKO*"
+# entity_kind = "INSERT"
+# block_name = "OVI-ULKO"
+# ifc_type = "IfcDoor"
+# talo2000_code = "1243"
+# talo2000_name = "Ulko-ovet"
+#
+# [[rules]]
+# layer_pattern = "KYL-OVET-VALI*"
+# entity_kind = "INSERT"
+# block_name = "OVI-VALI"
+# ifc_type = "IfcDoor"
+# talo2000_code = "1315"
+# talo2000_name = "Väliovet"
+#
+# [[rules]]
+# layer_pattern = "KYL-OVET-ERITYIS*"
+# entity_kind = "INSERT"
+# block_name = "OVI-ERITYIS"
+# ifc_type = "IfcDoor"
+# talo2000_code = "1316"
+# talo2000_name = "Erityisovet"
+
+# Section 5: Ikkunat (1242)
+# [[rules]]
+# layer_pattern = "KYL-IKKUNA*"
+# entity_kind = "INSERT"
+# block_name = "IKKUNA"
+# ifc_type = "IfcWindow"
+# talo2000_code = "1242"
+# talo2000_name = "Ikkunat"
+
+# Section 6: Kylmäputket (21xx, IfcPipeSegment REFRIGERATION)
+# [[rules]]
+# layer_pattern = "LT IMU"
+# ifc_type = "IfcPipeSegment"
+# predefined_type = "REFRIGERATION"
+# talo2000_code = "21xx"
+# talo2000_name = "Putkiosat — kylmäimu"
+#
+# [[rules]]
+# layer_pattern = "MT IMU"
+# ifc_type = "IfcPipeSegment"
+# predefined_type = "REFRIGERATION"
+# talo2000_code = "21xx"
+# talo2000_name = "Putkiosat — keski-imu"
+#
+# [[rules]]
+# layer_pattern = "MT NESTE"
+# ifc_type = "IfcPipeSegment"
+# predefined_type = "REFRIGERATION"
+# talo2000_code = "21xx"
+# talo2000_name = "Putkiosat — nesteputki"
+
+# Section 7: Viemäriputket (21xx DRAINPIPE)
+# [[rules]]
+# layer_pattern = "KYL-VIEMARI*"
+# ifc_type = "IfcPipeSegment"
+# predefined_type = "DRAINPIPE"
+# talo2000_code = "21xx"
+# talo2000_name = "Putkiosat — viemäri"
+
+# Section 8: Varastointihyllyt (1331, IfcFurniture)
+# [[rules]]
+# layer_pattern = "KYL-LEVYHYLLY*"
+# entity_kind = "INSERT"
+# block_name = "KLHYLLY-LEVY"
+# ifc_type = "IfcFurniture"
+# talo2000_code = "1331"
+# talo2000_name = "Vakiokiintokalusteet"
+#
+# [[rules]]
+# layer_pattern = "KYL-TIKASHYLLY*"
+# entity_kind = "INSERT"
+# block_name = "KLHYLLY-TIKAS"
+# ifc_type = "IfcFurniture"
+# talo2000_code = "1331"
+# talo2000_name = "Vakiokiintokalusteet"
+#
+# [[rules]]
+# layer_pattern = "KYL-TIKASHYLLY-V*"
+# entity_kind = "INSERT"
+# block_name = "KLHYLLYV"
+# ifc_type = "IfcFurniture"
+# talo2000_code = "1331"
+# talo2000_name = "Vakiokiintokalusteet"
+
+# Section 9: Kaapelihyllyt (23xx)
+# [[rules]]
+# layer_pattern = "KAAPELIHYLLY*"
+# ifc_type = "IfcCableCarrierSegment"
+# predefined_type = "CABLETRUNKINGSEGMENT"
+# talo2000_code = "23xx"
+# talo2000_name = "Sähköosat — kaapelihyllyt"
+
+# Section 10: Kylmähuone-elementit (1352, IfcBuildingElementProxy)
+# [[rules]]
+# layer_pattern = "KYL-LEVY*"
+# entity_kind = "POLYLINE"
+# ifc_type = "IfcBuildingElementProxy"
+# talo2000_code = "1352"
+# talo2000_name = "Kylmähuone-elementit"
+#
+# [[rules]]
+# layer_pattern = "KYL-NURKKA*"
+# entity_kind = "POLYLINE"
+# ifc_type = "IfcBuildingElementProxy"
+# talo2000_code = "1352"
+# talo2000_name = "Kylmähuone-elementit"
+
+# Section 11: Kylmälaitteet (25xx)
+# [[rules]]
+# layer_pattern = "KYL-HOYRYSTIN*"
+# entity_kind = "INSERT"
+# block_name = "HOYRYSTIN"
+# ifc_type = "IfcEvaporator"
+# talo2000_code = "25xx"
+# talo2000_name = "Laiteosat — höyrystin"
+#
+# [[rules]]
+# layer_pattern = "KYL-LAUHDUTIN*"
+# entity_kind = "INSERT"
+# block_name = "LAUHDUTIN"
+# ifc_type = "IfcCondenser"
+# talo2000_code = "25xx"
+# talo2000_name = "Laiteosat — lauhdutin"
+#
+# [[rules]]
+# layer_pattern = "KYL-KOMPRESSORI*"
+# entity_kind = "INSERT"
+# block_name = "KOMPRESSORI"
+# ifc_type = "IfcCompressor"
+# talo2000_code = "25xx"
+# talo2000_name = "Laiteosat — kompressori"
