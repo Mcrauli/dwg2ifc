@@ -4,9 +4,9 @@
 
 **Current task:** Plan B kirjoitusvaihe (Mode B, section 1/12).
 
-**Mode:** B (plan-kirjoitus, section 10/12: Kylmähuone-elementit)
+**Mode:** B (plan-kirjoitus, section 11/12: Kylmälaitteet)
 
-**Seuraavaksi:** täytä Plan B Section 10 -alle 3–5 task-riviä joka kattaa KYL-LEVY-tyyppiset kylmähuone-elementit → IfcBuildingElementProxy (1352). POLYLINE-paneelit. Sitten PROGRESS.md → section 11/12.
+**Seuraavaksi:** täytä Plan B Section 11 -alle 3–5 task-riviä joka kattaa höyrystin / lauhdutin / kompressori → IfcEvaporator / IfcCondenser / IfcCompressor (25xx). INSERT-blokit. Sitten PROGRESS.md → section 12/12.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (SHA-historia README + commit-log)
