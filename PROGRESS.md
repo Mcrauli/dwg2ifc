@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 1 — lisää PySide6 + pytest-qt -depsit pyproject.toml:n optional-extras-blokkiin.
+**Current task:** Plan D Task 2 — `gui/app.py` `run()` + placeholder QMainWindow + qtbot offscreen testi.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** muokkaa `pyproject.toml`:n `[project.optional-dependencies]`: uusi extra `gui = ["PySide6>=6.7"]` ja `dev`:hen `pytest-qt>=4.4`. Aja `uv sync --extra gui --extra dev`, kirjoita `tests/test_gui_smoke.py` jossa `from PySide6 import QtWidgets` (offscreen QPA). Commit + push.
+**Seuraavaksi:** luo `src/dxf2ifc/gui/__init__.py` ja `src/dxf2ifc/gui/app.py`. `run()` rakentaa QApplication, näyttää placeholder-QMainWindow (window title "dxf2ifc"), palauttaa `app.exec()`. Failing-test `tests/test_gui_app.py` käyttää `qtbot`-fixtureä avaamaan `MainWindow` ja varmistamaan `windowTitle() == "dxf2ifc"`. QT_QPA_PLATFORM=offscreen vaadittu (asetetaan conftest:ssa tai env-muuttujassa).
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,10 +94,10 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (0/25)
+## Plan D status (1/25)
 
 ### Section 1: Bootstrap & dependencies
-- [ ] Task 1: PySide6 + pytest-qt deps + smoke import
+- [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
 - [ ] Task 2: gui/app.py `run()` + placeholder QMainWindow + qtbot offscreen testi
 - [ ] Task 3: `dxf2ifc-gui` console-script + `gui/__main__.py`
 
@@ -224,7 +224,8 @@
 - Plan C Task 11: full-fixture-testi joka varmistaa neljä IfcSystem-ryhmää ja että jokaisella ≥1 jäsen IfcRelAssignsToGroup:n kautta (`7e09716`). 4 integration_full-testiä passed.
 - Plan C Task 12: plan-loppupiste — pytest 151 passed, coverage 91 %, ruff clean; README + CLAUDE.md status päivitetty Plan C valmiiksi (`8cc4fc3`). 🎉 Plan C 12/12.
 - Plan D Mode B: skeleton + 7 sectionia + 25 task-riviä (kommitit B2 → S7), CLAUDE.md "Plans B–F"-lista päivitetty (`7433ae8` → ...). PROGRESS.md sisältää nyt täyden Plan D -checklistin.
+- Plan D Task 1: PySide6>=6.7 ja pytest-qt>=4.4 -depsit pyproject.tomlin gui+dev-extrojen alle, smoke-testi `tests/test_gui_smoke.py` (`10d50c2`). 2 smoketestiä passed (vaatii libEGL.so.1 hostissa).
 
-**Kesken:** Plan D Task 1–25 (25 jäljellä, Mode A alkaa).
+**Kesken:** Plan D Task 2–25 (24 jäljellä).
 
 **Blokkerit:** ei.
