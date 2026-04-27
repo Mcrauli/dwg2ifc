@@ -134,6 +134,38 @@ def test_ovi_ulko_roundtrip_produces_ifcdoor_with_talo2000_1243(tmp_path: Path):
     assert errors == [], f"IFC validation errors: {errors}"
 
 
+def test_ikkuna_roundtrip_produces_ifcwindow_with_talo2000_1242(tmp_path: Path):
+    dxf = tmp_path / "ikkuna.dxf"
+    _write_block_insert_dxf(
+        dxf,
+        layer="KYL-IKKUNA-MUOVI",
+        block_name="IKKUNA",
+        insertion=(800.0, 1200.0),
+    )
+    out = tmp_path / "ikkuna.ifc"
+
+    convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
+
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4"
+    windows = ifc.by_type("IfcWindow")
+    assert len(windows) == 1
+    window = windows[0]
+    assert window.PredefinedType == "WINDOW"
+    assert window.OverallHeight is not None
+    assert window.OverallWidth is not None
+
+    refs = ifc.by_type("IfcClassificationReference")
+    talo = [r for r in refs if r.Identification == "1242"]
+    assert len(talo) == 1
+    assert talo[0].ReferencedSource.Name == "Talo2000"
+
+    logger = ifcopenshell.validate.json_logger()
+    ifcopenshell.validate.validate(ifc, logger=logger)
+    errors = [e for e in logger.statements if e.get("level") == "ERROR"]
+    assert errors == [], f"IFC validation errors: {errors}"
+
+
 def test_partition_wall_roundtrip_produces_partitioning_ifcwall(tmp_path: Path):
     dxf = tmp_path / "partition_wall.dxf"
     _write_single_line_dxf(dxf, layer="KYL-VALISEINA")

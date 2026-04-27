@@ -76,7 +76,7 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 - [x] Task 19: lisää default-profiiliin INSERT-sääntö `IKKUNA → IfcWindow 1242` korkeus/leveys-attribuuttimappauksella (Plan A vastaava: Task 6).
 - [x] Task 20: kirjoita `tests/test_mapper.py`:hen failing test joka mappaa IKKUNA-blokin → IfcWindow-tyyppi + Talo2000 1242 (Plan A vastaava: Task 14).
 - [x] Task 21: lisää `ifc_writer.add_window` (IfcWindow + OverallHeight/Width + classification) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
-- [ ] Task 22: dispatchaa orchestrator window-rule blokit `add_window`-kutsuun ja laajenna integraatiotesti yhdellä IKKUNA-blokilla (Plan A vastaava: Task 18 + 20).
+- [x] Task 22: dispatchaa orchestrator window-rule blokit `add_window`-kutsuun ja laajenna integraatiotesti yhdellä IKKUNA-blokilla (Plan A vastaava: Task 18 + 20).
 
 ## Section 6: Kylmäputket (21xx, IfcPipeSegment)
 

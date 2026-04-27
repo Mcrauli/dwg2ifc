@@ -516,4 +516,12 @@ def convert_dxf(
                 predefined_type=m.predefined_type or "DOOR",
             )
             add_talo2000_classification(ifc, door, code=m.talo2000_code, name=m.talo2000_name)
+        elif m.ifc_type == "IfcWindow":
+            window = add_window(
+                ifc,
+                m,
+                parent_storey=storey,
+                predefined_type=m.predefined_type or "WINDOW",
+            )
+            add_talo2000_classification(ifc, window, code=m.talo2000_code, name=m.talo2000_name)
     write_ifc(ifc, output_path)
