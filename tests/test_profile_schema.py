@@ -107,6 +107,38 @@ def test_rule_pset_overrides_defaults_to_empty_dict():
     assert rule.pset_overrides == {}
 
 
+def test_profile_holds_line_and_insert_rules():
+    profile = Profile(
+        name="line+insert",
+        ifc_schema="IFC4",
+        rules=[
+            Rule(
+                layer_pattern="KYL-ULKOSEINA*",
+                ifc_type="IfcWall",
+                talo2000_code="1241",
+                talo2000_name="Ulkoseinät",
+                entity_kind="LINE",
+                extrusion_height=2700.0,
+                pset_overrides={"Pset_WallCommon": {"IsExternal": True}},
+            ),
+            Rule(
+                layer_pattern="KYL-OVET",
+                ifc_type="IfcDoor",
+                talo2000_code="1243",
+                talo2000_name="Ulko-ovet",
+                entity_kind="INSERT",
+                block_name="OVI-ULKO",
+            ),
+        ],
+    )
+    line_rule, insert_rule = profile.rules
+    assert line_rule.entity_kind == "LINE"
+    assert line_rule.extrusion_height == 2700.0
+    assert line_rule.pset_overrides["Pset_WallCommon"]["IsExternal"] is True
+    assert insert_rule.entity_kind == "INSERT"
+    assert insert_rule.block_name == "OVI-ULKO"
+
+
 def test_profile_holds_rules():
     profile = Profile(
         name="test",
