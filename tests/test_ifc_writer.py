@@ -17,6 +17,7 @@ from dxf2ifc.core.ifc_writer import (
     add_talo2000_classification,
     add_wall,
     add_window,
+    assign_to_system,
     build_ifc_project_skeleton,
     convert_dxf,
     write_ifc,
@@ -704,6 +705,16 @@ def test_add_system_creates_ifcsystem_with_name():
     system = add_system(ifc, name="Refrigeration LT")
     assert system.is_a("IfcSystem")
     assert system.Name == "Refrigeration LT"
+
+
+def test_assign_to_system_links_products_via_relassignsto_group():
+    ifc = build_ifc_project_skeleton(project_name="System Assign")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    pipe = add_pipe_segment(ifc, _pipe_mapped_entity(), parent_storey=storey)
+    system = add_system(ifc, name="Refrigeration LT")
+    assign_to_system(ifc, products=[pipe], system=system)
+    rels = [r for r in ifc.by_type("IfcRelAssignsToGroup") if r.RelatingGroup == system]
+    assert any(pipe in r.RelatedObjects for r in rels)
 
 
 def test_add_system_caches_per_name():

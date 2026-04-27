@@ -909,6 +909,18 @@ def add_system(ifc, *, name: str) -> object:
     )
 
 
+def assign_to_system(ifc, *, products: list, system) -> object:
+    """Attach the given products to ``system`` via IfcRelAssignsToGroup."""
+    if not products:
+        return None
+    return ifc.create_entity(
+        "IfcRelAssignsToGroup",
+        GlobalId=ifcopenshell.guid.new(),
+        RelatedObjects=list(products),
+        RelatingGroup=system,
+    )
+
+
 def _ensure_cable_carrier_segment_type(ifc, requested_type: str, enum_value: str) -> object:
     """Return (creating once per file) an IfcCableCarrierSegmentType."""
     for t in ifc.by_type("IfcCableCarrierSegmentType"):
