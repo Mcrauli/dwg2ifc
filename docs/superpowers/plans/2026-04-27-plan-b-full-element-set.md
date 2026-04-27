@@ -79,3 +79,10 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 - Task: kirjoita `tests/test_mapper.py`:hen failing test joka mappaa IKKUNA-blokin → IfcWindow-tyyppi + Talo2000 1242 (Plan A vastaava: Task 14).
 - Task: lisää `ifc_writer.add_window` (IfcWindow + OverallHeight/Width + classification) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
 - Task: dispatchaa orchestrator window-rule blokit `add_window`-kutsuun ja laajenna integraatiotesti yhdellä IKKUNA-blokilla (Plan A vastaava: Task 18 + 20).
+
+## Section 6: Kylmäputket (21xx, IfcPipeSegment)
+
+- Task: lisää default-profiiliin LINE-säännöt `LT IMU`, `MT IMU`, `MT NESTE` → `IfcPipeSegment` Talo2000 21xx -alakoodeilla (placeholder kunnes RT-tarkennus saatavilla) ja DN-attribuuttikenttä (Plan A vastaava: Task 6).
+- Task: kirjoita `tests/test_geometry.py`:hen `line_to_pipe_segment` -failing test ja toteuta funktio joka tuottaa cylinder-extrudoidun geometrian DN-halkaisijalla (Plan A vastaava: Task 15).
+- Task: lisää `ifc_writer.add_pipe_segment` (IfcPipeSegment + IfcPipeSegmentType refrigeranttipredefined + Talo2000) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
+- Task: dispatchaa orchestrator pipe-rule LINE-entiteetit `add_pipe_segment`-kutsuun ja laajenna integraatiotesti LT IMU -viivalla (Plan A vastaava: Task 18 + 20).
