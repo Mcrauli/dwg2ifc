@@ -4,9 +4,9 @@
 
 **Current task:** Plan B kirjoitusvaihe (Mode B, section 1/12).
 
-**Mode:** B (plan-kirjoitus, section 9/12: Kaapelihyllyt)
+**Mode:** B (plan-kirjoitus, section 10/12: Kylmähuone-elementit)
 
-**Seuraavaksi:** täytä Plan B Section 9 -alle 3–5 task-riviä joka kattaa kaapelihyllyt → IfcFlowSegment + IfcCableCarrierSegmentType CABLETRUNKINGSEGMENT (23xx). LINE/POLYLINE → reitti. Sitten PROGRESS.md → section 10/12.
+**Seuraavaksi:** täytä Plan B Section 10 -alle 3–5 task-riviä joka kattaa KYL-LEVY-tyyppiset kylmähuone-elementit → IfcBuildingElementProxy (1352). POLYLINE-paneelit. Sitten PROGRESS.md → section 11/12.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (SHA-historia README + commit-log)
