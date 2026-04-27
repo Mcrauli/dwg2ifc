@@ -93,3 +93,10 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 - Task: laajenna `mapper.layer_matches` käsittelemään wildcard-suffix `*` (yksinkertainen prefix-match) ja lisää failing test (Plan A vastaava: Task 10).
 - Task: ohjaa `add_pipe_segment`-kutsuun PredefinedType-parametri (`DRAINPIPE` viemärille, `REFRIGERATION` kylmäputkelle) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
 - Task: laajenna integraatiotesti yhdellä KYL-VIEMARI-LATTIA-viivalla joka tuottaa IfcPipeSegment DRAINPIPE (Plan A vastaava: Task 20).
+
+## Section 8: Varastointihyllyt (1331, IfcFurniture)
+
+- Task: lisää default-profiiliin INSERT-säännöt `KYL-LEVYHYLLY → IfcFurniture 1331`, `KYL-TIKASHYLLY → IfcFurniture 1331`, `KLHYLLYV → IfcFurniture 1331` korkeus/leveys/syvyys-attribuuttimappauksella (Plan A vastaava: Task 6).
+- Task: kirjoita `tests/test_geometry.py`:hen `block_to_furniture_box` -failing test ja toteuta funktio (height/width/depth profiilista tai INSERT-attribuutista) (Plan A vastaava: Task 15).
+- Task: lisää `ifc_writer.add_furniture` (IfcFurniture + box-representaatio + Talo2000 1331) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
+- Task: dispatchaa orchestrator furniture-rule blokit `add_furniture`-kutsuun ja laajenna integraatiotesti KYL-LEVYHYLLY-blokilla (Plan A vastaava: Task 18 + 20).
