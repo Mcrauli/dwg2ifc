@@ -38,3 +38,56 @@ def test_write_ifc_produces_file(tmp_path: Path):
     assert out.stat().st_size > 0
     reloaded = ifcopenshell.open(str(out))
     assert len(reloaded.by_type("IfcProject")) == 1
+
+
+from dxf2ifc.core.ifc_writer import add_wall, add_talo2000_classification
+from dxf2ifc.core.types import LineGeometry, MappedEntity, Point3D
+
+
+def _wall_mapped_entity() -> MappedEntity:
+    line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(5000, 0, 0))
+    return MappedEntity(
+        layer="KYL-ULKOSEINA",
+        dxf_type="LINE",
+        geometry=line,
+        ifc_type="IfcWall",
+        predefined_type="STANDARD",
+        talo2000_code="1241",
+        talo2000_name="Ulkoseinät",
+        extra_props={"default_height_mm": 3000, "default_thickness_mm": 200},
+    )
+
+
+def test_add_wall_creates_ifcwall():
+    ifc = build_ifc_project_skeleton(project_name="Wall Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    wall = add_wall(ifc, _wall_mapped_entity(), parent_storey=storey)
+    assert wall.is_a("IfcWall")
+    assert wall.PredefinedType == "STANDARD"
+    assert wall.Name == "KYL-ULKOSEINA"
+
+
+def test_add_wall_placed_under_storey():
+    ifc = build_ifc_project_skeleton(project_name="Wall Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    wall = add_wall(ifc, _wall_mapped_entity(), parent_storey=storey)
+    walls = ifc.by_type("IfcWall")
+    assert len(walls) == 1
+    rels = [
+        r
+        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
+        if r.RelatingStructure == storey
+    ]
+    assert any(wall in rel.RelatedElements for rel in rels)
+
+
+def test_add_talo2000_classification_attaches_reference():
+    ifc = build_ifc_project_skeleton(project_name="Class Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    wall = add_wall(ifc, _wall_mapped_entity(), parent_storey=storey)
+    add_talo2000_classification(ifc, wall, code="1241", name="Ulkoseinät")
+
+    refs = ifc.by_type("IfcClassificationReference")
+    assert any(r.Identification == "1241" for r in refs)
+    classifications = ifc.by_type("IfcClassification")
+    assert any(c.Name == "Talo2000" for c in classifications)
