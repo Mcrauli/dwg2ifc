@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 27 — lisää default-profiiliin `KYL-VIEMARI*`-sääntö (LINE → IfcPipeSegment DRAINPIPE 21xx).
+**Current task:** Plan B Task 28 — `mapper.layer_matches` wildcard-suffix-tuki.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** aktivoi `default_kylmalaite_talo2000.toml`:n placeholder Section 7 viemärisääntö (KYL-VIEMARI*, IfcPipeSegment, predefined_type "DRAINPIPE", talo2000_code placeholder "2160", talo2000_name "Putkiosat — viemäri", DN ~110mm). Lisää loader-testi.
+**Seuraavaksi:** tarkista että `mapper.layer_matches` tukee jo wildcard-suffixiä (KYL-VIEMARI* → KYL-VIEMARI-LATTIA). Jos ei, lisää testi ja korjaa fnmatch-pohjainen impl. Käytännössä fnmatch tukee jo, joten varmistetaan kattavalla testillä.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (26/50)
+## Plan B status (27/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -59,7 +59,7 @@
 - [x] Task 26: orchestrator dispatch + integraatiotesti LT IMU (`770978f`)
 
 ### Section 7: Viemäriputket (21xx DRAINPIPE)
-- [ ] Task 27: default-profiilin KYL-VIEMARI*-sääntö
+- [x] Task 27: default-profiilin KYL-VIEMARI*-sääntö (`7cf669f`)
 - [ ] Task 28: `mapper.layer_matches` wildcard-suffix-tuki
 - [ ] Task 29: `add_pipe_segment` predefined_type DRAINPIPE/REFRIGERATION
 - [ ] Task 30: integraatiotesti KYL-VIEMARI-LATTIA
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 26/50 — Sectionit 1–6 valmis. Seuraavaksi Section 7 (Viemäriputket).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 27/50 — Sectionit 1–6 valmis, Section 7 etenee (1/4).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -122,7 +122,8 @@
 - Plan B Task 24: PipeSegmentExtrusion-dataclass + line_to_pipe_segment (`9f1a51c`). 16 geometry-testiä passed.
 - Plan B Task 25: add_pipe_segment + IfcPipeSegmentType + USERDEFINED-fallback ei-validille IfcPipeSegmentTypeEnum-arvolle (`b5ff242`). 25 ifc_writer-testiä passed.
 - Plan B Task 26: convert_dxf dispatchaa IfcPipeSegment + mapper välittää Pset_PipeSegmentOccurrence.NominalDiameter → extra_props default_diameter_mm + integraatiotesti LT IMU → 2151 (`770978f`). 18 integration+mapper-testiä passed. ✅ Section 6 valmis.
+- Plan B Task 27: aktivoi KYL-VIEMARI* DRAINPIPE-sääntö default-profiiliin (`7cf669f`). 12 loader-testiä passed.
 
-**Kesken:** Plan B Task 27–50 (24 jäljellä).
+**Kesken:** Plan B Task 28–50 (23 jäljellä).
 
 **Blokkerit:** ei.
