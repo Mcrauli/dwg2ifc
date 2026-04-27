@@ -4,9 +4,11 @@ import pytest
 
 from dxf2ifc.core.geometry import (
     DoorBoxExtrusion,
+    PipeSegmentExtrusion,
     SlabExtrusion,
     WallExtrusion,
     door_block_to_box,
+    line_to_pipe_segment,
     line_to_wall_extrusion,
     polygon_to_slab_extrusion,
 )
@@ -109,3 +111,28 @@ def test_door_block_to_box_default_angle_is_zero():
     block = BlockInstance(insertion_point=Point3D(0, 0, 0))
     box = door_block_to_box(block, width_mm=900, height_mm=2100, depth_mm=100)
     assert box.angle_rad == 0.0
+
+
+def test_line_to_pipe_segment_returns_extrusion_with_diameter():
+    line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(2000, 0, 0))
+    pipe = line_to_pipe_segment(line, diameter_mm=22.0)
+    assert isinstance(pipe, PipeSegmentExtrusion)
+    assert pipe.diameter_mm == 22.0
+
+
+def test_line_to_pipe_segment_length_matches_line_length():
+    line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(3000, 4000, 0))
+    pipe = line_to_pipe_segment(line, diameter_mm=18.0)
+    assert pipe.length_mm == pytest.approx(5000.0)
+
+
+def test_line_to_pipe_segment_anchor_is_start():
+    line = LineGeometry(start=Point3D(150, 250, 350), end=Point3D(2150, 250, 350))
+    pipe = line_to_pipe_segment(line, diameter_mm=12.0)
+    assert pipe.anchor == Point3D(150, 250, 350)
+
+
+def test_line_to_pipe_segment_angle_for_axis_aligned_line():
+    line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(0, 1000, 0))
+    pipe = line_to_pipe_segment(line, diameter_mm=12.0)
+    assert pipe.angle_rad == pytest.approx(1.5707963267948966)

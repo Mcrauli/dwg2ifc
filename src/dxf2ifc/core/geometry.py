@@ -104,3 +104,33 @@ def door_block_to_box(
         height_mm=height_mm,
         depth_mm=depth_mm,
     )
+
+
+@dataclass(frozen=True)
+class PipeSegmentExtrusion:
+    """Parameters sufficient to create an IfcPipeSegment as a swept disk.
+
+    - anchor: start point of the pipe centreline
+    - angle_rad: rotation around Z so that the local +X axis follows the pipe
+    - length_mm: pipe length (distance from start to end)
+    - diameter_mm: nominal outside diameter (DN-equivalent) of the pipe
+    """
+
+    anchor: Point3D
+    angle_rad: float
+    length_mm: float
+    diameter_mm: float
+
+
+def line_to_pipe_segment(line: LineGeometry, *, diameter_mm: float) -> PipeSegmentExtrusion:
+    """Treat the line as the pipe centreline and use ``diameter_mm`` for the section."""
+    dx = line.end.x - line.start.x
+    dy = line.end.y - line.start.y
+    length = math.hypot(dx, dy)
+    angle = math.atan2(dy, dx)
+    return PipeSegmentExtrusion(
+        anchor=line.start,
+        angle_rad=angle,
+        length_mm=length,
+        diameter_mm=diameter_mm,
+    )
