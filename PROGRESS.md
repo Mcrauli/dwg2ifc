@@ -4,9 +4,9 @@
 
 **Current task:** Plan B kirjoitusvaihe (Mode B, section 1/12).
 
-**Mode:** B (plan-kirjoitus, section 4/12: Ovet)
+**Mode:** B (plan-kirjoitus, section 5/12: Ikkunat)
 
-**Seuraavaksi:** täytä Plan B Section 4 -alle 3–5 task-riviä joka kattaa ulko-ovet (1243), väliovet (1315), erityisovet (1316). INSERT-block-rule + IfcDoor + opening relation seinään. Sitten PROGRESS.md → section 5/12.
+**Seuraavaksi:** täytä Plan B Section 5 -alle 3–5 task-riviä joka kattaa ikkunat (1242, IfcWindow). INSERT-block-rule, OverallHeight/Width-attribuutit. Sitten PROGRESS.md → section 6/12.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (SHA-historia README + commit-log)
