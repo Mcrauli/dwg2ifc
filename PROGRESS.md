@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 20 — kirjoita `tests/test_mapper.py`:hen failing test joka mappaa IKKUNA-blokin → IfcWindow-tyyppi + Talo2000 1242.
+**Current task:** Plan B Task 21 — lisää `ifc_writer.add_window` (IfcWindow + OverallHeight/Width + classification) + test_ifc_writer.py-kattavuus.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää failing test `tests/test_mapper.py`:hen joka rakentaa EntityRecord(layer="KYL-IKKUNA-MUOVI", dxf_type="INSERT", BlockInstance, block_name="IKKUNA"), ajaa apply_profile load_default_profile():lla ja varmistaa MappedEntity.ifc_type=="IfcWindow" + talo2000_code=="1242". Mapper toimii jo — testi todennäköisesti passaa heti, varmista.
+**Seuraavaksi:** kirjoita failing test `tests/test_ifc_writer.py`:hen `add_window`-funktiolle (IfcWindow luotu, predefined_type WINDOW, OverallHeight/OverallWidth asetettu, placement+representation). Toteuta sitten `ifc_writer.add_window(ifc, mapped, *, parent_storey, predefined_type="WINDOW")` analogisesti add_door:n kanssa.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (19/50)
+## Plan B status (20/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -48,7 +48,7 @@
 
 ### Section 5: Ikkunat (1242)
 - [x] Task 19: default-profiilin IKKUNA-INSERT-sääntö (`d5451df`)
-- [ ] Task 20: `tests/test_mapper.py` IKKUNA-mappaustesti
+- [x] Task 20: `tests/test_mapper.py` IKKUNA-mappaustesti (`2902de2`)
 - [ ] Task 21: `ifc_writer.add_window`
 - [ ] Task 22: orchestrator dispatch + integraatiotesti IKKUNA
 
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 19/50 — Sectionit 1–4 valmis, Section 5 etenee (1/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 20/50 — Sectionit 1–4 valmis, Section 5 etenee (2/4).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -115,7 +115,8 @@
 - Plan B Task 17: add_door tuottaa IfcDoor + OverallHeight/Width + box-extrusion + spatial containment (`4848061`). 17 ifc_writer-testiä passed.
 - Plan B Task 18: convert_dxf dispatchaa IfcDoor + integraatiotesti OVI-ULKO BLOCK+INSERT → 1243 (`813e4a6`). 21 ifc_writer+integration-testiä passed. ✅ Section 4 valmis.
 - Plan B Task 19: aktivoi KYL-IKKUNA INSERT-sääntö default-profiiliin (IfcWindow 1242) (`d5451df`). 10 loader-testiä passed.
+- Plan B Task 20: mapper-testi joka mappaa IKKUNA INSERT default-profiililla → IfcWindow 1242 (`2902de2`). 12 mapper-testiä passed.
 
-**Kesken:** Plan B Task 20–50 (31 jäljellä).
+**Kesken:** Plan B Task 21–50 (30 jäljellä).
 
 **Blokkerit:** ei.
