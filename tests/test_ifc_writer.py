@@ -5,6 +5,7 @@ from pathlib import Path
 import ifcopenshell
 
 from dxf2ifc.core.ifc_writer import (
+    add_cable_carrier_segment,
     add_door,
     add_furniture,
     add_pipe_segment,
@@ -484,6 +485,71 @@ def test_add_furniture_uses_extra_props_dimensions():
     assert extruded.Depth == 1800.0
     assert extruded.SweptArea.XDim == 1500.0
     assert extruded.SweptArea.YDim == 400.0
+
+
+def _cable_mapped_entity(
+    *,
+    layer: str = "KAAPELIHYLLY",
+    talo_code: str = "2380",
+    talo_name: str = "Sähköosat — kaapelihyllyt",
+    width_mm: float = 300.0,
+    height_mm: float = 80.0,
+    predefined_type: str | None = "CABLETRUNKINGSEGMENT",
+) -> MappedEntity:
+    line = LineGeometry(start=Point3D(0, 0, 2700), end=Point3D(2500, 0, 2700))
+    return MappedEntity(
+        layer=layer,
+        dxf_type="LINE",
+        geometry=line,
+        ifc_type="IfcCableCarrierSegment",
+        predefined_type=predefined_type,
+        talo2000_code=talo_code,
+        talo2000_name=talo_name,
+        extra_props={
+            "default_width_mm": width_mm,
+            "default_height_mm": height_mm,
+        },
+    )
+
+
+def test_add_cable_carrier_segment_creates_ifccablecarriersegment():
+    ifc = build_ifc_project_skeleton(project_name="Cable Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    seg = add_cable_carrier_segment(ifc, _cable_mapped_entity(), parent_storey=storey)
+    assert seg.is_a("IfcCableCarrierSegment")
+    assert seg.PredefinedType == "CABLETRUNKINGSEGMENT"
+    assert seg.Name == "KAAPELIHYLLY"
+    assert seg.Representation is not None
+
+
+def test_add_cable_carrier_segment_creates_segment_type():
+    ifc = build_ifc_project_skeleton(project_name="Cable Type")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    add_cable_carrier_segment(ifc, _cable_mapped_entity(), parent_storey=storey)
+    types = ifc.by_type("IfcCableCarrierSegmentType")
+    assert any(t.PredefinedType == "CABLETRUNKINGSEGMENT" for t in types)
+
+
+def test_add_cable_carrier_segment_placed_under_storey():
+    ifc = build_ifc_project_skeleton(project_name="Cable Storey")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    seg = add_cable_carrier_segment(ifc, _cable_mapped_entity(), parent_storey=storey)
+    rels = [
+        r
+        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
+        if r.RelatingStructure == storey
+    ]
+    assert any(seg in rel.RelatedElements for rel in rels)
+
+
+def test_add_cable_carrier_segment_reuses_type_for_repeat_calls():
+    ifc = build_ifc_project_skeleton(project_name="Cable Reuse")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    add_cable_carrier_segment(ifc, _cable_mapped_entity(), parent_storey=storey)
+    add_cable_carrier_segment(ifc, _cable_mapped_entity(), parent_storey=storey)
+    types = ifc.by_type("IfcCableCarrierSegmentType")
+    trunk = [t for t in types if t.PredefinedType == "CABLETRUNKINGSEGMENT"]
+    assert len(trunk) == 1
 
 
 def test_add_talo2000_classification_attaches_reference():

@@ -18,6 +18,7 @@ from dxf2ifc.core.dxf_reader import read_dxf
 from dxf2ifc.core.geometry import (
     block_to_furniture_box,
     door_block_to_box,
+    line_to_cable_carrier,
     line_to_pipe_segment,
     line_to_wall_extrusion,
     polygon_to_slab_extrusion,
@@ -634,6 +635,134 @@ def add_furniture(
         relating_structure=parent_storey,
     )
     return furniture
+
+
+_IFC_CABLE_CARRIER_SEGMENT_TYPES = frozenset(
+    {"CABLELADDERSEGMENT", "CABLETRAYSEGMENT", "CABLETRUNKINGSEGMENT", "CONDUITSEGMENT"}
+)
+
+
+def add_cable_carrier_segment(
+    ifc,
+    mapped: MappedEntity,
+    *,
+    parent_storey,
+    predefined_type: str = "CABLETRUNKINGSEGMENT",
+) -> object:
+    """Create an IfcCableCarrierSegment from a LineGeometry-bearing MappedEntity.
+
+    The tray is rendered as a rectangular extrusion (width × height ×
+    length), anchored at the line start and rotated by the line angle.
+    A single IfcCableCarrierSegmentType per requested predefined_type is
+    created and reused. Tokens outside IfcCableCarrierSegmentTypeEnum are
+    mapped to USERDEFINED + ObjectType / ElementType for round-tripping.
+    """
+    if not isinstance(mapped.geometry, LineGeometry):
+        raise TypeError(
+            "add_cable_carrier_segment expects LineGeometry, "
+            f"got {type(mapped.geometry).__name__}"
+        )
+
+    width = float(mapped.extra_props.get("default_width_mm", 300.0))
+    height = float(mapped.extra_props.get("default_height_mm", 80.0))
+    ext = line_to_cable_carrier(mapped.geometry, width_mm=width, height_mm=height)
+
+    is_userdefined = predefined_type not in _IFC_CABLE_CARRIER_SEGMENT_TYPES
+    enum_value = "USERDEFINED" if is_userdefined else predefined_type
+
+    seg = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class="IfcCableCarrierSegment",
+        name=mapped.layer,
+        predefined_type=enum_value,
+    )
+
+    seg_type = _ensure_cable_carrier_segment_type(ifc, predefined_type, enum_value)
+    ifcopenshell.api.run("type.assign_type", ifc, related_objects=[seg], relating_type=seg_type)
+
+    seg.PredefinedType = enum_value
+    if is_userdefined:
+        seg.ObjectType = predefined_type
+
+    matrix = _z_rotation_matrix(ext.anchor.x, ext.anchor.y, ext.anchor.z, ext.angle_rad)
+    ifcopenshell.api.run(
+        "geometry.edit_object_placement",
+        ifc,
+        product=seg,
+        matrix=matrix,
+    )
+
+    model_ctx = [
+        c
+        for c in ifc.by_type("IfcGeometricRepresentationSubContext")
+        if c.ContextIdentifier == "Body"
+    ][0]
+    rect = ifc.create_entity(
+        "IfcRectangleProfileDef",
+        ProfileType="AREA",
+        ProfileName=None,
+        Position=ifc.create_entity(
+            "IfcAxis2Placement2D",
+            Location=ifc.create_entity(
+                "IfcCartesianPoint",
+                Coordinates=(0.0, ext.height_mm / 2.0),
+            ),
+        ),
+        XDim=ext.width_mm,
+        YDim=ext.height_mm,
+    )
+    extruded = ifc.create_entity(
+        "IfcExtrudedAreaSolid",
+        SweptArea=rect,
+        Position=ifc.create_entity(
+            "IfcAxis2Placement3D",
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
+            Axis=ifc.create_entity("IfcDirection", DirectionRatios=(1.0, 0.0, 0.0)),
+            RefDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 1.0, 0.0)),
+        ),
+        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
+        Depth=ext.length_mm,
+    )
+    shape = ifc.create_entity(
+        "IfcShapeRepresentation",
+        ContextOfItems=model_ctx,
+        RepresentationIdentifier="Body",
+        RepresentationType="SweptSolid",
+        Items=[extruded],
+    )
+    seg.Representation = ifc.create_entity(
+        "IfcProductDefinitionShape", Representations=[shape]
+    )
+
+    ifcopenshell.api.run(
+        "spatial.assign_container",
+        ifc,
+        products=[seg],
+        relating_structure=parent_storey,
+    )
+    return seg
+
+
+def _ensure_cable_carrier_segment_type(ifc, requested_type: str, enum_value: str) -> object:
+    """Return (creating once per file) an IfcCableCarrierSegmentType."""
+    for t in ifc.by_type("IfcCableCarrierSegmentType"):
+        if enum_value == "USERDEFINED":
+            if t.PredefinedType == "USERDEFINED" and t.ElementType == requested_type:
+                return t
+        elif t.PredefinedType == enum_value:
+            return t
+
+    seg_type = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class="IfcCableCarrierSegmentType",
+        name=f"CableCarrierSegmentType_{requested_type}",
+        predefined_type=enum_value,
+    )
+    if enum_value == "USERDEFINED":
+        seg_type.ElementType = requested_type
+    return seg_type
 
 
 def _ensure_pipe_segment_type(ifc, requested_type: str, enum_value: str) -> object:
