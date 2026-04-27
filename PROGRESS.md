@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 17 — lisää `ifc_writer.add_door` (IfcDoor + PredefinedType + OverallHeight/Width + Talo2000-classification) ja test_ifc_writer.py-kattavuus.
+**Current task:** Plan B Task 18 — ohjaa orchestratorista oviblokit `add_door`-kutsuun ja päivitä integraatiotesti DXF-fixtuurilla joka sisältää OVI-ULKO-blokin.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** kirjoita failing test `tests/test_ifc_writer.py`:hen `add_door`-funktiolle (IfcDoor luotu, PredefinedType DOOR, OverallHeight/OverallWidth asetettu, classification 1243). Toteuta sitten `ifc_writer.add_door(model, *, name, box: DoorBoxExtrusion, talo2000_code, talo2000_name, predefined_type, storey)`.
+**Seuraavaksi:** laajenna `convert_dxf` orchestrator dispatchaamaan IfcDoor-rule entiteetit `add_door`-kutsuun + lisätä Talo2000-classification. Mapper extra_props pitää myös tuottaa default_width_mm + default_depth_mm — laajenna `Rule` ja `apply_profile` jos puuttuu (pidä Task 18 -scope: integration). Kirjoita integraatiotesti joka generoi KYL-OVET-ULKO-DXF:n ezdxf:llä (BLOCK + INSERT) ja varmistaa IfcDoor + Talo2000 1243.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (16/50)
+## Plan B status (17/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -43,7 +43,7 @@
 - [x] Task 14: default-profiilin INSERT-ovisäännöt (`36c5c51`)
 - [x] Task 15: `dxf_reader.py` INSERT-luku + `BlockInstance`-tyyppi (`6427278`)
 - [x] Task 16: `door_block_to_box` testi + impl (`efd9f9a`)
-- [ ] Task 17: `ifc_writer.add_door`
+- [x] Task 17: `ifc_writer.add_door` (`4848061`)
 - [ ] Task 18: orchestrator dispatch + integraatiotesti OVI-ULKO
 
 ### Section 5: Ikkunat (1242)
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 16/50 — Sectionit 1–3 valmis, Section 4 etenee (3/5).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 17/50 — Sectionit 1–3 valmis, Section 4 etenee (4/5).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -112,7 +112,8 @@
 - Plan B Task 14: aktivoi ovi-INSERT-säännöt KYL-OVET-ULKO/VALI/ERITYIS default-profiiliin (1243/1315/1316) (`36c5c51`). 9 loader-testiä passed.
 - Plan B Task 15: BlockInstance types.py:hen + dxf_reader lukemaan INSERT-entiteetit (insertion_point/rotation_rad/scale) (`6427278`). 12 reader+types-testiä passed.
 - Plan B Task 16: DoorBoxExtrusion-dataclass + door_block_to_box (`efd9f9a`). 12 geometry-testiä passed.
+- Plan B Task 17: add_door tuottaa IfcDoor + OverallHeight/Width + box-extrusion + spatial containment (`4848061`). 17 ifc_writer-testiä passed.
 
-**Kesken:** Plan B Task 17–50 (34 jäljellä).
+**Kesken:** Plan B Task 18–50 (33 jäljellä).
 
 **Blokkerit:** ei.
