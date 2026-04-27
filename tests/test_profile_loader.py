@@ -144,12 +144,15 @@ def test_load_default_profile_has_cooling_equipment_rules():
     assert hoyr.ifc_type == "IfcEvaporator"
     assert hoyr.block_name == "HOYRYSTIN"
     assert hoyr.talo2000_code == "2510"
+    assert hoyr.system_name == "Refrigeration plant"
     lauh = by_layer["KYL-LAUHDUTIN*"]
     assert lauh.ifc_type == "IfcCondenser"
     assert lauh.talo2000_code == "2520"
+    assert lauh.system_name == "Refrigeration plant"
     komp = by_layer["KYL-KOMPRESSORI*"]
     assert komp.ifc_type == "IfcCompressor"
     assert komp.talo2000_code == "2530"
+    assert komp.system_name == "Refrigeration plant"
 
 
 def test_load_default_profile_has_partition_wall_rules():

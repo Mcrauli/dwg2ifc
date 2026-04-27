@@ -204,6 +204,7 @@ block_name = "HOYRYSTIN"
 ifc_type = "IfcEvaporator"
 talo2000_code = "2510"
 talo2000_name = "Laiteosat — höyrystin"
+system_name = "Refrigeration plant"
 
 [[rules]]
 layer_pattern = "KYL-LAUHDUTIN*"
@@ -212,6 +213,7 @@ block_name = "LAUHDUTIN"
 ifc_type = "IfcCondenser"
 talo2000_code = "2520"
 talo2000_name = "Laiteosat — lauhdutin"
+system_name = "Refrigeration plant"
 
 [[rules]]
 layer_pattern = "KYL-KOMPRESSORI*"
@@ -220,3 +222,4 @@ block_name = "KOMPRESSORI"
 ifc_type = "IfcCompressor"
 talo2000_code = "2530"
 talo2000_name = "Laiteosat — kompressori"
+system_name = "Refrigeration plant"
