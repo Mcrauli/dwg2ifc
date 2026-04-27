@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 26 — dispatchaa orchestrator pipe-rule LINE-entiteetit `add_pipe_segment`-kutsuun ja laajenna integraatiotesti LT IMU -viivalla.
+**Current task:** Plan B Task 27 — lisää default-profiiliin `KYL-VIEMARI*`-sääntö (LINE → IfcPipeSegment DRAINPIPE 21xx).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää convert_dxf:ään `elif m.ifc_type == "IfcPipeSegment"` haara joka kutsuu add_pipe_segment + add_talo2000_classification. Mapper:in pset_overrides → extra_props välittäminen tarvitaan että DN siirtyy pipe-writerille (lisää extras["default_diameter_mm"] = rule.pset_overrides.Pset_PipeSegmentOccurrence.NominalDiameter jos saatavilla). Kirjoita integraatiotesti LT IMU -DXF:llä → IfcPipeSegment + 2151.
+**Seuraavaksi:** aktivoi `default_kylmalaite_talo2000.toml`:n placeholder Section 7 viemärisääntö (KYL-VIEMARI*, IfcPipeSegment, predefined_type "DRAINPIPE", talo2000_code placeholder "2160", talo2000_name "Putkiosat — viemäri", DN ~110mm). Lisää loader-testi.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (25/50)
+## Plan B status (26/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -56,7 +56,7 @@
 - [x] Task 23: default-profiilin LT IMU / MT IMU / MT NESTE -säännöt (`5db22b1`)
 - [x] Task 24: `line_to_pipe_segment` testi + impl (`9f1a51c`)
 - [x] Task 25: `ifc_writer.add_pipe_segment` + IfcPipeSegmentType (`b5ff242`)
-- [ ] Task 26: orchestrator dispatch + integraatiotesti LT IMU
+- [x] Task 26: orchestrator dispatch + integraatiotesti LT IMU (`770978f`)
 
 ### Section 7: Viemäriputket (21xx DRAINPIPE)
 - [ ] Task 27: default-profiilin KYL-VIEMARI*-sääntö
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 25/50 — Sectionit 1–5 valmis, Section 6 etenee (3/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 26/50 — Sectionit 1–6 valmis. Seuraavaksi Section 7 (Viemäriputket).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -121,7 +121,8 @@
 - Plan B Task 23: aktivoi LT IMU / MT IMU / MT NESTE -säännöt default-profiiliin (IfcPipeSegment REFRIGERATION 2151/2152/2153 + DN pset_overrides) (`5db22b1`). 11 loader-testiä passed.
 - Plan B Task 24: PipeSegmentExtrusion-dataclass + line_to_pipe_segment (`9f1a51c`). 16 geometry-testiä passed.
 - Plan B Task 25: add_pipe_segment + IfcPipeSegmentType + USERDEFINED-fallback ei-validille IfcPipeSegmentTypeEnum-arvolle (`b5ff242`). 25 ifc_writer-testiä passed.
+- Plan B Task 26: convert_dxf dispatchaa IfcPipeSegment + mapper välittää Pset_PipeSegmentOccurrence.NominalDiameter → extra_props default_diameter_mm + integraatiotesti LT IMU → 2151 (`770978f`). 18 integration+mapper-testiä passed. ✅ Section 6 valmis.
 
-**Kesken:** Plan B Task 26–50 (25 jäljellä).
+**Kesken:** Plan B Task 27–50 (24 jäljellä).
 
 **Blokkerit:** ei.
