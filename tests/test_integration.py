@@ -305,6 +305,35 @@ def test_kyl_levy_roundtrip_produces_building_element_proxy(tmp_path: Path):
     assert errors == [], f"IFC validation errors: {errors}"
 
 
+def test_hoyrystin_roundtrip_produces_ifcevaporator_with_talo2000_2510(tmp_path: Path):
+    dxf = tmp_path / "hoyrystin.dxf"
+    _write_block_insert_dxf(
+        dxf,
+        layer="KYL-HOYRYSTIN-CR-30",
+        block_name="HOYRYSTIN",
+        insertion=(1500.0, 1500.0),
+    )
+    out = tmp_path / "hoyrystin.ifc"
+
+    convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
+
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4"
+    evaps = ifc.by_type("IfcEvaporator")
+    assert len(evaps) == 1
+    assert evaps[0].Name == "KYL-HOYRYSTIN-CR-30"
+
+    refs = ifc.by_type("IfcClassificationReference")
+    talo = [r for r in refs if r.Identification == "2510"]
+    assert len(talo) == 1
+    assert talo[0].ReferencedSource.Name == "Talo2000"
+
+    logger = ifcopenshell.validate.json_logger()
+    ifcopenshell.validate.validate(ifc, logger=logger)
+    errors = [e for e in logger.statements if e.get("level") == "ERROR"]
+    assert errors == [], f"IFC validation errors: {errors}"
+
+
 def test_partition_wall_roundtrip_produces_partitioning_ifcwall(tmp_path: Path):
     dxf = tmp_path / "partition_wall.dxf"
     _write_single_line_dxf(dxf, layer="KYL-VALISEINA")

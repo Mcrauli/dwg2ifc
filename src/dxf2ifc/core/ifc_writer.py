@@ -1082,4 +1082,9 @@ def convert_dxf(
             add_talo2000_classification(
                 ifc, proxy, code=m.talo2000_code, name=m.talo2000_name
             )
+        elif m.ifc_type in _COOLING_EQUIPMENT_CLASSES:
+            equipment = add_cooling_equipment(ifc, m, parent_storey=storey)
+            add_talo2000_classification(
+                ifc, equipment, code=m.talo2000_code, name=m.talo2000_name
+            )
     write_ifc(ifc, output_path)
