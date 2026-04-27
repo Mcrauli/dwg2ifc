@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 33 — lisää `ifc_writer.add_furniture` (IfcFurniture + box-extrusion + Talo2000 1331) + test_ifc_writer.py-kattavuus.
+**Current task:** Plan B Task 34 — orchestrator dispatch + integraatiotesti KYL-LEVYHYLLY.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** failing test add_furniture:lle (IfcFurniture luotu, name layer, box-rectangle profile XDim=width YDim=depth, swept Depth=height, container storey:hin). Toteuta `add_furniture(ifc, mapped, *, parent_storey, predefined_type=None)` joka käyttää block_to_furniture_box:ia.
+**Seuraavaksi:** lisää convert_dxf:ään `elif m.ifc_type == "IfcFurniture"` haara (kutsuu add_furniture + add_talo2000_classification). Lisää integraatiotesti KYL-LEVYHYLLY + KLHYLLY-LEVY -blokilla → IfcFurniture + 1331.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (32/50)
+## Plan B status (33/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -67,7 +67,7 @@
 ### Section 8: Varastointihyllyt (1331, IfcFurniture)
 - [x] Task 31: default-profiilin KYL-LEVYHYLLY/TIKASHYLLY/KLHYLLYV-säännöt (`8d5b662`)
 - [x] Task 32: `block_to_furniture_box` testi + impl (`fcca98e`)
-- [ ] Task 33: `ifc_writer.add_furniture`
+- [x] Task 33: `ifc_writer.add_furniture` (`17a7358`)
 - [ ] Task 34: orchestrator dispatch + integraatiotesti KYL-LEVYHYLLY
 
 ### Section 9: Kaapelihyllyt (23xx)
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 32/50 — Sectionit 1–7 valmis, Section 8 etenee (2/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 33/50 — Sectionit 1–7 valmis, Section 8 etenee (3/4).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -128,7 +128,8 @@
 - Plan B Task 30: integraatiotesti KYL-VIEMARI-LATTIA → IfcPipeSegment DRAINPIPE + 2160 (`a07f315`). 7 integration-testiä passed. ✅ Section 7 valmis.
 - Plan B Task 31: aktivoi KYL-LEVYHYLLY/TIKASHYLLY/TIKASHYLLY-V INSERT-säännöt default-profiiliin (IfcFurniture 1331) (`8d5b662`). 13 loader-testiä passed.
 - Plan B Task 32: FurnitureBoxExtrusion + block_to_furniture_box (`fcca98e`). 20 geometry-testiä passed.
+- Plan B Task 33: add_furniture tuottaa IfcFurniture + box-extrusion + spatial containment (`17a7358`). 30 ifc_writer-testiä passed.
 
-**Kesken:** Plan B Task 33–50 (18 jäljellä).
+**Kesken:** Plan B Task 34–50 (17 jäljellä).
 
 **Blokkerit:** ei.
