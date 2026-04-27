@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 15 — laajenna `dxf_reader.py` lukemaan INSERT-entiteettejä ja palauttamaan `BlockInstance`-tyyppi `types.py`:ssä.
+**Current task:** Plan B Task 16 — kirjoita `tests/test_geometry.py`:hen `door_block_to_box` -failing test ja toteuta funktio `geometry.py`:hen.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää `BlockInstance`-dataclass `types.py`:hen (insertion_point: Point3D, rotation_rad: float, scale_x/y/z: float). `EntityRecord.block_name` jo on. Päivitä `dxf_reader` lukemaan INSERT-entiteettejä — palauttamaan EntityRecord(dxf_type='INSERT', geometry=BlockInstance(...), block_name=entity.dxf.name). Failing test: `tests/test_dxf_reader.py`:hen testi joka generoi DXF:n jossa on BLOCK-määritelmä `OVI-ULKO` ja INSERT layerilla `KYL-OVET-ULKO`. Pytest, commit + push, PROGRESS.md → Task 16.
+**Seuraavaksi:** lisää `geometry.py`:hen `DoorBoxExtrusion`-dataclass (anchor: Point3D, angle_rad: float, width_mm/height_mm/depth_mm) ja `door_block_to_box(block_instance, *, width_mm, height_mm, depth_mm)` joka palauttaa sen (anchor=insertion_point, angle_rad=rotation_rad). Failing test 4-vaihtoehtoa. Pytest, commit + push, PROGRESS.md → Task 17.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (14/50)
+## Plan B status (15/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -41,7 +41,7 @@
 
 ### Section 4: Ovet (1243 / 1315 / 1316)
 - [x] Task 14: default-profiilin INSERT-ovisäännöt (`36c5c51`)
-- [ ] Task 15: `dxf_reader.py` INSERT-luku + `BlockInstance`-tyyppi
+- [x] Task 15: `dxf_reader.py` INSERT-luku + `BlockInstance`-tyyppi (`6427278`)
 - [ ] Task 16: `door_block_to_box` testi + impl
 - [ ] Task 17: `ifc_writer.add_door`
 - [ ] Task 18: orchestrator dispatch + integraatiotesti OVI-ULKO
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 14/50 — Sectionit 1–3 valmis, Section 4 etenee (1/5).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 15/50 — Sectionit 1–3 valmis, Section 4 etenee (2/5).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -110,7 +110,8 @@
 - Plan B Task 12: add_slab tuottaa IfcSlab + extruded outline + spatial containment (`3d9e15f`). 12 ifc_writer-testiä passed.
 - Plan B Task 13: convert_dxf orchestrator dispatchaa IfcSlab + integraatiotesti KYL-ALAPOHJA → 1221 (`0c13013`). 15 ifc_writer+integration-testiä passed. ✅ Section 3 valmis.
 - Plan B Task 14: aktivoi ovi-INSERT-säännöt KYL-OVET-ULKO/VALI/ERITYIS default-profiiliin (1243/1315/1316) (`36c5c51`). 9 loader-testiä passed.
+- Plan B Task 15: BlockInstance types.py:hen + dxf_reader lukemaan INSERT-entiteetit (insertion_point/rotation_rad/scale) (`6427278`). 12 reader+types-testiä passed.
 
-**Kesken:** Plan B Task 15–50 (36 jäljellä).
+**Kesken:** Plan B Task 16–50 (35 jäljellä).
 
 **Blokkerit:** ei.
