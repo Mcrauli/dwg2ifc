@@ -188,3 +188,42 @@ def test_apply_profile_maps_cooling_equipment_blocks_via_default_profile():
     assert by_ifc["IfcEvaporator"].talo2000_code == "2510"
     assert by_ifc["IfcCondenser"].talo2000_code == "2520"
     assert by_ifc["IfcCompressor"].talo2000_code == "2530"
+
+
+def test_apply_profile_default_profile_emits_four_distinct_system_names():
+    profile = load_default_profile()
+    entities = [
+        EntityRecord(
+            layer="LT IMU",
+            dxf_type="LINE",
+            geometry=LineGeometry(start=Point3D(0, 0, 0), end=Point3D(1000, 0, 0)),
+        ),
+        EntityRecord(
+            layer="MT IMU",
+            dxf_type="LINE",
+            geometry=LineGeometry(start=Point3D(0, 0, 0), end=Point3D(1000, 0, 0)),
+        ),
+        EntityRecord(
+            layer="KYL-VIEMARI-LATTIA",
+            dxf_type="LINE",
+            geometry=LineGeometry(start=Point3D(0, 0, 0), end=Point3D(1000, 0, 0)),
+        ),
+        EntityRecord(
+            layer="KAAPELIHYLLY",
+            dxf_type="LINE",
+            geometry=LineGeometry(start=Point3D(0, 0, 0), end=Point3D(1000, 0, 0)),
+        ),
+        EntityRecord(
+            layer="KYL-HOYRYSTIN",
+            dxf_type="INSERT",
+            geometry=BlockInstance(insertion_point=Point3D(0, 0, 0)),
+            block_name="HOYRYSTIN",
+        ),
+    ]
+    mapped = apply_profile(entities, profile)
+    systems = {m.layer: m.extra_props.get("system_name") for m in mapped}
+    assert systems["LT IMU"] == "Refrigeration LT"
+    assert systems["MT IMU"] == "Refrigeration MT"
+    assert systems["KYL-VIEMARI-LATTIA"] == "Drainage"
+    assert systems["KAAPELIHYLLY"] == "Cable carriers"
+    assert systems["KYL-HOYRYSTIN"] == "Refrigeration plant"
