@@ -6,6 +6,7 @@ import ifcopenshell
 
 from dxf2ifc.core.ifc_writer import (
     add_door,
+    add_furniture,
     add_pipe_segment,
     add_slab,
     add_talo2000_classification,
@@ -423,6 +424,66 @@ def test_add_pipe_segment_reuses_drainpipe_type_for_repeat_calls():
     )
     drain_types = [t for t in ifc.by_type("IfcPipeSegmentType") if t.ElementType == "DRAINPIPE"]
     assert len(drain_types) == 1
+
+
+def _furniture_mapped_entity(
+    *,
+    layer: str = "KYL-LEVYHYLLY",
+    block_name: str = "KLHYLLY-LEVY",
+    talo_code: str = "1331",
+    talo_name: str = "Vakiokiintokalusteet",
+    width_mm: float = 1000.0,
+    depth_mm: float = 600.0,
+    height_mm: float = 2000.0,
+) -> MappedEntity:
+    block = BlockInstance(insertion_point=Point3D(2000, 1500, 0))
+    return MappedEntity(
+        layer=layer,
+        dxf_type="INSERT",
+        geometry=block,
+        block_name=block_name,
+        ifc_type="IfcFurniture",
+        predefined_type=None,
+        talo2000_code=talo_code,
+        talo2000_name=talo_name,
+        extra_props={
+            "default_width_mm": width_mm,
+            "default_depth_mm": depth_mm,
+            "default_height_mm": height_mm,
+        },
+    )
+
+
+def test_add_furniture_creates_ifcfurniture():
+    ifc = build_ifc_project_skeleton(project_name="Furniture Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    furniture = add_furniture(ifc, _furniture_mapped_entity(), parent_storey=storey)
+    assert furniture.is_a("IfcFurniture")
+    assert furniture.Name == "KYL-LEVYHYLLY"
+    assert furniture.Representation is not None
+
+
+def test_add_furniture_placed_under_storey():
+    ifc = build_ifc_project_skeleton(project_name="Furniture Storey")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    furniture = add_furniture(ifc, _furniture_mapped_entity(), parent_storey=storey)
+    rels = [
+        r
+        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
+        if r.RelatingStructure == storey
+    ]
+    assert any(furniture in rel.RelatedElements for rel in rels)
+
+
+def test_add_furniture_uses_extra_props_dimensions():
+    ifc = build_ifc_project_skeleton(project_name="Furniture Dims")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = _furniture_mapped_entity(width_mm=1500, depth_mm=400, height_mm=1800)
+    furniture = add_furniture(ifc, mapped, parent_storey=storey)
+    extruded = furniture.Representation.Representations[0].Items[0]
+    assert extruded.Depth == 1800.0
+    assert extruded.SweptArea.XDim == 1500.0
+    assert extruded.SweptArea.YDim == 400.0
 
 
 def test_add_talo2000_classification_attaches_reference():
