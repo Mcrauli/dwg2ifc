@@ -14,8 +14,10 @@ DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Mu
 
 - ✅ Design-spec valmis: `docs/superpowers/specs/2026-04-24-dxf2ifc-design.md`
 - ✅ Plan A kirjoitettu: `docs/superpowers/plans/2026-04-24-plan-a-core-cli-wall-pipeline.md` (21 tehtävää)
-- 🟢 Plan A **13/21 valmis** — seuraava tehtävä ja SHA-historia: **`PROGRESS.md`** (autoritatiivinen volatile state)
-- ✅ Plan B kirjoitettu (`2026-04-27-plan-b-full-element-set.md`, 50 tehtävää). Plans C–F edelleen kirjoittamatta.
+- ✅ Plan A **21/21 valmis** (yhteenveto: `54140a5`).
+- ✅ Plan B **50/50 valmis** (`2026-04-27-plan-b-full-element-set.md`) — kaikki Talo2000-elementtityypit tuettuna (US/VS/AP/VP/YP, ovet, ikkunat, kylmäputket, viemäri, hyllyt, kaapelihyllyt, kylmähuone-paneelit, kylmälaitteet). 143 testiä passed, coverage 91 %, ifcopenshell.validate ei-ERROR. Loppupisteen SHA: `cab7ea7`.
+- 🔜 Seuraavana Plan C (IfcSystem-ryhmittely) — kirjoittamatta. Plans D–F samoin.
+- 🟢 Volatile state ja per-task SHA-historia: **`PROGRESS.md`**.
 - ✅ Remote: `https://github.com/Mcrauli/dxf2ifc` (PRIVATE, default branch `master`)
 - 🔁 Routine-agentti `trig_014mxffDUvDZkafKftutpgwo` pyörii 3× päivässä (08/14/20 Helsinki), ohje: `docs/routines/next-task.md`
 

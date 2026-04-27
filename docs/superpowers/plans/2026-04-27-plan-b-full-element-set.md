@@ -125,4 +125,4 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 - [x] Task 47: luo `tests/fixtures/full_kylmaelement.dxf`-fixtuuri (LISP-skripti tai ezdxf-buildtime) joka sisältää joka section 2–11 elementtityypin yhden esiintymän (Plan A vastaava: Task 8).
 - [x] Task 48: kirjoita `tests/test_integration_full.py` joka ajaa CLI:n full-fixture-DXF:llä, validoi `ifcopenshell.validate.validate()` ei-ERROR ja tarkistaa että jokainen Talo2000-koodi (1241/1311/1221/1235/1236/1242/1243/1315/1316/1331/1352/21xx/23xx/25xx) löytyy IFC:n classification-refeistä (Plan A vastaava: Task 20).
 - [x] Task 49: aja `ruff check` + `ruff format`, korjaa kaikki ongelmat ja varmista että `pytest --cov=dxf2ifc` näyttää ≥ 85 % coveragea (Plan A vastaava: Task 21).
-- [ ] Task 50: päivitä `README.md` "Status"-sectionin Plan B -tehtävälista (numeroidut taskit) ja `CLAUDE.md` "Plans B–F" -kohta merkitsemään Plan B valmiiksi (Plan A vastaava: doc-päivitys).
+- [x] Task 50: päivitä `README.md` "Status"-sectionin Plan B -tehtävälista (numeroidut taskit) ja `CLAUDE.md` "Plans B–F" -kohta merkitsemään Plan B valmiiksi (Plan A vastaava: doc-päivitys).
