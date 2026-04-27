@@ -15,9 +15,18 @@ import ifcopenshell.api
 import ifcopenshell.guid
 
 from dxf2ifc.core.dxf_reader import read_dxf
-from dxf2ifc.core.geometry import line_to_wall_extrusion, polygon_to_slab_extrusion
+from dxf2ifc.core.geometry import (
+    door_block_to_box,
+    line_to_wall_extrusion,
+    polygon_to_slab_extrusion,
+)
 from dxf2ifc.core.mapper import apply_profile
-from dxf2ifc.core.types import LineGeometry, MappedEntity, PolygonGeometry
+from dxf2ifc.core.types import (
+    BlockInstance,
+    LineGeometry,
+    MappedEntity,
+    PolygonGeometry,
+)
 from dxf2ifc.profiles.schema import Profile
 
 
@@ -238,6 +247,99 @@ def add_slab(
         relating_structure=parent_storey,
     )
     return slab
+
+
+def add_door(
+    ifc,
+    mapped: MappedEntity,
+    *,
+    parent_storey,
+    predefined_type: str = "DOOR",
+) -> object:
+    """Create an IfcDoor from a MappedEntity whose geometry is a BlockInstance.
+
+    Door dimensions come from extra_props (default_width_mm, default_height_mm,
+    default_depth_mm); falling back to typical Finnish door defaults
+    (900 × 2100 × 50 mm). The door body is a rectangular block extruded
+    upwards so the insertion point sits at the bottom-left corner.
+    """
+    if not isinstance(mapped.geometry, BlockInstance):
+        raise TypeError(
+            f"add_door expects BlockInstance, got {type(mapped.geometry).__name__}"
+        )
+
+    width = float(mapped.extra_props.get("default_width_mm", 900.0))
+    height = float(mapped.extra_props.get("default_height_mm", 2100.0))
+    depth = float(mapped.extra_props.get("default_depth_mm", 50.0))
+    box = door_block_to_box(
+        mapped.geometry, width_mm=width, height_mm=height, depth_mm=depth
+    )
+
+    door = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class="IfcDoor",
+        name=mapped.layer,
+        predefined_type=predefined_type,
+    )
+    door.OverallHeight = box.height_mm
+    door.OverallWidth = box.width_mm
+
+    matrix = _z_rotation_matrix(box.anchor.x, box.anchor.y, box.anchor.z, box.angle_rad)
+    ifcopenshell.api.run(
+        "geometry.edit_object_placement",
+        ifc,
+        product=door,
+        matrix=matrix,
+    )
+
+    model_ctx = [
+        c
+        for c in ifc.by_type("IfcGeometricRepresentationSubContext")
+        if c.ContextIdentifier == "Body"
+    ][0]
+    rect = ifc.create_entity(
+        "IfcRectangleProfileDef",
+        ProfileType="AREA",
+        ProfileName=None,
+        Position=ifc.create_entity(
+            "IfcAxis2Placement2D",
+            Location=ifc.create_entity(
+                "IfcCartesianPoint",
+                Coordinates=(box.width_mm / 2.0, 0.0),
+            ),
+        ),
+        XDim=box.width_mm,
+        YDim=box.depth_mm,
+    )
+    extruded = ifc.create_entity(
+        "IfcExtrudedAreaSolid",
+        SweptArea=rect,
+        Position=ifc.create_entity(
+            "IfcAxis2Placement3D",
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
+        ),
+        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
+        Depth=box.height_mm,
+    )
+    shape = ifc.create_entity(
+        "IfcShapeRepresentation",
+        ContextOfItems=model_ctx,
+        RepresentationIdentifier="Body",
+        RepresentationType="SweptSolid",
+        Items=[extruded],
+    )
+    door.Representation = ifc.create_entity(
+        "IfcProductDefinitionShape", Representations=[shape]
+    )
+
+    ifcopenshell.api.run(
+        "spatial.assign_container",
+        ifc,
+        products=[door],
+        relating_structure=parent_storey,
+    )
+    return door
 
 
 def _z_rotation_matrix(x: float, y: float, z: float, angle: float) -> list[list[float]]:

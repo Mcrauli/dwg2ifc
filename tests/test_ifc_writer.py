@@ -5,6 +5,7 @@ from pathlib import Path
 import ifcopenshell
 
 from dxf2ifc.core.ifc_writer import (
+    add_door,
     add_slab,
     add_talo2000_classification,
     add_wall,
@@ -12,7 +13,13 @@ from dxf2ifc.core.ifc_writer import (
     convert_dxf,
     write_ifc,
 )
-from dxf2ifc.core.types import LineGeometry, MappedEntity, Point3D, PolygonGeometry
+from dxf2ifc.core.types import (
+    BlockInstance,
+    LineGeometry,
+    MappedEntity,
+    Point3D,
+    PolygonGeometry,
+)
 from dxf2ifc.profiles.loader import load_default_profile
 
 
@@ -175,6 +182,84 @@ def test_add_slab_placed_under_storey():
         if r.RelatingStructure == storey
     ]
     assert any(slab in rel.RelatedElements for rel in rels)
+
+
+def _door_mapped_entity(
+    *,
+    layer: str = "KYL-OVET-ULKO",
+    block_name: str = "OVI-ULKO",
+    talo_code: str = "1243",
+    talo_name: str = "Ulko-ovet",
+    width_mm: float = 900.0,
+    height_mm: float = 2100.0,
+    depth_mm: float = 50.0,
+    predefined_type: str | None = "DOOR",
+) -> MappedEntity:
+    block = BlockInstance(insertion_point=Point3D(1500, 2500, 0), rotation_rad=0.0)
+    return MappedEntity(
+        layer=layer,
+        dxf_type="INSERT",
+        geometry=block,
+        block_name=block_name,
+        ifc_type="IfcDoor",
+        predefined_type=predefined_type,
+        talo2000_code=talo_code,
+        talo2000_name=talo_name,
+        extra_props={
+            "default_width_mm": width_mm,
+            "default_height_mm": height_mm,
+            "default_depth_mm": depth_mm,
+        },
+    )
+
+
+def test_add_door_creates_ifcdoor():
+    ifc = build_ifc_project_skeleton(project_name="Door Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    door = add_door(ifc, _door_mapped_entity(), parent_storey=storey)
+    assert door.is_a("IfcDoor")
+    assert door.PredefinedType == "DOOR"
+    assert door.Name == "KYL-OVET-ULKO"
+
+
+def test_add_door_sets_overall_height_and_width():
+    ifc = build_ifc_project_skeleton(project_name="Door Dims")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    door = add_door(
+        ifc,
+        _door_mapped_entity(width_mm=1200, height_mm=2400),
+        parent_storey=storey,
+    )
+    assert door.OverallHeight == 2400.0
+    assert door.OverallWidth == 1200.0
+
+
+def test_add_door_placed_under_storey():
+    ifc = build_ifc_project_skeleton(project_name="Door Storey")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    door = add_door(ifc, _door_mapped_entity(), parent_storey=storey)
+    rels = [
+        r
+        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
+        if r.RelatingStructure == storey
+    ]
+    assert any(door in rel.RelatedElements for rel in rels)
+
+
+def test_add_door_supports_explicit_predefined_type_kwarg():
+    ifc = build_ifc_project_skeleton(project_name="Gate Door")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = _door_mapped_entity(predefined_type=None)
+    door = add_door(ifc, mapped, parent_storey=storey, predefined_type="GATE")
+    assert door.PredefinedType == "GATE"
+
+
+def test_add_door_defaults_predefined_type_to_door():
+    ifc = build_ifc_project_skeleton(project_name="Default Door")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = _door_mapped_entity(predefined_type=None)
+    door = add_door(ifc, mapped, parent_storey=storey)
+    assert door.PredefinedType == "DOOR"
 
 
 def test_add_talo2000_classification_attaches_reference():
