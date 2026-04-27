@@ -36,3 +36,24 @@ Koko design on dokumentissa [`docs/superpowers/specs/2026-04-24-dxf2ifc-design.m
 - `pytest` + `ruff` (testit ja lint)
 - `PySide6` (desktop GUI, LGPL — Plan D)
 - PyInstaller (.exe-jakelu — Plan E)
+
+## Käyttö
+
+### CLI
+
+```bash
+uv run dxf2ifc convert --input pohja.dxf --output pohja.ifc
+```
+
+CLI lukee DXF:n, mappaa layerit oletusprofiililla (Talo2000) ja kirjoittaa IFC 4 -tiedoston. Custom-profiilin voi antaa `--profile polku.toml`.
+
+### GUI (Plan D)
+
+```bash
+uv pip install -e ".[gui]"     # tai pipx install "dxf2ifc[gui]"
+dxf2ifc-gui                    # tai: python -m dxf2ifc.gui
+```
+
+GUI tukee: DXF-tiedoston valinnan, layerien esikatselun + Talo2000-resoluution, konversion taustasäikeessä ja profiilin editoinnin (Profile → Edit profile…) suoraan käyttöliittymästä. Custom layer-säännöt voi tallentaa TOML-tiedostoon ja ladata uudelleen.
+
+Screenshot tulee Lauri otosta dxf2ifc-gui:n käynnistämisen jälkeen: [`docs/screenshots/gui-main.png`](docs/screenshots/gui-main.png) (placeholder).

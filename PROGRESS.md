@@ -2,7 +2,7 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 23 — pytest-qt config + offscreen QPA + shared QApplication.
+**Current task:** Plan D Task 24 — README "GUI"-osio + screenshot placeholder.
 
 **Mode:** A (implementointi).
 
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (22/25)
+## Plan D status (23/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -131,7 +131,7 @@
 ### Section 7: Polish + packaging hooks
 - [x] Task 21: `gui/about.py` show_about (`13e882d`)
 - [x] Task 22: `gui/recent_files.py` QSettings:n kautta + Open recent (`54adf38`)
-- [ ] Task 23: pytest-qt config + offscreen QPA + shared QApplication
+- [x] Task 23: pytest-qt config + offscreen QPA + shared QApplication (`cb5e14a`)
 - [ ] Task 24: README "GUI"-osio + screenshot placeholder
 - [ ] Task 25: plan-loppupiste — pytest, ruff, coverage, docs status
 
