@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 5 — `gui/style.qss` värit + typografia + valid-style testi.
+**Current task:** Plan D Task 6 — `gui/theme.py` `apply_theme(app)` + font registration testi.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** luo `src/dxf2ifc/gui/style.qss` jossa: gradient-tausta `#0f172a` → `#020617`, primary-amber `#f59e0b`, secondary-blue `#60a5fa`, slate-tekstiportaat, Inter body, Space Grotesk H1/H2 (role-property selektorit), JetBrains Mono code/label (role="caption"). Stylaa: QMainWindow, QPushButton[primary="true"], QPushButton[secondary="true"], QLabel[role="h1"], QLabel[role="h2"], QLabel[role="caption"], QStatusBar. Failing-test (`tests/test_gui_style.py`) varmistaa että `style.qss` ladataan importlib.resources:n kautta, palauttaa ei-tyhjän stringin ja että QApplication.setStyleSheet hyväksyy sen ilman warninkeja.
+**Seuraavaksi:** luo `src/dxf2ifc/gui/theme.py` jossa `apply_theme(app: QApplication) -> None`. Funktio (a) rekisteröi 8 TTF:ää `QFontDatabase.addApplicationFont` -metodilla resurssipath:sta `dxf2ifc.gui.fonts`-paketista — siksi tarvitaan myös `src/dxf2ifc/gui/fonts/`-symlink tai kopio assets/fonts/-tiedostoista (force-include hoitaa wheelin, mutta editable installaa tarvitsee real-pathin). Vaihtoehtoisesti: lue `Path(__file__).parent / "fonts" / name` jossa fonts on suora alikansio. Helpoin: kopioi assets/fonts → src/dxf2ifc/gui/fonts/ git-trackattuna. (b) `app.setStyleSheet(read_text(style.qss))`. (c) `app.setFont(QFont("Inter", 10))`. Failing-test (`tests/test_gui_theme.py`) varmistaa rekisteröidyt familyt löytyvät `QFontDatabase.families()` listasta ja että `app.styleSheet()` ei ole tyhjä.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (4/25)
+## Plan D status (5/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -103,7 +103,7 @@
 
 ### Section 2: Brand assets
 - [x] Task 4: Inter / Space Grotesk / JetBrains Mono fontit + LICENSES (`f3f5116`)
-- [ ] Task 5: `gui/style.qss` värit + typografia + valid-style testi
+- [x] Task 5: `gui/style.qss` värit + typografia + valid-style testi (`4155720`)
 - [ ] Task 6: `gui/theme.py` `apply_theme(app)` + font registration testi
 
 ### Section 3: MainWindow + layout
@@ -228,7 +228,8 @@
 - Plan D Task 2: `gui/app.py` `MainWindow` + `run()` + qtbot-testi (`f87b09e`). 2 gui-app-testiä passed.
 - Plan D Task 3: `dxf2ifc-gui` console-script + `gui/__main__.py` (`ce1cba8`). 2 main-module-testiä passed. ✅ Section 1 valmis.
 - Plan D Task 4: 8 OFL-fonttia (Inter Reg/Med/SemiBold/Bold + Space Grotesk Med/SemiBold/Bold + JetBrains Mono Med) + 3 LICENSE.txt + LICENSES.md `assets/fonts/`-kansiossa, hatchling force-include säännöt wheeliin (`f3f5116`). 3 font-asset-testiä passed.
+- Plan D Task 5: `src/dxf2ifc/gui/style.qss` brand-paletilla + role/primary/secondary-selektoreilla (QMainWindow/QPushButton/QLabel/QStatusBar/QLineEdit/QHeaderView/QMenu); hatchling-include sääntö lisätty (`4155720`). 4 style-testiä passed.
 
-**Kesken:** Plan D Task 5–25 (21 jäljellä).
+**Kesken:** Plan D Task 6–25 (20 jäljellä).
 
 **Blokkerit:** ei.
