@@ -37,6 +37,16 @@ Plan A 21/21 + Plan B 50/50 valmis (master `2494841`). 143 testiä passed, cover
 
 ## Section 3: ifc_writer.add_system + group assignment
 
+- [ ] Task 6: kirjoita failing test `tests/test_ifc_writer.py`:hen `add_system(ifc, *, name)`-funktiolle joka luo IfcSystem entiteetin ja palauttaa sen.
+- [ ] Task 7: lisää `add_system` toteutus `ifc_writer.py`:hen (käytä `ifcopenshell.api.run("root.create_entity", ifc_class="IfcSystem", name=name)` ja varmista että kerran-per-name -caching toimii).
+- [ ] Task 8: lisää `assign_to_system(ifc, products, system)`-helper joka käyttää `ifcopenshell.api.run("group.assign_group", ...)` tai luo IfcRelAssignsToGroup manuaalisesti, ja vastaava testi.
+
 ## Section 4: Orchestrator — kerää ja kytke
 
+- [ ] Task 9: laajenna `convert_dxf` keräämään dict[system_name → list[product]] kun MappedEntityillä on extra_props["system_name"]. Failing test joka varmistaa että kerätyt järjestelmät ovat oikein.
+- [ ] Task 10: lopuksi luo IfcSystem per kerätty nimi ja kytke products `assign_to_system`:llä. Integraatiotesti varmistaa että per-system-relaatiot löytyvät IFC:stä.
+
 ## Section 5: Integraatio + lint
+
+- [ ] Task 11: laajenna `tests/test_integration_full.py` varmistamaan että `IfcSystem` 'Refrigeration LT' / 'Drainage' / 'Cable carriers' / 'Refrigeration plant' löytyvät full-fixture-IFC:stä ja että jokaisella on ≥1 jäsen IfcRelAssignsToGroup-relaation kautta.
+- [ ] Task 12: ruff clean + `pytest --cov` ≥85 %, päivitä README/CLAUDE.md "Plan C valmis" -merkki.
