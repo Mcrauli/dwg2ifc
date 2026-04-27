@@ -21,6 +21,15 @@ def _write_single_line_dxf(path: Path, layer: str) -> None:
     doc.saveas(str(path))
 
 
+def _write_closed_lwpolyline_dxf(path: Path, layer: str) -> None:
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name=layer)
+    msp = doc.modelspace()
+    pts = [(0.0, 0.0), (4000.0, 0.0), (4000.0, 3000.0), (0.0, 3000.0)]
+    msp.add_lwpolyline(pts, close=True, dxfattribs={"layer": layer})
+    doc.saveas(str(path))
+
+
 def test_simple_wall_roundtrip(fixtures_dir: Path, tmp_path: Path):
     dxf = fixtures_dir / "simple_wall.dxf"
     out = tmp_path / "simple_wall.ifc"
@@ -50,6 +59,30 @@ def test_simple_wall_roundtrip(fixtures_dir: Path, tmp_path: Path):
     assert talo[0].ReferencedSource.Name == "Talo2000"
 
     assert wall.Representation is not None
+
+    logger = ifcopenshell.validate.json_logger()
+    ifcopenshell.validate.validate(ifc, logger=logger)
+    errors = [e for e in logger.statements if e.get("level") == "ERROR"]
+    assert errors == [], f"IFC validation errors: {errors}"
+
+
+def test_alapohja_roundtrip_produces_floor_ifcslab(tmp_path: Path):
+    dxf = tmp_path / "alapohja.dxf"
+    _write_closed_lwpolyline_dxf(dxf, layer="KYL-ALAPOHJA")
+    out = tmp_path / "alapohja.ifc"
+
+    convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
+
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4"
+    slabs = ifc.by_type("IfcSlab")
+    assert len(slabs) == 1
+    assert slabs[0].PredefinedType == "FLOOR"
+
+    refs = ifc.by_type("IfcClassificationReference")
+    talo = [r for r in refs if r.Identification == "1221"]
+    assert len(talo) == 1
+    assert talo[0].ReferencedSource.Name == "Talo2000"
 
     logger = ifcopenshell.validate.json_logger()
     ifcopenshell.validate.validate(ifc, logger=logger)
