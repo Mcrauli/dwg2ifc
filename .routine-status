@@ -1,1 +1,1 @@
-🟢 dxf2ifc valmis (n. 45 min): Plan B kirjoitettu (50 tehtävää, 12 sectionia) + Task 1 implementoitu (Rule.entity_kind + block_name, faaac8c). 44 testiä passed, ruff clean. Seuraavaksi: Task 2 (extrusion_height + pset_overrides + INSERT-validointi). Blokkerit: ei. User pyysi stop:in.
+🟡 dxf2ifc alkoi: Mode A, Plan B Task 2 (Rule extrusion_height + pset_overrides + INSERT-validointi). SHA: debf421. Seuraavaksi: failing test test_profile_schema.py + schema.py model_validator.
