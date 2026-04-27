@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from dxf2ifc.profiles.loader import load_default_profile, load_profile
+from dxf2ifc.profiles.loader import dump_profile, load_default_profile, load_profile
 from dxf2ifc.profiles.schema import Profile
 
 
@@ -259,3 +259,26 @@ talo2000_name = "Ulkoseinät"
     profile_file.write_text(toml_content, encoding="utf-8")
     with pytest.raises(Exception):  # pydantic ValidationError
         load_profile(profile_file)
+
+
+def test_dump_profile_round_trips_default(tmp_path: Path):
+    original = load_default_profile()
+    out = tmp_path / 'roundtrip.toml'
+    dump_profile(original, out)
+    reloaded = load_profile(out)
+    assert isinstance(reloaded, Profile)
+    assert len(reloaded.rules) == len(original.rules)
+    by_pattern = {r.layer_pattern: r for r in reloaded.rules}
+    for original_rule in original.rules:
+        re_rule = by_pattern[original_rule.layer_pattern]
+        assert re_rule.ifc_type == original_rule.ifc_type
+        assert re_rule.talo2000_code == original_rule.talo2000_code
+        assert re_rule.system_name == original_rule.system_name
+
+
+def test_dump_profile_writes_valid_utf8_toml(tmp_path: Path):
+    profile = load_default_profile()
+    out = tmp_path / 'roundtrip.toml'
+    dump_profile(profile, out)
+    text = out.read_text(encoding='utf-8')
+    assert text.startswith('[profile]') or '[[rules]]' in text
