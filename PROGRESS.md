@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Plan C — IfcSystem-ryhmittely (kirjoittamatta).
+**Current plan:** Plan C — IfcSystem-ryhmittely (skeleton committed `93f01fc`, 5 sectionia).
 
-**Current task:** Plan C Task 1 — kirjoita Plan C:n skeleton (IfcSystem-ryhmittely kylmäjärjestelmille).
+**Current task:** Plan C Mode B section 1/5 — täytä Section 1 (Profiili — system_name -arvot) task-rivit.
 
-**Mode:** B (plan-kirjoitus).
+**Mode:** B (plan-kirjoitus, section 1/5).
 
-**Seuraavaksi:** kirjoita `docs/superpowers/plans/2026-04-27-plan-c-ifcsystem-grouping.md` skeleton: YAML frontmatter + 1–3 rivin intro + section-otsikot. Sen jälkeen täytä section-task-rivit yksi kerrallaan.
+**Seuraavaksi:** lisä task-rivit Plan C:n Section 1 -osioon (3-5 task:ia profiilin system_name-aktivoinnista LT IMU/MT IMU/MT NESTE/KYL-VIEMARI/KAAPELIHYLLY/HOYRYSTIN/LAUHDUTIN/KOMPRESSORI). commit + push, sitten section 2.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
