@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 13 — integraatiotesti simple_wall.dxf → IFC GUI:n kautta.
+**Current task:** Plan D Task 14 — `dxf_reader.list_layers(dxf_path)` helper.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** end-to-end integraatiotesti `tests/test_gui_integration.py`:ssä. Käytä `tests/fixtures/simple_wall.dxf`-fixtureä, klikkaa Convert-nappia oikealla `convert_dxf`:llä (ilman patchia), `qtbot.waitSignal(window.convert_finished)`, varmista että output-IFC-tiedosto on olemassa ja sisältää `IfcWall`. Tämä validointi vastaa Section 4:n loppupistettä.
+**Seuraavaksi:** lisää `core/dxf_reader.py`:hen `list_layers(dxf_path: str | Path) -> list[str]` joka avaa DXF:n ezdxf:llä, palauttaa `sorted({entity.dxf.layer for entity in modelspace})`. Failing-test käyttää `tests/fixtures/simple_wall.dxf`-fixtureä ja varmistaa että odotettu layer-nimi löytyy.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (12/25)
+## Plan D status (13/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -115,7 +115,7 @@
 - [x] Task 10: `FilePanel` (DXF input + IFC output + Convert) (`e7935d3`)
 - [x] Task 11: `ConvertWorker(QObject)` taustasäikeessä + signaalit (`8216c0b`)
 - [x] Task 12: kytke Convert-nappi + statusbar-päivitys (`ff218ca`)
-- [ ] Task 13: integraatiotesti simple_wall.dxf → IFC GUI:n kautta
+- [x] Task 13: integraatiotesti simple_wall.dxf → IFC GUI:n kautta (`9e96b6f`)
 
 ### Section 5: Layer preview
 - [ ] Task 14: `dxf_reader.list_layers(dxf_path)`
@@ -236,7 +236,8 @@
 - Plan D Task 10: `gui/file_panel.py` `FilePanel` (DXF/IFC line-editit + Browse-napit + Convert-nappi) + `convert_requested(str, str)` -signaali (`e7935d3`). 3 file-panel-testiä passed.
 - Plan D Task 11: `gui/convert_worker.py` `ConvertWorker(QObject)` + sisäinen `_ConvertRunnable` joka ajaa `convert_dxf` QThreadPoolissa; finished/failed-signaalit (`8216c0b`). 2 worker-testiä passed.
 - Plan D Task 12: kytkin FilePanel + ConvertWorker MainWindow:iin: convert_requested → disable button + status "Converting…" → worker → finished re-emittoi `convert_finished(out)`-signaalin + status "Done", failed re-emittoi `convert_failed(msg)` + status "Error" (`ff218ca`). 9 gui-app-testiä passed.
+- Plan D Task 13: end-to-end GUI integration test simple_wall.dxf → IfcWall (`9e96b6f`). 1 GUI-integration-testi passed. ✅ Section 4 valmis.
 
-**Kesken:** Plan D Task 13–25 (13 jäljellä).
+**Kesken:** Plan D Task 14–25 (12 jäljellä, Section 5 alkaa).
 
 **Blokkerit:** ei.
