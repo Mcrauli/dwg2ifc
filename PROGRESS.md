@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 9 — menubar (Open DXF, Quit, About).
+**Current task:** Plan D Task 10 — `FilePanel` (DXF input + IFC output + Convert).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää MainWindow:n konstruktoriin menubar: `File → Open DXF…`, `File → Quit`, `Help → About`. Open DXF triggaa Section 4:n convert-flow:n (toistaiseksi placeholder slot joka emittoi signaalin tai kutsuu lambdaa). Quit kutsuu `self.close()`. About näyttää `QMessageBox.about(self, "dxf2ifc", "<info>")`. Failing-test varmistaa että `menuBar().findChildren(QAction)` sisältää tasan kolme actionia odotetuilla tekstillä.
+**Seuraavaksi:** luo `gui/file_panel.py` `FilePanel`-widget (QWidget): kaksi (QLineEdit + QPushButton[secondary="true"]) Browse-paria DXF input + IFC output, plus QPushButton[primary="true"] "Convert". Browse-napit avaavat `QFileDialog.getOpenFileName / getSaveFileName` filterillä `*.dxf` / `*.ifc`. `Signal` `convert_requested(str, str)` emittoidaan kun Convert-painiketta klikataan. Failing-test (`tests/test_gui_file_panel.py`) monkeypatchaa `QFileDialog.getOpenFileName` palauttamaan tunnetun polun, klikkaa Browse-nappia ja varmistaa että line-edit täytetään.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (8/25)
+## Plan D status (9/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -109,7 +109,7 @@
 ### Section 3: MainWindow + layout
 - [x] Task 7: `MainWindow` (otsikkorivi + QSplitter + QStatusBar) (`6275bc6`)
 - [x] Task 8: `set_status(text, level)` info/success/error + QSS (`3f045d9`)
-- [ ] Task 9: menubar (Open DXF, Quit, About)
+- [x] Task 9: menubar (Open DXF, Quit, About) (`f0bcd48`)
 
 ### Section 4: Convert flow
 - [ ] Task 10: `FilePanel` (DXF input + IFC output + Convert)
@@ -232,7 +232,8 @@
 - Plan D Task 6: `gui/theme.py` `apply_theme(app)` rekisteröi 7 TTF:ää (Inter Reg/Med/SemiBold/Bold + Space Grotesk Med/Bold + JetBrains Mono Med), asettaa style.qss + Inter 10pt default-fontin (`dd6387a`). 3 theme-testiä passed. Pudotettiin SpaceGrotesk-SemiBold koska upstream static-build ei ship sitä eikä Google Fonts ole sandbox-allowlistissa. ✅ Section 2 valmis.
 - Plan D Task 7: `gui/main_window.py` MainWindow — title-rivi (H1 + caption), QSplitter (vasen+oikea stub), QStatusBar; `app.run()` kutsuu `apply_theme()` ennen showia (`6275bc6`). 4 gui-app-testiä passed.
 - Plan D Task 8: `MainWindow.set_status(text, level)` asettaa statusbarin tekstin + level-property:n (info/success/error) + unpolish/polish-syklin QSS:n päivitykseen (`3f045d9`). 5 gui-app-testiä passed.
+- Plan D Task 9: menubar File (Open DXF…, Quit) + Help (About) MainWindow:in konstruktorissa, action-objektit self-attribuutteina shiboken-GC:lle (`f0bcd48`). 7 gui-app-testiä passed. ✅ Section 3 valmis.
 
-**Kesken:** Plan D Task 9–25 (17 jäljellä).
+**Kesken:** Plan D Task 10–25 (16 jäljellä, Section 4 alkaa).
 
 **Blokkerit:** ei.
