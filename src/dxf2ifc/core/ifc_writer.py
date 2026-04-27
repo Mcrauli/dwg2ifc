@@ -13,8 +13,11 @@ import ifcopenshell
 import ifcopenshell.api
 import ifcopenshell.guid
 
+from dxf2ifc.core.dxf_reader import read_dxf
 from dxf2ifc.core.geometry import line_to_wall_extrusion
+from dxf2ifc.core.mapper import apply_profile
 from dxf2ifc.core.types import LineGeometry, MappedEntity
+from dxf2ifc.profiles.schema import Profile
 
 
 def build_ifc_project_skeleton(
@@ -202,3 +205,25 @@ def add_talo2000_classification(ifc, product, *, code: str, name: str) -> object
         RelatingClassification=reference,
     )
     return reference
+
+
+def convert_dxf(
+    *,
+    dxf_path: str | Path,
+    output_path: str | Path,
+    profile: Profile,
+    project_name: str | None = None,
+) -> None:
+    """Orchestrate DXF -> IFC conversion end-to-end for Plan A (walls only)."""
+    name = project_name or Path(dxf_path).stem
+    entities = read_dxf(dxf_path)
+    mapped = apply_profile(entities, profile)
+    ifc = build_ifc_project_skeleton(project_name=name)
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    for m in mapped:
+        if m.ifc_type == "IfcWall":
+            wall = add_wall(ifc, m, parent_storey=storey)
+            add_talo2000_classification(
+                ifc, wall, code=m.talo2000_code, name=m.talo2000_name
+            )
+    write_ifc(ifc, output_path)

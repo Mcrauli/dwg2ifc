@@ -91,3 +91,22 @@ def test_add_talo2000_classification_attaches_reference():
     assert any(r.Identification == "1241" for r in refs)
     classifications = ifc.by_type("IfcClassification")
     assert any(c.Name == "Talo2000" for c in classifications)
+
+
+from dxf2ifc.core.ifc_writer import convert_dxf
+from dxf2ifc.profiles.loader import load_default_profile
+
+
+def test_convert_dxf_produces_ifc_with_wall(fixtures_dir: Path, tmp_path: Path):
+    output = tmp_path / "out.ifc"
+    convert_dxf(
+        dxf_path=fixtures_dir / "simple_wall.dxf",
+        output_path=output,
+        profile=load_default_profile(),
+    )
+    assert output.exists()
+    reloaded = ifcopenshell.open(str(output))
+    walls = reloaded.by_type("IfcWall")
+    assert len(walls) == 1
+    refs = reloaded.by_type("IfcClassificationReference")
+    assert any(r.Identification == "1241" for r in refs)
