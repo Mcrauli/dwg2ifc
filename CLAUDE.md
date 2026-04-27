@@ -15,7 +15,7 @@ DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Mu
 - ✅ Design-spec valmis: `docs/superpowers/specs/2026-04-24-dxf2ifc-design.md`
 - ✅ Plan A kirjoitettu: `docs/superpowers/plans/2026-04-24-plan-a-core-cli-wall-pipeline.md` (21 tehtävää)
 - 🟢 Plan A **13/21 valmis** — seuraava tehtävä ja SHA-historia: **`PROGRESS.md`** (autoritatiivinen volatile state)
-- ⏳ Plans B–F kirjoittamatta (yksi per milestone, ks. Seuraavat plans alla)
+- ✅ Plan B kirjoitettu (`2026-04-27-plan-b-full-element-set.md`, 50 tehtävää). Plans C–F edelleen kirjoittamatta.
 - ✅ Remote: `https://github.com/Mcrauli/dxf2ifc` (PRIVATE, default branch `master`)
 - 🔁 Routine-agentti `trig_014mxffDUvDZkafKftutpgwo` pyörii 3× päivässä (08/14/20 Helsinki), ohje: `docs/routines/next-task.md`
 
@@ -123,7 +123,7 @@ Vaiheet tiivistettynä:
 
 ## Plans B–F (kirjoitetaan myöhemmin)
 
-- **Plan B:** Laajenna Plan A kattamaan kaikki 11 element-tyyppiä (slabs, doors, windows, putket, hyllyt, kaapelihyllyt, proxies, laitteet)
+- **Plan B:** ✅ kirjoitettu `docs/superpowers/plans/2026-04-27-plan-b-full-element-set.md` (50 tehtävää, 12 sectionia). Laajentaa Plan A:n pipelinen kattamaan kaikki 10 jäljellä olevaa Talo2000-elementtityyppiä (slabs, doors, windows, putket, hyllyt, kaapelihyllyt, proxies, laitteet). Toteutus kesken — ks. `PROGRESS.md`.
 - **Plan C:** `IfcSystem`-ryhmittely kylmäjärjestelmille (putket, laitteet, kaapelihyllyt samaan järjestelmään)
 - **Plan D:** PySide6 GUI joka wrappaa CLI-corea (MainWindow, Preview, layer-listaus)
 - **Plan E:** Packaging — PyInstaller .exe Windowsille + GitHub Releases
