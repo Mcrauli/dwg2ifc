@@ -36,6 +36,18 @@ packages = ["src/dxf2ifc"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml" = "dxf2ifc/profiles/default_kylmalaite_talo2000.toml"
+"assets/fonts/Inter-Regular.ttf" = "dxf2ifc/gui/fonts/Inter-Regular.ttf"
+"assets/fonts/Inter-Medium.ttf" = "dxf2ifc/gui/fonts/Inter-Medium.ttf"
+"assets/fonts/Inter-SemiBold.ttf" = "dxf2ifc/gui/fonts/Inter-SemiBold.ttf"
+"assets/fonts/Inter-Bold.ttf" = "dxf2ifc/gui/fonts/Inter-Bold.ttf"
+"assets/fonts/SpaceGrotesk-Medium.ttf" = "dxf2ifc/gui/fonts/SpaceGrotesk-Medium.ttf"
+"assets/fonts/SpaceGrotesk-SemiBold.ttf" = "dxf2ifc/gui/fonts/SpaceGrotesk-SemiBold.ttf"
+"assets/fonts/SpaceGrotesk-Bold.ttf" = "dxf2ifc/gui/fonts/SpaceGrotesk-Bold.ttf"
+"assets/fonts/JetBrainsMono-Medium.ttf" = "dxf2ifc/gui/fonts/JetBrainsMono-Medium.ttf"
+"assets/fonts/LICENSES.md" = "dxf2ifc/gui/fonts/LICENSES.md"
+"assets/fonts/Inter-LICENSE.txt" = "dxf2ifc/gui/fonts/Inter-LICENSE.txt"
+"assets/fonts/SpaceGrotesk-LICENSE.txt" = "dxf2ifc/gui/fonts/SpaceGrotesk-LICENSE.txt"
+"assets/fonts/JetBrainsMono-LICENSE.txt" = "dxf2ifc/gui/fonts/JetBrainsMono-LICENSE.txt"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
