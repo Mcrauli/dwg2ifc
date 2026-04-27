@@ -121,6 +121,44 @@ def test_main_window_convert_flow_disables_button_during_run(qtbot, tmp_path):
         qtbot.waitUntil(lambda: panel.convert_button.isEnabled(), timeout=2000)
 
 
+def test_main_window_profile_menu_has_edit_action(qtbot):
+    from dxf2ifc.gui.app import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    texts = _menu_action_texts(window)
+    assert "Edit profile…" in texts
+
+
+def test_main_window_apply_profile_after_editor_save(qtbot, fixtures_dir, tmp_path):
+    from dxf2ifc.gui.app import MainWindow
+    from dxf2ifc.profiles.loader import dump_profile, load_default_profile
+    from dxf2ifc.profiles.schema import Profile, Rule
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    window.file_panel.input_edit.setText(str(fixtures_dir / "simple_wall.dxf"))
+    window.file_panel.input_edit.editingFinished.emit()
+
+    extended = load_default_profile()
+    extended_rules = list(extended.rules) + [
+        Rule(
+            layer_pattern="CUSTOM-LAYER*",
+            entity_kind="LINE",
+            ifc_type="IfcWall",
+            talo2000_code="9999",
+            talo2000_name="Custom",
+        )
+    ]
+    extended = Profile.model_validate({**extended.model_dump(), "rules": extended_rules})
+
+    target = tmp_path / "custom.toml"
+    dump_profile(extended, target)
+    window.apply_profile_from_path(target)
+
+    assert any(r.layer_pattern == "CUSTOM-LAYER*" for r in window._profile.rules)
+
+
 def test_main_window_layer_table_updates_when_input_path_set(qtbot, fixtures_dir):
     from dxf2ifc.gui.app import MainWindow
 

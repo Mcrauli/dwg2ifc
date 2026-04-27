@@ -10,7 +10,7 @@ from dxf2ifc.core.dxf_reader import list_layers
 from dxf2ifc.gui.convert_worker import ConvertWorker
 from dxf2ifc.gui.file_panel import FilePanel
 from dxf2ifc.gui.layer_table import LayerTable
-from dxf2ifc.profiles.loader import load_default_profile
+from dxf2ifc.profiles.loader import load_default_profile, load_profile
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -61,6 +61,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self._quit_action = QtGui.QAction("Quit", self)
         self._quit_action.triggered.connect(self.close)
         file_menu.addAction(self._quit_action)
+        profile_menu = menubar.addMenu("Profile")
+        self._edit_profile_action = QtGui.QAction("Edit profile…", self)
+        self._edit_profile_action.triggered.connect(self._on_edit_profile)
+        profile_menu.addAction(self._edit_profile_action)
         help_menu = menubar.addMenu("Help")
         self._about_action = QtGui.QAction("About", self)
         self._about_action.triggered.connect(self._on_about)
@@ -68,6 +72,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _on_open_dxf(self) -> None:
         self.file_panel._on_browse_input()
+
+    def _on_edit_profile(self) -> None:
+        from dxf2ifc.gui.profile_editor import ProfileEditorDialog
+
+        dialog = ProfileEditorDialog(self._profile, parent=self)
+        dialog.profile_saved.connect(self.apply_profile_from_path)
+        dialog.exec()
+
+    def apply_profile_from_path(self, path: str) -> None:
+        self._profile = load_profile(path)
+        self._refresh_layer_table()
+        self.set_status(f"Profile loaded: {path}", level="success")
 
     def _on_convert_requested(self, dxf: str, out: str) -> None:
         if not dxf or not out:
