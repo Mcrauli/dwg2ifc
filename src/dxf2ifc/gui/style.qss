@@ -1,0 +1,127 @@
+/* dxf2ifc brand stylesheet (Plan D Task 5).
+   Mirrors the autocad-lisp-ohjeet site palette and typography:
+   slate gradient background, amber primary, blue secondary,
+   Inter for body / Space Grotesk for headings / JetBrains Mono for code. */
+
+QMainWindow {
+    background-color: #0f172a;
+    background: qlineargradient(
+        x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #0f172a,
+        stop: 1 #020617
+    );
+    color: #e2e8f0;
+}
+
+QWidget {
+    color: #e2e8f0;
+    font-family: "Inter";
+    font-size: 14px;
+}
+
+QLabel[role="h1"] {
+    font-family: "Space Grotesk";
+    font-weight: 700;
+    font-size: 28px;
+    color: #f8fafc;
+    letter-spacing: -0.5px;
+}
+
+QLabel[role="h2"] {
+    font-family: "Space Grotesk";
+    font-weight: 600;
+    font-size: 20px;
+    color: #f8fafc;
+}
+
+QLabel[role="caption"] {
+    font-family: "JetBrains Mono";
+    font-weight: 500;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+QPushButton[primary="true"] {
+    background-color: #f59e0b;
+    color: #0f172a;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 600;
+}
+
+QPushButton[primary="true"]:hover {
+    background-color: rgba(245, 158, 11, 0.85);
+}
+
+QPushButton[primary="true"]:disabled {
+    background-color: rgba(245, 158, 11, 0.4);
+    color: rgba(15, 23, 42, 0.6);
+}
+
+QPushButton[secondary="true"] {
+    background-color: transparent;
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.5);
+    border-radius: 4px;
+    padding: 8px 16px;
+}
+
+QPushButton[secondary="true"]:hover {
+    background-color: rgba(96, 165, 250, 0.12);
+    border-color: #60a5fa;
+}
+
+QStatusBar {
+    background-color: rgba(15, 23, 42, 0.8);
+    color: #cbd5f5;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+QStatusBar[level="success"] {
+    color: #f59e0b;
+}
+
+QStatusBar[level="error"] {
+    color: #fca5a5;
+}
+
+QLineEdit, QTableWidget, QTableView, QListWidget {
+    background-color: rgba(15, 23, 42, 0.6);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: 6px 8px;
+    selection-background-color: rgba(245, 158, 11, 0.4);
+}
+
+QHeaderView::section {
+    background-color: #0f172a;
+    color: #94a3b8;
+    font-family: "JetBrains Mono";
+    font-size: 12px;
+    padding: 6px 8px;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+QMenuBar {
+    background-color: #0f172a;
+    color: #cbd5f5;
+}
+
+QMenuBar::item:selected {
+    background-color: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+}
+
+QMenu {
+    background-color: #020617;
+    color: #cbd5f5;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+QMenu::item:selected {
+    background-color: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+}
