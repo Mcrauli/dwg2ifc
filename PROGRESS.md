@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 18 — ohjaa orchestratorista oviblokit `add_door`-kutsuun ja päivitä integraatiotesti DXF-fixtuurilla joka sisältää OVI-ULKO-blokin.
+**Current task:** Plan B Task 19 — lisää default-profiiliin INSERT-sääntö `IKKUNA → IfcWindow 1242` korkeus/leveys-attribuuttimappauksella.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** laajenna `convert_dxf` orchestrator dispatchaamaan IfcDoor-rule entiteetit `add_door`-kutsuun + lisätä Talo2000-classification. Mapper extra_props pitää myös tuottaa default_width_mm + default_depth_mm — laajenna `Rule` ja `apply_profile` jos puuttuu (pidä Task 18 -scope: integration). Kirjoita integraatiotesti joka generoi KYL-OVET-ULKO-DXF:n ezdxf:llä (BLOCK + INSERT) ja varmistaa IfcDoor + Talo2000 1243.
+**Seuraavaksi:** aktivoi `default_kylmalaite_talo2000.toml`:n placeholder Section 5 IKKUNA-sääntö (KYL-IKKUNA*, INSERT, block_name="IKKUNA", IfcWindow, 1242 Ikkunat) ja päivitä loader-testi (8→9 sääntöä). Sitten Task 20 mapper-testi.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (17/50)
+## Plan B status (18/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -44,7 +44,7 @@
 - [x] Task 15: `dxf_reader.py` INSERT-luku + `BlockInstance`-tyyppi (`6427278`)
 - [x] Task 16: `door_block_to_box` testi + impl (`efd9f9a`)
 - [x] Task 17: `ifc_writer.add_door` (`4848061`)
-- [ ] Task 18: orchestrator dispatch + integraatiotesti OVI-ULKO
+- [x] Task 18: orchestrator dispatch + integraatiotesti OVI-ULKO (`813e4a6`)
 
 ### Section 5: Ikkunat (1242)
 - [ ] Task 19: default-profiilin IKKUNA-INSERT-sääntö
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 17/50 — Sectionit 1–3 valmis, Section 4 etenee (4/5).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 18/50 — Sectionit 1–4 valmis. Seuraavaksi Section 5 (Ikkunat).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -113,7 +113,8 @@
 - Plan B Task 15: BlockInstance types.py:hen + dxf_reader lukemaan INSERT-entiteetit (insertion_point/rotation_rad/scale) (`6427278`). 12 reader+types-testiä passed.
 - Plan B Task 16: DoorBoxExtrusion-dataclass + door_block_to_box (`efd9f9a`). 12 geometry-testiä passed.
 - Plan B Task 17: add_door tuottaa IfcDoor + OverallHeight/Width + box-extrusion + spatial containment (`4848061`). 17 ifc_writer-testiä passed.
+- Plan B Task 18: convert_dxf dispatchaa IfcDoor + integraatiotesti OVI-ULKO BLOCK+INSERT → 1243 (`813e4a6`). 21 ifc_writer+integration-testiä passed. ✅ Section 4 valmis.
 
-**Kesken:** Plan B Task 18–50 (33 jäljellä).
+**Kesken:** Plan B Task 19–50 (32 jäljellä).
 
 **Blokkerit:** ei.
