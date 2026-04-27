@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 2 — lisää `extrusion_height` ja `pset_overrides`-kentät, ja validointi joka vaatii `block_name` jos `entity_kind=INSERT`.
+**Current task:** Plan B Task 3 — päivitä `profiles/loader.py` säilyttämään uudet kentät TOML-roundtripissä + lisää testi `tests/test_profile_schema.py` joka kattaa LINE+INSERT-säännöt.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** kirjoita `tests/test_profile_schema.py`:hen failing test joka (a) varmistaa että INSERT-sääntö ilman block_name nostaa ValidationError ja (b) että `extrusion_height` ja `pset_overrides` (dict[str, Any]) -kentät hyväksyvät arvot. Sitten päivitä `schema.py`:n Rule-malli + `model_validator(mode="after")`. Aja pytest, commit + push + PROGRESS.md → Task 3.
+**Seuraavaksi:** lue `src/dxf2ifc/profiles/loader.py` + `tests/test_profile_loader.py`. Kirjoita failing test joka lataa TOML-profiilin jossa on (a) LINE-sääntö extrusion_heightilla + pset_overrides-taulu ja (b) INSERT-sääntö block_namella. Varmista että `Profile`-objekti pitää sisällään täsmälleen samat arvot. Sitten päivitä loader (jos vain `tomllib.loads` riittää, ei muutoksia). Pytest, commit + push, PROGRESS.md → Task 4.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,11 +18,11 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (1/50)
+## Plan B status (2/50)
 
 ### Section 1: Profile-skeeman laajennus
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
-- [ ] Task 2: lisää `extrusion_height` ja `pset_overrides`-kentät + INSERT-validointi
+- [x] Task 2: lisää `extrusion_height` ja `pset_overrides`-kentät + INSERT-validointi (`29f01e4`)
 - [ ] Task 3: päivitä `profiles/loader.py` säilyttämään uudet kentät + `tests/test_profile_schema.py`
 - [ ] Task 4: laajenna default TOML kommentoiduilla placeholder-säännöillä joka elementtityypille
 
@@ -94,14 +94,11 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B kirjoitettu (50 tehtävää, master `083f8cd`). Mode A Task 1 on seuraava.
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 2/50 — Section 1 etenee.
 
 **Tämän session muutokset:**
-- Plan B skeleton (`6eb66ce`).
-- Sectionit 1–12 täytetty yksitellen (`daa6398` … `c9c83a7`).
-- Globaali numerointi + CLAUDE.md status (`083f8cd`).
-- Plan B Task 1: Rule-skeeman `entity_kind` + `block_name` -kentät (`faaac8c`). 44 testiä passed, ruff clean. `uv.lock` committoitu mukaan.
+- Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
 
-**Kesken:** Plan B Task 2–50 (49 jäljellä). User pyysi stop:in Task 2:n alettua mutta ennen toteutusta — Task 2 ei aloitettu, tila puhdas.
+**Kesken:** Plan B Task 3–50 (48 jäljellä).
 
 **Blokkerit:** ei.
