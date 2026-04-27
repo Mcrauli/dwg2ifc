@@ -4,9 +4,9 @@
 
 **Current task:** Plan B kirjoitusvaihe (Mode B, section 1/12).
 
-**Mode:** B (plan-kirjoitus, section 3/12: Laatat AP/VP/YP)
+**Mode:** B (plan-kirjoitus, section 4/12: Ovet)
 
-**Seuraavaksi:** täytä Plan B Section 3 -alle 3–5 task-riviä joka kattaa AP (1221), VP (1235), YP (1236). Geometry-haarana POLYLINE/closed boundary → IfcSlab FLOOR/ROOF. Sitten PROGRESS.md → section 4/12.
+**Seuraavaksi:** täytä Plan B Section 4 -alle 3–5 task-riviä joka kattaa ulko-ovet (1243), väliovet (1315), erityisovet (1316). INSERT-block-rule + IfcDoor + opening relation seinään. Sitten PROGRESS.md → section 5/12.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (SHA-historia README + commit-log)
