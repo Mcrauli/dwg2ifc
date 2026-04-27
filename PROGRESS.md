@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Plan C — IfcSystem-ryhmittely (kirjoitettu `ec20cea`, 12 tehtävää, 5 sectionia).
+**Current plan:** Plan D — PySide6 GUI (kirjoitettavana, Mode B).
 
-**Current task:** Plan C Task 12 — ruff clean + pytest --cov ≥85 % + päivitä README/CLAUDE.md "Plan C valmis".
+**Current task:** Plan D plan-kirjoitus, section 1/N.
 
-**Mode:** A (implementointi).
+**Mode:** B (plan-kirjoitus, section 1/N).
 
-**Seuraavaksi:** aja `pytest -q --tb=short` koko suite + `pytest --cov=dxf2ifc --cov-report=term-missing` (vaadi ≥85 %), `ruff check . && ruff format --check .`. Korjaa jos jotain failaa. Päivitä CLAUDE.md "Status"-osio merkitsemällä Plan C valmiiksi (SHA-yhteenveto), vastaava merkki PROGRESS.md-headeriin ja README:hen.
+**Seuraavaksi:** B1-B2 — luo `docs/superpowers/plans/2026-04-27-plan-d-pyside6-gui.md` skeleton (frontmatter + intro + section-otsikot, ~30 riviä). Sectionit alustavasti: 1) Bootstrap (PySide6 deps + main entry), 2) Brand assets (fontit + QSS), 3) MainWindow + layout, 4) Convert flow (DXF picker + run + status), 5) Profile editor UI, 6) Layer preview/list, 7) Polish + packaging hooks. Numerointi globaali sectionien täytön jälkeen.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -181,7 +181,8 @@
 - Plan C Task 9: convert_dxf kerää productit dict[system_name → list]:iin ja palauttaa dictin; integraatiotesti LT IMU + KYL-VIEMARI varmistaa kaksi system-nimeä (`5bebd67`). 12 integration-testiä passed.
 - Plan C Task 10: convert_dxf luo IfcSystem-entiteetit kerätyistä nimistä ja kutsuu assign_to_system per nimi; integraatiotesti varmistaa IfcRelAssignsToGroup-jäsenyydet (`288bac6`). 13 integration-testiä passed. ✅ Section 4 valmis.
 - Plan C Task 11: full-fixture-testi joka varmistaa neljä IfcSystem-ryhmää ja että jokaisella ≥1 jäsen IfcRelAssignsToGroup:n kautta (`7e09716`). 4 integration_full-testiä passed.
+- Plan C Task 12: plan-loppupiste — pytest 151 passed, coverage 91 %, ruff clean; README + CLAUDE.md status päivitetty Plan C valmiiksi (`8cc4fc3`). 🎉 Plan C 12/12.
 
-**Kesken:** Plan C Task 12 (plan-loppupiste).
+**Kesken:** Plan D plan-kirjoitus alkaa Mode B:nä.
 
 **Blokkerit:** ei.
