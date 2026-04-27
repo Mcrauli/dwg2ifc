@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 38 — orchestrator dispatch + integraatiotesti KAAPELIHYLLY.
+**Current task:** Plan B Task 39 — lisää default-profiiliin POLYLINE-säännöt `KYL-LEVY*` ja `KYL-NURKKA*` → `IfcBuildingElementProxy 1352`.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** convert_dxf:ään `elif m.ifc_type == "IfcCableCarrierSegment"` haara → add_cable_carrier_segment. Integraatiotesti KAAPELIHYLLY-LINE → IfcCableCarrierSegment + IfcCableCarrierSegmentType + 2380.
+**Seuraavaksi:** aktivoi `default_kylmalaite_talo2000.toml`:n placeholder Section 10 säännöt KYL-LEVY*/KYL-NURKKA* (POLYLINE entity_kind, IfcBuildingElementProxy, talo2000_code "1352", talo2000_name "Kylmähuone-elementit"). Lisää loader-testi.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (37/50)
+## Plan B status (38/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -74,7 +74,7 @@
 - [x] Task 35: default-profiilin KAAPELIHYLLY-LINE-sääntö (`e3af094`)
 - [x] Task 36: `line_to_cable_carrier` testi + impl (`8dda18e`)
 - [x] Task 37: `ifc_writer.add_cable_carrier_segment` + IfcCableCarrierSegmentType CABLETRUNKINGSEGMENT (`b2203f6`)
-- [ ] Task 38: orchestrator dispatch + integraatiotesti KAAPELIHYLLY
+- [x] Task 38: orchestrator dispatch + integraatiotesti KAAPELIHYLLY (`ea1d99b`)
 
 ### Section 10: Kylmähuone-elementit (1352, IfcBuildingElementProxy)
 - [ ] Task 39: default-profiilin KYL-LEVY*/KYL-NURKKA*-säännöt
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 37/50 — Sectionit 1–8 valmis, Section 9 etenee (3/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 38/50 — Sectionit 1–9 valmis. Seuraavaksi Section 10 (Kylmähuone-elementit).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -133,7 +133,8 @@
 - Plan B Task 35: aktivoi KAAPELIHYLLY*-sääntö default-profiiliin (IfcCableCarrierSegment CABLETRUNKINGSEGMENT 2380) (`e3af094`). 14 loader-testiä passed.
 - Plan B Task 36: CableCarrierSegmentExtrusion-dataclass + line_to_cable_carrier (`8dda18e`). 24 geometry-testiä passed.
 - Plan B Task 37: add_cable_carrier_segment + IfcCableCarrierSegmentType CABLETRUNKINGSEGMENT + USERDEFINED-fallback (`b2203f6`). 34 ifc_writer-testiä passed.
+- Plan B Task 38: convert_dxf dispatchaa IfcCableCarrierSegment + integraatiotesti KAAPELIHYLLY → 2380 (`ea1d99b`). 9 integration-testiä passed. ✅ Section 9 valmis.
 
-**Kesken:** Plan B Task 38–50 (13 jäljellä).
+**Kesken:** Plan B Task 39–50 (12 jäljellä).
 
 **Blokkerit:** ei.
