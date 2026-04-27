@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 14 — `dxf_reader.list_layers(dxf_path)` helper.
+**Current task:** Plan D Task 15 — `LayerTable` widget (Layer/IFC/Talo2000/System).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää `core/dxf_reader.py`:hen `list_layers(dxf_path: str | Path) -> list[str]` joka avaa DXF:n ezdxf:llä, palauttaa `sorted({entity.dxf.layer for entity in modelspace})`. Failing-test käyttää `tests/fixtures/simple_wall.dxf`-fixtureä ja varmistaa että odotettu layer-nimi löytyy.
+**Seuraavaksi:** luo `gui/layer_table.py` `LayerTable(QTableWidget)` jossa neljä kolumnia: Layer, IFC type, Talo2000, System. `set_layers(layers, profile)` käy läpi listan + matchaa `mapper.layer_matches`-funktiolla; ei-matchatut → "—". Layer/Talo2000-kolumneille JetBrains Mono -fontti. Failing-test antaa default-profile + 2 layeria (LT IMU + KYL-ULKOSEINA), varmistaa rivien sisältö.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (13/25)
+## Plan D status (14/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -118,7 +118,7 @@
 - [x] Task 13: integraatiotesti simple_wall.dxf → IFC GUI:n kautta (`9e96b6f`)
 
 ### Section 5: Layer preview
-- [ ] Task 14: `dxf_reader.list_layers(dxf_path)`
+- [x] Task 14: `dxf_reader.list_layers(dxf_path)` (`205f4de`)
 - [ ] Task 15: `LayerTable` widget (Layer/IFC/Talo2000/System)
 - [ ] Task 16: kytke LayerTable MainWindow:n vasempaan paneeliin
 
@@ -237,7 +237,8 @@
 - Plan D Task 11: `gui/convert_worker.py` `ConvertWorker(QObject)` + sisäinen `_ConvertRunnable` joka ajaa `convert_dxf` QThreadPoolissa; finished/failed-signaalit (`8216c0b`). 2 worker-testiä passed.
 - Plan D Task 12: kytkin FilePanel + ConvertWorker MainWindow:iin: convert_requested → disable button + status "Converting…" → worker → finished re-emittoi `convert_finished(out)`-signaalin + status "Done", failed re-emittoi `convert_failed(msg)` + status "Error" (`ff218ca`). 9 gui-app-testiä passed.
 - Plan D Task 13: end-to-end GUI integration test simple_wall.dxf → IfcWall (`9e96b6f`). 1 GUI-integration-testi passed. ✅ Section 4 valmis.
+- Plan D Task 14: `core.dxf_reader.list_layers(path)` palauttaa sorted-uniikit layer-nimet model-spacestä (`205f4de`). 9 dxf-reader-testiä passed.
 
-**Kesken:** Plan D Task 14–25 (12 jäljellä, Section 5 alkaa).
+**Kesken:** Plan D Task 15–25 (11 jäljellä).
 
 **Blokkerit:** ei.
