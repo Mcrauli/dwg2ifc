@@ -5,13 +5,14 @@ from pathlib import Path
 import ifcopenshell
 
 from dxf2ifc.core.ifc_writer import (
+    add_slab,
     add_talo2000_classification,
     add_wall,
     build_ifc_project_skeleton,
     convert_dxf,
     write_ifc,
 )
-from dxf2ifc.core.types import LineGeometry, MappedEntity, Point3D
+from dxf2ifc.core.types import LineGeometry, MappedEntity, Point3D, PolygonGeometry
 from dxf2ifc.profiles.loader import load_default_profile
 
 
@@ -116,6 +117,64 @@ def test_add_wall_defaults_predefined_type_to_standard():
     )
     wall = add_wall(ifc, mapped, parent_storey=storey)
     assert wall.PredefinedType == "STANDARD"
+
+
+def _slab_mapped_entity(
+    *,
+    layer: str = "KYL-ALAPOHJA",
+    talo_code: str = "1221",
+    talo_name: str = "Alapohjalaatat",
+    thickness_mm: float = 200.0,
+) -> MappedEntity:
+    polygon = PolygonGeometry(
+        vertices=(
+            Point3D(0, 0, 0),
+            Point3D(4000, 0, 0),
+            Point3D(4000, 3000, 0),
+            Point3D(0, 3000, 0),
+        ),
+        closed=True,
+    )
+    return MappedEntity(
+        layer=layer,
+        dxf_type="LWPOLYLINE",
+        geometry=polygon,
+        ifc_type="IfcSlab",
+        predefined_type="FLOOR",
+        talo2000_code=talo_code,
+        talo2000_name=talo_name,
+        extra_props={"default_thickness_mm": thickness_mm},
+    )
+
+
+def test_add_slab_creates_ifcslab_with_predefined_type():
+    ifc = build_ifc_project_skeleton(project_name="Slab Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    slab = add_slab(ifc, _slab_mapped_entity(), parent_storey=storey)
+    assert slab.is_a("IfcSlab")
+    assert slab.PredefinedType == "FLOOR"
+    assert slab.Name == "KYL-ALAPOHJA"
+    assert slab.Representation is not None
+
+
+def test_add_slab_supports_roof_predefined_type():
+    ifc = build_ifc_project_skeleton(project_name="Roof Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = _slab_mapped_entity(layer="KYL-YLAPOHJA", talo_code="1236")
+    slab = add_slab(ifc, mapped, parent_storey=storey, predefined_type="ROOF")
+    assert slab.PredefinedType == "ROOF"
+
+
+def test_add_slab_placed_under_storey():
+    ifc = build_ifc_project_skeleton(project_name="Slab Storey")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    slab = add_slab(ifc, _slab_mapped_entity(), parent_storey=storey)
+    rels = [
+        r
+        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
+        if r.RelatingStructure == storey
+    ]
+    assert any(slab in rel.RelatedElements for rel in rels)
 
 
 def test_add_talo2000_classification_attaches_reference():

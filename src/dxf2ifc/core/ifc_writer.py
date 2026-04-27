@@ -15,9 +15,9 @@ import ifcopenshell.api
 import ifcopenshell.guid
 
 from dxf2ifc.core.dxf_reader import read_dxf
-from dxf2ifc.core.geometry import line_to_wall_extrusion
+from dxf2ifc.core.geometry import line_to_wall_extrusion, polygon_to_slab_extrusion
 from dxf2ifc.core.mapper import apply_profile
-from dxf2ifc.core.types import LineGeometry, MappedEntity
+from dxf2ifc.core.types import LineGeometry, MappedEntity, PolygonGeometry
 from dxf2ifc.profiles.schema import Profile
 
 
@@ -154,6 +154,90 @@ def add_wall(
         relating_structure=parent_storey,
     )
     return wall
+
+
+def add_slab(
+    ifc,
+    mapped: MappedEntity,
+    *,
+    parent_storey,
+    predefined_type: str = "FLOOR",
+) -> object:
+    """Create an IfcSlab from a MappedEntity whose geometry is a PolygonGeometry.
+
+    The slab outline is taken from the polygon's XY vertices; the
+    extrusion runs downwards by ``default_thickness_mm`` so the polygon's
+    Z elevation marks the top of the slab.
+    """
+    if not isinstance(mapped.geometry, PolygonGeometry):
+        raise TypeError(
+            f"add_slab expects PolygonGeometry, got {type(mapped.geometry).__name__}"
+        )
+
+    thickness = float(mapped.extra_props.get("default_thickness_mm", 200.0))
+    ext = polygon_to_slab_extrusion(mapped.geometry, thickness_mm=thickness)
+
+    slab = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class="IfcSlab",
+        name=mapped.layer,
+        predefined_type=predefined_type,
+    )
+
+    matrix = _z_rotation_matrix(0.0, 0.0, ext.base_z, 0.0)
+    ifcopenshell.api.run(
+        "geometry.edit_object_placement",
+        ifc,
+        product=slab,
+        matrix=matrix,
+    )
+
+    model_ctx = [
+        c
+        for c in ifc.by_type("IfcGeometricRepresentationSubContext")
+        if c.ContextIdentifier == "Body"
+    ][0]
+
+    polyline_points = [
+        ifc.create_entity("IfcCartesianPoint", Coordinates=(float(x), float(y)))
+        for x, y in ext.outline_xy
+    ]
+    polyline_points.append(polyline_points[0])
+    polyline = ifc.create_entity("IfcPolyline", Points=polyline_points)
+    profile = ifc.create_entity(
+        "IfcArbitraryClosedProfileDef",
+        ProfileType="AREA",
+        OuterCurve=polyline,
+    )
+    extruded = ifc.create_entity(
+        "IfcExtrudedAreaSolid",
+        SweptArea=profile,
+        Position=ifc.create_entity(
+            "IfcAxis2Placement3D",
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
+        ),
+        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, -1.0)),
+        Depth=ext.thickness_mm,
+    )
+    shape = ifc.create_entity(
+        "IfcShapeRepresentation",
+        ContextOfItems=model_ctx,
+        RepresentationIdentifier="Body",
+        RepresentationType="SweptSolid",
+        Items=[extruded],
+    )
+    slab.Representation = ifc.create_entity(
+        "IfcProductDefinitionShape", Representations=[shape]
+    )
+
+    ifcopenshell.api.run(
+        "spatial.assign_container",
+        ifc,
+        products=[slab],
+        relating_structure=parent_storey,
+    )
+    return slab
 
 
 def _z_rotation_matrix(x: float, y: float, z: float, angle: float) -> list[list[float]]:
