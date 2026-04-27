@@ -86,3 +86,10 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 - Task: kirjoita `tests/test_geometry.py`:hen `line_to_pipe_segment` -failing test ja toteuta funktio joka tuottaa cylinder-extrudoidun geometrian DN-halkaisijalla (Plan A vastaava: Task 15).
 - Task: lisää `ifc_writer.add_pipe_segment` (IfcPipeSegment + IfcPipeSegmentType refrigeranttipredefined + Talo2000) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
 - Task: dispatchaa orchestrator pipe-rule LINE-entiteetit `add_pipe_segment`-kutsuun ja laajenna integraatiotesti LT IMU -viivalla (Plan A vastaava: Task 18 + 20).
+
+## Section 7: Viemäriputket (21xx DRAINPIPE)
+
+- Task: lisää default-profiiliin LINE-säännöt `KYL-VIEMARI*` (wildcard) → `IfcPipeSegment DRAINPIPE` Talo2000 21xx -alakoodilla ja default-DN (Plan A vastaava: Task 6).
+- Task: laajenna `mapper.layer_matches` käsittelemään wildcard-suffix `*` (yksinkertainen prefix-match) ja lisää failing test (Plan A vastaava: Task 10).
+- Task: ohjaa `add_pipe_segment`-kutsuun PredefinedType-parametri (`DRAINPIPE` viemärille, `REFRIGERATION` kylmäputkelle) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
+- Task: laajenna integraatiotesti yhdellä KYL-VIEMARI-LATTIA-viivalla joka tuottaa IfcPipeSegment DRAINPIPE (Plan A vastaava: Task 20).
