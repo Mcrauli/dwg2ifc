@@ -4,12 +4,12 @@
 
 ## Status
 
-🚧 Plan A toteutuksessa (**13/21** tehtävää valmis). Seuraava askel ja per-task SHA-historia: [`PROGRESS.md`](PROGRESS.md).
+✅ Plan A valmis (**21/21** tehtävää). End-to-end DXF → IFC 4 -putki pystyssä, integration test validoi tuotetun IFC:n ifcopenshellillä. Seuraava askel ja per-task SHA-historia: [`PROGRESS.md`](PROGRESS.md).
 
 | Vaihe | Tila |
 |---|---|
 | Design-spec | ✅ valmis |
-| Plan A: Core CLI wall pipeline | 🟢 13/21 |
+| Plan A: Core CLI wall pipeline | ✅ 21/21 |
 | Plan B: Full element set | ⏳ kirjoittamatta |
 | Plan C: IfcSystem-ryhmittely | ⏳ kirjoittamatta |
 | Plan D: PySide6 GUI | ⏳ kirjoittamatta |
