@@ -2,11 +2,11 @@
 
 **Current plan:** Plan C — IfcSystem-ryhmittely (kirjoitettu `ec20cea`, 12 tehtävää, 5 sectionia).
 
-**Current task:** Plan C Task 10 — luo IfcSystem per kerätty nimi convert_dxf:ssä ja kytke products `assign_to_system`:llä.
+**Current task:** Plan C Task 11 — laajenna `tests/test_integration_full.py` varmistamaan IfcSystem 'Refrigeration LT' / 'Drainage' / 'Cable carriers' / 'Refrigeration plant' löytyvät ja kullakin ≥1 jäsen.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** convert_dxf:ssä, ennen write_ifc:ä, käy läpi `systems`-dict ja kutsu `add_system(ifc, name=...)` + `assign_to_system(ifc, products=..., system=...)` per nimi. Failing test: avaa output IFC, varmista että IfcSystem 'Refrigeration LT' ja 'Drainage' löytyvät, ja että jokainen viittaa oikeaan jäseneen IfcRelAssignsToGroup-relaationsa kautta.
+**Seuraavaksi:** test_integration_full.py:hen uusi assertion: avaa full-fixture IFC, kerää IfcSystem-entiteetit Name:n mukaan, varmista että neljä järjestelmää löytyvät ja jokaisella on ≥1 RelatedObjects IfcRelAssignsToGroup-relaation kautta. Ei tarvita uutta DXF:ää — full-fixture sisältää jo tarvittavat layerit.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan C status (9/12)
+## Plan C status (10/12)
 
 ### Section 1: Profiili — system_name -arvot ✅
 - [x] Task 1: LT IMU "Refrigeration LT" + MT IMU/MT NESTE "Refrigeration MT" (`13d9aea`)
@@ -112,13 +112,13 @@
 
 ### Section 4: Orchestrator — kerää ja kytke
 - [x] Task 9: convert_dxf kerää {system_name → products} + testi (`5bebd67`)
-- [ ] Task 10: orchestrator luo IfcSystem-objektit ja kytkee + integraatiotesti
+- [x] Task 10: orchestrator luo IfcSystem-objektit ja kytkee + integraatiotesti (`288bac6`)
 
 ### Section 5: Integraatio + lint
 - [ ] Task 11: full_kylmaelement -testi varmistaa neljä IfcSystem-ryhmää
 - [ ] Task 12: ruff clean + coverage ≥85 % + README/CLAUDE.md "Plan C valmis"
 
-**Viimeisin tila:** Plan A 21/21 + Plan B 50/50 valmis. Plan C 9/12 — Sectionit 1–3 valmis, Section 4 osittain (Task 9 valmis), Task 10 seuraava.
+**Viimeisin tila:** Plan A 21/21 + Plan B 50/50 valmis. Plan C 10/12 — Sectionit 1–4 valmis, Task 11 seuraava (Section 5).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -179,7 +179,8 @@
 - Plan C Task 6+7: add_system kirjoitin + per-name cache (`5f460ba`).
 - Plan C Task 8: assign_to_system helper IfcRelAssignsToGroupin avulla (`76c32ff`). ✅ Section 3 valmis.
 - Plan C Task 9: convert_dxf kerää productit dict[system_name → list]:iin ja palauttaa dictin; integraatiotesti LT IMU + KYL-VIEMARI varmistaa kaksi system-nimeä (`5bebd67`). 12 integration-testiä passed.
+- Plan C Task 10: convert_dxf luo IfcSystem-entiteetit kerätyistä nimistä ja kutsuu assign_to_system per nimi; integraatiotesti varmistaa IfcRelAssignsToGroup-jäsenyydet (`288bac6`). 13 integration-testiä passed. ✅ Section 4 valmis.
 
-**Kesken:** Plan C Task 10–12 (3 jäljellä, Section 4 loppu + 5).
+**Kesken:** Plan C Task 11–12 (2 jäljellä, Section 5).
 
 **Blokkerit:** ei.
