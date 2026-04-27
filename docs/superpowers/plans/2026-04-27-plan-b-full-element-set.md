@@ -100,3 +100,10 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 - Task: kirjoita `tests/test_geometry.py`:hen `block_to_furniture_box` -failing test ja toteuta funktio (height/width/depth profiilista tai INSERT-attribuutista) (Plan A vastaava: Task 15).
 - Task: lisää `ifc_writer.add_furniture` (IfcFurniture + box-representaatio + Talo2000 1331) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
 - Task: dispatchaa orchestrator furniture-rule blokit `add_furniture`-kutsuun ja laajenna integraatiotesti KYL-LEVYHYLLY-blokilla (Plan A vastaava: Task 18 + 20).
+
+## Section 9: Kaapelihyllyt (23xx)
+
+- Task: lisää default-profiiliin LINE-sääntö `KAAPELIHYLLY → IfcFlowSegment` Talo2000 23xx -alakoodilla ja leveys-attribuutti (Plan A vastaava: Task 6).
+- Task: kirjoita `tests/test_geometry.py`:hen `line_to_cable_carrier` -failing test ja toteuta funktio joka tuottaa rectangular-profile extrudoinnin reittiviivaa pitkin (Plan A vastaava: Task 15).
+- Task: lisää `ifc_writer.add_cable_carrier_segment` joka tuottaa IfcFlowSegment + IfcCableCarrierSegmentType CABLETRUNKINGSEGMENT typed-by relation + Talo2000-classification (Plan A vastaava: Task 17).
+- Task: dispatchaa orchestrator cable-carrier-rule LINE-entiteetit `add_cable_carrier_segment`-kutsuun ja laajenna integraatiotesti yhdellä KAAPELIHYLLY-viivalla (Plan A vastaava: Task 18 + 20).
