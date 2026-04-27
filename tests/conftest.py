@@ -1,9 +1,14 @@
 """Shared pytest fixtures for dxf2ifc tests."""
 
+import os
 from pathlib import Path
 
 import ezdxf
 import pytest
+
+# Force the offscreen QPA platform before PySide6 / pytest-qt is imported so that
+# GUI tests run headlessly in CI and sandboxed environments without a display.
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 @pytest.fixture

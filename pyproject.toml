@@ -53,6 +53,7 @@ packages = ["src/dxf2ifc"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+qt_api = "pyside6"
 
 [tool.ruff]
 line-length = 100
