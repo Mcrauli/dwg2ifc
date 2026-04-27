@@ -42,3 +42,10 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 ---
 
 <!-- Sectionien sisältö täytetään yksi kerrallaan PROGRESS.md:n ohjaamana. -->
+
+## Section 1: Profile-skeeman laajennus
+
+- Task: laajenna `profiles/schema.py` Rule-pydantic-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (vain INSERT-säännöille) (Plan A vastaava: Task 5).
+- Task: lisää `profiles/schema.py`:hen `extrusion_height` ja `pset_overrides`-kentät, ja validointi joka vaatii `block_name` jos `entity_kind=INSERT` (Plan A vastaava: Task 5).
+- Task: päivitä `profiles/loader.py` säilyttämään uudet kentät TOML-roundtripissä + lisää testi `tests/test_profile_schema.py` joka kattaa LINE+INSERT-säännöt (Plan A vastaava: Task 7).
+- Task: laajenna `profiles/default_kylmalaite_talo2000.toml` placeholder-säännöillä joka elementtityypille (kommentoidut, täytetään myöhempinä sectioneina) (Plan A vastaava: Task 6).
