@@ -177,19 +177,19 @@ talo2000_code = "2380"
 talo2000_name = "Sähköosat — kaapelihyllyt"
 
 # Section 10: Kylmähuone-elementit (1352, IfcBuildingElementProxy)
-# [[rules]]
-# layer_pattern = "KYL-LEVY*"
-# entity_kind = "POLYLINE"
-# ifc_type = "IfcBuildingElementProxy"
-# talo2000_code = "1352"
-# talo2000_name = "Kylmähuone-elementit"
-#
-# [[rules]]
-# layer_pattern = "KYL-NURKKA*"
-# entity_kind = "POLYLINE"
-# ifc_type = "IfcBuildingElementProxy"
-# talo2000_code = "1352"
-# talo2000_name = "Kylmähuone-elementit"
+[[rules]]
+layer_pattern = "KYL-LEVY*"
+entity_kind = "POLYLINE"
+ifc_type = "IfcBuildingElementProxy"
+talo2000_code = "1352"
+talo2000_name = "Kylmähuone-elementit"
+
+[[rules]]
+layer_pattern = "KYL-NURKKA*"
+entity_kind = "POLYLINE"
+ifc_type = "IfcBuildingElementProxy"
+talo2000_code = "1352"
+talo2000_name = "Kylmähuone-elementit"
 
 # Section 11: Kylmälaitteet (25xx)
 # [[rules]]

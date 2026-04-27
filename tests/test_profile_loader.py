@@ -119,6 +119,19 @@ def test_load_default_profile_has_cable_carrier_rule():
     assert cable.talo2000_code == "2380"
 
 
+def test_load_default_profile_has_cold_room_panel_rules():
+    profile = load_default_profile()
+    by_layer = {r.layer_pattern: r for r in profile.rules}
+    levy = by_layer["KYL-LEVY*"]
+    assert levy.entity_kind == "POLYLINE"
+    assert levy.ifc_type == "IfcBuildingElementProxy"
+    assert levy.talo2000_code == "1352"
+    nurkka = by_layer["KYL-NURKKA*"]
+    assert nurkka.entity_kind == "POLYLINE"
+    assert nurkka.ifc_type == "IfcBuildingElementProxy"
+    assert nurkka.talo2000_code == "1352"
+
+
 def test_load_default_profile_has_partition_wall_rules():
     profile = load_default_profile()
     by_layer = {r.layer_pattern: r for r in profile.rules}

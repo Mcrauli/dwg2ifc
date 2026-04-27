@@ -108,7 +108,7 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 
 ## Section 10: Kylmähuone-elementit (1352, IfcBuildingElementProxy)
 
-- [ ] Task 39: lisää default-profiiliin POLYLINE-/INSERT-säännöt `KYL-LEVY*` (panel) ja `KYL-NURKKA*` (corner) → IfcBuildingElementProxy 1352 paksuus-attribuutilla (Plan A vastaava: Task 6).
+- [x] Task 39: lisää default-profiiliin POLYLINE-/INSERT-säännöt `KYL-LEVY*` (panel) ja `KYL-NURKKA*` (corner) → IfcBuildingElementProxy 1352 paksuus-attribuutilla (Plan A vastaava: Task 6).
 - [ ] Task 40: kirjoita `tests/test_geometry.py`:hen `panel_to_proxy_solid` -failing test ja toteuta funktio joka extrudoi POLYLINE-reunan paksuudeksi (Plan A vastaava: Task 15).
 - [ ] Task 41: lisää `ifc_writer.add_building_element_proxy` (IfcBuildingElementProxy + ProxyType.NOTDEFINED + Talo2000 1352 + ObjectType-string elementtitunnukseen) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
 - [ ] Task 42: dispatchaa orchestrator proxy-rule entiteetit `add_building_element_proxy`-kutsuun ja laajenna integraatiotesti KYL-LEVY-paneelilla (Plan A vastaava: Task 18 + 20).
