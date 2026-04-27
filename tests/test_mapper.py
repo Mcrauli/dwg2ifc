@@ -18,6 +18,12 @@ from dxf2ifc.profiles.schema import Profile, Rule
         ("KYL-*", "WALL", False),
         ("LT IMU", "LT IMU", True),
         ("LT IMU", "lt imu", True),  # case-insensitive
+        # wildcard suffix matches deeper subdivisions (Plan B Task 28)
+        ("KYL-VIEMARI*", "KYL-VIEMARI", True),
+        ("KYL-VIEMARI*", "KYL-VIEMARI-LATTIA", True),
+        ("KYL-VIEMARI*", "KYL-VIEMARI-110", True),
+        ("KYL-VIEMARI*", "kyl-viemari-katto", True),  # case-insensitive suffix
+        ("KYL-VIEMARI*", "KYL-PUTKI", False),
     ],
 )
 def test_layer_matches(pattern: str, layer: str, expected: bool):
