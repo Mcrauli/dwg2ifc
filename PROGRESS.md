@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 29 — ohjaa `add_pipe_segment`-kutsuun PredefinedType-parametri (`DRAINPIPE` viemärille, `REFRIGERATION` kylmäputkelle) + test_ifc_writer.py-kattavuus.
+**Current task:** Plan B Task 30 — laajenna integraatiotesti yhdellä KYL-VIEMARI-LATTIA-viivalla joka tuottaa IfcPipeSegment DRAINPIPE.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää failing test joka varmistaa että add_pipe_segment käsittelee predefined_type="DRAINPIPE" → USERDEFINED + ObjectType="DRAINPIPE" + IfcPipeSegmentType ElementType="DRAINPIPE". Toteutus jo tukee tätä; testi vahvistaa.
+**Seuraavaksi:** kirjoita integraatiotesti `test_kyl_viemari_lattia_roundtrip_produces_drainpipe(tmp_path)` joka generoi DXF:n KYL-VIEMARI-LATTIA-viivalla, ajaa convert_dxf:n ja varmistaa IfcPipeSegment USERDEFINED+DRAINPIPE + Talo2000 2160 + IFC-validointi.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (28/50)
+## Plan B status (29/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -61,7 +61,7 @@
 ### Section 7: Viemäriputket (21xx DRAINPIPE)
 - [x] Task 27: default-profiilin KYL-VIEMARI*-sääntö (`7cf669f`)
 - [x] Task 28: `mapper.layer_matches` wildcard-suffix-tuki (`8904ce1`)
-- [ ] Task 29: `add_pipe_segment` predefined_type DRAINPIPE/REFRIGERATION
+- [x] Task 29: `add_pipe_segment` predefined_type DRAINPIPE/REFRIGERATION (`1bc2082`)
 - [ ] Task 30: integraatiotesti KYL-VIEMARI-LATTIA
 
 ### Section 8: Varastointihyllyt (1331, IfcFurniture)
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 28/50 — Sectionit 1–6 valmis, Section 7 etenee (2/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 29/50 — Sectionit 1–6 valmis, Section 7 etenee (3/4).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -124,7 +124,8 @@
 - Plan B Task 26: convert_dxf dispatchaa IfcPipeSegment + mapper välittää Pset_PipeSegmentOccurrence.NominalDiameter → extra_props default_diameter_mm + integraatiotesti LT IMU → 2151 (`770978f`). 18 integration+mapper-testiä passed. ✅ Section 6 valmis.
 - Plan B Task 27: aktivoi KYL-VIEMARI* DRAINPIPE-sääntö default-profiiliin (`7cf669f`). 12 loader-testiä passed.
 - Plan B Task 28: layer_matches wildcard-suffix regression-testit KYL-VIEMARI*:lle (`8904ce1`). 17 mapper-testiä passed.
+- Plan B Task 29: add_pipe_segment-testit DRAINPIPE-arvolle (USERDEFINED + ObjectType + jaettu IfcPipeSegmentType) (`1bc2082`). 27 ifc_writer-testiä passed.
 
-**Kesken:** Plan B Task 29–50 (22 jäljellä).
+**Kesken:** Plan B Task 30–50 (21 jäljellä).
 
 **Blokkerit:** ei.
