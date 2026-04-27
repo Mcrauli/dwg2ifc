@@ -4,9 +4,11 @@ import pytest
 
 from dxf2ifc.core.geometry import (
     DoorBoxExtrusion,
+    FurnitureBoxExtrusion,
     PipeSegmentExtrusion,
     SlabExtrusion,
     WallExtrusion,
+    block_to_furniture_box,
     door_block_to_box,
     line_to_pipe_segment,
     line_to_wall_extrusion,
@@ -136,3 +138,30 @@ def test_line_to_pipe_segment_angle_for_axis_aligned_line():
     line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(0, 1000, 0))
     pipe = line_to_pipe_segment(line, diameter_mm=12.0)
     assert pipe.angle_rad == pytest.approx(1.5707963267948966)
+
+
+def test_block_to_furniture_box_returns_box_with_dims():
+    block = BlockInstance(insertion_point=Point3D(0, 0, 0))
+    box = block_to_furniture_box(block, width_mm=1000, depth_mm=600, height_mm=2000)
+    assert isinstance(box, FurnitureBoxExtrusion)
+    assert box.width_mm == 1000.0
+    assert box.depth_mm == 600.0
+    assert box.height_mm == 2000.0
+
+
+def test_block_to_furniture_box_anchor_matches_insertion_point():
+    block = BlockInstance(insertion_point=Point3D(3500, 1750, 0))
+    box = block_to_furniture_box(block, width_mm=1000, depth_mm=600, height_mm=2000)
+    assert box.anchor == Point3D(3500, 1750, 0)
+
+
+def test_block_to_furniture_box_carries_block_rotation():
+    block = BlockInstance(insertion_point=Point3D(0, 0, 0), rotation_rad=0.7853981633974483)
+    box = block_to_furniture_box(block, width_mm=1000, depth_mm=600, height_mm=2000)
+    assert box.angle_rad == pytest.approx(0.7853981633974483)
+
+
+def test_block_to_furniture_box_default_angle_is_zero():
+    block = BlockInstance(insertion_point=Point3D(0, 0, 0))
+    box = block_to_furniture_box(block, width_mm=500, depth_mm=400, height_mm=1500)
+    assert box.angle_rad == 0.0

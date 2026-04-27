@@ -122,6 +122,35 @@ class PipeSegmentExtrusion:
     diameter_mm: float
 
 
+@dataclass(frozen=True)
+class FurnitureBoxExtrusion:
+    """Parameters sufficient to create an IfcFurniture as a parametric box.
+
+    Used for storage shelving (KYL-LEVYHYLLY / KYL-TIKASHYLLY) and similar
+    block-defined fixtures where the DXF block's exact geometry is not
+    available; downstream code renders a width × depth × height box.
+    """
+
+    anchor: Point3D
+    angle_rad: float
+    width_mm: float
+    depth_mm: float
+    height_mm: float
+
+
+def block_to_furniture_box(
+    block: BlockInstance, *, width_mm: float, depth_mm: float, height_mm: float
+) -> FurnitureBoxExtrusion:
+    """Convert a DXF INSERT placement into an IfcFurniture box-extrusion."""
+    return FurnitureBoxExtrusion(
+        anchor=block.insertion_point,
+        angle_rad=block.rotation_rad,
+        width_mm=width_mm,
+        depth_mm=depth_mm,
+        height_mm=height_mm,
+    )
+
+
 def line_to_pipe_segment(line: LineGeometry, *, diameter_mm: float) -> PipeSegmentExtrusion:
     """Treat the line as the pipe centreline and use ``diameter_mm`` for the section."""
     dx = line.end.x - line.start.x
