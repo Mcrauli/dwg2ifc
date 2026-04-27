@@ -142,6 +142,7 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 talo2000_code = "2160"
 talo2000_name = "Putkiosat — viemäri"
+system_name = "Drainage"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 110.0 } }
 
 # Section 8: Varastointihyllyt (1331, IfcFurniture)
@@ -178,6 +179,7 @@ ifc_type = "IfcCableCarrierSegment"
 predefined_type = "CABLETRUNKINGSEGMENT"
 talo2000_code = "2380"
 talo2000_name = "Sähköosat — kaapelihyllyt"
+system_name = "Cable carriers"
 
 # Section 10: Kylmähuone-elementit (1352, IfcBuildingElementProxy)
 [[rules]]

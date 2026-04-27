@@ -94,6 +94,7 @@ def test_load_default_profile_has_drainpipe_rule():
     assert drain.ifc_type == "IfcPipeSegment"
     assert drain.predefined_type == "DRAINPIPE"
     assert drain.talo2000_code == "2160"
+    assert drain.system_name == "Drainage"
     assert drain.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 110.0
 
 
@@ -120,6 +121,7 @@ def test_load_default_profile_has_cable_carrier_rule():
     assert cable.ifc_type == "IfcCableCarrierSegment"
     assert cable.predefined_type == "CABLETRUNKINGSEGMENT"
     assert cable.talo2000_code == "2380"
+    assert cable.system_name == "Cable carriers"
 
 
 def test_load_default_profile_has_cold_room_panel_rules():
