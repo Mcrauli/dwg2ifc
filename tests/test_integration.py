@@ -30,6 +30,18 @@ def _write_closed_lwpolyline_dxf(path: Path, layer: str) -> None:
     doc.saveas(str(path))
 
 
+def _write_block_insert_dxf(
+    path: Path, *, layer: str, block_name: str, insertion: tuple[float, float]
+) -> None:
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name=layer)
+    block = doc.blocks.new(name=block_name)
+    block.add_line((0.0, 0.0), (900.0, 0.0))
+    msp = doc.modelspace()
+    msp.add_blockref(block_name, insertion, dxfattribs={"layer": layer})
+    doc.saveas(str(path))
+
+
 def test_simple_wall_roundtrip(fixtures_dir: Path, tmp_path: Path):
     dxf = fixtures_dir / "simple_wall.dxf"
     out = tmp_path / "simple_wall.ifc"
@@ -81,6 +93,38 @@ def test_alapohja_roundtrip_produces_floor_ifcslab(tmp_path: Path):
 
     refs = ifc.by_type("IfcClassificationReference")
     talo = [r for r in refs if r.Identification == "1221"]
+    assert len(talo) == 1
+    assert talo[0].ReferencedSource.Name == "Talo2000"
+
+    logger = ifcopenshell.validate.json_logger()
+    ifcopenshell.validate.validate(ifc, logger=logger)
+    errors = [e for e in logger.statements if e.get("level") == "ERROR"]
+    assert errors == [], f"IFC validation errors: {errors}"
+
+
+def test_ovi_ulko_roundtrip_produces_ifcdoor_with_talo2000_1243(tmp_path: Path):
+    dxf = tmp_path / "ovi_ulko.dxf"
+    _write_block_insert_dxf(
+        dxf,
+        layer="KYL-OVET-ULKO",
+        block_name="OVI-ULKO",
+        insertion=(1500.0, 2500.0),
+    )
+    out = tmp_path / "ovi_ulko.ifc"
+
+    convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
+
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4"
+    doors = ifc.by_type("IfcDoor")
+    assert len(doors) == 1
+    door = doors[0]
+    assert door.PredefinedType == "DOOR"
+    assert door.OverallHeight is not None
+    assert door.OverallWidth is not None
+
+    refs = ifc.by_type("IfcClassificationReference")
+    talo = [r for r in refs if r.Identification == "1243"]
     assert len(talo) == 1
     assert talo[0].ReferencedSource.Name == "Talo2000"
 
