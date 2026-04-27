@@ -49,3 +49,10 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 - Task: lisää `profiles/schema.py`:hen `extrusion_height` ja `pset_overrides`-kentät, ja validointi joka vaatii `block_name` jos `entity_kind=INSERT` (Plan A vastaava: Task 5).
 - Task: päivitä `profiles/loader.py` säilyttämään uudet kentät TOML-roundtripissä + lisää testi `tests/test_profile_schema.py` joka kattaa LINE+INSERT-säännöt (Plan A vastaava: Task 7).
 - Task: laajenna `profiles/default_kylmalaite_talo2000.toml` placeholder-säännöillä joka elementtityypille (kommentoidut, täytetään myöhempinä sectioneina) (Plan A vastaava: Task 6).
+
+## Section 2: VS / lasiväliseinät (1311 / 1312)
+
+- Task: lisää default-profiiliin säännöt `KYL-VALISEINA → IfcWall PARTITIONING 1311` ja `KYL-LASIVALISEINA → IfcWall PARTITIONING 1312` (Plan A vastaava: Task 6).
+- Task: kirjoita `tests/test_mapper.py`:hen failing test joka asettaa molemmille layereille oikean Talo2000-koodin + PredefinedType-arvon (Plan A vastaava: Task 14).
+- Task: laajenna `ifc_writer.add_wall` ottamaan vastaan `predefined_type`-parametrin ja asettamaan `IfcWall.PredefinedType` (default STANDARD, partition-säännöillä PARTITIONING) (Plan A vastaava: Task 17).
+- Task: päivitä integraatiotestifixtuuri (DXF) sisältämään yksi VS-viiva ja varmista että IFC:ssä syntyy IfcWall PARTITIONING -elementti Talo2000 1311 -classification refillä (Plan A vastaava: Task 20).
