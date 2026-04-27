@@ -4,8 +4,12 @@ from __future__ import annotations
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
+from pathlib import Path
+
+from dxf2ifc.core.dxf_reader import list_layers
 from dxf2ifc.gui.convert_worker import ConvertWorker
 from dxf2ifc.gui.file_panel import FilePanel
+from dxf2ifc.gui.layer_table import LayerTable
 from dxf2ifc.profiles.loader import load_default_profile
 
 
@@ -107,9 +111,26 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addWidget(heading)
         self.file_panel = FilePanel()
         self.file_panel.convert_requested.connect(self._on_convert_requested)
+        self.file_panel.input_edit.editingFinished.connect(self._refresh_layer_table)
         layout.addWidget(self.file_panel)
-        layout.addStretch(1)
+        self.layer_table = LayerTable()
+        layout.addWidget(self.layer_table, stretch=1)
         return panel
+
+    def _refresh_layer_table(self) -> None:
+        path_text = self.file_panel.input_edit.text().strip()
+        if not path_text:
+            self.layer_table.set_layers([], self._profile)
+            return
+        path = Path(path_text)
+        if not path.is_file() or path.suffix.lower() != ".dxf":
+            return
+        try:
+            layers = list_layers(path)
+        except Exception as exc:  # noqa: BLE001 — bad DXF should not crash GUI
+            self.set_status(f"Failed to read DXF layers: {exc}", level="error")
+            return
+        self.layer_table.set_layers(layers, self._profile)
 
     def _build_right_panel(self) -> QtWidgets.QWidget:
         panel = QtWidgets.QWidget()

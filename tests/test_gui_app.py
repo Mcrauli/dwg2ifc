@@ -121,6 +121,21 @@ def test_main_window_convert_flow_disables_button_during_run(qtbot, tmp_path):
         qtbot.waitUntil(lambda: panel.convert_button.isEnabled(), timeout=2000)
 
 
+def test_main_window_layer_table_updates_when_input_path_set(qtbot, fixtures_dir):
+    from dxf2ifc.gui.app import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    assert window.layer_table.rowCount() == 0
+    window.file_panel.input_edit.setText(str(fixtures_dir / "simple_wall.dxf"))
+    window.file_panel.input_edit.editingFinished.emit()
+    assert window.layer_table.rowCount() >= 1
+    layers = [
+        window.layer_table.item(r, 0).text() for r in range(window.layer_table.rowCount())
+    ]
+    assert "KYL-ULKOSEINA" in layers
+
+
 def test_main_window_renders_h1_and_caption_labels(qtbot):
     from PySide6 import QtWidgets
 
