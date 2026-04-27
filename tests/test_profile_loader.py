@@ -40,6 +40,24 @@ def test_load_default_profile_has_slab_rules():
     assert yp.talo2000_code == "1236"
 
 
+def test_load_default_profile_has_door_rules():
+    profile = load_default_profile()
+    by_layer = {r.layer_pattern: r for r in profile.rules}
+    ulko = by_layer["KYL-OVET-ULKO*"]
+    assert ulko.entity_kind == "INSERT"
+    assert ulko.block_name == "OVI-ULKO"
+    assert ulko.ifc_type == "IfcDoor"
+    assert ulko.talo2000_code == "1243"
+    vali = by_layer["KYL-OVET-VALI*"]
+    assert vali.entity_kind == "INSERT"
+    assert vali.block_name == "OVI-VALI"
+    assert vali.talo2000_code == "1315"
+    erityis = by_layer["KYL-OVET-ERITYIS*"]
+    assert erityis.entity_kind == "INSERT"
+    assert erityis.block_name == "OVI-ERITYIS"
+    assert erityis.talo2000_code == "1316"
+
+
 def test_load_default_profile_has_partition_wall_rules():
     profile = load_default_profile()
     by_layer = {r.layer_pattern: r for r in profile.rules}

@@ -69,29 +69,29 @@ talo2000_name = "Yläpohjat"
 default_thickness_mm = 300
 
 # Section 4: Ovet — ulko-, väli-, erityisovet (1243 / 1315 / 1316)
-# [[rules]]
-# layer_pattern = "KYL-OVET-ULKO*"
-# entity_kind = "INSERT"
-# block_name = "OVI-ULKO"
-# ifc_type = "IfcDoor"
-# talo2000_code = "1243"
-# talo2000_name = "Ulko-ovet"
-#
-# [[rules]]
-# layer_pattern = "KYL-OVET-VALI*"
-# entity_kind = "INSERT"
-# block_name = "OVI-VALI"
-# ifc_type = "IfcDoor"
-# talo2000_code = "1315"
-# talo2000_name = "Väliovet"
-#
-# [[rules]]
-# layer_pattern = "KYL-OVET-ERITYIS*"
-# entity_kind = "INSERT"
-# block_name = "OVI-ERITYIS"
-# ifc_type = "IfcDoor"
-# talo2000_code = "1316"
-# talo2000_name = "Erityisovet"
+[[rules]]
+layer_pattern = "KYL-OVET-ULKO*"
+entity_kind = "INSERT"
+block_name = "OVI-ULKO"
+ifc_type = "IfcDoor"
+talo2000_code = "1243"
+talo2000_name = "Ulko-ovet"
+
+[[rules]]
+layer_pattern = "KYL-OVET-VALI*"
+entity_kind = "INSERT"
+block_name = "OVI-VALI"
+ifc_type = "IfcDoor"
+talo2000_code = "1315"
+talo2000_name = "Väliovet"
+
+[[rules]]
+layer_pattern = "KYL-OVET-ERITYIS*"
+entity_kind = "INSERT"
+block_name = "OVI-ERITYIS"
+ifc_type = "IfcDoor"
+talo2000_code = "1316"
+talo2000_name = "Erityisovet"
 
 # Section 5: Ikkunat (1242)
 # [[rules]]
