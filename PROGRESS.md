@@ -4,9 +4,9 @@
 
 **Current task:** Plan B kirjoitusvaihe (Mode B, section 1/12).
 
-**Mode:** B (plan-kirjoitus, section 1/12: Profile-skeeman laajennus)
+**Mode:** B (plan-kirjoitus, section 2/12: VS / lasiväliseinät)
 
-**Seuraavaksi:** täytä `docs/superpowers/plans/2026-04-27-plan-b-full-element-set.md` Section 1 -alle 3–5 task-riviä (profile-skeema, BLOCK-rule-tuki, attribuuttimappauksen testit). Yhden rivin kuvauksia, ei koodia. Sitten vaihda PROGRESS.md → "section 2/12" ja jatka.
+**Seuraavaksi:** täytä Plan B Section 2 -alle 3–5 task-riviä joka kattaa VS (1311) ja lasiväliseinä (1312) -säännöt + IfcWall PARTITIONING -branch ifc_writeriin. Sitten PROGRESS.md → section 3/12.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (SHA-historia README + commit-log)
