@@ -9,7 +9,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from dxf2ifc.core.types import LineGeometry, Point3D
+from dxf2ifc.core.types import LineGeometry, Point3D, PolygonGeometry
 
 
 @dataclass(frozen=True)
@@ -43,3 +43,33 @@ def line_to_wall_extrusion(
         thickness_mm=thickness_mm,
         height_mm=height_mm,
     )
+
+
+@dataclass(frozen=True)
+class SlabExtrusion:
+    """Parameters sufficient to create an IfcSlab with IfcExtrudedAreaSolid.
+
+    - outline_xy: ordered (x, y) tuples describing the slab outline in mm
+    - base_z: bottom elevation in mm
+    - thickness_mm: extrusion depth (downwards) in mm
+    """
+
+    outline_xy: tuple[tuple[float, float], ...]
+    base_z: float
+    thickness_mm: float
+
+
+def polygon_to_slab_extrusion(
+    polygon: PolygonGeometry, *, thickness_mm: float
+) -> SlabExtrusion:
+    """Convert a closed PolygonGeometry into a SlabExtrusion.
+
+    The slab outline is the polygon vertices projected to XY. The slab's
+    base elevation is taken from the first vertex's Z. Open polygons are
+    rejected because they cannot bound a slab face.
+    """
+    if not polygon.closed:
+        raise ValueError("polygon_to_slab_extrusion requires a closed polygon")
+    outline = tuple((v.x, v.y) for v in polygon.vertices)
+    base_z = polygon.vertices[0].z if polygon.vertices else 0.0
+    return SlabExtrusion(outline_xy=outline, base_z=base_z, thickness_mm=thickness_mm)
