@@ -4,7 +4,7 @@
 
 **Current task:** Plan D plan-kirjoitus, section 1/N.
 
-**Mode:** B (plan-kirjoitus, section 1/N).
+**Mode:** B (plan-kirjoitus, section 1/7).
 
 **Seuraavaksi:** B1-B2 — luo `docs/superpowers/plans/2026-04-27-plan-d-pyside6-gui.md` skeleton (frontmatter + intro + section-otsikot, ~30 riviä). Sectionit alustavasti: 1) Bootstrap (PySide6 deps + main entry), 2) Brand assets (fontit + QSS), 3) MainWindow + layout, 4) Convert flow (DXF picker + run + status), 5) Profile editor UI, 6) Layer preview/list, 7) Polish + packaging hooks. Numerointi globaali sectionien täytön jälkeen.
 
