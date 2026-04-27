@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 43 — lisää default-profiiliin INSERT-säännöt `HOYRYSTIN/LAUHDUTIN/KOMPRESSORI` → `IfcEvaporator/IfcCondenser/IfcCompressor 25xx`.
+**Current task:** Plan B Task 44 — `tests/test_mapper.py` kylmälaitemappaustesti.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** aktivoi `default_kylmalaite_talo2000.toml`:n placeholder Section 11 säännöt KYL-HOYRYSTIN/KYL-LAUHDUTIN/KYL-KOMPRESSORI (INSERT, IfcEvaporator/IfcCondenser/IfcCompressor, talo2000_code "2510"/"2520"/"2530"). Lisää loader-testi.
+**Seuraavaksi:** lisää mapper-testi joka mappaa HOYRYSTIN/LAUHDUTIN/KOMPRESSORI INSERTit oikein default-profiililla. Mapper toimii jo, testi vahvistaa.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (42/50)
+## Plan B status (43/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -83,7 +83,7 @@
 - [x] Task 42: orchestrator dispatch + integraatiotesti KYL-LEVY (`be47f57`)
 
 ### Section 11: Kylmälaitteet (25xx)
-- [ ] Task 43: default-profiilin HOYRYSTIN/LAUHDUTIN/KOMPRESSORI-INSERT-säännöt
+- [x] Task 43: default-profiilin HOYRYSTIN/LAUHDUTIN/KOMPRESSORI-INSERT-säännöt (`ddb872f`)
 - [ ] Task 44: `tests/test_mapper.py` kylmälaitemappaustesti
 - [ ] Task 45: `ifc_writer.add_cooling_equipment` dispatcher (IfcEvaporator/IfcCondenser/IfcCompressor)
 - [ ] Task 46: orchestrator dispatch + integraatiotesti HOYRYSTIN
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 42/50 — Sectionit 1–10 valmis. Seuraavaksi Section 11 (Kylmälaitteet).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 43/50 — Sectionit 1–10 valmis, Section 11 etenee (1/4).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -138,7 +138,8 @@
 - Plan B Task 40: PanelExtrusion-dataclass + panel_to_proxy_solid (`02077bd`). 28 geometry-testiä passed.
 - Plan B Task 41: add_building_element_proxy tuottaa IfcBuildingElementProxy + arbitrary closed profile -extrusion (`5fc61c6`). 37 ifc_writer-testiä passed.
 - Plan B Task 42: convert_dxf dispatchaa IfcBuildingElementProxy + integraatiotesti KYL-LEVY → 1352 (`be47f57`). 10 integration-testiä passed. ✅ Section 10 valmis.
+- Plan B Task 43: aktivoi HOYRYSTIN/LAUHDUTIN/KOMPRESSORI INSERT-säännöt default-profiiliin (Evaporator/Condenser/Compressor 2510/2520/2530) (`ddb872f`). 16 loader-testiä passed.
 
-**Kesken:** Plan B Task 43–50 (8 jäljellä).
+**Kesken:** Plan B Task 44–50 (7 jäljellä).
 
 **Blokkerit:** ei.
