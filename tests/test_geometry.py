@@ -3,6 +3,7 @@
 import pytest
 
 from dxf2ifc.core.geometry import (
+    CableCarrierSegmentExtrusion,
     DoorBoxExtrusion,
     FurnitureBoxExtrusion,
     PipeSegmentExtrusion,
@@ -10,6 +11,7 @@ from dxf2ifc.core.geometry import (
     WallExtrusion,
     block_to_furniture_box,
     door_block_to_box,
+    line_to_cable_carrier,
     line_to_pipe_segment,
     line_to_wall_extrusion,
     polygon_to_slab_extrusion,
@@ -165,3 +167,29 @@ def test_block_to_furniture_box_default_angle_is_zero():
     block = BlockInstance(insertion_point=Point3D(0, 0, 0))
     box = block_to_furniture_box(block, width_mm=500, depth_mm=400, height_mm=1500)
     assert box.angle_rad == 0.0
+
+
+def test_line_to_cable_carrier_returns_extrusion_with_dims():
+    line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(2500, 0, 0))
+    seg = line_to_cable_carrier(line, width_mm=300, height_mm=80)
+    assert isinstance(seg, CableCarrierSegmentExtrusion)
+    assert seg.width_mm == 300.0
+    assert seg.height_mm == 80.0
+
+
+def test_line_to_cable_carrier_length_matches_line():
+    line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(0, 5000, 0))
+    seg = line_to_cable_carrier(line, width_mm=300, height_mm=80)
+    assert seg.length_mm == pytest.approx(5000.0)
+
+
+def test_line_to_cable_carrier_anchor_is_start():
+    line = LineGeometry(start=Point3D(100, 200, 2700), end=Point3D(2600, 200, 2700))
+    seg = line_to_cable_carrier(line, width_mm=300, height_mm=80)
+    assert seg.anchor == Point3D(100, 200, 2700)
+
+
+def test_line_to_cable_carrier_angle_for_diagonal_line():
+    line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(1000, 1000, 0))
+    seg = line_to_cable_carrier(line, width_mm=300, height_mm=80)
+    assert seg.angle_rad == pytest.approx(0.7853981633974483)

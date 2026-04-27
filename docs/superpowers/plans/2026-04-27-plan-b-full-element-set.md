@@ -102,7 +102,7 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 ## Section 9: Kaapelihyllyt (23xx)
 
 - [x] Task 35: lisää default-profiiliin LINE-sääntö `KAAPELIHYLLY → IfcFlowSegment` Talo2000 23xx -alakoodilla ja leveys-attribuutti (Plan A vastaava: Task 6).
-- [ ] Task 36: kirjoita `tests/test_geometry.py`:hen `line_to_cable_carrier` -failing test ja toteuta funktio joka tuottaa rectangular-profile extrudoinnin reittiviivaa pitkin (Plan A vastaava: Task 15).
+- [x] Task 36: kirjoita `tests/test_geometry.py`:hen `line_to_cable_carrier` -failing test ja toteuta funktio joka tuottaa rectangular-profile extrudoinnin reittiviivaa pitkin (Plan A vastaava: Task 15).
 - [ ] Task 37: lisää `ifc_writer.add_cable_carrier_segment` joka tuottaa IfcFlowSegment + IfcCableCarrierSegmentType CABLETRUNKINGSEGMENT typed-by relation + Talo2000-classification (Plan A vastaava: Task 17).
 - [ ] Task 38: dispatchaa orchestrator cable-carrier-rule LINE-entiteetit `add_cable_carrier_segment`-kutsuun ja laajenna integraatiotesti yhdellä KAAPELIHYLLY-viivalla (Plan A vastaava: Task 18 + 20).
 

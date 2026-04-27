@@ -151,6 +151,41 @@ def block_to_furniture_box(
     )
 
 
+@dataclass(frozen=True)
+class CableCarrierSegmentExtrusion:
+    """Parameters sufficient to create an IfcCableCarrierSegment as a tray.
+
+    - anchor: start point of the tray centreline
+    - angle_rad: rotation around Z so local +X follows the tray
+    - length_mm: tray length
+    - width_mm: tray internal width
+    - height_mm: tray side-rail height
+    """
+
+    anchor: Point3D
+    angle_rad: float
+    length_mm: float
+    width_mm: float
+    height_mm: float
+
+
+def line_to_cable_carrier(
+    line: LineGeometry, *, width_mm: float, height_mm: float
+) -> CableCarrierSegmentExtrusion:
+    """Treat the line as a cable tray centreline at the given cross-section."""
+    dx = line.end.x - line.start.x
+    dy = line.end.y - line.start.y
+    length = math.hypot(dx, dy)
+    angle = math.atan2(dy, dx)
+    return CableCarrierSegmentExtrusion(
+        anchor=line.start,
+        angle_rad=angle,
+        length_mm=length,
+        width_mm=width_mm,
+        height_mm=height_mm,
+    )
+
+
 def line_to_pipe_segment(line: LineGeometry, *, diameter_mm: float) -> PipeSegmentExtrusion:
     """Treat the line as the pipe centreline and use ``diameter_mm`` for the section."""
     dx = line.end.x - line.start.x
