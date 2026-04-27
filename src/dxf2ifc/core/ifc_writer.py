@@ -1015,13 +1015,25 @@ def convert_dxf(
     output_path: str | Path,
     profile: Profile,
     project_name: str | None = None,
-) -> None:
-    """Orchestrate DXF -> IFC conversion end-to-end for Plan A (walls only)."""
+) -> dict[str, list]:
+    """Orchestrate DXF -> IFC conversion end-to-end.
+
+    Returns a mapping of ``system_name`` to the list of IFC products that
+    were grouped under that system. Entities whose mapping rule did not
+    set ``system_name`` are not included in the result.
+    """
     name = project_name or Path(dxf_path).stem
     entities = read_dxf(dxf_path)
     mapped = apply_profile(entities, profile)
     ifc = build_ifc_project_skeleton(project_name=name)
     storey = ifc.by_type("IfcBuildingStorey")[0]
+    systems: dict[str, list] = {}
+
+    def _record(m: object, product: object) -> None:
+        sys_name = m.extra_props.get("system_name") if m.extra_props else None
+        if sys_name:
+            systems.setdefault(sys_name, []).append(product)
+
     for m in mapped:
         if m.ifc_type == "IfcWall":
             wall = add_wall(
@@ -1031,6 +1043,7 @@ def convert_dxf(
                 predefined_type=m.predefined_type or "STANDARD",
             )
             add_talo2000_classification(ifc, wall, code=m.talo2000_code, name=m.talo2000_name)
+            _record(m, wall)
         elif m.ifc_type == "IfcSlab":
             slab = add_slab(
                 ifc,
@@ -1039,6 +1052,7 @@ def convert_dxf(
                 predefined_type=m.predefined_type or "FLOOR",
             )
             add_talo2000_classification(ifc, slab, code=m.talo2000_code, name=m.talo2000_name)
+            _record(m, slab)
         elif m.ifc_type == "IfcDoor":
             door = add_door(
                 ifc,
@@ -1047,6 +1061,7 @@ def convert_dxf(
                 predefined_type=m.predefined_type or "DOOR",
             )
             add_talo2000_classification(ifc, door, code=m.talo2000_code, name=m.talo2000_name)
+            _record(m, door)
         elif m.ifc_type == "IfcWindow":
             window = add_window(
                 ifc,
@@ -1055,6 +1070,7 @@ def convert_dxf(
                 predefined_type=m.predefined_type or "WINDOW",
             )
             add_talo2000_classification(ifc, window, code=m.talo2000_code, name=m.talo2000_name)
+            _record(m, window)
         elif m.ifc_type == "IfcPipeSegment":
             pipe = add_pipe_segment(
                 ifc,
@@ -1063,9 +1079,11 @@ def convert_dxf(
                 predefined_type=m.predefined_type or "REFRIGERATION",
             )
             add_talo2000_classification(ifc, pipe, code=m.talo2000_code, name=m.talo2000_name)
+            _record(m, pipe)
         elif m.ifc_type == "IfcFurniture":
             furniture = add_furniture(ifc, m, parent_storey=storey)
             add_talo2000_classification(ifc, furniture, code=m.talo2000_code, name=m.talo2000_name)
+            _record(m, furniture)
         elif m.ifc_type == "IfcCableCarrierSegment":
             seg = add_cable_carrier_segment(
                 ifc,
@@ -1074,10 +1092,14 @@ def convert_dxf(
                 predefined_type=m.predefined_type or "CABLETRUNKINGSEGMENT",
             )
             add_talo2000_classification(ifc, seg, code=m.talo2000_code, name=m.talo2000_name)
+            _record(m, seg)
         elif m.ifc_type == "IfcBuildingElementProxy":
             proxy = add_building_element_proxy(ifc, m, parent_storey=storey)
             add_talo2000_classification(ifc, proxy, code=m.talo2000_code, name=m.talo2000_name)
+            _record(m, proxy)
         elif m.ifc_type in _COOLING_EQUIPMENT_CLASSES:
             equipment = add_cooling_equipment(ifc, m, parent_storey=storey)
             add_talo2000_classification(ifc, equipment, code=m.talo2000_code, name=m.talo2000_name)
+            _record(m, equipment)
     write_ifc(ifc, output_path)
+    return systems

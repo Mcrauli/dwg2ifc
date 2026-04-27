@@ -334,6 +334,33 @@ def test_hoyrystin_roundtrip_produces_ifcevaporator_with_talo2000_2510(tmp_path:
     assert errors == [], f"IFC validation errors: {errors}"
 
 
+def test_convert_dxf_returns_systems_dict_grouped_by_system_name(tmp_path: Path):
+    """Plan C Task 9: convert_dxf collects produced IFC products into a
+    dict keyed by Rule.system_name when the rule supplied one."""
+    dxf = tmp_path / "two_systems.dxf"
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name="LT IMU")
+    doc.layers.add(name="KYL-VIEMARI-LATTIA")
+    msp = doc.modelspace()
+    msp.add_line((0.0, 0.0, 0.0), (1000.0, 0.0, 0.0), dxfattribs={"layer": "LT IMU"})
+    msp.add_line(
+        (0.0, 1000.0, 0.0),
+        (1000.0, 1000.0, 0.0),
+        dxfattribs={"layer": "KYL-VIEMARI-LATTIA"},
+    )
+    doc.saveas(str(dxf))
+    out = tmp_path / "two_systems.ifc"
+
+    systems = convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
+
+    assert isinstance(systems, dict)
+    assert set(systems.keys()) >= {"Refrigeration LT", "Drainage"}
+    assert len(systems["Refrigeration LT"]) == 1
+    assert len(systems["Drainage"]) == 1
+    assert systems["Refrigeration LT"][0].is_a("IfcPipeSegment")
+    assert systems["Drainage"][0].is_a("IfcPipeSegment")
+
+
 def test_partition_wall_roundtrip_produces_partitioning_ifcwall(tmp_path: Path):
     dxf = tmp_path / "partition_wall.dxf"
     _write_single_line_dxf(dxf, layer="KYL-VALISEINA")
