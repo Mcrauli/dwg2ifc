@@ -5,6 +5,7 @@ from pathlib import Path
 import ifcopenshell
 
 from dxf2ifc.core.ifc_writer import (
+    add_building_element_proxy,
     add_cable_carrier_segment,
     add_door,
     add_furniture,
@@ -550,6 +551,65 @@ def test_add_cable_carrier_segment_reuses_type_for_repeat_calls():
     types = ifc.by_type("IfcCableCarrierSegmentType")
     trunk = [t for t in types if t.PredefinedType == "CABLETRUNKINGSEGMENT"]
     assert len(trunk) == 1
+
+
+def _proxy_mapped_entity(
+    *,
+    layer: str = "KYL-LEVY",
+    talo_code: str = "1352",
+    talo_name: str = "Kylmähuone-elementit",
+    thickness_mm: float = 120.0,
+) -> MappedEntity:
+    polygon = PolygonGeometry(
+        vertices=(
+            Point3D(0, 0, 0),
+            Point3D(2400, 0, 0),
+            Point3D(2400, 2700, 0),
+            Point3D(0, 2700, 0),
+        ),
+        closed=True,
+    )
+    return MappedEntity(
+        layer=layer,
+        dxf_type="POLYLINE",
+        geometry=polygon,
+        ifc_type="IfcBuildingElementProxy",
+        predefined_type=None,
+        talo2000_code=talo_code,
+        talo2000_name=talo_name,
+        extra_props={"default_thickness_mm": thickness_mm},
+    )
+
+
+def test_add_building_element_proxy_creates_ifcproxy():
+    ifc = build_ifc_project_skeleton(project_name="Proxy Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    proxy = add_building_element_proxy(ifc, _proxy_mapped_entity(), parent_storey=storey)
+    assert proxy.is_a("IfcBuildingElementProxy")
+    assert proxy.Name == "KYL-LEVY"
+    assert proxy.Representation is not None
+
+
+def test_add_building_element_proxy_uses_thickness_from_extra_props():
+    ifc = build_ifc_project_skeleton(project_name="Proxy Thick")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    proxy = add_building_element_proxy(
+        ifc, _proxy_mapped_entity(thickness_mm=80), parent_storey=storey
+    )
+    extruded = proxy.Representation.Representations[0].Items[0]
+    assert extruded.Depth == 80.0
+
+
+def test_add_building_element_proxy_placed_under_storey():
+    ifc = build_ifc_project_skeleton(project_name="Proxy Storey")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    proxy = add_building_element_proxy(ifc, _proxy_mapped_entity(), parent_storey=storey)
+    rels = [
+        r
+        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
+        if r.RelatingStructure == storey
+    ]
+    assert any(proxy in rel.RelatedElements for rel in rels)
 
 
 def test_add_talo2000_classification_attaches_reference():

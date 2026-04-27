@@ -21,6 +21,7 @@ from dxf2ifc.core.geometry import (
     line_to_cable_carrier,
     line_to_pipe_segment,
     line_to_wall_extrusion,
+    panel_to_proxy_solid,
     polygon_to_slab_extrusion,
 )
 from dxf2ifc.core.mapper import apply_profile
@@ -742,6 +743,87 @@ def add_cable_carrier_segment(
         relating_structure=parent_storey,
     )
     return seg
+
+
+def add_building_element_proxy(
+    ifc,
+    mapped: MappedEntity,
+    *,
+    parent_storey,
+) -> object:
+    """Create an IfcBuildingElementProxy from a PolygonGeometry-bearing
+    MappedEntity. Used for cold-room panels (KYL-LEVY) and corner pieces
+    (KYL-NURKKA): a closed polygon outline extruded upwards by
+    extra_props['default_thickness_mm'] (default 120 mm).
+    """
+    if not isinstance(mapped.geometry, PolygonGeometry):
+        raise TypeError(
+            "add_building_element_proxy expects PolygonGeometry, "
+            f"got {type(mapped.geometry).__name__}"
+        )
+
+    thickness = float(mapped.extra_props.get("default_thickness_mm", 120.0))
+    panel = panel_to_proxy_solid(mapped.geometry, thickness_mm=thickness)
+
+    proxy = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class="IfcBuildingElementProxy",
+        name=mapped.layer,
+    )
+
+    matrix = _z_rotation_matrix(0.0, 0.0, panel.base_z, 0.0)
+    ifcopenshell.api.run(
+        "geometry.edit_object_placement",
+        ifc,
+        product=proxy,
+        matrix=matrix,
+    )
+
+    model_ctx = [
+        c
+        for c in ifc.by_type("IfcGeometricRepresentationSubContext")
+        if c.ContextIdentifier == "Body"
+    ][0]
+    polyline_points = [
+        ifc.create_entity("IfcCartesianPoint", Coordinates=(float(x), float(y)))
+        for x, y in panel.outline_xy
+    ]
+    polyline_points.append(polyline_points[0])
+    polyline = ifc.create_entity("IfcPolyline", Points=polyline_points)
+    profile = ifc.create_entity(
+        "IfcArbitraryClosedProfileDef",
+        ProfileType="AREA",
+        OuterCurve=polyline,
+    )
+    extruded = ifc.create_entity(
+        "IfcExtrudedAreaSolid",
+        SweptArea=profile,
+        Position=ifc.create_entity(
+            "IfcAxis2Placement3D",
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
+        ),
+        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
+        Depth=panel.thickness_mm,
+    )
+    shape = ifc.create_entity(
+        "IfcShapeRepresentation",
+        ContextOfItems=model_ctx,
+        RepresentationIdentifier="Body",
+        RepresentationType="SweptSolid",
+        Items=[extruded],
+    )
+    proxy.Representation = ifc.create_entity(
+        "IfcProductDefinitionShape", Representations=[shape]
+    )
+
+    ifcopenshell.api.run(
+        "spatial.assign_container",
+        ifc,
+        products=[proxy],
+        relating_structure=parent_storey,
+    )
+    return proxy
 
 
 def _ensure_cable_carrier_segment_type(ifc, requested_type: str, enum_value: str) -> object:
