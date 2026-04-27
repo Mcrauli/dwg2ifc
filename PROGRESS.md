@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 6 — kirjoita `tests/test_mapper.py`:hen failing test joka asettaa molemmille (KYL-VALISEINA, KYL-LASIVALISEINA) layereille oikean Talo2000-koodin + PredefinedType-arvon.
+**Current task:** Plan B Task 7 — laajenna `ifc_writer.add_wall` ottamaan vastaan `predefined_type`-parametrin ja asettamaan `IfcWall.PredefinedType` (default STANDARD, partition-säännöillä PARTITIONING).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lue `src/dxf2ifc/core/mapper.py` ja `tests/test_mapper.py`. Lisää failing test joka kutsuu `apply_profile` simuloiduilla EntityRecord-listalla (LINE-entiteetit layereilla KYL-VALISEINA ja KYL-LASIVALISEINA) ja varmistaa että `MappedEntity.rule.predefined_type == 'PARTITIONING'` ja talo2000-koodit (1311 / 1312). Mapperin pitäisi jo toimia (uudet säännöt löytyvät default-profiilista). Pytest, commit + push, PROGRESS.md → Task 7.
+**Seuraavaksi:** lue `src/dxf2ifc/core/ifc_writer.py` ja `tests/test_ifc_writer.py`. Kirjoita failing test joka kutsuu `add_wall(..., predefined_type="PARTITIONING")` ja varmista että generoitu IfcWall:n PredefinedType on `PARTITIONING`. Päivitä `add_wall`-funktio ottamaan vastaan `predefined_type`-arg (default `"STANDARD"`). Pytest, commit + push, PROGRESS.md → Task 8.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (5/50)
+## Plan B status (6/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -28,7 +28,7 @@
 
 ### Section 2: VS / lasiväliseinät (1311 / 1312)
 - [x] Task 5: default-profiilin VS- ja lasiväliseinä-säännöt (`97ab1b0`)
-- [ ] Task 6: failing test `tests/test_mapper.py` partition-säännöille
+- [x] Task 6: failing test `tests/test_mapper.py` partition-säännöille (`cb77e9c`)
 - [ ] Task 7: `ifc_writer.add_wall` + `predefined_type` -parametri
 - [ ] Task 8: integraatiotesti VS-viivalla → IfcWall PARTITIONING 1311
 
@@ -94,14 +94,15 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 5/50 — Section 1 valmis, Section 2 etenee (1/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 6/50 — Section 1 valmis, Section 2 etenee (2/4).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
 - Plan B Task 3: TOML-roundtrip-testit + loader negative test INSERT-without-block_name (`a8cbe50`). Loader itse ei vaatinut muutoksia. 17 schema+loader-testiä passed.
 - Plan B Task 4: kommentoidut placeholder-säännöt section 2–11 element-tyypeille default TOML:ssa (`35c18f6`). 6 loader-testiä passed.
 - Plan B Task 5: aktivoi KYL-VALISEINA ja KYL-LASIVALISEINA -säännöt default-profiiliin (PARTITIONING 1311/1312) (`97ab1b0`). 7 loader-testiä passed.
+- Plan B Task 6: mapper-test joka varmistaa partition-mappingin default-profiililla (`cb77e9c`). 11 mapper-testiä passed.
 
-**Kesken:** Plan B Task 6–50 (45 jäljellä).
+**Kesken:** Plan B Task 7–50 (44 jäljellä).
 
 **Blokkerit:** ei.
