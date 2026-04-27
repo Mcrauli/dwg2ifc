@@ -27,6 +27,26 @@ def test_main_window_has_splitter_layout_and_status_bar(qtbot):
     assert window.statusBar() is not None
 
 
+def test_main_window_set_status_levels(qtbot):
+    from dxf2ifc.gui.app import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    bar = window.statusBar()
+
+    window.set_status("Converting…")
+    assert bar.currentMessage() == "Converting…"
+    assert bar.property("level") == "info"
+
+    window.set_status("Done", level="success")
+    assert bar.currentMessage() == "Done"
+    assert bar.property("level") == "success"
+
+    window.set_status("Boom", level="error")
+    assert bar.currentMessage() == "Boom"
+    assert bar.property("level") == "error"
+
+
 def test_main_window_renders_h1_and_caption_labels(qtbot):
     from PySide6 import QtWidgets
 

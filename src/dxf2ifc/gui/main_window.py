@@ -33,7 +33,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setCentralWidget(central)
         self.setStatusBar(QtWidgets.QStatusBar(self))
-        self.statusBar().showMessage("Ready")
+        self.set_status("Ready")
+
+    def set_status(self, text: str, *, level: str = "info") -> None:
+        bar = self.statusBar()
+        bar.showMessage(text)
+        bar.setProperty("level", level)
+        bar.style().unpolish(bar)
+        bar.style().polish(bar)
 
     def _build_left_panel(self) -> QtWidgets.QWidget:
         panel = QtWidgets.QWidget()
