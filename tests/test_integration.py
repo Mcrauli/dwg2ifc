@@ -225,6 +225,35 @@ def test_kyl_viemari_lattia_roundtrip_produces_drainpipe(tmp_path: Path):
     assert errors == [], f"IFC validation errors: {errors}"
 
 
+def test_kyl_levyhylly_roundtrip_produces_ifcfurniture_with_talo2000_1331(tmp_path: Path):
+    dxf = tmp_path / "kyl_levyhylly.dxf"
+    _write_block_insert_dxf(
+        dxf,
+        layer="KYL-LEVYHYLLY",
+        block_name="KLHYLLY-LEVY",
+        insertion=(2000.0, 1500.0),
+    )
+    out = tmp_path / "kyl_levyhylly.ifc"
+
+    convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
+
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4"
+    furnitures = ifc.by_type("IfcFurniture")
+    assert len(furnitures) == 1
+    assert furnitures[0].Name == "KYL-LEVYHYLLY"
+
+    refs = ifc.by_type("IfcClassificationReference")
+    talo = [r for r in refs if r.Identification == "1331"]
+    assert len(talo) == 1
+    assert talo[0].ReferencedSource.Name == "Talo2000"
+
+    logger = ifcopenshell.validate.json_logger()
+    ifcopenshell.validate.validate(ifc, logger=logger)
+    errors = [e for e in logger.statements if e.get("level") == "ERROR"]
+    assert errors == [], f"IFC validation errors: {errors}"
+
+
 def test_partition_wall_roundtrip_produces_partitioning_ifcwall(tmp_path: Path):
     dxf = tmp_path / "partition_wall.dxf"
     _write_single_line_dxf(dxf, layer="KYL-VALISEINA")
