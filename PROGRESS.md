@@ -2,7 +2,7 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 21 — `gui/about.py` show_about-dialog.
+**Current task:** Plan D Task 22 — `gui/recent_files.py` QSettings + Open recent.
 
 **Mode:** A (implementointi).
 
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (20/25)
+## Plan D status (21/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -129,7 +129,7 @@
 - [x] Task 20: kytke menubariin + end-to-end custom-rule testi (`1e7f38f`)
 
 ### Section 7: Polish + packaging hooks
-- [ ] Task 21: `gui/about.py` show_about
+- [x] Task 21: `gui/about.py` show_about (`13e882d`)
 - [ ] Task 22: `gui/recent_files.py` QSettings:n kautta + Open recent
 - [ ] Task 23: pytest-qt config + offscreen QPA + shared QApplication
 - [ ] Task 24: README "GUI"-osio + screenshot placeholder
@@ -244,7 +244,8 @@
 - Plan D Task 18: `gui/profile_editor.py` `ProfileEditorDialog` + custom QAbstractTableModel + Add/Edit/Remove/Save-toolbar (Save → dump_profile + profile_saved-signaali) (`de6d9ad`). 3 profile-editor-testiä passed.
 - Plan D Task 19: `gui/rule_dialog.py` `RuleEditDialog` QFormLayout + live-pydantic-validointi (OK disabloitu invalid-INSERT-no-block_name) (`f77acb1`). 3 rule-dialog-testiä passed.
 - Plan D Task 20: kytkin ProfileEditorDialog MainWindow:n Profile-menubariin + `apply_profile_from_path` joka load_profile + päivitä layer_table + statusbar (`1e7f38f`). 12 gui-app-testiä passed. ✅ Section 6 valmis.
+- Plan D Task 21: `gui/about.py` `AboutDialog` modal QDialog brand+version+GitHub-linkillä; Help → About kutsuu sitä (`13e882d`). 2 about-testiä passed.
 
-**Kesken:** Plan D Task 21–25 (5 jäljellä, Section 7).
+**Kesken:** Plan D Task 22–25 (4 jäljellä).
 
 **Blokkerit:** ei.
