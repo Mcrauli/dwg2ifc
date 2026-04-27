@@ -27,6 +27,42 @@ def test_main_window_has_splitter_layout_and_status_bar(qtbot):
     assert window.statusBar() is not None
 
 
+def _menu_action_texts(window) -> list[str]:
+    texts: list[str] = []
+    for menu_action in window.menuBar().actions():
+        menu = menu_action.menu()
+        if menu is None:
+            continue
+        for action in menu.actions():
+            if action.isSeparator():
+                continue
+            text = action.text()
+            if text:
+                texts.append(text)
+    return texts
+
+
+def test_main_window_menubar_has_expected_actions(qtbot):
+    from dxf2ifc.gui.app import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    texts = _menu_action_texts(window)
+    assert "Open DXF…" in texts
+    assert "Quit" in texts
+    assert "About" in texts
+
+
+def test_main_window_quit_action_closes_window(qtbot):
+    from dxf2ifc.gui.app import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    window.show()
+    window._quit_action.trigger()
+    assert not window.isVisible()
+
+
 def test_main_window_set_status_levels(qtbot):
     from dxf2ifc.gui.app import MainWindow
 
