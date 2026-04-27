@@ -191,27 +191,27 @@ ifc_type = "IfcBuildingElementProxy"
 talo2000_code = "1352"
 talo2000_name = "Kylmähuone-elementit"
 
-# Section 11: Kylmälaitteet (25xx)
-# [[rules]]
-# layer_pattern = "KYL-HOYRYSTIN*"
-# entity_kind = "INSERT"
-# block_name = "HOYRYSTIN"
-# ifc_type = "IfcEvaporator"
-# talo2000_code = "25xx"
-# talo2000_name = "Laiteosat — höyrystin"
-#
-# [[rules]]
-# layer_pattern = "KYL-LAUHDUTIN*"
-# entity_kind = "INSERT"
-# block_name = "LAUHDUTIN"
-# ifc_type = "IfcCondenser"
-# talo2000_code = "25xx"
-# talo2000_name = "Laiteosat — lauhdutin"
-#
-# [[rules]]
-# layer_pattern = "KYL-KOMPRESSORI*"
-# entity_kind = "INSERT"
-# block_name = "KOMPRESSORI"
-# ifc_type = "IfcCompressor"
-# talo2000_code = "25xx"
-# talo2000_name = "Laiteosat — kompressori"
+# Section 11: Kylmälaitteet (25xx) — placeholder-alakoodit kunnes RT saatavilla
+[[rules]]
+layer_pattern = "KYL-HOYRYSTIN*"
+entity_kind = "INSERT"
+block_name = "HOYRYSTIN"
+ifc_type = "IfcEvaporator"
+talo2000_code = "2510"
+talo2000_name = "Laiteosat — höyrystin"
+
+[[rules]]
+layer_pattern = "KYL-LAUHDUTIN*"
+entity_kind = "INSERT"
+block_name = "LAUHDUTIN"
+ifc_type = "IfcCondenser"
+talo2000_code = "2520"
+talo2000_name = "Laiteosat — lauhdutin"
+
+[[rules]]
+layer_pattern = "KYL-KOMPRESSORI*"
+entity_kind = "INSERT"
+block_name = "KOMPRESSORI"
+ifc_type = "IfcCompressor"
+talo2000_code = "2530"
+talo2000_name = "Laiteosat — kompressori"
