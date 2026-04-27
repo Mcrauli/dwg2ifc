@@ -69,6 +69,21 @@ def test_load_default_profile_has_window_rule():
     assert ikkuna.talo2000_name == "Ikkunat"
 
 
+def test_load_default_profile_has_pipe_segment_rules():
+    profile = load_default_profile()
+    by_layer = {r.layer_pattern: r for r in profile.rules}
+    lt = by_layer["LT IMU"]
+    assert lt.ifc_type == "IfcPipeSegment"
+    assert lt.predefined_type == "REFRIGERATION"
+    assert lt.talo2000_code == "2151"
+    assert lt.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 22.0
+    mt_imu = by_layer["MT IMU"]
+    assert mt_imu.talo2000_code == "2152"
+    mt_neste = by_layer["MT NESTE"]
+    assert mt_neste.talo2000_code == "2153"
+    assert mt_neste.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 12.0
+
+
 def test_load_default_profile_has_partition_wall_rules():
     profile = load_default_profile()
     by_layer = {r.layer_pattern: r for r in profile.rules}

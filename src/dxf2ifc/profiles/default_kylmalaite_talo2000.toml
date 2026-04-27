@@ -103,26 +103,32 @@ talo2000_code = "1242"
 talo2000_name = "Ikkunat"
 
 # Section 6: Kylmäputket (21xx, IfcPipeSegment REFRIGERATION)
-# [[rules]]
-# layer_pattern = "LT IMU"
-# ifc_type = "IfcPipeSegment"
-# predefined_type = "REFRIGERATION"
-# talo2000_code = "21xx"
-# talo2000_name = "Putkiosat — kylmäimu"
-#
-# [[rules]]
-# layer_pattern = "MT IMU"
-# ifc_type = "IfcPipeSegment"
-# predefined_type = "REFRIGERATION"
-# talo2000_code = "21xx"
-# talo2000_name = "Putkiosat — keski-imu"
-#
-# [[rules]]
-# layer_pattern = "MT NESTE"
-# ifc_type = "IfcPipeSegment"
-# predefined_type = "REFRIGERATION"
-# talo2000_code = "21xx"
-# talo2000_name = "Putkiosat — nesteputki"
+# Talo2000 21xx alakoodit ovat placeholder kunnes RT-tarkennus saatavilla.
+# pset_overrides.Pset_PipeSegmentOccurrence.NominalDiameter = DN (mm) — voi
+# ylikirjoittaa per-LISP-ohjeesta.
+[[rules]]
+layer_pattern = "LT IMU"
+ifc_type = "IfcPipeSegment"
+predefined_type = "REFRIGERATION"
+talo2000_code = "2151"
+talo2000_name = "Putkiosat — kylmäimu"
+pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 22.0 } }
+
+[[rules]]
+layer_pattern = "MT IMU"
+ifc_type = "IfcPipeSegment"
+predefined_type = "REFRIGERATION"
+talo2000_code = "2152"
+talo2000_name = "Putkiosat — keski-imu"
+pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 18.0 } }
+
+[[rules]]
+layer_pattern = "MT NESTE"
+ifc_type = "IfcPipeSegment"
+predefined_type = "REFRIGERATION"
+talo2000_code = "2153"
+talo2000_name = "Putkiosat — nesteputki"
+pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 12.0 } }
 
 # Section 7: Viemäriputket (21xx DRAINPIPE)
 # [[rules]]
