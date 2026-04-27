@@ -399,6 +399,32 @@ def test_add_pipe_segment_uses_native_enum_when_valid():
     assert pipe.PredefinedType == "RIGIDSEGMENT"
 
 
+def test_add_pipe_segment_drainpipe_falls_back_to_userdefined():
+    ifc = build_ifc_project_skeleton(project_name="Drain Pipe")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    pipe = add_pipe_segment(
+        ifc, _pipe_mapped_entity(), parent_storey=storey, predefined_type="DRAINPIPE"
+    )
+    assert pipe.PredefinedType == "USERDEFINED"
+    assert pipe.ObjectType == "DRAINPIPE"
+    types = [t for t in ifc.by_type("IfcPipeSegmentType") if t.ElementType == "DRAINPIPE"]
+    assert len(types) == 1
+    assert types[0].PredefinedType == "USERDEFINED"
+
+
+def test_add_pipe_segment_reuses_drainpipe_type_for_repeat_calls():
+    ifc = build_ifc_project_skeleton(project_name="Drain Pipes")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    add_pipe_segment(
+        ifc, _pipe_mapped_entity(), parent_storey=storey, predefined_type="DRAINPIPE"
+    )
+    add_pipe_segment(
+        ifc, _pipe_mapped_entity(), parent_storey=storey, predefined_type="DRAINPIPE"
+    )
+    drain_types = [t for t in ifc.by_type("IfcPipeSegmentType") if t.ElementType == "DRAINPIPE"]
+    assert len(drain_types) == 1
+
+
 def test_add_talo2000_classification_attaches_reference():
     ifc = build_ifc_project_skeleton(project_name="Class Test")
     storey = ifc.by_type("IfcBuildingStorey")[0]
