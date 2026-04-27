@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 2 — `gui/app.py` `run()` + placeholder QMainWindow + qtbot offscreen testi.
+**Current task:** Plan D Task 3 — `dxf2ifc-gui` console-script + `gui/__main__.py`.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** luo `src/dxf2ifc/gui/__init__.py` ja `src/dxf2ifc/gui/app.py`. `run()` rakentaa QApplication, näyttää placeholder-QMainWindow (window title "dxf2ifc"), palauttaa `app.exec()`. Failing-test `tests/test_gui_app.py` käyttää `qtbot`-fixtureä avaamaan `MainWindow` ja varmistamaan `windowTitle() == "dxf2ifc"`. QT_QPA_PLATFORM=offscreen vaadittu (asetetaan conftest:ssa tai env-muuttujassa).
+**Seuraavaksi:** lisää `pyproject.toml`:n `[project.scripts]`-blokkiin `dxf2ifc-gui = "dxf2ifc.gui.app:run"` ja luo `src/dxf2ifc/gui/__main__.py` joka kutsuu `run()`:ia. Smoke-testi (`tests/test_gui_main_module.py`) varmistaa että `python -m dxf2ifc.gui --help` (tai vastaava no-op) ei kaadu importissa — voidaan testata ajamalla subprocess offscreen-platformilla, mutta nopeampi tapa: mockaa `run()`, importtaa `dxf2ifc.gui.__main__` ja tarkista että moduli kutsuu `run()`:ia.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,11 +94,11 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (1/25)
+## Plan D status (2/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
-- [ ] Task 2: gui/app.py `run()` + placeholder QMainWindow + qtbot offscreen testi
+- [x] Task 2: gui/app.py `run()` + placeholder QMainWindow + qtbot offscreen testi (`f87b09e`)
 - [ ] Task 3: `dxf2ifc-gui` console-script + `gui/__main__.py`
 
 ### Section 2: Brand assets
@@ -225,7 +225,8 @@
 - Plan C Task 12: plan-loppupiste — pytest 151 passed, coverage 91 %, ruff clean; README + CLAUDE.md status päivitetty Plan C valmiiksi (`8cc4fc3`). 🎉 Plan C 12/12.
 - Plan D Mode B: skeleton + 7 sectionia + 25 task-riviä (kommitit B2 → S7), CLAUDE.md "Plans B–F"-lista päivitetty (`7433ae8` → ...). PROGRESS.md sisältää nyt täyden Plan D -checklistin.
 - Plan D Task 1: PySide6>=6.7 ja pytest-qt>=4.4 -depsit pyproject.tomlin gui+dev-extrojen alle, smoke-testi `tests/test_gui_smoke.py` (`10d50c2`). 2 smoketestiä passed (vaatii libEGL.so.1 hostissa).
+- Plan D Task 2: `gui/app.py` `MainWindow` + `run()` + qtbot-testi (`f87b09e`). 2 gui-app-testiä passed.
 
-**Kesken:** Plan D Task 2–25 (24 jäljellä).
+**Kesken:** Plan D Task 3–25 (23 jäljellä).
 
 **Blokkerit:** ei.
