@@ -1,0 +1,48 @@
+name: Discord notification on master push
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - PROGRESS.md
+      - '.github/.routine-status'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          COMMIT_SHA: ${{ github.event.head_commit.id }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+          COMMIT_URL: ${{ github.event.head_commit.url }}
+          PUSHER: ${{ github.event.pusher.name }}
+        run: |
+          python3 <<'PYEOF'
+          import json, os, urllib.request
+          msg = os.environ['COMMIT_MSG'].split('\n')[0]
+          sha = os.environ['COMMIT_SHA'][:7]
+          url = os.environ['COMMIT_URL']
+          pusher = os.environ['PUSHER']
+          # Pick emoji based on commit message
+          prefix = '📦'
+          lower = msg.lower()
+          if msg.startswith('🟢') or lower.startswith('progress:'):
+              prefix = '🟢'
+          elif msg.startswith('🔴') or 'blokki' in lower:
+              prefix = '🔴'
+          elif msg.startswith('🟡'):
+              prefix = '🟡'
+          elif lower.startswith('feat') or lower.startswith('fix') or lower.startswith('add'):
+              prefix = '✨'
+          content = f"{prefix} dxf2ifc — {pusher}: {msg} ({sha})\n{url}"
+          data = json.dumps({'content': content}).encode()
+          req = urllib.request.Request(
+              os.environ['DISCORD_WEBHOOK'],
+              data=data,
+              headers={'Content-Type': 'application/json'},
+          )
+          resp = urllib.request.urlopen(req)
+          print(f'Discord HTTP {resp.status}')
+          PYEOF
