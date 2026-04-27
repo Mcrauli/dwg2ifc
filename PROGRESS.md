@@ -4,9 +4,9 @@
 
 **Current task:** Plan B kirjoitusvaihe (Mode B, section 1/12).
 
-**Mode:** B (plan-kirjoitus, section 2/12: VS / lasiväliseinät)
+**Mode:** B (plan-kirjoitus, section 3/12: Laatat AP/VP/YP)
 
-**Seuraavaksi:** täytä Plan B Section 2 -alle 3–5 task-riviä joka kattaa VS (1311) ja lasiväliseinä (1312) -säännöt + IfcWall PARTITIONING -branch ifc_writeriin. Sitten PROGRESS.md → section 3/12.
+**Seuraavaksi:** täytä Plan B Section 3 -alle 3–5 task-riviä joka kattaa AP (1221), VP (1235), YP (1236). Geometry-haarana POLYLINE/closed boundary → IfcSlab FLOOR/ROOF. Sitten PROGRESS.md → section 4/12.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (SHA-historia README + commit-log)
