@@ -136,6 +136,31 @@ def test_apply_profile_maps_ikkuna_block_to_ifcwindow_via_default_profile():
     assert window.block_name == "IKKUNA"
 
 
+def test_apply_profile_propagates_system_name_to_extra_props():
+    profile = Profile(
+        name="system",
+        ifc_schema="IFC4",
+        rules=[
+            Rule(
+                layer_pattern="LT IMU",
+                ifc_type="IfcPipeSegment",
+                predefined_type="REFRIGERATION",
+                talo2000_code="2151",
+                talo2000_name="Putkiosat — kylmäimu",
+                system_name="Refrigeration LT",
+            ),
+        ],
+    )
+    record = EntityRecord(
+        layer="LT IMU",
+        dxf_type="LINE",
+        geometry=LineGeometry(start=Point3D(0, 0, 0), end=Point3D(1000, 0, 0)),
+    )
+    mapped = apply_profile([record], profile)
+    assert len(mapped) == 1
+    assert mapped[0].extra_props["system_name"] == "Refrigeration LT"
+
+
 def test_apply_profile_maps_cooling_equipment_blocks_via_default_profile():
     profile = load_default_profile()
     entities = [

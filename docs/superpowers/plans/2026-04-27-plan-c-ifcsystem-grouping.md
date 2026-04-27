@@ -32,7 +32,7 @@ Plan A 21/21 + Plan B 50/50 valmis (master `2494841`). 143 testiä passed, cover
 
 ## Section 2: Mapper — system_name extra_propsiin
 
-- [ ] Task 4: kirjoita failing test joka rakentaa Profile + Rule(system_name="X"), ajaa `apply_profile` ja varmistaa `MappedEntity.extra_props["system_name"] == "X"`. Tarkista että nykyinen mapper.apply_profile (joka jo siirtää system_name extra_propsiin) kestää testin.
+- [x] Task 4: kirjoita failing test joka rakentaa Profile + Rule(system_name="X"), ajaa `apply_profile` ja varmistaa `MappedEntity.extra_props["system_name"] == "X"`. Tarkista että nykyinen mapper.apply_profile (joka jo siirtää system_name extra_propsiin) kestää testin.
 - [ ] Task 5: laajenna mapper-testi käyttämään default-profiilia ja varmista että LT IMU / KYL-VIEMARI / KAAPELIHYLLY / HOYRYSTIN -EntityRecordit saavat eri system_name-arvot extra_propsiinsa.
 
 ## Section 3: ifc_writer.add_system + group assignment
