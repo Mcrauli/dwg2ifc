@@ -13,6 +13,7 @@ from dxf2ifc.core.ifc_writer import (
     add_furniture,
     add_pipe_segment,
     add_slab,
+    add_system,
     add_talo2000_classification,
     add_wall,
     add_window,
@@ -696,6 +697,22 @@ def test_add_cooling_equipment_rejects_unsupported_ifc_type(_cooling_storey):
     )
     with pytest.raises(ValueError):
         add_cooling_equipment(ifc, mapped, parent_storey=storey)
+
+
+def test_add_system_creates_ifcsystem_with_name():
+    ifc = build_ifc_project_skeleton(project_name="System Test")
+    system = add_system(ifc, name="Refrigeration LT")
+    assert system.is_a("IfcSystem")
+    assert system.Name == "Refrigeration LT"
+
+
+def test_add_system_caches_per_name():
+    ifc = build_ifc_project_skeleton(project_name="System Reuse")
+    a = add_system(ifc, name="Drainage")
+    b = add_system(ifc, name="Drainage")
+    assert a == b
+    systems = [s for s in ifc.by_type("IfcSystem") if s.Name == "Drainage"]
+    assert len(systems) == 1
 
 
 def test_add_talo2000_classification_attaches_reference():

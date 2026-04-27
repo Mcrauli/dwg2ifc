@@ -892,6 +892,23 @@ def add_cooling_equipment(
     return product
 
 
+def add_system(ifc, *, name: str) -> object:
+    """Return an IfcSystem entity with the given name, creating it once per file.
+
+    Repeated calls with the same name yield the same instance so callers can
+    safely group products without bookkeeping.
+    """
+    for existing in ifc.by_type("IfcSystem"):
+        if existing.Name == name:
+            return existing
+    return ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class="IfcSystem",
+        name=name,
+    )
+
+
 def _ensure_cable_carrier_segment_type(ifc, requested_type: str, enum_value: str) -> object:
     """Return (creating once per file) an IfcCableCarrierSegmentType."""
     for t in ifc.by_type("IfcCableCarrierSegmentType"):
