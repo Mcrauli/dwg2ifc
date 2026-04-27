@@ -254,6 +254,33 @@ def test_kyl_levyhylly_roundtrip_produces_ifcfurniture_with_talo2000_1331(tmp_pa
     assert errors == [], f"IFC validation errors: {errors}"
 
 
+def test_kaapelihylly_roundtrip_produces_cable_carrier_segment(tmp_path: Path):
+    dxf = tmp_path / "kaapelihylly.dxf"
+    _write_single_line_dxf(dxf, layer="KAAPELIHYLLY")
+    out = tmp_path / "kaapelihylly.ifc"
+
+    convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
+
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4"
+    segments = ifc.by_type("IfcCableCarrierSegment")
+    assert len(segments) == 1
+    assert segments[0].PredefinedType == "CABLETRUNKINGSEGMENT"
+
+    types = ifc.by_type("IfcCableCarrierSegmentType")
+    assert any(t.PredefinedType == "CABLETRUNKINGSEGMENT" for t in types)
+
+    refs = ifc.by_type("IfcClassificationReference")
+    talo = [r for r in refs if r.Identification == "2380"]
+    assert len(talo) == 1
+    assert talo[0].ReferencedSource.Name == "Talo2000"
+
+    logger = ifcopenshell.validate.json_logger()
+    ifcopenshell.validate.validate(ifc, logger=logger)
+    errors = [e for e in logger.statements if e.get("level") == "ERROR"]
+    assert errors == [], f"IFC validation errors: {errors}"
+
+
 def test_partition_wall_roundtrip_produces_partitioning_ifcwall(tmp_path: Path):
     dxf = tmp_path / "partition_wall.dxf"
     _write_single_line_dxf(dxf, layer="KYL-VALISEINA")

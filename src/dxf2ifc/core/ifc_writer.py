@@ -891,4 +891,12 @@ def convert_dxf(
             add_talo2000_classification(
                 ifc, furniture, code=m.talo2000_code, name=m.talo2000_name
             )
+        elif m.ifc_type == "IfcCableCarrierSegment":
+            seg = add_cable_carrier_segment(
+                ifc,
+                m,
+                parent_storey=storey,
+                predefined_type=m.predefined_type or "CABLETRUNKINGSEGMENT",
+            )
+            add_talo2000_classification(ifc, seg, code=m.talo2000_code, name=m.talo2000_name)
     write_ifc(ifc, output_path)
