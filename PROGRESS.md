@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 30 — laajenna integraatiotesti yhdellä KYL-VIEMARI-LATTIA-viivalla joka tuottaa IfcPipeSegment DRAINPIPE.
+**Current task:** Plan B Task 31 — lisää default-profiiliin INSERT-säännöt `KYL-LEVYHYLLY → IfcFurniture 1331`, `KYL-TIKASHYLLY → IfcFurniture 1331`, `KLHYLLYV → IfcFurniture 1331` korkeus/leveys/syvyys-attribuuttimappauksella.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** kirjoita integraatiotesti `test_kyl_viemari_lattia_roundtrip_produces_drainpipe(tmp_path)` joka generoi DXF:n KYL-VIEMARI-LATTIA-viivalla, ajaa convert_dxf:n ja varmistaa IfcPipeSegment USERDEFINED+DRAINPIPE + Talo2000 2160 + IFC-validointi.
+**Seuraavaksi:** aktivoi `default_kylmalaite_talo2000.toml`:n placeholder Section 8 hyllysäännöt KYL-LEVYHYLLY/KYL-TIKASHYLLY/KYL-TIKASHYLLY-V (kaikki INSERT, IfcFurniture, 1331 Vakiokiintokalusteet, block_name vastaavasti). Lisää loader-testi.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (29/50)
+## Plan B status (30/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -62,7 +62,7 @@
 - [x] Task 27: default-profiilin KYL-VIEMARI*-sääntö (`7cf669f`)
 - [x] Task 28: `mapper.layer_matches` wildcard-suffix-tuki (`8904ce1`)
 - [x] Task 29: `add_pipe_segment` predefined_type DRAINPIPE/REFRIGERATION (`1bc2082`)
-- [ ] Task 30: integraatiotesti KYL-VIEMARI-LATTIA
+- [x] Task 30: integraatiotesti KYL-VIEMARI-LATTIA (`a07f315`)
 
 ### Section 8: Varastointihyllyt (1331, IfcFurniture)
 - [ ] Task 31: default-profiilin KYL-LEVYHYLLY/TIKASHYLLY/KLHYLLYV-säännöt
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 29/50 — Sectionit 1–6 valmis, Section 7 etenee (3/4).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 30/50 — Sectionit 1–7 valmis. Seuraavaksi Section 8 (Varastointihyllyt).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -125,7 +125,8 @@
 - Plan B Task 27: aktivoi KYL-VIEMARI* DRAINPIPE-sääntö default-profiiliin (`7cf669f`). 12 loader-testiä passed.
 - Plan B Task 28: layer_matches wildcard-suffix regression-testit KYL-VIEMARI*:lle (`8904ce1`). 17 mapper-testiä passed.
 - Plan B Task 29: add_pipe_segment-testit DRAINPIPE-arvolle (USERDEFINED + ObjectType + jaettu IfcPipeSegmentType) (`1bc2082`). 27 ifc_writer-testiä passed.
+- Plan B Task 30: integraatiotesti KYL-VIEMARI-LATTIA → IfcPipeSegment DRAINPIPE + 2160 (`a07f315`). 7 integration-testiä passed. ✅ Section 7 valmis.
 
-**Kesken:** Plan B Task 30–50 (21 jäljellä).
+**Kesken:** Plan B Task 31–50 (20 jäljellä).
 
 **Blokkerit:** ei.
