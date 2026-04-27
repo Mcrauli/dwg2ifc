@@ -1,1 +1,1 @@
-🟡 dxf2ifc alkoi: Mode B, Plan B skeleton + sections. SHA: 54140a5. Seuraavaksi: luo plan-b-full-element-set.md skeleton
+🟢 dxf2ifc valmis (n. 45 min): Plan B kirjoitettu (50 tehtävää, 12 sectionia) + Task 1 implementoitu (Rule.entity_kind + block_name, faaac8c). 44 testiä passed, ruff clean. Seuraavaksi: Task 2 (extrusion_height + pset_overrides + INSERT-validointi). Blokkerit: ei. User pyysi stop:in.
