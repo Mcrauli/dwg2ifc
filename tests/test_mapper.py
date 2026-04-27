@@ -134,3 +134,32 @@ def test_apply_profile_maps_ikkuna_block_to_ifcwindow_via_default_profile():
     assert window.talo2000_code == "1242"
     assert window.talo2000_name == "Ikkunat"
     assert window.block_name == "IKKUNA"
+
+
+def test_apply_profile_maps_cooling_equipment_blocks_via_default_profile():
+    profile = load_default_profile()
+    entities = [
+        EntityRecord(
+            layer="KYL-HOYRYSTIN-CR-30",
+            dxf_type="INSERT",
+            geometry=BlockInstance(insertion_point=Point3D(0, 0, 0)),
+            block_name="HOYRYSTIN",
+        ),
+        EntityRecord(
+            layer="KYL-LAUHDUTIN-EXT",
+            dxf_type="INSERT",
+            geometry=BlockInstance(insertion_point=Point3D(5000, 0, 0)),
+            block_name="LAUHDUTIN",
+        ),
+        EntityRecord(
+            layer="KYL-KOMPRESSORI-1",
+            dxf_type="INSERT",
+            geometry=BlockInstance(insertion_point=Point3D(0, 5000, 0)),
+            block_name="KOMPRESSORI",
+        ),
+    ]
+    mapped = apply_profile(entities, profile)
+    by_ifc = {m.ifc_type: m for m in mapped}
+    assert by_ifc["IfcEvaporator"].talo2000_code == "2510"
+    assert by_ifc["IfcCondenser"].talo2000_code == "2520"
+    assert by_ifc["IfcCompressor"].talo2000_code == "2530"
