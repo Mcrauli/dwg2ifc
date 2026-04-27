@@ -121,3 +121,10 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 - Task: kirjoita `tests/test_mapper.py`:hen failing test joka mappaa kunkin blokin oikeaan IFC-tyyppiin + Talo2000-koodiin (Plan A vastaava: Task 14).
 - Task: lisää `ifc_writer.add_cooling_equipment` joka dispatchaa IFC-tyypin perusteella (IfcEvaporator/IfcCondenser/IfcCompressor) + box-representation + Talo2000 + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
 - Task: dispatchaa orchestrator equipment-rule blokit `add_cooling_equipment`-kutsuun ja laajenna integraatiotesti yhdellä HOYRYSTIN-blokilla (Plan A vastaava: Task 18 + 20).
+
+## Section 12: Integraatio + lint
+
+- Task: luo `tests/fixtures/full_kylmaelement.dxf`-fixtuuri (LISP-skripti tai ezdxf-buildtime) joka sisältää joka section 2–11 elementtityypin yhden esiintymän (Plan A vastaava: Task 8).
+- Task: kirjoita `tests/test_integration_full.py` joka ajaa CLI:n full-fixture-DXF:llä, validoi `ifcopenshell.validate.validate()` ei-ERROR ja tarkistaa että jokainen Talo2000-koodi (1241/1311/1221/1235/1236/1242/1243/1315/1316/1331/1352/21xx/23xx/25xx) löytyy IFC:n classification-refeistä (Plan A vastaava: Task 20).
+- Task: aja `ruff check` + `ruff format`, korjaa kaikki ongelmat ja varmista että `pytest --cov=dxf2ifc` näyttää ≥ 85 % coveragea (Plan A vastaava: Task 21).
+- Task: päivitä `README.md` "Status"-sectionin Plan B -tehtävälista (numeroidut taskit) ja `CLAUDE.md` "Plans B–F" -kohta merkitsemään Plan B valmiiksi (Plan A vastaava: doc-päivitys).
