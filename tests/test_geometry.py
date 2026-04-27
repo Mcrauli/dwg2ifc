@@ -3,12 +3,14 @@
 import pytest
 
 from dxf2ifc.core.geometry import (
+    DoorBoxExtrusion,
     SlabExtrusion,
     WallExtrusion,
+    door_block_to_box,
     line_to_wall_extrusion,
     polygon_to_slab_extrusion,
 )
-from dxf2ifc.core.types import LineGeometry, Point3D, PolygonGeometry
+from dxf2ifc.core.types import BlockInstance, LineGeometry, Point3D, PolygonGeometry
 
 
 def test_line_to_wall_extrusion_length():
@@ -80,3 +82,30 @@ def test_polygon_to_slab_extrusion_rejects_open_polygon():
     )
     with pytest.raises(ValueError):
         polygon_to_slab_extrusion(poly, thickness_mm=200)
+
+
+def test_door_block_to_box_returns_box_extrusion_with_dims():
+    block = BlockInstance(insertion_point=Point3D(0, 0, 0))
+    box = door_block_to_box(block, width_mm=900, height_mm=2100, depth_mm=100)
+    assert isinstance(box, DoorBoxExtrusion)
+    assert box.width_mm == 900.0
+    assert box.height_mm == 2100.0
+    assert box.depth_mm == 100.0
+
+
+def test_door_block_to_box_anchor_is_insertion_point():
+    block = BlockInstance(insertion_point=Point3D(1500, 2500, 0))
+    box = door_block_to_box(block, width_mm=900, height_mm=2100, depth_mm=100)
+    assert box.anchor == Point3D(1500, 2500, 0)
+
+
+def test_door_block_to_box_angle_matches_block_rotation():
+    block = BlockInstance(insertion_point=Point3D(0, 0, 0), rotation_rad=1.5707963267948966)
+    box = door_block_to_box(block, width_mm=900, height_mm=2100, depth_mm=100)
+    assert box.angle_rad == pytest.approx(1.5707963267948966)
+
+
+def test_door_block_to_box_default_angle_is_zero():
+    block = BlockInstance(insertion_point=Point3D(0, 0, 0))
+    box = door_block_to_box(block, width_mm=900, height_mm=2100, depth_mm=100)
+    assert box.angle_rad == 0.0

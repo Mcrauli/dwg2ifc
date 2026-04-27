@@ -9,7 +9,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from dxf2ifc.core.types import LineGeometry, Point3D, PolygonGeometry
+from dxf2ifc.core.types import BlockInstance, LineGeometry, Point3D, PolygonGeometry
 
 
 @dataclass(frozen=True)
@@ -73,3 +73,34 @@ def polygon_to_slab_extrusion(
     outline = tuple((v.x, v.y) for v in polygon.vertices)
     base_z = polygon.vertices[0].z if polygon.vertices else 0.0
     return SlabExtrusion(outline_xy=outline, base_z=base_z, thickness_mm=thickness_mm)
+
+
+@dataclass(frozen=True)
+class DoorBoxExtrusion:
+    """Parameters sufficient to create an IfcDoor as a parametric box.
+
+    - anchor: insertion point of the door block (XY of bottom edge)
+    - angle_rad: rotation around Z (door's width axis) from world +X
+    - width_mm: door leaf width along the local X axis
+    - height_mm: overall door height along Z
+    - depth_mm: leaf thickness along the local Y axis (frame depth)
+    """
+
+    anchor: Point3D
+    angle_rad: float
+    width_mm: float
+    height_mm: float
+    depth_mm: float
+
+
+def door_block_to_box(
+    block: BlockInstance, *, width_mm: float, height_mm: float, depth_mm: float
+) -> DoorBoxExtrusion:
+    """Convert a DXF INSERT placement into an IfcDoor box-extrusion."""
+    return DoorBoxExtrusion(
+        anchor=block.insertion_point,
+        angle_rad=block.rotation_rad,
+        width_mm=width_mm,
+        height_mm=height_mm,
+        depth_mm=depth_mm,
+    )

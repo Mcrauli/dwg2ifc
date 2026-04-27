@@ -67,7 +67,7 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 
 - [ ] Task 14: lisää default-profiiliin INSERT-säännöt `OVI-ULKO → IfcDoor 1243`, `OVI-VALI → IfcDoor 1315`, `OVI-ERITYIS → IfcDoor 1316` korkeus/leveys-attribuuttimappauksella (Plan A vastaava: Task 6).
 - [ ] Task 15: laajenna `dxf_reader.py` lukemaan INSERT-entiteetit (block name, insertion point, rotation, scale) ja palauttamaan `BlockInstance`-tyyppi `types.py`:ssä (Plan A vastaava: Task 11 + 4).
-- [ ] Task 16: kirjoita `tests/test_geometry.py`:hen `door_block_to_box` -failing test ja toteuta funktio joka tuottaa IfcDoor-paramater-laatikon (height/width profiilista tai INSERT-attribuutista) (Plan A vastaava: Task 15).
+- [x] Task 16: kirjoita `tests/test_geometry.py`:hen `door_block_to_box` -failing test ja toteuta funktio joka tuottaa IfcDoor-paramater-laatikon (height/width profiilista tai INSERT-attribuutista) (Plan A vastaava: Task 15).
 - [ ] Task 17: lisää `ifc_writer.add_door` (IfcDoor + PredefinedType + OverallHeight/Width + Talo2000-classification) ja test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
 - [ ] Task 18: ohjaa orchestratorista oviblokit `add_door`-kutsuun ja päivitä integraatiotesti DXF-fixtuurilla joka sisältää OVI-ULKO-blokin (Plan A vastaava: Task 18 + 20).
 
