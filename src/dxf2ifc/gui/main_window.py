@@ -104,12 +104,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.convert_failed.emit(message)
 
     def _on_about(self) -> None:
-        QtWidgets.QMessageBox.about(
-            self,
-            "dxf2ifc",
-            "<b>dxf2ifc</b><br>AutoCAD DXF → IFC 4 with Talo2000 classification.<br>"
-            'MIT-licensed. <a href="https://github.com/Mcrauli/dxf2ifc">GitHub repository</a>.',
-        )
+        from dxf2ifc.gui.about import show_about
+
+        show_about(self).exec()
 
     def set_status(self, text: str, *, level: str = "info") -> None:
         bar = self.statusBar()
