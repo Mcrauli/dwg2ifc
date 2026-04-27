@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 11 — `ConvertWorker(QObject)` taustasäikeessä + signaalit.
+**Current task:** Plan D Task 12 — kytke Convert-nappi MainWindow + statusbar-päivitys.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** luo `gui/convert_worker.py` `ConvertWorker(QObject)`: signals `finished(str)` ja `failed(str)`. `run(dxf, out, profile)` ajaa `convert_dxf(...)` taustasäikeessä (QThreadPool/QRunnable tai QThread). Failing-test monkeypatchaa `convert_dxf` no-opiksi, ajaa workerin ja varmistaa että `finished` saa output-pathin.
+**Seuraavaksi:** kytke `FilePanel` MainWindow:n vasempaan paneeliin (`_build_left_panel` -> palauttaa FilePanelin tai sisältää sen). Yhdistä `convert_requested(str, str)` slottiin joka (1) tallentaa profiilin, (2) luo ConvertWorkerin, (3) kuuntelee finished/failed, (4) päivittää statusbarin (info/success/error). Disabloi Convert-nappi ajon ajaksi. Failing-test simuloi koko flow:n monkeypatchatulla `convert_dxf`:llä ja varmistaa lopullisen success-statusin "Done: ...".
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (10/25)
+## Plan D status (11/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -113,7 +113,7 @@
 
 ### Section 4: Convert flow
 - [x] Task 10: `FilePanel` (DXF input + IFC output + Convert) (`e7935d3`)
-- [ ] Task 11: `ConvertWorker(QObject)` taustasäikeessä + signaalit
+- [x] Task 11: `ConvertWorker(QObject)` taustasäikeessä + signaalit (`8216c0b`)
 - [ ] Task 12: kytke Convert-nappi + statusbar-päivitys
 - [ ] Task 13: integraatiotesti simple_wall.dxf → IFC GUI:n kautta
 
@@ -234,7 +234,8 @@
 - Plan D Task 8: `MainWindow.set_status(text, level)` asettaa statusbarin tekstin + level-property:n (info/success/error) + unpolish/polish-syklin QSS:n päivitykseen (`3f045d9`). 5 gui-app-testiä passed.
 - Plan D Task 9: menubar File (Open DXF…, Quit) + Help (About) MainWindow:in konstruktorissa, action-objektit self-attribuutteina shiboken-GC:lle (`f0bcd48`). 7 gui-app-testiä passed. ✅ Section 3 valmis.
 - Plan D Task 10: `gui/file_panel.py` `FilePanel` (DXF/IFC line-editit + Browse-napit + Convert-nappi) + `convert_requested(str, str)` -signaali (`e7935d3`). 3 file-panel-testiä passed.
+- Plan D Task 11: `gui/convert_worker.py` `ConvertWorker(QObject)` + sisäinen `_ConvertRunnable` joka ajaa `convert_dxf` QThreadPoolissa; finished/failed-signaalit (`8216c0b`). 2 worker-testiä passed.
 
-**Kesken:** Plan D Task 11–25 (15 jäljellä).
+**Kesken:** Plan D Task 12–25 (14 jäljellä).
 
 **Blokkerit:** ei.
