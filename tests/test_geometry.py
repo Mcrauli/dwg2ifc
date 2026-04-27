@@ -6,6 +6,7 @@ from dxf2ifc.core.geometry import (
     CableCarrierSegmentExtrusion,
     DoorBoxExtrusion,
     FurnitureBoxExtrusion,
+    PanelExtrusion,
     PipeSegmentExtrusion,
     SlabExtrusion,
     WallExtrusion,
@@ -14,6 +15,7 @@ from dxf2ifc.core.geometry import (
     line_to_cable_carrier,
     line_to_pipe_segment,
     line_to_wall_extrusion,
+    panel_to_proxy_solid,
     polygon_to_slab_extrusion,
 )
 from dxf2ifc.core.types import BlockInstance, LineGeometry, Point3D, PolygonGeometry
@@ -193,3 +195,48 @@ def test_line_to_cable_carrier_angle_for_diagonal_line():
     line = LineGeometry(start=Point3D(0, 0, 0), end=Point3D(1000, 1000, 0))
     seg = line_to_cable_carrier(line, width_mm=300, height_mm=80)
     assert seg.angle_rad == pytest.approx(0.7853981633974483)
+
+
+def _panel_polygon() -> PolygonGeometry:
+    return PolygonGeometry(
+        vertices=(
+            Point3D(0, 0, 0),
+            Point3D(2400, 0, 0),
+            Point3D(2400, 2700, 0),
+            Point3D(0, 2700, 0),
+        ),
+        closed=True,
+    )
+
+
+def test_panel_to_proxy_solid_returns_panel_extrusion():
+    panel = panel_to_proxy_solid(_panel_polygon(), thickness_mm=120)
+    assert isinstance(panel, PanelExtrusion)
+    assert panel.thickness_mm == 120.0
+
+
+def test_panel_to_proxy_solid_keeps_xy_outline_in_2d():
+    panel = panel_to_proxy_solid(_panel_polygon(), thickness_mm=120)
+    assert panel.outline_xy == ((0.0, 0.0), (2400.0, 0.0), (2400.0, 2700.0), (0.0, 2700.0))
+
+
+def test_panel_to_proxy_solid_uses_first_vertex_z_as_base():
+    poly = PolygonGeometry(
+        vertices=(
+            Point3D(0, 0, 600),
+            Point3D(1200, 0, 600),
+            Point3D(1200, 600, 600),
+        ),
+        closed=True,
+    )
+    panel = panel_to_proxy_solid(poly, thickness_mm=80)
+    assert panel.base_z == 600.0
+
+
+def test_panel_to_proxy_solid_rejects_open_polygon():
+    poly = PolygonGeometry(
+        vertices=(Point3D(0, 0, 0), Point3D(1, 0, 0), Point3D(1, 1, 0)),
+        closed=False,
+    )
+    with pytest.raises(ValueError):
+        panel_to_proxy_solid(poly, thickness_mm=80)

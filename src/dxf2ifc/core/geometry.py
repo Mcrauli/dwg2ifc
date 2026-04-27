@@ -152,6 +152,35 @@ def block_to_furniture_box(
 
 
 @dataclass(frozen=True)
+class PanelExtrusion:
+    """Parameters sufficient to create a flat panel as IfcBuildingElementProxy.
+
+    Used for cold-room wall/ceiling panels (KYL-LEVY) and corner pieces
+    (KYL-NURKKA): a closed polygon outline projected to XY, with a
+    thickness extruded upwards.
+    """
+
+    outline_xy: tuple[tuple[float, float], ...]
+    base_z: float
+    thickness_mm: float
+
+
+def panel_to_proxy_solid(
+    polygon: PolygonGeometry, *, thickness_mm: float
+) -> PanelExtrusion:
+    """Convert a closed PolygonGeometry into a PanelExtrusion.
+
+    The panel base elevation is taken from the first vertex's Z. Open
+    polygons are rejected because a panel must bound a closed face.
+    """
+    if not polygon.closed:
+        raise ValueError("panel_to_proxy_solid requires a closed polygon")
+    outline = tuple((v.x, v.y) for v in polygon.vertices)
+    base_z = polygon.vertices[0].z if polygon.vertices else 0.0
+    return PanelExtrusion(outline_xy=outline, base_z=base_z, thickness_mm=thickness_mm)
+
+
+@dataclass(frozen=True)
 class CableCarrierSegmentExtrusion:
     """Parameters sufficient to create an IfcCableCarrierSegment as a tray.
 
