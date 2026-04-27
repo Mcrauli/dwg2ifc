@@ -37,6 +37,41 @@ def test_rule_rejects_missing_required():
         Rule(ifc_type="IfcWall", talo2000_code="1241")  # no layer_pattern
 
 
+def test_rule_defaults_entity_kind_to_line():
+    rule = Rule(
+        layer_pattern="KYL-ULKOSEINA*",
+        ifc_type="IfcWall",
+        talo2000_code="1241",
+        talo2000_name="Ulkoseinät",
+    )
+    assert rule.entity_kind == "LINE"
+    assert rule.block_name is None
+
+
+def test_rule_supports_insert_with_block_name():
+    rule = Rule(
+        layer_pattern="KYL-OVET",
+        ifc_type="IfcDoor",
+        talo2000_code="1243",
+        talo2000_name="Ulko-ovet",
+        entity_kind="INSERT",
+        block_name="OVI-ULKO",
+    )
+    assert rule.entity_kind == "INSERT"
+    assert rule.block_name == "OVI-ULKO"
+
+
+def test_rule_rejects_unknown_entity_kind():
+    with pytest.raises(ValidationError):
+        Rule(
+            layer_pattern="X",
+            ifc_type="IfcWall",
+            talo2000_code="1241",
+            talo2000_name="Ulkoseinät",
+            entity_kind="ARC",
+        )
+
+
 def test_profile_holds_rules():
     profile = Profile(
         name="test",

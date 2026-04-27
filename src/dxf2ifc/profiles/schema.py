@@ -16,6 +16,14 @@ class Rule(BaseModel):
         ...,
         description="Glob pattern matched against DXF layer name (case-insensitive).",
     )
+    entity_kind: Literal["LINE", "POLYLINE", "CIRCLE", "INSERT"] = Field(
+        default="LINE",
+        description="DXF entity kind this rule applies to.",
+    )
+    block_name: str | None = Field(
+        default=None,
+        description="DXF block name (required when entity_kind == 'INSERT').",
+    )
     ifc_type: str = Field(..., description="IFC entity name, e.g. 'IfcWall'.")
     predefined_type: str | None = Field(
         default=None, description="IFC PredefinedType enumeration value, if applicable."
