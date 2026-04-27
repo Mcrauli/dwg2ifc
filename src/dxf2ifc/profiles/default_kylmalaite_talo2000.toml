@@ -41,32 +41,32 @@ default_height_mm = 3000
 default_thickness_mm = 50
 
 # Section 3: Laatat AP / VP / YP (1221 / 1235 / 1236)
-# [[rules]]
-# layer_pattern = "KYL-ALAPOHJA*"
-# entity_kind = "POLYLINE"
-# ifc_type = "IfcSlab"
-# predefined_type = "FLOOR"
-# talo2000_code = "1221"
-# talo2000_name = "Alapohjalaatat"
-# default_thickness_mm = 200
-#
-# [[rules]]
-# layer_pattern = "KYL-VALIPOHJA*"
-# entity_kind = "POLYLINE"
-# ifc_type = "IfcSlab"
-# predefined_type = "FLOOR"
-# talo2000_code = "1235"
-# talo2000_name = "Välipohjat"
-# default_thickness_mm = 250
-#
-# [[rules]]
-# layer_pattern = "KYL-YLAPOHJA*"
-# entity_kind = "POLYLINE"
-# ifc_type = "IfcSlab"
-# predefined_type = "ROOF"
-# talo2000_code = "1236"
-# talo2000_name = "Yläpohjat"
-# default_thickness_mm = 300
+[[rules]]
+layer_pattern = "KYL-ALAPOHJA*"
+entity_kind = "POLYLINE"
+ifc_type = "IfcSlab"
+predefined_type = "FLOOR"
+talo2000_code = "1221"
+talo2000_name = "Alapohjalaatat"
+default_thickness_mm = 200
+
+[[rules]]
+layer_pattern = "KYL-VALIPOHJA*"
+entity_kind = "POLYLINE"
+ifc_type = "IfcSlab"
+predefined_type = "FLOOR"
+talo2000_code = "1235"
+talo2000_name = "Välipohjat"
+default_thickness_mm = 250
+
+[[rules]]
+layer_pattern = "KYL-YLAPOHJA*"
+entity_kind = "POLYLINE"
+ifc_type = "IfcSlab"
+predefined_type = "ROOF"
+talo2000_code = "1236"
+talo2000_name = "Yläpohjat"
+default_thickness_mm = 300
 
 # Section 4: Ovet — ulko-, väli-, erityisovet (1243 / 1315 / 1316)
 # [[rules]]

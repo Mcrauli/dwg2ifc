@@ -22,6 +22,24 @@ def test_load_default_profile_has_exterior_wall_rule():
     assert wall_rules[0].talo2000_code == "1241"
 
 
+def test_load_default_profile_has_slab_rules():
+    profile = load_default_profile()
+    by_layer = {r.layer_pattern: r for r in profile.rules}
+    ap = by_layer["KYL-ALAPOHJA*"]
+    assert ap.entity_kind == "POLYLINE"
+    assert ap.ifc_type == "IfcSlab"
+    assert ap.predefined_type == "FLOOR"
+    assert ap.talo2000_code == "1221"
+    vp = by_layer["KYL-VALIPOHJA*"]
+    assert vp.ifc_type == "IfcSlab"
+    assert vp.predefined_type == "FLOOR"
+    assert vp.talo2000_code == "1235"
+    yp = by_layer["KYL-YLAPOHJA*"]
+    assert yp.ifc_type == "IfcSlab"
+    assert yp.predefined_type == "ROOF"
+    assert yp.talo2000_code == "1236"
+
+
 def test_load_default_profile_has_partition_wall_rules():
     profile = load_default_profile()
     by_layer = {r.layer_pattern: r for r in profile.rules}
