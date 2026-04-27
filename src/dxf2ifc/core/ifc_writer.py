@@ -73,10 +73,20 @@ def write_ifc(ifc: ifcopenshell.file, output_path: str | Path) -> None:
     ifc.write(str(output_path))
 
 
-def add_wall(ifc, mapped: MappedEntity, *, parent_storey) -> object:
+def add_wall(
+    ifc,
+    mapped: MappedEntity,
+    *,
+    parent_storey,
+    predefined_type: str = "STANDARD",
+) -> object:
     """Create an IfcWall entity from a MappedEntity whose geometry is a
     LineGeometry. Adds extruded area solid representation and places it under
     parent_storey via IfcRelContainedInSpatialStructure.
+
+    The IfcWall.PredefinedType is set from the ``predefined_type`` kwarg
+    (default ``"STANDARD"``); orchestrator code should forward
+    ``mapped.predefined_type`` when present.
     """
     if not isinstance(mapped.geometry, LineGeometry):
         raise TypeError(f"add_wall expects LineGeometry, got {type(mapped.geometry).__name__}")
@@ -90,7 +100,7 @@ def add_wall(ifc, mapped: MappedEntity, *, parent_storey) -> object:
         ifc,
         ifc_class="IfcWall",
         name=mapped.layer,
-        predefined_type=mapped.predefined_type,
+        predefined_type=predefined_type,
     )
 
     matrix = _z_rotation_matrix(ext.anchor.x, ext.anchor.y, ext.anchor.z, ext.angle_rad)
@@ -203,6 +213,11 @@ def convert_dxf(
     storey = ifc.by_type("IfcBuildingStorey")[0]
     for m in mapped:
         if m.ifc_type == "IfcWall":
-            wall = add_wall(ifc, m, parent_storey=storey)
+            wall = add_wall(
+                ifc,
+                m,
+                parent_storey=storey,
+                predefined_type=m.predefined_type or "STANDARD",
+            )
             add_talo2000_classification(ifc, wall, code=m.talo2000_code, name=m.talo2000_name)
     write_ifc(ifc, output_path)

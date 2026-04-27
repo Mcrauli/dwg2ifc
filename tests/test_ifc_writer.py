@@ -84,6 +84,40 @@ def test_add_wall_placed_under_storey():
     assert any(wall in rel.RelatedElements for rel in rels)
 
 
+def test_add_wall_uses_explicit_predefined_type_kwarg():
+    ifc = build_ifc_project_skeleton(project_name="Partition Wall")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = MappedEntity(
+        layer="KYL-VALISEINA",
+        dxf_type="LINE",
+        geometry=LineGeometry(start=Point3D(0, 0, 0), end=Point3D(4000, 0, 0)),
+        ifc_type="IfcWall",
+        predefined_type=None,
+        talo2000_code="1311",
+        talo2000_name="Väliseinät",
+        extra_props={"default_height_mm": 3000, "default_thickness_mm": 100},
+    )
+    wall = add_wall(ifc, mapped, parent_storey=storey, predefined_type="PARTITIONING")
+    assert wall.PredefinedType == "PARTITIONING"
+
+
+def test_add_wall_defaults_predefined_type_to_standard():
+    ifc = build_ifc_project_skeleton(project_name="Default Wall")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = MappedEntity(
+        layer="KYL-X",
+        dxf_type="LINE",
+        geometry=LineGeometry(start=Point3D(0, 0, 0), end=Point3D(1000, 0, 0)),
+        ifc_type="IfcWall",
+        predefined_type=None,
+        talo2000_code="1241",
+        talo2000_name="Ulkoseinät",
+        extra_props={"default_height_mm": 3000, "default_thickness_mm": 200},
+    )
+    wall = add_wall(ifc, mapped, parent_storey=storey)
+    assert wall.PredefinedType == "STANDARD"
+
+
 def test_add_talo2000_classification_attaches_reference():
     ifc = build_ifc_project_skeleton(project_name="Class Test")
     storey = ifc.by_type("IfcBuildingStorey")[0]
