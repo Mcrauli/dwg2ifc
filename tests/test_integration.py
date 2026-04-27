@@ -361,6 +361,41 @@ def test_convert_dxf_returns_systems_dict_grouped_by_system_name(tmp_path: Path)
     assert systems["Drainage"][0].is_a("IfcPipeSegment")
 
 
+def test_convert_dxf_creates_ifcsystem_and_assigns_products(tmp_path: Path):
+    """Plan C Task 10: convert_dxf creates one IfcSystem per system_name
+    and assigns the matching products via IfcRelAssignsToGroup."""
+    dxf = tmp_path / "two_systems.dxf"
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name="LT IMU")
+    doc.layers.add(name="KYL-VIEMARI-LATTIA")
+    msp = doc.modelspace()
+    msp.add_line((0.0, 0.0, 0.0), (1000.0, 0.0, 0.0), dxfattribs={"layer": "LT IMU"})
+    msp.add_line(
+        (0.0, 1000.0, 0.0),
+        (1000.0, 1000.0, 0.0),
+        dxfattribs={"layer": "KYL-VIEMARI-LATTIA"},
+    )
+    doc.saveas(str(dxf))
+    out = tmp_path / "two_systems.ifc"
+
+    convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
+
+    ifc = ifcopenshell.open(str(out))
+    systems_by_name = {s.Name: s for s in ifc.by_type("IfcSystem")}
+    assert {"Refrigeration LT", "Drainage"}.issubset(systems_by_name.keys())
+
+    rels = ifc.by_type("IfcRelAssignsToGroup")
+    members_by_system = {
+        rel.RelatingGroup.Name: list(rel.RelatedObjects)
+        for rel in rels
+        if rel.RelatingGroup.is_a("IfcSystem")
+    }
+    assert len(members_by_system["Refrigeration LT"]) == 1
+    assert members_by_system["Refrigeration LT"][0].is_a("IfcPipeSegment")
+    assert len(members_by_system["Drainage"]) == 1
+    assert members_by_system["Drainage"][0].is_a("IfcPipeSegment")
+
+
 def test_partition_wall_roundtrip_produces_partitioning_ifcwall(tmp_path: Path):
     dxf = tmp_path / "partition_wall.dxf"
     _write_single_line_dxf(dxf, layer="KYL-VALISEINA")

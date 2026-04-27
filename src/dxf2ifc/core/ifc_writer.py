@@ -1101,5 +1101,10 @@ def convert_dxf(
             equipment = add_cooling_equipment(ifc, m, parent_storey=storey)
             add_talo2000_classification(ifc, equipment, code=m.talo2000_code, name=m.talo2000_name)
             _record(m, equipment)
+
+    for system_name, products in systems.items():
+        system = add_system(ifc, name=system_name)
+        assign_to_system(ifc, products=products, system=system)
+
     write_ifc(ifc, output_path)
     return systems
