@@ -83,6 +83,44 @@ def test_main_window_set_status_levels(qtbot):
     assert bar.property("level") == "error"
 
 
+def test_main_window_convert_flow_updates_status_on_success(qtbot, tmp_path):
+    from unittest.mock import patch
+
+    from dxf2ifc.gui.app import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    panel = window.file_panel
+    panel.input_edit.setText(str(tmp_path / "in.dxf"))
+    panel.output_edit.setText(str(tmp_path / "out.ifc"))
+
+    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value={}):
+        with qtbot.waitSignal(window.convert_finished, timeout=2000):
+            panel.convert_button.click()
+
+    bar = window.statusBar()
+    assert "Done" in bar.currentMessage()
+    assert bar.property("level") == "success"
+    assert panel.convert_button.isEnabled()
+
+
+def test_main_window_convert_flow_disables_button_during_run(qtbot, tmp_path):
+    from unittest.mock import patch
+
+    from dxf2ifc.gui.app import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    panel = window.file_panel
+    panel.input_edit.setText(str(tmp_path / "in.dxf"))
+    panel.output_edit.setText(str(tmp_path / "out.ifc"))
+
+    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value={}):
+        panel.convert_button.click()
+        assert not panel.convert_button.isEnabled()
+        qtbot.waitUntil(lambda: panel.convert_button.isEnabled(), timeout=2000)
+
+
 def test_main_window_renders_h1_and_caption_labels(qtbot):
     from PySide6 import QtWidgets
 

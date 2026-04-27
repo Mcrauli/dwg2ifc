@@ -4,12 +4,23 @@ from __future__ import annotations
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
+from dxf2ifc.gui.convert_worker import ConvertWorker
+from dxf2ifc.gui.file_panel import FilePanel
+from dxf2ifc.profiles.loader import load_default_profile
+
 
 class MainWindow(QtWidgets.QMainWindow):
+    convert_finished = QtCore.Signal(str)
+    convert_failed = QtCore.Signal(str)
+
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("dxf2ifc")
         self.resize(1100, 700)
+        self._profile = load_default_profile()
+        self._worker = ConvertWorker(self)
+        self._worker.finished.connect(self._on_convert_finished)
+        self._worker.failed.connect(self._on_convert_failed)
 
         central = QtWidgets.QWidget(self)
         root = QtWidgets.QVBoxLayout(central)
@@ -51,8 +62,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self._about_action.triggered.connect(self._on_about)
         help_menu.addAction(self._about_action)
 
-    def _on_open_dxf(self) -> None:  # placeholder until Section 4 wires it up
-        self.set_status("Open DXF: not implemented yet", level="info")
+    def _on_open_dxf(self) -> None:
+        self.file_panel._on_browse_input()
+
+    def _on_convert_requested(self, dxf: str, out: str) -> None:
+        if not dxf or not out:
+            self.set_status("Pick both a DXF input and an IFC output first", level="error")
+            return
+        self.file_panel.convert_button.setEnabled(False)
+        self.set_status(f"Converting {dxf}…")
+        self._worker.run(dxf=dxf, out=out, profile=self._profile)
+
+    def _on_convert_finished(self, out: str) -> None:
+        self.file_panel.convert_button.setEnabled(True)
+        self.set_status(f"Done: {out}", level="success")
+        self.convert_finished.emit(out)
+
+    def _on_convert_failed(self, message: str) -> None:
+        self.file_panel.convert_button.setEnabled(True)
+        self.set_status(f"Error: {message}", level="error")
+        self.convert_failed.emit(message)
 
     def _on_about(self) -> None:
         QtWidgets.QMessageBox.about(
@@ -73,9 +102,12 @@ class MainWindow(QtWidgets.QMainWindow):
         panel = QtWidgets.QWidget()
         layout = QtWidgets.QVBoxLayout(panel)
         layout.setContentsMargins(0, 8, 12, 16)
-        placeholder = QtWidgets.QLabel("Files & profile")
-        placeholder.setProperty("role", "h2")
-        layout.addWidget(placeholder)
+        heading = QtWidgets.QLabel("Files & profile")
+        heading.setProperty("role", "h2")
+        layout.addWidget(heading)
+        self.file_panel = FilePanel()
+        self.file_panel.convert_requested.connect(self._on_convert_requested)
+        layout.addWidget(self.file_panel)
         layout.addStretch(1)
         return panel
 
