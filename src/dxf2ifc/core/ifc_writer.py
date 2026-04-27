@@ -658,4 +658,12 @@ def convert_dxf(
                 predefined_type=m.predefined_type or "WINDOW",
             )
             add_talo2000_classification(ifc, window, code=m.talo2000_code, name=m.talo2000_name)
+        elif m.ifc_type == "IfcPipeSegment":
+            pipe = add_pipe_segment(
+                ifc,
+                m,
+                parent_storey=storey,
+                predefined_type=m.predefined_type or "REFRIGERATION",
+            )
+            add_talo2000_classification(ifc, pipe, code=m.talo2000_code, name=m.talo2000_name)
     write_ifc(ifc, output_path)

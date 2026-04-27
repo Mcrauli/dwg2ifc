@@ -33,6 +33,9 @@ def apply_profile(entities: list[EntityRecord], profile: Profile) -> list[Mapped
             extras["system_name"] = rule.system_name
         if rule.block_handling is not None:
             extras["block_handling"] = rule.block_handling
+        pipe_pset = rule.pset_overrides.get("Pset_PipeSegmentOccurrence")
+        if pipe_pset and "NominalDiameter" in pipe_pset:
+            extras["default_diameter_mm"] = float(pipe_pset["NominalDiameter"])
         result.append(
             MappedEntity(
                 layer=entity.layer,
