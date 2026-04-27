@@ -131,12 +131,15 @@ talo2000_name = "Putkiosat — nesteputki"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 12.0 } }
 
 # Section 7: Viemäriputket (21xx DRAINPIPE)
-# [[rules]]
-# layer_pattern = "KYL-VIEMARI*"
-# ifc_type = "IfcPipeSegment"
-# predefined_type = "DRAINPIPE"
-# talo2000_code = "21xx"
-# talo2000_name = "Putkiosat — viemäri"
+# DRAINPIPE ei kuulu IFC4:n IfcPipeSegmentTypeEnumiin, joten add_pipe_segment
+# karttoittaa sen USERDEFINED + ObjectType="DRAINPIPE":ksi.
+[[rules]]
+layer_pattern = "KYL-VIEMARI*"
+ifc_type = "IfcPipeSegment"
+predefined_type = "DRAINPIPE"
+talo2000_code = "2160"
+talo2000_name = "Putkiosat — viemäri"
+pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 110.0 } }
 
 # Section 8: Varastointihyllyt (1331, IfcFurniture)
 # [[rules]]

@@ -84,6 +84,16 @@ def test_load_default_profile_has_pipe_segment_rules():
     assert mt_neste.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 12.0
 
 
+def test_load_default_profile_has_drainpipe_rule():
+    profile = load_default_profile()
+    by_layer = {r.layer_pattern: r for r in profile.rules}
+    drain = by_layer["KYL-VIEMARI*"]
+    assert drain.ifc_type == "IfcPipeSegment"
+    assert drain.predefined_type == "DRAINPIPE"
+    assert drain.talo2000_code == "2160"
+    assert drain.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 110.0
+
+
 def test_load_default_profile_has_partition_wall_rules():
     profile = load_default_profile()
     by_layer = {r.layer_pattern: r for r in profile.rules}

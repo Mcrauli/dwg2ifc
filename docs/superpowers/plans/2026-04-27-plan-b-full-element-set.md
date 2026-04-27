@@ -87,7 +87,7 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 
 ## Section 7: Viemäriputket (21xx DRAINPIPE)
 
-- [ ] Task 27: lisää default-profiiliin LINE-säännöt `KYL-VIEMARI*` (wildcard) → `IfcPipeSegment DRAINPIPE` Talo2000 21xx -alakoodilla ja default-DN (Plan A vastaava: Task 6).
+- [x] Task 27: lisää default-profiiliin LINE-säännöt `KYL-VIEMARI*` (wildcard) → `IfcPipeSegment DRAINPIPE` Talo2000 21xx -alakoodilla ja default-DN (Plan A vastaava: Task 6).
 - [ ] Task 28: laajenna `mapper.layer_matches` käsittelemään wildcard-suffix `*` (yksinkertainen prefix-match) ja lisää failing test (Plan A vastaava: Task 10).
 - [ ] Task 29: ohjaa `add_pipe_segment`-kutsuun PredefinedType-parametri (`DRAINPIPE` viemärille, `REFRIGERATION` kylmäputkelle) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
 - [ ] Task 30: laajenna integraatiotesti yhdellä KYL-VIEMARI-LATTIA-viivalla joka tuottaa IfcPipeSegment DRAINPIPE (Plan A vastaava: Task 20).
