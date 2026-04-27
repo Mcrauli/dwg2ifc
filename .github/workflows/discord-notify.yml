@@ -5,7 +5,7 @@ on:
     branches: [master]
     paths:
       - PROGRESS.md
-      - '.github/.routine-status'
+      - .routine-status
 
 jobs:
   notify:
@@ -25,7 +25,6 @@ jobs:
           sha = os.environ['COMMIT_SHA'][:7]
           url = os.environ['COMMIT_URL']
           pusher = os.environ['PUSHER']
-          # Pick emoji based on commit message
           prefix = '📦'
           lower = msg.lower()
           if msg.startswith('🟢') or lower.startswith('progress:'):
@@ -41,7 +40,10 @@ jobs:
           req = urllib.request.Request(
               os.environ['DISCORD_WEBHOOK'],
               data=data,
-              headers={'Content-Type': 'application/json'},
+              headers={
+                  'Content-Type': 'application/json',
+                  'User-Agent': 'dxf2ifc-routine-bot (https://github.com/Mcrauli/dxf2ifc, 1.0)',
+              },
           )
           resp = urllib.request.urlopen(req)
           print(f'Discord HTTP {resp.status}')
