@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 3 — päivitä `profiles/loader.py` säilyttämään uudet kentät TOML-roundtripissä + lisää testi `tests/test_profile_schema.py` joka kattaa LINE+INSERT-säännöt.
+**Current task:** Plan B Task 4 — laajenna `profiles/default_kylmalaite_talo2000.toml` placeholder-säännöillä joka elementtityypille (kommentoidut, täytetään myöhempinä sectioneina).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lue `src/dxf2ifc/profiles/loader.py` + `tests/test_profile_loader.py`. Kirjoita failing test joka lataa TOML-profiilin jossa on (a) LINE-sääntö extrusion_heightilla + pset_overrides-taulu ja (b) INSERT-sääntö block_namella. Varmista että `Profile`-objekti pitää sisällään täsmälleen samat arvot. Sitten päivitä loader (jos vain `tomllib.loads` riittää, ei muutoksia). Pytest, commit + push, PROGRESS.md → Task 4.
+**Seuraavaksi:** lue nykyinen `src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml`. Lisää kommentoidut placeholder-säännöt jokaiselle Plan B section 2–11 element-tyypille (VS, lasiväliseinä, AP/VP/YP, ovet, ikkunat, putket, viemärit, hyllyt, kaapelihyllyt, proxy-paneelit, kylmälaitteet). Aja `pytest tests/test_profile_loader.py -q` (default-profiili ladattava). Commit + push, PROGRESS.md → Task 5.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,12 +18,12 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (2/50)
+## Plan B status (3/50)
 
 ### Section 1: Profile-skeeman laajennus
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
 - [x] Task 2: lisää `extrusion_height` ja `pset_overrides`-kentät + INSERT-validointi (`29f01e4`)
-- [ ] Task 3: päivitä `profiles/loader.py` säilyttämään uudet kentät + `tests/test_profile_schema.py`
+- [x] Task 3: päivitä `profiles/loader.py` säilyttämään uudet kentät + `tests/test_profile_schema.py` (`a8cbe50`)
 - [ ] Task 4: laajenna default TOML kommentoiduilla placeholder-säännöillä joka elementtityypille
 
 ### Section 2: VS / lasiväliseinät (1311 / 1312)
@@ -98,7 +98,8 @@
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
+- Plan B Task 3: TOML-roundtrip-testit + loader negative test INSERT-without-block_name (`a8cbe50`). Loader itse ei vaatinut muutoksia. 17 schema+loader-testiä passed.
 
-**Kesken:** Plan B Task 3–50 (48 jäljellä).
+**Kesken:** Plan B Task 4–50 (47 jäljellä).
 
 **Blokkerit:** ei.
