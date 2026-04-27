@@ -59,9 +59,7 @@ class SlabExtrusion:
     thickness_mm: float
 
 
-def polygon_to_slab_extrusion(
-    polygon: PolygonGeometry, *, thickness_mm: float
-) -> SlabExtrusion:
+def polygon_to_slab_extrusion(polygon: PolygonGeometry, *, thickness_mm: float) -> SlabExtrusion:
     """Convert a closed PolygonGeometry into a SlabExtrusion.
 
     The slab outline is the polygon vertices projected to XY. The slab's
@@ -165,9 +163,7 @@ class PanelExtrusion:
     thickness_mm: float
 
 
-def panel_to_proxy_solid(
-    polygon: PolygonGeometry, *, thickness_mm: float
-) -> PanelExtrusion:
+def panel_to_proxy_solid(polygon: PolygonGeometry, *, thickness_mm: float) -> PanelExtrusion:
     """Convert a closed PolygonGeometry into a PanelExtrusion.
 
     The panel base elevation is taken from the first vertex's Z. Open

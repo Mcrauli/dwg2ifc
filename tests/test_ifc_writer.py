@@ -184,9 +184,7 @@ def test_add_slab_placed_under_storey():
     storey = ifc.by_type("IfcBuildingStorey")[0]
     slab = add_slab(ifc, _slab_mapped_entity(), parent_storey=storey)
     rels = [
-        r
-        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
-        if r.RelatingStructure == storey
+        r for r in ifc.by_type("IfcRelContainedInSpatialStructure") if r.RelatingStructure == storey
     ]
     assert any(slab in rel.RelatedElements for rel in rels)
 
@@ -246,9 +244,7 @@ def test_add_door_placed_under_storey():
     storey = ifc.by_type("IfcBuildingStorey")[0]
     door = add_door(ifc, _door_mapped_entity(), parent_storey=storey)
     rels = [
-        r
-        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
-        if r.RelatingStructure == storey
+        r for r in ifc.by_type("IfcRelContainedInSpatialStructure") if r.RelatingStructure == storey
     ]
     assert any(door in rel.RelatedElements for rel in rels)
 
@@ -324,9 +320,7 @@ def test_add_window_placed_under_storey():
     storey = ifc.by_type("IfcBuildingStorey")[0]
     window = add_window(ifc, _window_mapped_entity(), parent_storey=storey)
     rels = [
-        r
-        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
-        if r.RelatingStructure == storey
+        r for r in ifc.by_type("IfcRelContainedInSpatialStructure") if r.RelatingStructure == storey
     ]
     assert any(window in rel.RelatedElements for rel in rels)
 
@@ -388,9 +382,7 @@ def test_add_pipe_segment_placed_under_storey():
     storey = ifc.by_type("IfcBuildingStorey")[0]
     pipe = add_pipe_segment(ifc, _pipe_mapped_entity(), parent_storey=storey)
     rels = [
-        r
-        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
-        if r.RelatingStructure == storey
+        r for r in ifc.by_type("IfcRelContainedInSpatialStructure") if r.RelatingStructure == storey
     ]
     assert any(pipe in rel.RelatedElements for rel in rels)
 
@@ -420,12 +412,8 @@ def test_add_pipe_segment_drainpipe_falls_back_to_userdefined():
 def test_add_pipe_segment_reuses_drainpipe_type_for_repeat_calls():
     ifc = build_ifc_project_skeleton(project_name="Drain Pipes")
     storey = ifc.by_type("IfcBuildingStorey")[0]
-    add_pipe_segment(
-        ifc, _pipe_mapped_entity(), parent_storey=storey, predefined_type="DRAINPIPE"
-    )
-    add_pipe_segment(
-        ifc, _pipe_mapped_entity(), parent_storey=storey, predefined_type="DRAINPIPE"
-    )
+    add_pipe_segment(ifc, _pipe_mapped_entity(), parent_storey=storey, predefined_type="DRAINPIPE")
+    add_pipe_segment(ifc, _pipe_mapped_entity(), parent_storey=storey, predefined_type="DRAINPIPE")
     drain_types = [t for t in ifc.by_type("IfcPipeSegmentType") if t.ElementType == "DRAINPIPE"]
     assert len(drain_types) == 1
 
@@ -472,9 +460,7 @@ def test_add_furniture_placed_under_storey():
     storey = ifc.by_type("IfcBuildingStorey")[0]
     furniture = add_furniture(ifc, _furniture_mapped_entity(), parent_storey=storey)
     rels = [
-        r
-        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
-        if r.RelatingStructure == storey
+        r for r in ifc.by_type("IfcRelContainedInSpatialStructure") if r.RelatingStructure == storey
     ]
     assert any(furniture in rel.RelatedElements for rel in rels)
 
@@ -538,9 +524,7 @@ def test_add_cable_carrier_segment_placed_under_storey():
     storey = ifc.by_type("IfcBuildingStorey")[0]
     seg = add_cable_carrier_segment(ifc, _cable_mapped_entity(), parent_storey=storey)
     rels = [
-        r
-        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
-        if r.RelatingStructure == storey
+        r for r in ifc.by_type("IfcRelContainedInSpatialStructure") if r.RelatingStructure == storey
     ]
     assert any(seg in rel.RelatedElements for rel in rels)
 
@@ -607,9 +591,7 @@ def test_add_building_element_proxy_placed_under_storey():
     storey = ifc.by_type("IfcBuildingStorey")[0]
     proxy = add_building_element_proxy(ifc, _proxy_mapped_entity(), parent_storey=storey)
     rels = [
-        r
-        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
-        if r.RelatingStructure == storey
+        r for r in ifc.by_type("IfcRelContainedInSpatialStructure") if r.RelatingStructure == storey
     ]
     assert any(proxy in rel.RelatedElements for rel in rels)
 
@@ -698,9 +680,7 @@ def test_add_cooling_equipment_placed_under_storey(_cooling_storey):
     )
     ev = add_cooling_equipment(ifc, mapped, parent_storey=storey)
     rels = [
-        r
-        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
-        if r.RelatingStructure == storey
+        r for r in ifc.by_type("IfcRelContainedInSpatialStructure") if r.RelatingStructure == storey
     ]
     assert any(ev in rel.RelatedElements for rel in rels)
 

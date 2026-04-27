@@ -183,9 +183,7 @@ def add_slab(
     Z elevation marks the top of the slab.
     """
     if not isinstance(mapped.geometry, PolygonGeometry):
-        raise TypeError(
-            f"add_slab expects PolygonGeometry, got {type(mapped.geometry).__name__}"
-        )
+        raise TypeError(f"add_slab expects PolygonGeometry, got {type(mapped.geometry).__name__}")
 
     thickness = float(mapped.extra_props.get("default_thickness_mm", 200.0))
     ext = polygon_to_slab_extrusion(mapped.geometry, thickness_mm=thickness)
@@ -240,9 +238,7 @@ def add_slab(
         RepresentationType="SweptSolid",
         Items=[extruded],
     )
-    slab.Representation = ifc.create_entity(
-        "IfcProductDefinitionShape", Representations=[shape]
-    )
+    slab.Representation = ifc.create_entity("IfcProductDefinitionShape", Representations=[shape])
 
     ifcopenshell.api.run(
         "spatial.assign_container",
@@ -268,16 +264,12 @@ def add_door(
     upwards so the insertion point sits at the bottom-left corner.
     """
     if not isinstance(mapped.geometry, BlockInstance):
-        raise TypeError(
-            f"add_door expects BlockInstance, got {type(mapped.geometry).__name__}"
-        )
+        raise TypeError(f"add_door expects BlockInstance, got {type(mapped.geometry).__name__}")
 
     width = float(mapped.extra_props.get("default_width_mm", 900.0))
     height = float(mapped.extra_props.get("default_height_mm", 2100.0))
     depth = float(mapped.extra_props.get("default_depth_mm", 50.0))
-    box = door_block_to_box(
-        mapped.geometry, width_mm=width, height_mm=height, depth_mm=depth
-    )
+    box = door_block_to_box(mapped.geometry, width_mm=width, height_mm=height, depth_mm=depth)
 
     door = ifcopenshell.api.run(
         "root.create_entity",
@@ -333,9 +325,7 @@ def add_door(
         RepresentationType="SweptSolid",
         Items=[extruded],
     )
-    door.Representation = ifc.create_entity(
-        "IfcProductDefinitionShape", Representations=[shape]
-    )
+    door.Representation = ifc.create_entity("IfcProductDefinitionShape", Representations=[shape])
 
     ifcopenshell.api.run(
         "spatial.assign_container",
@@ -362,16 +352,12 @@ def add_window(
     rotation_rad.
     """
     if not isinstance(mapped.geometry, BlockInstance):
-        raise TypeError(
-            f"add_window expects BlockInstance, got {type(mapped.geometry).__name__}"
-        )
+        raise TypeError(f"add_window expects BlockInstance, got {type(mapped.geometry).__name__}")
 
     width = float(mapped.extra_props.get("default_width_mm", 1200.0))
     height = float(mapped.extra_props.get("default_height_mm", 1500.0))
     depth = float(mapped.extra_props.get("default_depth_mm", 60.0))
-    box = door_block_to_box(
-        mapped.geometry, width_mm=width, height_mm=height, depth_mm=depth
-    )
+    box = door_block_to_box(mapped.geometry, width_mm=width, height_mm=height, depth_mm=depth)
 
     window = ifcopenshell.api.run(
         "root.create_entity",
@@ -427,9 +413,7 @@ def add_window(
         RepresentationType="SweptSolid",
         Items=[extruded],
     )
-    window.Representation = ifc.create_entity(
-        "IfcProductDefinitionShape", Representations=[shape]
-    )
+    window.Representation = ifc.create_entity("IfcProductDefinitionShape", Representations=[shape])
 
     ifcopenshell.api.run(
         "spatial.assign_container",
@@ -535,9 +519,7 @@ def add_pipe_segment(
         RepresentationType="SweptSolid",
         Items=[extruded],
     )
-    pipe.Representation = ifc.create_entity(
-        "IfcProductDefinitionShape", Representations=[shape]
-    )
+    pipe.Representation = ifc.create_entity("IfcProductDefinitionShape", Representations=[shape])
 
     ifcopenshell.api.run(
         "spatial.assign_container",
@@ -570,9 +552,7 @@ def add_furniture(
     width = float(mapped.extra_props.get("default_width_mm", 1000.0))
     depth = float(mapped.extra_props.get("default_depth_mm", 600.0))
     height = float(mapped.extra_props.get("default_height_mm", 2000.0))
-    box = block_to_furniture_box(
-        mapped.geometry, width_mm=width, depth_mm=depth, height_mm=height
-    )
+    box = block_to_furniture_box(mapped.geometry, width_mm=width, depth_mm=depth, height_mm=height)
 
     furniture = ifcopenshell.api.run(
         "root.create_entity",
@@ -660,8 +640,7 @@ def add_cable_carrier_segment(
     """
     if not isinstance(mapped.geometry, LineGeometry):
         raise TypeError(
-            "add_cable_carrier_segment expects LineGeometry, "
-            f"got {type(mapped.geometry).__name__}"
+            f"add_cable_carrier_segment expects LineGeometry, got {type(mapped.geometry).__name__}"
         )
 
     width = float(mapped.extra_props.get("default_width_mm", 300.0))
@@ -732,9 +711,7 @@ def add_cable_carrier_segment(
         RepresentationType="SweptSolid",
         Items=[extruded],
     )
-    seg.Representation = ifc.create_entity(
-        "IfcProductDefinitionShape", Representations=[shape]
-    )
+    seg.Representation = ifc.create_entity("IfcProductDefinitionShape", Representations=[shape])
 
     ifcopenshell.api.run(
         "spatial.assign_container",
@@ -813,9 +790,7 @@ def add_building_element_proxy(
         RepresentationType="SweptSolid",
         Items=[extruded],
     )
-    proxy.Representation = ifc.create_entity(
-        "IfcProductDefinitionShape", Representations=[shape]
-    )
+    proxy.Representation = ifc.create_entity("IfcProductDefinitionShape", Representations=[shape])
 
     ifcopenshell.api.run(
         "spatial.assign_container",
@@ -847,16 +822,13 @@ def add_cooling_equipment(
         )
     if not isinstance(mapped.geometry, BlockInstance):
         raise TypeError(
-            "add_cooling_equipment expects BlockInstance, "
-            f"got {type(mapped.geometry).__name__}"
+            f"add_cooling_equipment expects BlockInstance, got {type(mapped.geometry).__name__}"
         )
 
     width = float(mapped.extra_props.get("default_width_mm", 800.0))
     depth = float(mapped.extra_props.get("default_depth_mm", 600.0))
     height = float(mapped.extra_props.get("default_height_mm", 1200.0))
-    box = block_to_furniture_box(
-        mapped.geometry, width_mm=width, depth_mm=depth, height_mm=height
-    )
+    box = block_to_furniture_box(mapped.geometry, width_mm=width, depth_mm=depth, height_mm=height)
 
     product = ifcopenshell.api.run(
         "root.create_entity",
@@ -909,9 +881,7 @@ def add_cooling_equipment(
         RepresentationType="SweptSolid",
         Items=[extruded],
     )
-    product.Representation = ifc.create_entity(
-        "IfcProductDefinitionShape", Representations=[shape]
-    )
+    product.Representation = ifc.create_entity("IfcProductDefinitionShape", Representations=[shape])
 
     ifcopenshell.api.run(
         "spatial.assign_container",
@@ -1066,9 +1036,7 @@ def convert_dxf(
             add_talo2000_classification(ifc, pipe, code=m.talo2000_code, name=m.talo2000_name)
         elif m.ifc_type == "IfcFurniture":
             furniture = add_furniture(ifc, m, parent_storey=storey)
-            add_talo2000_classification(
-                ifc, furniture, code=m.talo2000_code, name=m.talo2000_name
-            )
+            add_talo2000_classification(ifc, furniture, code=m.talo2000_code, name=m.talo2000_name)
         elif m.ifc_type == "IfcCableCarrierSegment":
             seg = add_cable_carrier_segment(
                 ifc,
@@ -1079,12 +1047,8 @@ def convert_dxf(
             add_talo2000_classification(ifc, seg, code=m.talo2000_code, name=m.talo2000_name)
         elif m.ifc_type == "IfcBuildingElementProxy":
             proxy = add_building_element_proxy(ifc, m, parent_storey=storey)
-            add_talo2000_classification(
-                ifc, proxy, code=m.talo2000_code, name=m.talo2000_name
-            )
+            add_talo2000_classification(ifc, proxy, code=m.talo2000_code, name=m.talo2000_name)
         elif m.ifc_type in _COOLING_EQUIPMENT_CLASSES:
             equipment = add_cooling_equipment(ifc, m, parent_storey=storey)
-            add_talo2000_classification(
-                ifc, equipment, code=m.talo2000_code, name=m.talo2000_name
-            )
+            add_talo2000_classification(ifc, equipment, code=m.talo2000_code, name=m.talo2000_name)
     write_ifc(ifc, output_path)
