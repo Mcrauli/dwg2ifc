@@ -9,6 +9,7 @@ from dxf2ifc.core.ifc_writer import (
     add_slab,
     add_talo2000_classification,
     add_wall,
+    add_window,
     build_ifc_project_skeleton,
     convert_dxf,
     write_ifc,
@@ -260,6 +261,76 @@ def test_add_door_defaults_predefined_type_to_door():
     mapped = _door_mapped_entity(predefined_type=None)
     door = add_door(ifc, mapped, parent_storey=storey)
     assert door.PredefinedType == "DOOR"
+
+
+def _window_mapped_entity(
+    *,
+    layer: str = "KYL-IKKUNA-MUOVI",
+    block_name: str = "IKKUNA",
+    talo_code: str = "1242",
+    talo_name: str = "Ikkunat",
+    width_mm: float = 1200.0,
+    height_mm: float = 1500.0,
+    depth_mm: float = 60.0,
+    predefined_type: str | None = "WINDOW",
+) -> MappedEntity:
+    block = BlockInstance(insertion_point=Point3D(800, 1200, 1000))
+    return MappedEntity(
+        layer=layer,
+        dxf_type="INSERT",
+        geometry=block,
+        block_name=block_name,
+        ifc_type="IfcWindow",
+        predefined_type=predefined_type,
+        talo2000_code=talo_code,
+        talo2000_name=talo_name,
+        extra_props={
+            "default_width_mm": width_mm,
+            "default_height_mm": height_mm,
+            "default_depth_mm": depth_mm,
+        },
+    )
+
+
+def test_add_window_creates_ifcwindow():
+    ifc = build_ifc_project_skeleton(project_name="Window Test")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    window = add_window(ifc, _window_mapped_entity(), parent_storey=storey)
+    assert window.is_a("IfcWindow")
+    assert window.PredefinedType == "WINDOW"
+    assert window.Name == "KYL-IKKUNA-MUOVI"
+
+
+def test_add_window_sets_overall_height_and_width():
+    ifc = build_ifc_project_skeleton(project_name="Window Dims")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    window = add_window(
+        ifc,
+        _window_mapped_entity(width_mm=1500, height_mm=1800),
+        parent_storey=storey,
+    )
+    assert window.OverallHeight == 1800.0
+    assert window.OverallWidth == 1500.0
+
+
+def test_add_window_placed_under_storey():
+    ifc = build_ifc_project_skeleton(project_name="Window Storey")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    window = add_window(ifc, _window_mapped_entity(), parent_storey=storey)
+    rels = [
+        r
+        for r in ifc.by_type("IfcRelContainedInSpatialStructure")
+        if r.RelatingStructure == storey
+    ]
+    assert any(window in rel.RelatedElements for rel in rels)
+
+
+def test_add_window_defaults_predefined_type_to_window():
+    ifc = build_ifc_project_skeleton(project_name="Default Window")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = _window_mapped_entity(predefined_type=None)
+    window = add_window(ifc, mapped, parent_storey=storey)
+    assert window.PredefinedType == "WINDOW"
 
 
 def test_add_talo2000_classification_attaches_reference():
