@@ -4,9 +4,9 @@
 
 **Current task:** Plan B kirjoitusvaihe (Mode B, section 1/12).
 
-**Mode:** B (plan-kirjoitus, section 11/12: Kylmälaitteet)
+**Mode:** B (plan-kirjoitus, section 12/12: Integraatio + lint)
 
-**Seuraavaksi:** täytä Plan B Section 11 -alle 3–5 task-riviä joka kattaa höyrystin / lauhdutin / kompressori → IfcEvaporator / IfcCondenser / IfcCompressor (25xx). INSERT-blokit. Sitten PROGRESS.md → section 12/12.
+**Seuraavaksi:** täytä Plan B Section 12 -alle 3–5 task-riviä joka kattaa monielementtisen integraatiotestin (kaikki uudet rule-tyypit yhdessä DXF:ssä) + ruff/coverage-portin. Sitten B7: numeroi taskit globaalisti.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (SHA-historia README + commit-log)
