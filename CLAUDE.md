@@ -125,7 +125,7 @@ Vaiheet tiivistettynä:
 
 - **Plan B:** ✅ kirjoitettu `docs/superpowers/plans/2026-04-27-plan-b-full-element-set.md` (50 tehtävää, 12 sectionia). Laajentaa Plan A:n pipelinen kattamaan kaikki 10 jäljellä olevaa Talo2000-elementtityyppiä (slabs, doors, windows, putket, hyllyt, kaapelihyllyt, proxies, laitteet). Toteutus kesken — ks. `PROGRESS.md`.
 - **Plan C:** `IfcSystem`-ryhmittely kylmäjärjestelmille (putket, laitteet, kaapelihyllyt samaan järjestelmään)
-- **Plan D:** PySide6 GUI joka wrappaa CLI-corea (MainWindow, Preview, layer-listaus)
+- **Plan D:** PySide6 GUI joka wrappaa CLI-corea (MainWindow, Preview, layer-listaus). Sis. **TOML-profiilin editori UI:ssa**: oletusprofiili (Kylmälaite Talo2000) ship-attuna, mutta UI tukee custom-rules joilla käyttäjä voi lisätä omia layer→IFC-mappauksia ilman tiedoston muokkaamista käsin.
 - **Plan E:** Packaging — PyInstaller .exe Windowsille + GitHub Releases
 - **Plan F:** Spec verifiointi-taskit (avaa Solibri, vahvista tai päivitä profiili per spec § "Verification")
 
