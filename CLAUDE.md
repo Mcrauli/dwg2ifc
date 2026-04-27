@@ -126,8 +126,8 @@ Vaiheet tiivistettynä:
 ## Plans B–F (kirjoitetaan myöhemmin)
 
 - **Plan B:** ✅ valmis (`docs/superpowers/plans/2026-04-27-plan-b-full-element-set.md`, 50/50 tehtävää, ending SHA `2494841`). Laajentaa Plan A:n pipelinen kattamaan kaikki 10 muuta Talo2000-elementtityyppiä; full-fixture-integraatiotesti varmistaa 11 Talo2000-koodia + IFC-validointi.
-- **Plan C:** ✅ kirjoitettu `docs/superpowers/plans/2026-04-27-plan-c-ifcsystem-grouping.md` (12 tehtävää, 5 sectionia). `IfcSystem`-ryhmittely kylmäjärjestelmille (Refrigeration LT/MT, Drainage, Cable carriers, Refrigeration plant). Toteutus kesken — ks. `PROGRESS.md`.
-- **Plan D:** PySide6 GUI joka wrappaa CLI-corea (MainWindow, Preview, layer-listaus). Sis. **TOML-profiilin editori UI:ssa**: oletusprofiili (Kylmälaite Talo2000) ship-attuna, mutta UI tukee custom-rules joilla käyttäjä voi lisätä omia layer→IFC-mappauksia ilman tiedoston muokkaamista käsin.
+- **Plan C:** ✅ valmis (`docs/superpowers/plans/2026-04-27-plan-c-ifcsystem-grouping.md`, 12/12 tehtävää, ending SHA `8cc4fc3`). `IfcSystem`-ryhmittely kylmäjärjestelmille (Refrigeration LT/MT, Drainage, Cable carriers, Refrigeration plant) IfcRelAssignsToGroup-relaatiolla.
+- **Plan D:** ✅ kirjoitettu `docs/superpowers/plans/2026-04-27-plan-d-pyside6-gui.md` (25 tehtävää, 7 sectionia). PySide6 GUI joka wrappaa CLI-corea: MainWindow, DXF-picker + convert-flow, layer-preview, profiili-editori (custom layer-säännöt UI:ssa), brand-assets (fontit + QSS). Toteutus alkaa Mode A:ssa — ks. `PROGRESS.md`.
 - **Plan E:** Packaging — PyInstaller .exe Windowsille + GitHub Releases
 - **Plan F:** Spec verifiointi-taskit (avaa Solibri, vahvista tai päivitä profiili per spec § "Verification")
 
