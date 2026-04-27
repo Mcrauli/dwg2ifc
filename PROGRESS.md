@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan C status (11/12)
+## Plan C status (12/12) ✅
 
 ### Section 1: Profiili — system_name -arvot ✅
 - [x] Task 1: LT IMU "Refrigeration LT" + MT IMU/MT NESTE "Refrigeration MT" (`13d9aea`)
@@ -116,7 +116,7 @@
 
 ### Section 5: Integraatio + lint
 - [x] Task 11: full_kylmaelement -testi varmistaa neljä IfcSystem-ryhmää (`7e09716`)
-- [ ] Task 12: ruff clean + coverage ≥85 % + README/CLAUDE.md "Plan C valmis"
+- [x] Task 12: ruff clean + 151 passed + 91 % coverage + README/CLAUDE.md "Plan C valmis"
 
 **Viimeisin tila:** Plan A 21/21 + Plan B 50/50 valmis. Plan C 11/12 — vain plan-loppupiste Task 12 jäljellä.
 
