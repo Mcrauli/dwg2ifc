@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 1 — laajenna `profiles/schema.py` Rule-malliin `entity_kind` ja `block_name`.
+**Current task:** Plan B Task 2 — lisää `extrusion_height` ja `pset_overrides`-kentät, ja validointi joka vaatii `block_name` jos `entity_kind=INSERT`.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** kirjoita failing test `tests/test_profile_schema.py`:hen joka odottaa Rule-mallilta `entity_kind`-kenttää (Literal["LINE","POLYLINE","CIRCLE","INSERT"]) ja `block_name`-kenttää (Optional[str]). Aja `pytest tests/test_profile_schema.py::test_rule_has_entity_kind_field` (punainen). Sitten laajenna `src/dxf2ifc/profiles/schema.py` ja saa testi vihreäksi. Commit + push + PROGRESS.md → Task 2.
+**Seuraavaksi:** kirjoita `tests/test_profile_schema.py`:hen failing test joka (a) varmistaa että INSERT-sääntö ilman block_name nostaa ValidationError ja (b) että `extrusion_height` ja `pset_overrides` (dict[str, Any]) -kentät hyväksyvät arvot. Sitten päivitä `schema.py`:n Rule-malli + `model_validator(mode="after")`. Aja pytest, commit + push + PROGRESS.md → Task 3.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,10 +18,10 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (0/50)
+## Plan B status (1/50)
 
 ### Section 1: Profile-skeeman laajennus
-- [ ] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name`
+- [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
 - [ ] Task 2: lisää `extrusion_height` ja `pset_overrides`-kentät + INSERT-validointi
 - [ ] Task 3: päivitä `profiles/loader.py` säilyttämään uudet kentät + `tests/test_profile_schema.py`
 - [ ] Task 4: laajenna default TOML kommentoiduilla placeholder-säännöillä joka elementtityypille
@@ -100,7 +100,8 @@
 - Plan B skeleton (`6eb66ce`).
 - Sectionit 1–12 täytetty yksitellen (`daa6398` … `c9c83a7`).
 - Globaali numerointi + CLAUDE.md status (`083f8cd`).
+- Plan B Task 1: Rule-skeeman `entity_kind` + `block_name` -kentät (`faaac8c`). 44 testiä passed, ruff clean. `uv.lock` committoitu mukaan.
 
-**Kesken:** Plan B Task 1–50 (kaikki vielä `[ ]`).
+**Kesken:** Plan B Task 2–50 (49 jäljellä). User pyysi stop:in Task 2:n alettua mutta ennen toteutusta — Task 2 ei aloitettu, tila puhdas.
 
 **Blokkerit:** ei.
