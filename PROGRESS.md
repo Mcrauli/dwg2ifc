@@ -2,7 +2,7 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 19 — `RuleEditDialog` lomake + pydantic-validointi.
+**Current task:** Plan D Task 20 — kytke ProfileEditorDialog menubariin + end-to-end testi.
 
 **Mode:** A (implementointi).
 
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (18/25)
+## Plan D status (19/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -125,7 +125,7 @@
 ### Section 6: Profile editor
 - [x] Task 17: `profiles/loader.dump_profile(profile, path)` round-trip (`0e96db4`)
 - [x] Task 18: `ProfileEditorDialog` rules-listalla + Add/Edit/Remove/Save (`de6d9ad`)
-- [ ] Task 19: `RuleEditDialog` lomake + pydantic-validointi
+- [x] Task 19: `RuleEditDialog` lomake + pydantic-validointi (`f77acb1`)
 - [ ] Task 20: kytke menubariin + end-to-end custom-rule testi
 
 ### Section 7: Polish + packaging hooks
@@ -242,7 +242,8 @@
 - Plan D Task 16: kytkin LayerTable MainWindow:n vasempaan paneeliin file_panel:n alle, editingFinished triggeröi list_layers + set_layers (`5d6ed4a`). 10 gui-app-testiä passed. ✅ Section 5 valmis.
 - Plan D Task 17: `profiles/loader.dump_profile(profile, path)` + `tomli-w` runtime-dep, round-trip-testit (`0e96db4`). 18 loader-testiä passed.
 - Plan D Task 18: `gui/profile_editor.py` `ProfileEditorDialog` + custom QAbstractTableModel + Add/Edit/Remove/Save-toolbar (Save → dump_profile + profile_saved-signaali) (`de6d9ad`). 3 profile-editor-testiä passed.
+- Plan D Task 19: `gui/rule_dialog.py` `RuleEditDialog` QFormLayout + live-pydantic-validointi (OK disabloitu invalid-INSERT-no-block_name) (`f77acb1`). 3 rule-dialog-testiä passed.
 
-**Kesken:** Plan D Task 19–25 (7 jäljellä).
+**Kesken:** Plan D Task 20–25 (6 jäljellä).
 
 **Blokkerit:** ei.
