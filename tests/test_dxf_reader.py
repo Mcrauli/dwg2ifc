@@ -1,11 +1,13 @@
 """Unit tests for core.dxf_reader."""
 
+import math
 from pathlib import Path
 
 import ezdxf
+import pytest
 
 from dxf2ifc.core.dxf_reader import read_dxf
-from dxf2ifc.core.types import LineGeometry, PolygonGeometry, Point3D
+from dxf2ifc.core.types import BlockInstance, LineGeometry, PolygonGeometry, Point3D
 
 
 def test_read_simple_wall_returns_one_entity(fixtures_dir: Path):
@@ -55,6 +57,33 @@ def test_read_closed_lwpolyline_returns_polygon_geometry(tmp_path: Path):
     assert len(rec.geometry.vertices) == 4
     assert rec.geometry.vertices[0] == Point3D(0.0, 0.0, 0.0)
     assert rec.geometry.vertices[2] == Point3D(4000.0, 3000.0, 0.0)
+
+
+def test_read_insert_returns_block_instance(tmp_path: Path):
+    dxf = tmp_path / "door.dxf"
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name="KYL-OVET-ULKO")
+    block = doc.blocks.new(name="OVI-ULKO")
+    block.add_line((0, 0), (900, 0))
+    block.add_line((0, 0), (0, 2100))
+    msp = doc.modelspace()
+    msp.add_blockref(
+        "OVI-ULKO",
+        (1500, 2500, 0),
+        dxfattribs={"layer": "KYL-OVET-ULKO", "rotation": 90},
+    )
+    doc.saveas(str(dxf))
+
+    records = read_dxf(dxf)
+    inserts = [r for r in records if r.dxf_type == "INSERT"]
+    assert len(inserts) == 1
+    rec = inserts[0]
+    assert rec.layer == "KYL-OVET-ULKO"
+    assert rec.block_name == "OVI-ULKO"
+    assert isinstance(rec.geometry, BlockInstance)
+    assert rec.geometry.insertion_point == Point3D(1500.0, 2500.0, 0.0)
+    assert rec.geometry.rotation_rad == pytest.approx(math.radians(90))
+    assert rec.geometry.scale_x == 1.0
 
 
 def test_read_skips_open_lwpolyline(tmp_path: Path):

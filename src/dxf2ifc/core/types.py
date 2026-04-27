@@ -38,6 +38,21 @@ class PolygonGeometry:
     closed: bool = True
 
 
+@dataclass(frozen=True)
+class BlockInstance:
+    """A DXF INSERT placement.
+
+    The block's local geometry stays in its BLOCK definition; instances
+    only carry the placement (insertion point, rotation around Z, scale).
+    """
+
+    insertion_point: Point3D
+    rotation_rad: float = 0.0
+    scale_x: float = 1.0
+    scale_y: float = 1.0
+    scale_z: float = 1.0
+
+
 @dataclass
 class EntityRecord:
     """One DXF entity as read from the source file.

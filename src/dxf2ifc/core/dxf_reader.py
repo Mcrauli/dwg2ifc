@@ -5,11 +5,18 @@ Plan A handles only LINE entities. Plan B extends with LWPOLYLINE, 3DSOLID, INSE
 
 from __future__ import annotations
 
+import math
 from pathlib import Path
 
 import ezdxf
 
-from dxf2ifc.core.types import EntityRecord, LineGeometry, Point3D, PolygonGeometry
+from dxf2ifc.core.types import (
+    BlockInstance,
+    EntityRecord,
+    LineGeometry,
+    Point3D,
+    PolygonGeometry,
+)
 
 
 def read_dxf(path: str | Path) -> list[EntityRecord]:
@@ -41,6 +48,28 @@ def read_dxf(path: str | Path) -> list[EntityRecord]:
                     dxf_type="LWPOLYLINE",
                     geometry=PolygonGeometry(vertices=vertices, closed=True),
                     attributes={},
+                )
+            )
+        elif dxftype == "INSERT":
+            insert = Point3D(
+                float(entity.dxf.insert.x),
+                float(entity.dxf.insert.y),
+                float(entity.dxf.insert.z),
+            )
+            block_instance = BlockInstance(
+                insertion_point=insert,
+                rotation_rad=math.radians(float(entity.dxf.rotation or 0.0)),
+                scale_x=float(entity.dxf.xscale or 1.0),
+                scale_y=float(entity.dxf.yscale or 1.0),
+                scale_z=float(entity.dxf.zscale or 1.0),
+            )
+            records.append(
+                EntityRecord(
+                    layer=entity.dxf.layer,
+                    dxf_type="INSERT",
+                    geometry=block_instance,
+                    attributes={},
+                    block_name=entity.dxf.name,
                 )
             )
     return records
