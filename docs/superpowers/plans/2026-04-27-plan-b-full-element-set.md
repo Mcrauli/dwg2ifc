@@ -72,3 +72,10 @@ Plan A 21/21 valmis (master `54140a5`). 41 testiä passed, ruff clean. Default-p
 - Task: kirjoita `tests/test_geometry.py`:hen `door_block_to_box` -failing test ja toteuta funktio joka tuottaa IfcDoor-paramater-laatikon (height/width profiilista tai INSERT-attribuutista) (Plan A vastaava: Task 15).
 - Task: lisää `ifc_writer.add_door` (IfcDoor + PredefinedType + OverallHeight/Width + Talo2000-classification) ja test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
 - Task: ohjaa orchestratorista oviblokit `add_door`-kutsuun ja päivitä integraatiotesti DXF-fixtuurilla joka sisältää OVI-ULKO-blokin (Plan A vastaava: Task 18 + 20).
+
+## Section 5: Ikkunat (1242)
+
+- Task: lisää default-profiiliin INSERT-sääntö `IKKUNA → IfcWindow 1242` korkeus/leveys-attribuuttimappauksella (Plan A vastaava: Task 6).
+- Task: kirjoita `tests/test_mapper.py`:hen failing test joka mappaa IKKUNA-blokin → IfcWindow-tyyppi + Talo2000 1242 (Plan A vastaava: Task 14).
+- Task: lisää `ifc_writer.add_window` (IfcWindow + OverallHeight/Width + classification) + test_ifc_writer.py-kattavuus (Plan A vastaava: Task 17).
+- Task: dispatchaa orchestrator window-rule blokit `add_window`-kutsuun ja laajenna integraatiotesti yhdellä IKKUNA-blokilla (Plan A vastaava: Task 18 + 20).
