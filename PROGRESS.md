@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 17 — `profiles/loader.dump_profile(profile, path)` round-trip.
+**Current task:** Plan D Task 18 — `ProfileEditorDialog` rules-listalla + Add/Edit/Remove/Save.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää `profiles/loader.py`:hen `dump_profile(profile: Profile, path: Path) -> None` joka serialisoi Profile-objektin TOML-tiedostoksi. Käytä `tomli_w`-libraryä (lisää dependencies-listaan jos puuttuu) tai rakenna manuaalisesti tomliä. Testi: load default → dump → load uudelleen → varmista että rules-listat vastaavat (length + edustava ifc_type per rule).
+**Seuraavaksi:** luo `gui/profile_editor.py` `ProfileEditorDialog(QDialog)`. Sisältö: QTableView jossa `Profile.rules`-listan kaikki säännöt (kolumnit Layer pattern, IFC type, Predefined, Talo2000 code, Talo2000 name, System), toolbar-napit Add/Edit/Remove/Save profile…. Save kutsuu `dump_profile`. Failing-test varmistaa että default-profile:n kaikki säännöt näkyvät QTableView:ssä (rivimäärä == profile.rules määrä).
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (16/25)
+## Plan D status (17/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -123,7 +123,7 @@
 - [x] Task 16: kytke LayerTable MainWindow:n vasempaan paneeliin (`5d6ed4a`)
 
 ### Section 6: Profile editor
-- [ ] Task 17: `profiles/loader.dump_profile(profile, path)` round-trip
+- [x] Task 17: `profiles/loader.dump_profile(profile, path)` round-trip (`0e96db4`)
 - [ ] Task 18: `ProfileEditorDialog` rules-listalla + Add/Edit/Remove/Save
 - [ ] Task 19: `RuleEditDialog` lomake + pydantic-validointi
 - [ ] Task 20: kytke menubariin + end-to-end custom-rule testi
@@ -240,7 +240,8 @@
 - Plan D Task 14: `core.dxf_reader.list_layers(path)` palauttaa sorted-uniikit layer-nimet model-spacestä (`205f4de`). 9 dxf-reader-testiä passed.
 - Plan D Task 15: `gui/layer_table.py` `LayerTable(QTableWidget)` 4 kolumnia (Layer/IFC/Talo2000/System), `set_layers(layers, profile)`, JetBrains Mono Layer/Talo2000-kolumneille (`6633e6e`). 2 layer-table-testiä passed.
 - Plan D Task 16: kytkin LayerTable MainWindow:n vasempaan paneeliin file_panel:n alle, editingFinished triggeröi list_layers + set_layers (`5d6ed4a`). 10 gui-app-testiä passed. ✅ Section 5 valmis.
+- Plan D Task 17: `profiles/loader.dump_profile(profile, path)` + `tomli-w` runtime-dep, round-trip-testit (`0e96db4`). 18 loader-testiä passed.
 
-**Kesken:** Plan D Task 17–25 (9 jäljellä, Section 6 alkaa).
+**Kesken:** Plan D Task 18–25 (8 jäljellä).
 
 **Blokkerit:** ei.
