@@ -129,6 +129,59 @@ Vaiheet tiivistettynä:
 - **Plan E:** Packaging — PyInstaller .exe Windowsille + GitHub Releases
 - **Plan F:** Spec verifiointi-taskit (avaa Solibri, vahvista tai päivitä profiili per spec § "Verification")
 
+
+## Visuaalinen design (Plan D GUI)
+
+dxf2ifc-sovelluksen GUI seuraa **autocad-lisp-ohjeet-verkkosivuston design-kieltä** yhtäläisen brändi-ilmeen takaamiseksi sovelluksen ja sivuston välillä. Sivuston repo: `https://github.com/Mcrauli/autocad-lisp-ohjeet`. Toteutus dxf2ifc:ssä: PySide6 + QSS (Qt Style Sheets — CSS-mainen syntaksi).
+
+### Värit (käytä QSS:ssä, älä keksi uusia)
+
+| Rooli | Hex |
+|---|---|
+| Tausta gradient | `#0f172a` (top) → `#020617` (bottom), Qt: `QLinearGradient` |
+| Aksentti primääri (amber) | `#f59e0b` — napit, focus, korostus, brand-icon |
+| Aksentti sekundääri (blue) | `#60a5fa` — info-tilat, koodi-tagit, badge, version |
+| Brand white | `#f8fafc` |
+| Body text | `#e2e8f0` / `#cbd5f5` |
+| Heikko teksti | `#94a3b8` / `#64748b` |
+| Border subtle | `rgba(255,255,255,0.05)` |
+| Code text | `#f1f5f9` |
+| Toast border-left | `#f59e0b` (3px) |
+
+### Fontit (lataa QFontDatabase:lla appin käynnistyksessä, bundlea resursseihin)
+
+- **Inter** 400/500/600/700 — leipäteksti, napit
+- **Space Grotesk** 500/600/700 — kaikki otsikot, brand
+- **JetBrains Mono** 500 — koodi, versiot, numerot, labels (esim. layer-listaus, IFC-tyyppi-merkinnät)
+
+### Typografia
+
+- H1: Space Grotesk 700, letter-spacing -0.02em, line-height 1.15
+- H2: Space Grotesk 600, letter-spacing -0.01em, line-height 1.3
+- Paragraph line-height 1.75
+- Brand: Space Grotesk 700, font-size 15px
+
+### Toistuvat patternit
+
+- **Tumma tausta gradientilla** (slate radial) main-windowin taustana
+- **Mahdollisuus: blueprint-grid** 40×40px, 4% opacity (CAD-viittaus, kevyt aksentti) main-windowin tai preview-areean taustalla
+- **Mahdollisuus: corner-crosshairit** (amber `+` neljässä nurkassa) — pieni CAD-aksentti, harkinnanvarainen
+- **Amber-painikkeet** primäärisille toimille (Convert, Save, Run); sininen sekundäärisille (Browse, Settings)
+- **Border-left 3px amber** toast-/notification-viesteille
+- **Hover-states** amber-tinted backgrounds (`rgba(245,158,11,0.12)`)
+
+### PySide6 / QSS toteutus-ohje
+
+- Keskitä tyylit yhteen QSS-tiedostoon tai Qt-resurssiin (analogia `style.css`:lle), älä injektoi widget-kohtaisesti
+- Käytä `QFontDatabase.addApplicationFont` Inter/SpaceGrotesk/JetBrainsMono lataamiseen ennen kuin pääikkuna avataan
+- QSS tukee `font-feature-settings` ei suoraan, mutta `QFont.setFeatures` tai stylistic alternates ei välttämättä tarvita — body-tekstin näkymä riittää ilman cv11/ss01/ss03
+
+### Mitä EI saa muuttaa
+
+- **Värit eivät saa lisääntyä** — käytä yllä lueteltuja
+- **Fontit eivät saa lisääntyä** — kolme riittää
+- **Cyan (`#22d3ee`) ja deep-blue (`#3b82f6`) ovat varattu vain LISP-sivuston putki-animaatioihin**, ei käytössä dxf2ifc-GUI:ssa
+- Älä lisää tracking-scriptejä, analytics, telemetria — sama linja kuin sivustolla
 ## Avoimet kysymykset
 
 1. **MEP Talo2000 -alakoodit** (21xx putket, 25xx laitteet) — ei löydy Hankenimikkeistöstä eikä Solibri-filesta yksityiskohtaisesti. Tarvitaan RT-kortisto tai NotebookLM-kysely YTV:stä.
