@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 13 — laajenna `convert_dxf` orchestrator dispatchaamaan slab-rule entiteetit `add_slab`-kutsuun.
+**Current task:** Plan B Task 14 — lisää default-profiiliin INSERT-säännöt ulkoa-, väli- ja erityisoville (KYL-OVET-ULKO/VALI/ERITYIS, OVI-* blocks, IfcDoor, talo 1243/1315/1316).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** päivitä `convert_dxf` `src/dxf2ifc/core/ifc_writer.py`:ssa: kun `m.ifc_type == 'IfcSlab'`, kutsu `add_slab(ifc, m, parent_storey=storey, predefined_type=m.predefined_type or 'FLOOR')` ja sitten `add_talo2000_classification`. Lisää integraatiotesti joka generoi DXF:n suljetulla LWPOLYLINE:lla layerilla `KYL-ALAPOHJA`, ajaa convert_dxf, ja varmistaa IfcSlab + 1221-classification. Pytest test_integration.py + test_ifc_writer.py, commit + push, PROGRESS.md → Task 14 (Section 4 alkaa).
+**Seuraavaksi:** poista kommentit Section 4 -placeholderista `default_kylmalaite_talo2000.toml`:ssa (kolme INSERT-sääntöä). Lisää failing loader-test joka varmistaa kaikki kolme oviSääntöä (entity_kind=INSERT, block_name, predefined_type=None, talo2000_code 1243/1315/1316). Pytest, commit + push, PROGRESS.md → Task 15.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (12/50)
+## Plan B status (13/50)
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -32,12 +32,12 @@
 - [x] Task 7: `ifc_writer.add_wall` + `predefined_type` -parametri (`b101565`)
 - [x] Task 8: integraatiotesti VS-viivalla → IfcWall PARTITIONING 1311 (`f051083`)
 
-### Section 3: Laatat AP / VP / YP (1221 / 1235 / 1236)
+### Section 3: Laatat AP / VP / YP (1221 / 1235 / 1236) ✅
 - [x] Task 9: default-profiilin laattasäännöt (`62f0f2e`)
 - [x] Task 10: `dxf_reader.py` LWPOLYLINE-luku + `PolygonGeometry`-tyyppi (`5d10e66`)
 - [x] Task 11: `polygon_to_slab_extrusion` testi + impl (`88517c7`)
 - [x] Task 12: `ifc_writer.add_slab` + classification (`3d9e15f`)
-- [ ] Task 13: orchestrator dispatch slab-rule
+- [x] Task 13: orchestrator dispatch slab-rule (`0c13013`)
 
 ### Section 4: Ovet (1243 / 1315 / 1316)
 - [ ] Task 14: default-profiilin INSERT-ovisäännöt
@@ -94,7 +94,7 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 12/50 — Sectionit 1–2 valmis, Section 3 etenee (4/5).
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 13/50 — Sectionit 1–3 valmis, Section 4 alkamassa.
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -108,7 +108,8 @@
 - Plan B Task 10: PolygonGeometry types.py:hen + dxf_reader lukemaan suljetut LWPOLYLINE-entiteetit (`5d10e66`). 11 reader+types-testiä passed.
 - Plan B Task 11: SlabExtrusion-dataclass + polygon_to_slab_extrusion (`88517c7`). 8 geometry-testiä passed.
 - Plan B Task 12: add_slab tuottaa IfcSlab + extruded outline + spatial containment (`3d9e15f`). 12 ifc_writer-testiä passed.
+- Plan B Task 13: convert_dxf orchestrator dispatchaa IfcSlab + integraatiotesti KYL-ALAPOHJA → 1221 (`0c13013`). 15 ifc_writer+integration-testiä passed. ✅ Section 3 valmis.
 
-**Kesken:** Plan B Task 13–50 (38 jäljellä).
+**Kesken:** Plan B Task 14–50 (37 jäljellä).
 
 **Blokkerit:** ei.
