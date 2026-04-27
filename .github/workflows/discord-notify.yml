@@ -6,6 +6,7 @@ on:
     paths:
       - PROGRESS.md
       - .routine-status
+  workflow_dispatch:
 
 jobs:
   notify:
