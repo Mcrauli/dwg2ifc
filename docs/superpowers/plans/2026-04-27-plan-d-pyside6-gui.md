@@ -32,6 +32,10 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 valmis (master `8cc4fc3`). 151 testi�
 
 ## Section 2: Brand assets (fontit, värit, QSS)
 
+- [ ] Task 4: luo `assets/fonts/`-kansio ja lataa Inter (400/500/600/700), Space Grotesk (500/600/700) ja JetBrains Mono (500) -OFL-lisensoidut TTF-tiedostot kansioon. Lisää `assets/fonts/LICENSES.md` jossa kaikki kolme lisenssiä ovat. Konfiguroi `pyproject.toml` `[tool.setuptools.package-data]` siten että fontit pakataan wheeliin.
+- [ ] Task 5: luo `src/dxf2ifc/gui/style.qss` joka sisältää CLAUDE.md:n design-sectionin värit (gradient `#0f172a` → `#020617`, amber `#f59e0b`, blue `#60a5fa`, slate-tekstiportaat) ja typografian (Inter body, Space Grotesk headings, JetBrains Mono code). QSS:n täytyy stylata vähintään `QMainWindow`, `QPushButton[primary="true"]`, `QPushButton[secondary="true"]`, `QLabel[role="h1"]`, `QLabel[role="h2"]`, `QLabel[role="caption"]`, `QStatusBar`. Failing test (`tests/test_gui_style.py`) varmistaa että `style.qss` on valid QString jonka `QApplication.setStyleSheet` hyväksyy ilman varoituksia.
+- [ ] Task 6: lisää `src/dxf2ifc/gui/theme.py`:hen `apply_theme(app: QApplication)` -funktio joka (a) rekisteröi kolme fonttiperhettä `QFontDatabase.addApplicationFont`, (b) asettaa `app.setStyleSheet(...)` `style.qss`:n sisällöllä ja (c) asettaa default-`QFont`:n Interiksi 14 px. Testi varmistaa että rekisteröidyt fonttiperheet löytyvät `QFontDatabase.families()`-listasta ja että style sheet ei ole tyhjä.
+
 ## Section 3: MainWindow + layout-runko
 
 ## Section 4: Convert-flow (DXF → IFC napilla)
