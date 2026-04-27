@@ -25,6 +25,7 @@ gui = [
 
 [project.scripts]
 dxf2ifc = "dxf2ifc.cli:main"
+dxf2ifc-gui = "dxf2ifc.gui.app:run"
 
 [build-system]
 requires = ["hatchling"]
