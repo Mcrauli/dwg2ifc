@@ -3,7 +3,7 @@
 import pytest
 
 from dxf2ifc.core.mapper import apply_profile, layer_matches
-from dxf2ifc.core.types import EntityRecord, LineGeometry, Point3D
+from dxf2ifc.core.types import BlockInstance, EntityRecord, LineGeometry, Point3D
 from dxf2ifc.profiles.loader import load_default_profile
 from dxf2ifc.profiles.schema import Profile, Rule
 
@@ -111,3 +111,20 @@ def test_apply_profile_maps_partition_walls_via_default_profile():
     assert lasi.predefined_type == "PARTITIONING"
     assert lasi.talo2000_code == "1312"
     assert lasi.talo2000_name == "Lasiväliseinät"
+
+
+def test_apply_profile_maps_ikkuna_block_to_ifcwindow_via_default_profile():
+    profile = load_default_profile()
+    entity = EntityRecord(
+        layer="KYL-IKKUNA-MUOVI",
+        dxf_type="INSERT",
+        geometry=BlockInstance(insertion_point=Point3D(2000, 1500, 0)),
+        block_name="IKKUNA",
+    )
+    mapped = apply_profile([entity], profile)
+    assert len(mapped) == 1
+    window = mapped[0]
+    assert window.ifc_type == "IfcWindow"
+    assert window.talo2000_code == "1242"
+    assert window.talo2000_name == "Ikkunat"
+    assert window.block_name == "IKKUNA"
