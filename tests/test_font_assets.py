@@ -10,7 +10,6 @@ EXPECTED_FONTS = [
     "Inter-SemiBold.ttf",
     "Inter-Bold.ttf",
     "SpaceGrotesk-Medium.ttf",
-    "SpaceGrotesk-SemiBold.ttf",
     "SpaceGrotesk-Bold.ttf",
     "JetBrainsMono-Medium.ttf",
 ]

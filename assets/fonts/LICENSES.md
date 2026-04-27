@@ -8,7 +8,7 @@ Tekijä: Rasmus Andersson (https://rsms.me/inter/).
 Versio: Inter 4.0 (2023-11-19).
 Täyslisenssi: [`Inter-LICENSE.txt`](Inter-LICENSE.txt).
 
-## Space Grotesk (SpaceGrotesk-Medium/SemiBold/Bold)
+## Space Grotesk (SpaceGrotesk-Medium/Bold)
 
 Tekijä: Florian Karsten (https://github.com/floriankarsten/space-grotesk).
 Täyslisenssi: [`SpaceGrotesk-LICENSE.txt`](SpaceGrotesk-LICENSE.txt).

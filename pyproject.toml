@@ -42,7 +42,6 @@ packages = ["src/dxf2ifc"]
 "assets/fonts/Inter-SemiBold.ttf" = "dxf2ifc/gui/fonts/Inter-SemiBold.ttf"
 "assets/fonts/Inter-Bold.ttf" = "dxf2ifc/gui/fonts/Inter-Bold.ttf"
 "assets/fonts/SpaceGrotesk-Medium.ttf" = "dxf2ifc/gui/fonts/SpaceGrotesk-Medium.ttf"
-"assets/fonts/SpaceGrotesk-SemiBold.ttf" = "dxf2ifc/gui/fonts/SpaceGrotesk-SemiBold.ttf"
 "assets/fonts/SpaceGrotesk-Bold.ttf" = "dxf2ifc/gui/fonts/SpaceGrotesk-Bold.ttf"
 "assets/fonts/JetBrainsMono-Medium.ttf" = "dxf2ifc/gui/fonts/JetBrainsMono-Medium.ttf"
 "assets/fonts/LICENSES.md" = "dxf2ifc/gui/fonts/LICENSES.md"
