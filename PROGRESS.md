@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
+**Current plan:** Plan C — IfcSystem-ryhmittely (kirjoittamatta).
 
-**Current task:** Plan B Task 50 — README.md + CLAUDE.md status-päivitys (Plan B valmis).
+**Current task:** Plan C Task 1 — kirjoita Plan C:n skeleton (IfcSystem-ryhmittely kylmäjärjestelmille).
 
-**Mode:** A (implementointi).
+**Mode:** B (plan-kirjoitus).
 
-**Seuraavaksi:** päivitä CLAUDE.md "Status"-osio (Plan B 50/50 valmis, lista kommit-SHA:t) ja README.md headline (Plan B valmis -merkki). Sen jälkeen Plan-loppupiste + transition kohti Plan C:tä.
+**Seuraavaksi:** kirjoita `docs/superpowers/plans/2026-04-27-plan-c-ifcsystem-grouping.md` skeleton: YAML frontmatter + 1–3 rivin intro + section-otsikot. Sen jälkeen täytä section-task-rivit yksi kerrallaan.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,7 +18,7 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (49/50)
+## Plan B status (50/50) ✅
 
 ### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
@@ -92,9 +92,9 @@
 - [x] Task 47: `tests/fixtures/full_kylmaelement.dxf` (kaikki section 2–11 elementtityypit) (`58ac2e4`)
 - [x] Task 48: `tests/test_integration_full.py` (kaikki Talo2000-koodit löytyvät IFC:stä) (`536fa50`)
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
-- [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
+- [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 49/50 — Sectionit 1–11 valmis, Section 12 etenee (3/4).
+**Viimeisin tila:** Plan A 21/21 valmis. **Plan B 50/50 valmis** ✅. Seuraavana Plan C (kirjoittamatta).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -145,7 +145,8 @@
 - Plan B Task 47: full_kylmaelement_dxf conftest-fixture (kaikki Section 2–11 elementit) (`58ac2e4`).
 - Plan B Task 48: tests/test_integration_full.py joka varmistaa kaikki Section 2–11 Talo2000-koodit + IFC-validointi (`536fa50`). 3 testiä passed.
 - Plan B Task 49: ruff format kolmelle uudelle tiedostolle, koko suite 143 passed, coverage 91 % (`cab7ea7`).
+- Plan B Task 50: README + CLAUDE.md status-päivitys Plan B valmiiksi (`2494841`). 🎉 Plan B 50/50.
 
-**Kesken:** Plan B Task 50 (1 jäljellä).
+**Kesken:** Plan C kirjoitettava (Mode B).
 
 **Blokkerit:** ei.
