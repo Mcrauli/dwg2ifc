@@ -4,6 +4,7 @@ import pytest
 
 from dxf2ifc.core.mapper import apply_profile, layer_matches
 from dxf2ifc.core.types import EntityRecord, LineGeometry, Point3D
+from dxf2ifc.profiles.loader import load_default_profile
 from dxf2ifc.profiles.schema import Profile, Rule
 
 
@@ -90,3 +91,23 @@ def test_apply_profile_uses_first_matching_rule_by_order():
     mapped = apply_profile([_sample_line_record()], profile)
     # First match wins → PARTITIONING (because KYL-* matches first)
     assert mapped[0].predefined_type == "PARTITIONING"
+
+
+def test_apply_profile_maps_partition_walls_via_default_profile():
+    profile = load_default_profile()
+    entities = [
+        _sample_line_record(layer="KYL-VALISEINA"),
+        _sample_line_record(layer="KYL-LASIVALISEINA"),
+    ]
+    mapped = apply_profile(entities, profile)
+    by_layer = {m.layer: m for m in mapped}
+    vs = by_layer["KYL-VALISEINA"]
+    assert vs.ifc_type == "IfcWall"
+    assert vs.predefined_type == "PARTITIONING"
+    assert vs.talo2000_code == "1311"
+    assert vs.talo2000_name == "Väliseinät"
+    lasi = by_layer["KYL-LASIVALISEINA"]
+    assert lasi.ifc_type == "IfcWall"
+    assert lasi.predefined_type == "PARTITIONING"
+    assert lasi.talo2000_code == "1312"
+    assert lasi.talo2000_name == "Lasiväliseinät"
