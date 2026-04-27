@@ -2,11 +2,11 @@
 
 **Current plan:** Plan B — Full element set (kirjoitettu, 50 tehtävää, master `083f8cd`).
 
-**Current task:** Plan B Task 4 — laajenna `profiles/default_kylmalaite_talo2000.toml` placeholder-säännöillä joka elementtityypille (kommentoidut, täytetään myöhempinä sectioneina).
+**Current task:** Plan B Task 5 — lisää default-profiiliin säännöt `KYL-VALISEINA → IfcWall PARTITIONING 1311` ja `KYL-LASIVALISEINA → IfcWall PARTITIONING 1312`.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lue nykyinen `src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml`. Lisää kommentoidut placeholder-säännöt jokaiselle Plan B section 2–11 element-tyypille (VS, lasiväliseinä, AP/VP/YP, ovet, ikkunat, putket, viemärit, hyllyt, kaapelihyllyt, proxy-paneelit, kylmälaitteet). Aja `pytest tests/test_profile_loader.py -q` (default-profiili ladattava). Commit + push, PROGRESS.md → Task 5.
+**Seuraavaksi:** poista kommentit Section 2 -placeholderista `default_kylmalaite_talo2000.toml`:ssa (KYL-VALISEINA → IfcWall PARTITIONING 1311 ja KYL-LASIVALISEINA → 1312). Lataa default-profiili testissä `tests/test_profile_loader.py` ja varmista että uudet säännöt ovat mukana. Pytest, commit + push, PROGRESS.md → Task 6.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -18,13 +18,13 @@
 - [x] Task 20 — integration test + `ifcopenshell.validate` (`3da2df0`)
 - [x] Task 21 — ruff clean + 41 testiä passed, 84 % coverage (`54140a5`)
 
-## Plan B status (3/50)
+## Plan B status (4/50)
 
-### Section 1: Profile-skeeman laajennus
+### Section 1: Profile-skeeman laajennus ✅
 - [x] Task 1: laajenna `profiles/schema.py` Rule-malliin `entity_kind` (LINE/POLYLINE/CIRCLE/INSERT) ja `block_name` (`faaac8c`)
 - [x] Task 2: lisää `extrusion_height` ja `pset_overrides`-kentät + INSERT-validointi (`29f01e4`)
 - [x] Task 3: päivitä `profiles/loader.py` säilyttämään uudet kentät + `tests/test_profile_schema.py` (`a8cbe50`)
-- [ ] Task 4: laajenna default TOML kommentoiduilla placeholder-säännöillä joka elementtityypille
+- [x] Task 4: laajenna default TOML kommentoiduilla placeholder-säännöillä joka elementtityypille (`35c18f6`)
 
 ### Section 2: VS / lasiväliseinät (1311 / 1312)
 - [ ] Task 5: default-profiilin VS- ja lasiväliseinä-säännöt
@@ -94,12 +94,13 @@
 - [ ] Task 49: ruff clean + ≥85 % coverage
 - [ ] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis)
 
-**Viimeisin tila:** Plan A 21/21 valmis. Plan B 2/50 — Section 1 etenee.
+**Viimeisin tila:** Plan A 21/21 valmis. Plan B 4/50 — Section 1 valmis, Section 2 alkamassa.
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
 - Plan B Task 3: TOML-roundtrip-testit + loader negative test INSERT-without-block_name (`a8cbe50`). Loader itse ei vaatinut muutoksia. 17 schema+loader-testiä passed.
+- Plan B Task 4: kommentoidut placeholder-säännöt section 2–11 element-tyypeille default TOML:ssa (`35c18f6`). 6 loader-testiä passed.
 
-**Kesken:** Plan B Task 4–50 (47 jäljellä).
+**Kesken:** Plan B Task 5–50 (46 jäljellä).
 
 **Blokkerit:** ei.
