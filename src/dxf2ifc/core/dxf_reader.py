@@ -9,7 +9,7 @@ from pathlib import Path
 
 import ezdxf
 
-from dxf2ifc.core.types import EntityRecord, LineGeometry, Point3D
+from dxf2ifc.core.types import EntityRecord, LineGeometry, Point3D, PolygonGeometry
 
 
 def read_dxf(path: str | Path) -> list[EntityRecord]:
@@ -18,7 +18,8 @@ def read_dxf(path: str | Path) -> list[EntityRecord]:
     msp = doc.modelspace()
     records: list[EntityRecord] = []
     for entity in msp:
-        if entity.dxftype() == "LINE":
+        dxftype = entity.dxftype()
+        if dxftype == "LINE":
             start = Point3D(*entity.dxf.start)
             end = Point3D(*entity.dxf.end)
             records.append(
@@ -26,6 +27,19 @@ def read_dxf(path: str | Path) -> list[EntityRecord]:
                     layer=entity.dxf.layer,
                     dxf_type="LINE",
                     geometry=LineGeometry(start=start, end=end),
+                    attributes={},
+                )
+            )
+        elif dxftype == "LWPOLYLINE" and entity.closed:
+            elevation = float(entity.dxf.elevation or 0.0)
+            vertices = tuple(
+                Point3D(float(x), float(y), elevation) for x, y, *_ in entity.get_points()
+            )
+            records.append(
+                EntityRecord(
+                    layer=entity.dxf.layer,
+                    dxf_type="LWPOLYLINE",
+                    geometry=PolygonGeometry(vertices=vertices, closed=True),
                     attributes={},
                 )
             )

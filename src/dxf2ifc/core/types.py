@@ -26,6 +26,18 @@ class LineGeometry:
     end: Point3D
 
 
+@dataclass(frozen=True)
+class PolygonGeometry:
+    """A planar polygon defined by an ordered list of vertices.
+
+    `closed=True` means the polygon's last vertex is implicitly connected
+    back to the first; only closed polygons are usable as slab outlines.
+    """
+
+    vertices: tuple[Point3D, ...]
+    closed: bool = True
+
+
 @dataclass
 class EntityRecord:
     """One DXF entity as read from the source file.
