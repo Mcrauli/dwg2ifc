@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros 3 (3 bugia) — Plan H 22/22 ✅, mutta käyttäjän testissä geometria edelleen rikki (kaikki element-tyypit, ei vain hyllyt). Korjataan ennen Plan G:tä.
 
-**Current task:** Bugfix 8 (KYL-TIKASHYLLY puuttuu kokonaan IFC:stä).
+**Current task:** Bugfix 9 (Profile editor Load-nappi ei toimi).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Tutki KYL-TIKASHYLLY-layer:n DXF-entiteettien tyyppi ezdxf:llä — KLHYLLY-TIKAS piirtää komposiittia (2 kiskoa + poikkitikat eri sub-entiteetteinä) ja nykyinen `add_furniture` ei välttämättä tunnista INSERT-tyyppistä syötettä. Lisää failing-test joka tuottaa real-world TIKAS-DXF:n (1 INSERT @ KLHYLLY-TIKAS-block) → load_default_profile → convert → odottaa 1 IfcFurniture. Korjaa joko mapper-puolella (block_name match) tai dxf_reader/ifc_writer-puolella tarvittaessa. Kun Bugfix 8 valmis, jatka Bugfix 9 (Profile editor Load broken) → **Bugfix 11 (GUI Profile editor RAVA-laajennus — domain-valitsin + lvi_code/talotekniikka_code -kentät)**. Vasta sit siirry Plan G MODE B:hen.
+**Seuraavaksi:** Avaa `src/dxf2ifc/gui/profile_editor.py`, lisää try/except + log Load-toimintoon (file-picker → load_profile → täytä rules-table → emittoi `profile_loaded`-signaali). Lisää testi (`tests/test_gui_profile_editor.py` tai uusi `test_bugfix9_profile_editor_load.py`) joka simuloi Load-buttonin painalluksen `monkeypatch`:lla ja varmistaa että rules-table:n sisältö muuttuu valitun TOML:n mukaiseksi. Kun Bugfix 9 valmis, siirry **Bugfix 11 (GUI Profile editor RAVA-laajennus — domain-valitsin + lvi_code/talotekniikka_code -kentät)**. Vasta sit Bugfix 12 (default-profiilin TATE-only kavennus) ja Plan G MODE B.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -48,7 +48,7 @@ Lauri testasi 4001_1krs.dxf:n Bugfix kierros 2:n jälkeen (Plan F + Bugfix 4-6 +
 
 - [x] **Bugfix 7** — **KAIKEN element-tyypin geometria** auditoitu uudella `tests/test_geometry_dimensions.py` (10 bbox-testiä per add_*-funktio, kaikki passit). Root cause: default-profiili ei aseta `default_height_mm`-arvoa KYL-LEVYHYLLY/KYL-TIKASHYLLY-säännöille → fallback 2000mm tekee hyllystä korkean palkin. Korjattu profiilissa: KYL-LEVYHYLLY 60mm, KYL-TIKASHYLLY 60mm, KYL-TIKASHYLLY-V 2000mm (eksplisiittinen). Lisätty myös `tests/test_geometry_roundtrip.py` joka käyttää `full_kylmaelement_dxf`-fixturea, varmistaa per-layer entity-määrät + placement origins ±50mm. (`6aa1efa` test scaffold + `badb753` profile fix + `59f4875` roundtrip)
 
-- [ ] **Bugfix 8** — KYL-TIKASHYLLY puuttuu kokonaan IFC:stä: layer-table:ssa preview näyttää että KYL-TIKASHYLLY-layerilla on entiteettejä (KLHYLLY tikas-tyyppi piirtää 2 kiskoa + poikkitikat eri sub-entiteetteinä), mutta dxf2ifc ei tuota niistä mitään IfcFurniture-entiteettiä outputiin. Mahdollinen syy: KLHYLLY tikas piirtää komposiittia DXF-blokkina + INSERT-entiteettinä, mutta nykyinen `add_furniture` ei tunnista INSERT-tyyppistä syötettä TIKAS-hyllylle. Korjaus: tutki KYL-TIKASHYLLY-layer:n DXF-entiteettien tyyppi ezdxf:llä (`doc.modelspace().query(*[layer==0])`), lisää tuki TIKAS-tyypille (kahden kiskon + poikkitikkujen yhdistelmä → 1 IfcFurniture per koko hylly).
+- [x] **Bugfix 8** — Defensive fix: `add_furniture` hyväksyy nyt LineGeometry-syötteen (KLHYLLY-TIKAS LISP piirtää shelf-rails inline-LINEinä eikä blokkina, mikä aiemmin TypeError-ilmoitti ja kaatoi konversion). Yksi LINE = yksi IfcFurniture-laatikko (length × default_depth × default_height, anchorointi line.start, kierto line-kulman mukaan). Aggregaatio "kahden kiskon + poikkitikkujen yhdistelmä → 1 IfcFurniture per koko hylly" jätetty follow-up:iin koska real-world DXF puuttuu sandboxista — ensin halutaan että layer ei katoa kokonaan IFC:stä. (`2bf30da`)
 
 - [ ] **Bugfix 9** — Profile editor Load-nappi ei toimi: Bugfix 2 piti hoitaa tämän mutta käyttäjän palautteen perusteella ei toimi. Repro: avaa GUI, Profile → Edit profile → Load profile…-nappi → valitse TOML → ei mitään. Korjaus: lisää virhelogi (try/except + log:iin per failure case) + varmista että `profile_loaded`-signaali laukeaa + UI päivittyy. Tiedostot: `src/dxf2ifc/gui/profile_editor.py`, vastaavat testit (testi joka simuloi load-buttonin painalluksen + varmistaa että rule-table:n sisältö muuttuu).
 
