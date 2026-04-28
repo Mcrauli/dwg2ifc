@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 7 — scale + orthogonal_height edge-case-testit.
+**Current task:** Plan G Task 8 — build_ifc_project_skeleton tuottaa Site → Building → list[Storey].
 
-**Mode:** A (toteutus, Section 2 viimeinen task).
+**Mode:** A (toteutus, Section 3 alkaa). Sections 1+2 ✅ (7/21).
 
-**Seuraavaksi:** Failing-testit kahdelle CRS-konfiguraatiolle: orthogonal_height_mm=15000 (kerrostalon räystäs) ja scale=0.999 (korkeuskorjaus) → IfcMapConversion-arvot vastaavat. Itse impl jo tehty Task 6:ssa, joten Task 7 = pelkkä regressiotesti (parametrisoitu).
+**Seuraavaksi:** Lue plan-Task 8: skeleton ottaa storey_z_levels_mm:n profile-objektista (tai kwargina) ja luo N×IfcBuildingStorey jokaiselle z-arvolle (nimet "Kerros 1"…). IfcLocalPlacement-ketju Site→Building→Storey relatiivinen. **Iso refaktorointi**: tämä muuttaa skeleton:n paluuarvon (tai sen rakenteen, jolloin Task 10 tekee dataclass:n). Aloita TDD: failing-testit 1-storey-default, 3-storey-list, IfcLocalPlacement-parent-relaatiot.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -504,7 +504,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 ### Section 2: IfcProjectedCRS + IfcMapConversion -kirjoitus
 - [x] Task 5: build_ifc_project_skeleton crs-kwarg, None → ei georeferenssiä (`bce689f`)
 - [x] Task 6: IfcProjectedCRS + IfcMapConversion linkitetty IfcGeometricRepresentationContextiin (`62b92a0`)
-- [ ] Task 7: scale + orthogonal_height edge-case-testit
+- [x] Task 7: scale + orthogonal_height edge-case-testit (`788f5e7`)
 
 ### Section 3: Site → Building → Storey -placement-hierarkia
 - [ ] Task 8: build_ifc_project_skeleton tuottaa Site → Building → list[Storey]
