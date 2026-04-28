@@ -33,6 +33,10 @@ Plan A–F + H valmis. Master `<TBD>`. 302 ei-GUI testiä passed + 1 skipped (So
 
 ## Section 2: IfcProjectedCRS + IfcMapConversion -kirjoitus skeletoniin
 
+- [ ] Task 5: laajenna `build_ifc_project_skeleton` ottamaan `crs: CRSConfig | None = None`-kwarg. Jos None, skeleton pysyy nykyisenä (ei georeferenssiä). Failing-testi: skeleton crs=None → ei IfcProjectedCRS-entiteettiä, mutta IFC-validate clean.
+- [ ] Task 6: jos `crs` annettu, kirjoita `IfcProjectedCRS`-entity (Name=`epsg_code`, Description=`name`, GeodeticDatum=`geodetic_datum`, MapUnit=mm) ja kytke se `IfcGeometricRepresentationContext.HasCoordinateOperation`-kautta `IfcMapConversion`:iin (Eastings/Northings/OrthogonalHeight/XAxisAbscissa/XAxisOrdinate/Scale CRSConfigista). Failing-testit: crs-attribuutit IFC:ssä, IfcMapConversion linkki ProjectedCRS:ään, ifcopenshell.validate clean.
+- [ ] Task 7: scale + orthogonal_height -edge-case-testit: CRSConfig orthogonal_height_mm=15000 (kerrostalon räystäs) ja scale=0.999 (korkeuskorjaus) → IfcMapConversion-arvot vastaavat (mm SI-yksikkö). Failing-testi: kahden CRS-konfiguraation pareittainen vertailu IFC-attribuutteihin.
+
 ## Section 3: Site → Building → Storey -placement-hierarkia
 
 ## Section 4: Element-add-funktiot kerros-aware + orchestrator dispatch storeyhin
