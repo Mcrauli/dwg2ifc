@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 10 — IfcSkeleton dataclass + caller updates.
+**Current task:** Plan G Task 11 — add_* storey-aware kwarg.
 
-**Mode:** A (toteutus, Section 3 jatkuu). Sections 1+2 ✅ + Tasks 8–9 ✅ (9/21).
+**Mode:** A (toteutus, Section 4 alkaa). Section 1+2+3 ✅ (10/21).
 
-**Seuraavaksi:** Plan-Task 10: dataclass `IfcSkeleton(file, project, site, building, storeys, contexts)`, päivitä `build_ifc_project_skeleton` palauttamaan se, ja kutsujat (convert_dxf, testit) käyttämään `skeleton.storeys[0]` tai `skeleton.file`. Kaikki olemassa olevat testit jotka olettavat `ifc.file`-paluuarvoa pitää säilyttää backward-compat:in (ratkaisu: `IfcSkeleton.__getattr__` proxyaa file:n attribuutit).
+**Seuraavaksi:** Plan-Task 11: lisää `storey` kwarg add_wall/add_slab/add_door/add_window/add_pipe_segment/add_furniture/add_cable_carrier_segment/add_building_element_proxy/add_cooling_equipment-funktioihin. RelContainedInSpatialStructure linkitetään storey:hyn (ei buildingiin). Failing-testi: 2-storey skeleton + per-funktio sijoitus eri storey:hyn.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -519,7 +519,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 ### Section 3: Site → Building → Storey -placement-hierarkia
 - [x] Task 8: build_ifc_project_skeleton tuottaa Site → Building → list[Storey] (`8e107ed`)
 - [x] Task 9: resolve_storey(storeys, z_mm) helper + 5 case-test (`21636bb`)
-- [ ] Task 10: IfcSkeleton dataclass paluuarvo + kutsujien päivitys
+- [x] Task 10: IfcSkeleton dataclass paluuarvo + kutsujien päivitys (`c4b1d83`)
 
 ### Section 4: Element-add-funktiot kerros-aware + orchestrator
 - [ ] Task 11: add_* ottaa storey-kwarg + RelContainedInSpatialStructure storey:hyn
