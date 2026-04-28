@@ -39,6 +39,10 @@ Plan A–F + H valmis. Master `<TBD>`. 302 ei-GUI testiä passed + 1 skipped (So
 
 ## Section 3: Site → Building → Storey -placement-hierarkia
 
+- [ ] Task 8: `build_ifc_project_skeleton` palauttaa nyt rakenteen `IfcSite → IfcBuilding → list[IfcBuildingStorey]` storey_z_levels_mm:n mukaan (nimet "Kerros 1", "Kerros 2", …). IfcLocalPlacement-ketju Site→Building→Storey on relatiivinen, Storey-Z syntyy `IfcAxis2Placement3D.Location[2]=z_level_mm`. Failing-testit: 1-storey-default, 3-storey-list, IfcLocalPlacement-parent-relaatiot.
+- [ ] Task 9: lisää `resolve_storey(storeys: list[IfcBuildingStorey], z_mm: float) -> IfcBuildingStorey`-helper joka palauttaa korkeimman storeyn jonka z_level ≤ z (eli "kerros johon elementti kuuluu"). Edge case: z alle ensimmäisen → palauta storeys[0] + warning. Failing-testit: 5 case (alin, ylin, keskellä, alle alimman → fallback, tasan kerros-z:llä).
+- [ ] Task 10: päivitä `build_ifc_project_skeleton`-tyyppisen funktion paluuarvot: dataclass `IfcSkeleton` (file, project, site, building, storeys, contexts). Päivitä kaikki kutsujat (convert_dxf, testit) käyttämään uutta tuplerakennetta (kaikki vanhat 1-storey-testit toimivat skeletons.storeys[0]:n kautta). Failing-testi: skeleton.storeys-kentän olemassaolo ja len.
+
 ## Section 4: Element-add-funktiot kerros-aware + orchestrator dispatch storeyhin
 
 ## Section 5: CLI + GUI georeferenssi-input + validointi (max_coord + MapConversion-required)

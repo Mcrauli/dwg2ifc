@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoittaminen käynnissä.
 
-**Current task:** Plan G section 2/6 (IfcProjectedCRS + IfcMapConversion -kirjoitus).
+**Current task:** Plan G section 3/6 (Site → Building → Storey -placement-hierarkia).
 
-**Mode:** B (plan writing, section 2/6).
+**Mode:** B (plan writing, section 3/6).
 
-**Seuraavaksi:** B4 — kirjoita Section 2 task-rivit (skeleton-laajennus crs-parametri, IfcProjectedCRS-entity, IfcMapConversion-entity, IfcGeometricRepresentationContext-linkki).
+**Seuraavaksi:** B4 — kirjoita Section 3 task-rivit (IfcSite RefLatitude/RefLongitude pois, full Site→Building→Storey-ketju, IfcLocalPlacement-hierarkia, multi-storey storey-resolverin storey_z_levels:n perusteella).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
