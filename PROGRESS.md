@@ -2,11 +2,11 @@
 
 **Current plan:** Plan E — PyInstaller-pakkaus + GitHub Releases (kirjoitettu `a3620f7`, 23 tehtävää, 5 sectionia).
 
-**Current task:** Plan E Task 9 — `.spec` BUNDLE icon-konfig + placeholder-todo.
+**Current task:** Plan E Task 10 — `scripts/build_exe.ps1` + `scripts/build_exe.sh`.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** dokumentoi `docs/packaging.md`:hen TODO-kohta icon-tiedostosta `assets/dxf2ifc.ico`. Tämä on placeholder; .spec EXE() ei käytä iconia vielä mutta `console=False` + version_info riittää. Spec-testi: tarkista että icon-rivi joko puuttuu tai loppuu `.ico`:on.
+**Seuraavaksi:** luo `scripts/build_exe.ps1` joka (a) ajaa uv sync (b) ajaa pyinstaller (c) kopioi dist/dxf2ifc.exe versionoituun nimeen + tulostaa SHA256-hash. Lisää `scripts/build_exe.sh` Linux-vastine.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -135,7 +135,7 @@
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
-## Plan E status (8/23)
+## Plan E status (9/23)
 
 ### Section 1: PyInstaller bootstrap ✅
 - [x] Task 1: pyinstaller>=6.10 dev-extraan + smoke import test (`22875d0`)
@@ -143,12 +143,12 @@
 - [x] Task 3: src/dxf2ifc/_version.py + tests/test_version.py (`394f6ed`)
 - [x] Task 4: docs/packaging.md "Local build"-osio (`a655f0c`)
 
-### Section 2: .spec-konfiguraatio + asset bundling
+### Section 2: .spec-konfiguraatio + asset bundling ✅
 - [x] Task 5: .spec datas (TOML/QSS/fontit/LICENSES) + spec-test (`eb3acf4`)
 - [x] Task 6: .spec hidden_imports (ifcopenshell/ezdxf/QtSvg) + spec-test (`b7c1133`)
 - [x] Task 7: .spec excludes (tkinter/pytest/pip jne.) + spec-test (`a65ef52`)
 - [x] Task 8: .spec VSVersionInfo Windows-resourcesille + version_info.py (`da778e4`)
-- [ ] Task 9: .spec BUNDLE icon-konfig + placeholder-todo
+- [x] Task 9: .spec icon=None placeholder + docs/packaging.md "Icon TODO" + spec-testi (`bb08517`)
 
 ### Section 3: Windows build (paikallinen + CI matrix)
 - [ ] Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh
@@ -294,7 +294,8 @@
 - Plan E Task 6: .spec hiddenimports ifcopenshell.{api,geom,guid,template} + ezdxf.entities + PySide6.{QtSvg,QtSvgWidgets} + spec-testi (`b7c1133`). 4 spec-testiä passed.
 - Plan E Task 7: .spec excludes tkinter + pytest + unittest + numpy.distutils + setuptools._distutils + pip + spec-testi (`a65ef52`). 5 spec-testiä passed.
 - Plan E Task 8: build/version_info.py VSVersionInfo Win32-resource (Radika Oy + dxf2ifc + 0.1.0) + .spec EXE(version=...) + .gitignore-whitelist + spec/version_info-testi (`da778e4`). 7 spec-testiä passed.
+- Plan E Task 9: .spec EXE(icon=None) placeholder TODO + docs/packaging.md "Icon TODO"-osio + spec-testi (`bb08517`). 8 spec-testiä passed. ✅ Section 2 valmis.
 
-**Kesken:** Plan E Task 9–23 (15 jäljellä).
+**Kesken:** Plan E Task 10–23 (14 jäljellä).
 
 **Blokkerit:** ei.
