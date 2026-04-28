@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 19 — Solibri rule-set: lisää "RAVA classification coverage".
+**Current task:** Plan H Task 20 — rebuild solibri_reference_full.ifc baseline IFC4X3 + uudella default-profiililla.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 19:n osio plan-tiedostosta. Päivitä `tools/solibri/dxf2ifc.bcfzip` rule-set: lisää sääntö "RAVA classification coverage" joka vaatii TATE-elementeille RAVA-LVI/RAVA-TATE-linkin. Päivitä `docs/solibri-rules.md` ja `tests/test_solibri_bcfzip.py`.
+**Seuraavaksi:** Lue Task 20:n osio plan-tiedostosta. Aja `tools/solibri/build_reference_ifc.py` (jos olemassa), tarkista baseline-IFC. Päivitä snapshot-baseline-JSON jos tarvitaan.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -214,7 +214,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 
 ### Section 6: Integraatio + dokumentointi + plan-loppupiste
 - [x] Task 18: full-fixture- ja integration-testit IFC4X3 + domain (`1b771d3`)
-- [ ] Task 19: Solibri rule-set: lisää "RAVA classification coverage" + docs/solibri-rules.md
+- [x] Task 19: Solibri rule-set: lisää "RAVA classification coverage" + docs/solibri-rules.md (`7212eae`)
 - [ ] Task 20: rebuild solibri_reference_full.ifc + päivitä snapshot-baseline jos tarvitaan
 - [ ] Task 21: docs/rava-classification.md
 - [ ] Task 22: plan-loppupiste — pytest + coverage + ruff + status-päivitys
