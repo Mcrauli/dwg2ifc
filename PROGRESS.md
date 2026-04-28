@@ -1,14 +1,12 @@
 # PROGRESS
 
-**Current plan:** Bugfix kierros 3 (3 bugia) — Plan H 22/22 ✅, mutta käyttäjän testissä geometria edelleen rikki (kaikki element-tyypit, ei vain hyllyt). Korjataan ennen Plan G:tä.
+**Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoittaminen käynnissä.
 
-**Current task:** Plan G (Coordinate System & Georeferenced IFC) — kirjoittamatta.
+**Current task:** Plan G section 1/6 (CRSConfig profile-skeemaan + storey_z_levels).
 
-**Mode:** B (plan writing).
+**Mode:** B (plan writing, section 1/6).
 
-**Seuraavaksi:** Plan G:n MODE B -kirjoitus. Lähde: `docs/quality-gates.md` rivi 95 mainitsee "Coordinate System / georeferenced IFC — tehdään Plan G:ssä", ja Plan F Task 16 / Plan H Task 22 viittaavat Plan G:hen "PLAN-TRANSITION":issa. Ennen Plan G:n aloitusta (Mode B): lue Plan H:n frontmatter (`docs/superpowers/plans/2026-04-28-plan-h-ifc43-rava.md`) ja noudata B1-B9-prosessia. Plan G:n scope: IfcGeographicElement (tai IfcMapConversion + IfcProjectedCRS), site location lat/lon, true north, mahdollisesti EPSG-koodit. Aloita SKELETON:lla (3-5 sectionia, esim. CRS-määrittely / georeferencing-API / GUI-input / testit / docs).
-
-**Vaihtoehto:** GUI-puolella `main_window.py`-Profile-valikossa lisätään valinta "Use TATE-only profile" joka kutsuu `load_default_tate_only_profile()`. Tämä on pieni lisätehtävä jos Plan G:n MODE B tuntuu liian raskaalta.
+**Seuraavaksi:** B4 — kirjoita Section 1 task-rivit (CRSConfig pydantic-malli, storey_z_levels, default-profile-arvot ETRS-TM35FIN:lle). Plan G skeleton committoitu (`docs/superpowers/plans/2026-04-28-plan-g-georeferenced-ifc.md`, 6 sectionia).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
