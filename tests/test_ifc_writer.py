@@ -44,6 +44,17 @@ def test_build_project_creates_ifc4_file_with_hierarchy(tmp_path: Path):
     assert len(ifc.by_type("IfcBuildingStorey")) == 1
 
 
+def test_build_project_without_crs_emits_no_projected_crs():
+    ifc = build_ifc_project_skeleton(project_name="No CRS", crs=None)
+    assert ifc.by_type("IfcProjectedCRS") == []
+    assert ifc.by_type("IfcMapConversion") == []
+
+
+def test_build_project_default_crs_kwarg_is_none():
+    ifc = build_ifc_project_skeleton(project_name="Default CRS")
+    assert ifc.by_type("IfcProjectedCRS") == []
+
+
 def test_build_project_uses_millimetres():
     ifc = build_ifc_project_skeleton(project_name="MM Test")
     project = ifc.by_type("IfcProject")[0]

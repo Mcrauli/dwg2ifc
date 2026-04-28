@@ -37,7 +37,7 @@ from dxf2ifc.core.types import (
     Point3D,
     PolygonGeometry,
 )
-from dxf2ifc.profiles.schema import Profile
+from dxf2ifc.profiles.schema import CRSConfig, Profile
 
 
 def build_ifc_project_skeleton(
@@ -47,11 +47,18 @@ def build_ifc_project_skeleton(
     building_name: str = "Default Building",
     storey_name: str = "Ground Floor",
     schema: str = "IFC4",
+    crs: CRSConfig | None = None,
 ) -> ifcopenshell.file:
     """Create a minimal IFC project file with the requested ``schema``
     (``"IFC4"`` or ``"IFC4X3"``) and the IfcProject → Site → Building →
     Storey spatial hierarchy. Length units are millimetres via
     IfcUnitAssignment.
+
+    When ``crs`` is provided, an ``IfcProjectedCRS`` and ``IfcMapConversion``
+    are written linking the model context to a real-world projected CRS
+    (Plan G Section 2). When ``crs`` is ``None`` (the default), no
+    georeferencing entities are emitted and the file remains backward
+    compatible with the pre-Plan-G behaviour.
     """
     ifc = ifcopenshell.api.run("project.create_file", version=schema)
 
