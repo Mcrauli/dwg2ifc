@@ -94,6 +94,52 @@ def test_build_project_with_crs_validates_clean(tmp_path: Path):
     assert report.errors == []
 
 
+def test_build_project_crs_orthogonal_height_round_trips():
+    from dxf2ifc.profiles.schema import CRSConfig
+
+    crs = CRSConfig(
+        eastings_mm=25496000.0,
+        northings_mm=6672000.0,
+        orthogonal_height_mm=15000.0,
+    )
+    ifc = build_ifc_project_skeleton(project_name="High Roof", crs=crs)
+    mc = ifc.by_type("IfcMapConversion")[0]
+    assert mc.OrthogonalHeight == 15000.0
+
+
+def test_build_project_crs_height_correction_scale_round_trips():
+    from dxf2ifc.profiles.schema import CRSConfig
+
+    crs = CRSConfig(
+        eastings_mm=25496000.0,
+        northings_mm=6672000.0,
+        scale=0.9996,
+    )
+    ifc = build_ifc_project_skeleton(project_name="Scale", crs=crs)
+    mc = ifc.by_type("IfcMapConversion")[0]
+    assert mc.Scale == 0.9996
+
+
+def test_build_project_crs_rotation_round_trips():
+    """Rotated CRS (X axis points along bearing 30°) should round-trip via
+    XAxisAbscissa / XAxisOrdinate."""
+    import math
+
+    from dxf2ifc.profiles.schema import CRSConfig
+
+    angle = math.radians(30.0)
+    crs = CRSConfig(
+        eastings_mm=25496000.0,
+        northings_mm=6672000.0,
+        x_axis_abscissa=math.cos(angle),
+        x_axis_ordinate=math.sin(angle),
+    )
+    ifc = build_ifc_project_skeleton(project_name="Rotation", crs=crs)
+    mc = ifc.by_type("IfcMapConversion")[0]
+    assert mc.XAxisAbscissa == pytest.approx(math.cos(angle))
+    assert mc.XAxisOrdinate == pytest.approx(math.sin(angle))
+
+
 def test_build_project_uses_millimetres():
     ifc = build_ifc_project_skeleton(project_name="MM Test")
     project = ifc.by_type("IfcProject")[0]
