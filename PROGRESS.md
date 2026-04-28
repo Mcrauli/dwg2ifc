@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Bugfix 2 — Profiili load + persistointi GUI:ssä (ProfileEditorDialog Load-nappi + RecentFilesStore last_profile_path).
+**Current task:** Bugfix 3 — Preview & log -paneeli kytkeminen (PreviewLogPanel + DXF-yhteenveto + Convert-loki).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Lisää failing-testi `test_profile_editor_load_button_replaces_rules` joka avaa dialogin tyhjällä profiililla, kutsuu `dialog.load_from_path(toml_path)` valmiiseen TOML-tiedostoon ja odottaa rules-taulun täyttyvän. Toteuta `load_from_path` joka kutsuu `load_profile()` ja päivittää modelin. Sen jälkeen lisää RecentFilesStore.last_profile_path getteri/setteri + persistointitestit. Commit per pieni vaihe + push.
+**Seuraavaksi:** Luo `src/dxf2ifc/gui/preview_log.py` `PreviewLogPanel(QWidget)` jolla on QPlainTextEdit (JetBrains Mono). Lisää failing-testit `tests/test_gui_preview_log.py`: a) `append_info("...")` näyttää rivin info-värillä; b) `append_error("...")` näyttää rivin error-värillä; c) `set_dxf_summary(layers_count, entity_count, bbox)` printtaa yhteenvedon. Sitten kytke MainWindow:n right paneeliin DXF-latauksessa (yhteenveto) ja Convert-vaiheessa (per-layer-mappaukset + completion).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -14,7 +14,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 
 - [x] **Bugfix 1** — `add_furniture` polygon-tuki: kun KYL-LEVYHYLLY/KYL-TIKASHYLLY on piirretty closed polylinena (PolygonGeometry), `add_furniture` heittää `TypeError: add_furniture expects BlockInstance, got PolygonGeometry`. Korjaus: laske bbox + extrude box, palauta IfcFurniture; jos polygon on degeneroitu (alle 50mm sivu), nosta selkeä virhe. Tiedostot: `src/dxf2ifc/core/ifc_writer.py`, `tests/test_ifc_writer.py`. (`8e7c9c8`)
 
-- [ ] **Bugfix 2** — Profiili load + persistointi GUI:ssa: ProfileEditorDialog tukee vain Save:n, ei Load:ia. Lisäksi GUI ei muista viimeksi käytettyä TOML:ia sessioiden välillä. Korjaus: a) lisää "Load profile..." -nappi ProfileEditorDialogiin (avaa file picker → load_profile(path) → täyttää rules-taulun); b) laajenna RecentFilesStore tukemaan "last_profile_path" + lataa appin käynnistyksessä jos olemassa. Tiedostot: `src/dxf2ifc/gui/profile_editor.py`, `src/dxf2ifc/gui/main_window.py`, `src/dxf2ifc/gui/recent_files.py`, vastaavat testit.
+- [x] **Bugfix 2** — Profiili load + persistointi GUI:ssa: ProfileEditorDialog tukee vain Save:n, ei Load:ia. Lisäksi GUI ei muista viimeksi käytettyä TOML:ia sessioiden välillä. Korjaus: a) lisää "Load profile..." -nappi ProfileEditorDialogiin (avaa file picker → load_profile(path) → täyttää rules-taulun); b) laajenna RecentFilesStore tukemaan "last_profile_path" + lataa appin käynnistyksessä jos olemassa. Tiedostot: `src/dxf2ifc/gui/profile_editor.py`, `src/dxf2ifc/gui/main_window.py`, `src/dxf2ifc/gui/recent_files.py`, vastaavat testit. (`4955ac2` + `9fe0395`)
 
 - [ ] **Bugfix 3** — Preview & log -paneeli kytkemättä: oikean laidan paneeli on tyhjä DXF:n latauksen ja Convert:in jälkeen. Korjaus: a) DXF-latauksessa näytä yhteenveto (entity-määrä per layer, kokonais-bbox, units); b) Convert-vaiheessa logaa per-layer-mappauksia ("Mapped 12 IfcWall entities (1241)") ja valmistus/virhe; käytä JetBrains Mono -fonttia, värikoodit per status. Tiedostot: `src/dxf2ifc/gui/preview_log.py` (uusi widget), `src/dxf2ifc/gui/main_window.py` (kytkentä), vastaavat testit.
 
@@ -312,7 +312,9 @@ Kun kaikki kolme bugia korjattuna ja `pytest -q` passes, päivitä tämän kierr
 
 **Tämän session muutokset:**
 - Bugfix 1: `add_furniture` hyväksyy nyt PolygonGeometry-syötteen (closed polyline) — laskee bbox:n ja extrudaa boxin, default-korkeus 2000 mm extra_props:sta. Degeneroitu outline (sivu < 50 mm) → `ValueError`. 47 ifc_writer-testiä passed (`8e7c9c8`).
+- Bugfix 2 part a: ProfileEditorDialog "Load profile…" -nappi + `load_from_path()` + `profile_loaded(str)`-signaali; rules-taulu rakennetaan uudelleen kun TOML ladataan (`4955ac2`).
+- Bugfix 2 part b: RecentFilesStore.last_profile_path (QSettings property + setter joka tukee None-clearin); MainWindow ottaa optional `recent_files=`-parametrin, palauttaa cached profile-polun käynnistyksessä (fallback default jos puuttuu), ja persistoi polun joka apply-vaiheessa. ProfileEditorDialog.profile_loaded kytketty MainWindow:in apply_profile_from_path:iin (`9fe0395`). 25 GUI-testiä passed.
 
-**Kesken:** Bugfix 2 + Bugfix 3 jäljellä. Plan E Task 11–23 (13 jäljellä) odottavat bugfix-kierroksen valmistumista.
+**Kesken:** Bugfix 3 jäljellä. Plan E Task 11–23 (13 jäljellä) odottavat bugfix-kierroksen valmistumista.
 
 **Blokkerit:** ei.
