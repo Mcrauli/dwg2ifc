@@ -42,6 +42,20 @@ Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vai
 
 ✅ Bugfix kierros 2 valmis (Bugfix 4 + 5 + 6 = 314 testiä passed). Plan H Mode B alkaa seuraavalla sessiolla.
 
+## Bugfix kierros 3 (löydetty Solibri-uusintatestissä 2026-04-28 klo 14, samanaikaisesti Plan H Section 3:n kanssa)
+
+Lauri testasi 4001_1krs.dxf:n Bugfix kierros 2:n jälkeen (Plan F + Bugfix 4-6 + Plan H Section 1-2 valmiit). Placement-bugi (1000×) on korjattu ja 14/14 hyllyä näkyy 3D:ssä, mutta geometria on edelleen pielessä — hyllyt renderöityvät pitkinä ohuina palkkeina, ei LEVY-hyllyn muotoisina laatikoina (60mm × leveys × pituus). Lisäksi KYL-TIKASHYLLY puuttuu kokonaan vaikka layerissa pitäisi olla. Profile editor:n Load-nappi ei tuottanut tulosta.
+
+- [ ] **Bugfix 7** — KYL-LEVYHYLLY geometria väärin: hyllyt renderöityvät pitkinä palkkeina (mahdollisesti polygon-bbox + extrusion-suunta vaihtuneet niin, että Z-akselin mitat menevät leveyteen). KLHYLLY:n LEVY-tyyppi piirtää 60mm korkean × variable-leveys × pituuden hyllyn. Korjaus: tutki polygon → bbox-laskenta + extrusion-akselin valinta `add_furniture`:ssa. Tiedostot: `src/dxf2ifc/core/ifc_writer.py`, `src/dxf2ifc/core/geometry.py`, `tests/test_ifc_writer.py`. Testi: yksinkertainen 800×400 polygon + extrusion-height 60mm → odota IfcFurniture:lle 800×400×60mm bbox.
+
+- [ ] **Bugfix 8** — KYL-TIKASHYLLY puuttuu kokonaan IFC:stä: layer-table:ssa preview näyttää että KYL-TIKASHYLLY-layerilla on entiteettejä (KLHYLLY tikas-tyyppi piirtää 2 kiskoa + poikkitikat eri sub-entiteetteinä), mutta dxf2ifc ei tuota niistä mitään IfcFurniture-entiteettiä outputiin. Mahdollinen syy: KLHYLLY tikas piirtää komposiittia DXF-blokkina + INSERT-entiteettinä, mutta nykyinen `add_furniture` ei tunnista INSERT-tyyppistä syötettä TIKAS-hyllylle. Korjaus: tutki KYL-TIKASHYLLY-layer:n DXF-entiteettien tyyppi ezdxf:llä (`doc.modelspace().query(*[layer==0])`), lisää tuki TIKAS-tyypille (kahden kiskon + poikkitikkujen yhdistelmä → 1 IfcFurniture per koko hylly).
+
+- [ ] **Bugfix 9** — Profile editor Load-nappi ei toimi: Bugfix 2 piti hoitaa tämän mutta käyttäjän palautteen perusteella ei toimi. Repro: avaa GUI, Profile → Edit profile → Load profile…-nappi → valitse TOML → ei mitään. Korjaus: lisää virhelogi (try/except + log:iin per failure case) + varmista että `profile_loaded`-signaali laukeaa + UI päivittyy. Tiedostot: `src/dxf2ifc/gui/profile_editor.py`, vastaavat testit (testi joka simuloi load-buttonin painalluksen + varmistaa että rule-table:n sisältö muuttuu).
+
+- [ ] **Bugfix 10** — KYL-* layer-säännöt suunnitteluala-domainiin TATE: nykyinen default-profiili merkitsee KYL-LEVYHYLLY/KYL-TIKASHYLLY ARK-domainiin (Talo2000 1331), mutta käyttäjän mukaan kylmälaiteasennukset ovat TATE-puolta. Plan H Section 4 (default profile RAVA-päivitys) hoitaa tämän automaattisesti — vaihtaa KYL-* säännöt domain=TATE + RAVA-koodit (LVI-TUOTEOSA tai TALOTEKNIIKKA-TUOTEOSA). HUOM: tämä bug on **redundantti Plan H Section 4:n kanssa** — mainitaan tässä viittauksena, mutta korjaus tapahtuu Plan H:n osana, ei erillisenä bugfixinä.
+
+Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy nämä läpi (paitsi Bugfix 10 joka on jo Plan H Section 4:ssä). Sit Plan G.
+
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
 - [x] Task 15 — `WallExtrusion` + `line_to_wall_extrusion` (`6c63c22`)
