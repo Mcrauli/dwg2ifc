@@ -2,11 +2,11 @@
 
 **Current plan:** Plan E — PyInstaller-pakkaus + GitHub Releases (kirjoitettu `a3620f7`, 23 tehtävää, 5 sectionia).
 
-**Current task:** Plan E Task 1 — PyInstaller dev-extraan + smoke import test.
+**Current task:** Plan E Task 2 — `build/dxf2ifc.spec` base + tests/test_spec_file.py.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää `pyproject.toml`:n `dev`-extraan `pyinstaller>=6.10`, aja `uv sync --extra dev --extra gui`, luo failing test `tests/test_pyinstaller_bootstrap.py` joka tarkistaa `import PyInstaller` toimii ja `PyInstaller.__main__` on suoritettavissa moduulina.
+**Seuraavaksi:** luo `build/dxf2ifc.spec` PyInstaller .spec -tiedosto Analysis(['src/dxf2ifc/gui/__main__.py'], ...) -entry-pointtilla, name='dxf2ifc' ja windowed=True. Lisää `tests/test_spec_file.py` joka parsii .spec-tiedoston Python-evalilla ja varmistaa Analysis-kutsun argumentit.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -135,10 +135,10 @@
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
-## Plan E status (0/23)
+## Plan E status (1/23)
 
 ### Section 1: PyInstaller bootstrap
-- [ ] Task 1: pyinstaller>=6.10 dev-extraan + smoke import test
+- [x] Task 1: pyinstaller>=6.10 dev-extraan + smoke import test (`22875d0`)
 - [ ] Task 2: build/dxf2ifc.spec base + tests/test_spec_file.py
 - [ ] Task 3: src/dxf2ifc/_version.py + tests/test_version.py
 - [ ] Task 4: docs/packaging.md "Local build"-osio
@@ -286,6 +286,8 @@
 - Plan D Task 25: ruff format six lingering files (file_panel/layer_table/profile_editor + kolme testiä), README + CLAUDE.md status Plan D ✅ (200 passed, coverage 89 %, ruff clean) (`011bd5e`). 🎉 Plan D 25/25.
 - Plan E kirjoitettu (Mode B): skeleton + 5 sectionia + 23 task-riviä numeroitu globaalisti, CLAUDE.md "Plans B–F"-lista päivitetty (`432a277` → `a3620f7`). PROGRESS.md sisältää nyt täyden Plan E -checklistin.
 
-**Kesken:** Plan E Task 1–23 (23 jäljellä).
+- Plan E Task 1: pyinstaller>=6.10 dev-extraan + tests/test_pyinstaller_bootstrap.py smoke import + `python -m PyInstaller --version`-test (`22875d0`). 2 smoketestiä passed.
+
+**Kesken:** Plan E Task 2–23 (22 jäljellä).
 
 **Blokkerit:** ei.
