@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 18 — CHANGELOG.md ensimmäinen versio (v0.1.0).
+**Current task:** Plan E Task 19 — docs/packaging.md "Release-prosessi" -osio.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Luo `CHANGELOG.md` repon juureen. Otsikko `## v0.1.0 — 2026-04-XX` (TBD-päivä). Tiivis Plan A–D feature-roadmap: CLI core, kaikki 11 Talo2000-elementtityyppiä, IfcSystem-grouping, PySide6 GUI + profiili-editori. Lopussa pakettijakelu .exe (Plan E käynnissä).
+**Seuraavaksi:** Lisää docs/packaging.md:hen "Release-prosessi" -osio joka kuvaa askeleet: (1) bump `_version.py` ja `pyproject.toml`-version, (2) päivitä `CHANGELOG.md`, (3) commit + tag `git tag vX.Y.Z`, (4) push tag → workflow buildaa ja luo draft-releasen, (5) tarkista ja julkaise GitHub-UI:ssa.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -173,7 +173,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 - [x] Task 15: .github/workflows/release.yml tag-trigger + permissions (`a8430be`)
 - [x] Task 16: release.yml checksum + LICENSES.md pakkaus (`3dfdd91`)
 - [x] Task 17: release.yml gh release create --draft step (`47a7021`)
-- [ ] Task 18: CHANGELOG.md ensimmäinen versio (v0.1.0)
+- [x] Task 18: CHANGELOG.md ensimmäinen versio (v0.1.0) (`d946ac5`)
 - [ ] Task 19: docs/packaging.md "Release-prosessi"-osio
 
 ### Section 5: Smoke + checksum + dokumentointi
