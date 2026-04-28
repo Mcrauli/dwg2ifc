@@ -28,8 +28,29 @@ class Rule(BaseModel):
     predefined_type: str | None = Field(
         default=None, description="IFC PredefinedType enumeration value, if applicable."
     )
-    talo2000_code: str = Field(..., description="Talo2000 classification code.")
-    talo2000_name: str = Field(..., description="Human-readable Talo2000 category name.")
+    domain: Literal["ARK", "TATE"] = Field(
+        default="ARK",
+        description=(
+            "Discipline domain: ARK uses Talo2000 classification, TATE uses RAVA "
+            "(LVI-TUOTEOSA or TALOTEKNIIKKA-TUOTEOSA)."
+        ),
+    )
+    talo2000_code: str | None = Field(
+        default=None,
+        description="Talo2000 classification code (required when domain == 'ARK').",
+    )
+    talo2000_name: str | None = Field(
+        default=None,
+        description="Human-readable Talo2000 category name (required when domain == 'ARK').",
+    )
+    lvi_code: str | None = Field(
+        default=None,
+        description="RAVA LVI-TUOTEOSA code (T-LVI-…), used when domain == 'TATE'.",
+    )
+    talotekniikka_code: str | None = Field(
+        default=None,
+        description="RAVA TALOTEKNIIKKA-TUOTEOSA code (T-TATE-…), used when domain == 'TATE'.",
+    )
 
     default_height_mm: float | None = Field(
         default=None, description="Extrusion height for 2D lines."
@@ -54,6 +75,26 @@ class Rule(BaseModel):
     def _require_block_name_for_insert(self) -> "Rule":
         if self.entity_kind == "INSERT" and not self.block_name:
             raise ValueError("block_name is required when entity_kind == 'INSERT'")
+        return self
+
+    @model_validator(mode="after")
+    def _validate_domain_codes(self) -> "Rule":
+        if self.domain == "ARK":
+            if not self.talo2000_code:
+                raise ValueError("talo2000_code is required when domain == 'ARK'")
+            if self.lvi_code or self.talotekniikka_code:
+                raise ValueError(
+                    "lvi_code and talotekniikka_code must be empty when domain == 'ARK'"
+                )
+        else:  # TATE
+            if self.talo2000_code:
+                raise ValueError("talo2000_code must be empty when domain == 'TATE'")
+            filled = [c for c in (self.lvi_code, self.talotekniikka_code) if c]
+            if len(filled) != 1:
+                raise ValueError(
+                    "exactly one of lvi_code or talotekniikka_code must be set "
+                    "when domain == 'TATE'"
+                )
         return self
 
 

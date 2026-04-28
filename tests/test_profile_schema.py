@@ -139,6 +139,98 @@ def test_profile_holds_line_and_insert_rules():
     assert insert_rule.block_name == "OVI-ULKO"
 
 
+def test_rule_defaults_to_ark_domain():
+    rule = Rule(
+        layer_pattern="KYL-ULKOSEINA*",
+        ifc_type="IfcWall",
+        talo2000_code="1241",
+        talo2000_name="Ulkoseinät",
+    )
+    assert rule.domain == "ARK"
+    assert rule.lvi_code is None
+    assert rule.talotekniikka_code is None
+
+
+def test_rule_ark_domain_requires_talo2000_code():
+    with pytest.raises(ValidationError):
+        Rule(
+            layer_pattern="X",
+            ifc_type="IfcWall",
+            domain="ARK",
+        )
+
+
+def test_rule_ark_domain_rejects_lvi_code():
+    with pytest.raises(ValidationError):
+        Rule(
+            layer_pattern="X",
+            ifc_type="IfcWall",
+            domain="ARK",
+            talo2000_code="1241",
+            talo2000_name="Ulkoseinät",
+            lvi_code="T-LVI-01-01-023",
+        )
+
+
+def test_rule_tate_domain_with_lvi_code_valid():
+    rule = Rule(
+        layer_pattern="KYL-HOYRYSTIN*",
+        ifc_type="IfcEvaporator",
+        entity_kind="INSERT",
+        block_name="HOYRYSTIN",
+        domain="TATE",
+        lvi_code="T-LVI-01-01-023",
+    )
+    assert rule.domain == "TATE"
+    assert rule.lvi_code == "T-LVI-01-01-023"
+    assert rule.talo2000_code is None
+    assert rule.talotekniikka_code is None
+
+
+def test_rule_tate_domain_with_talotekniikka_code_valid():
+    rule = Rule(
+        layer_pattern="KAAPELIHYLLY*",
+        ifc_type="IfcCableCarrierSegment",
+        domain="TATE",
+        talotekniikka_code="T-TATE-01-01-001",
+    )
+    assert rule.domain == "TATE"
+    assert rule.talotekniikka_code == "T-TATE-01-01-001"
+    assert rule.lvi_code is None
+    assert rule.talo2000_code is None
+
+
+def test_rule_tate_domain_rejects_both_codes():
+    with pytest.raises(ValidationError):
+        Rule(
+            layer_pattern="X",
+            ifc_type="IfcEvaporator",
+            domain="TATE",
+            lvi_code="T-LVI-01-01-023",
+            talotekniikka_code="T-TATE-01-01-001",
+        )
+
+
+def test_rule_tate_domain_requires_one_code():
+    with pytest.raises(ValidationError):
+        Rule(
+            layer_pattern="X",
+            ifc_type="IfcEvaporator",
+            domain="TATE",
+        )
+
+
+def test_rule_tate_domain_rejects_talo2000_code():
+    with pytest.raises(ValidationError):
+        Rule(
+            layer_pattern="X",
+            ifc_type="IfcEvaporator",
+            domain="TATE",
+            talo2000_code="2510",
+            lvi_code="T-LVI-01-01-023",
+        )
+
+
 def test_profile_holds_rules():
     profile = Profile(
         name="test",
