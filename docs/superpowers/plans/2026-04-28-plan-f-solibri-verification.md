@@ -33,6 +33,10 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 + Plan E 23/23 valmis 
 
 ## Section 2: Solibri rule-set ja referenssimallit
 
+- [ ] Task 5: luo `tools/solibri/dxf2ifc.bcfzip` BCF 2.1 -formaatissa joka sisältää YTV 2012 + Talo2000 -minimiruleset:in. Lähde: Solibri Anywhere "Talo2000 classification" -ruleset + manuaalisesti laaditut YTV-säännöt (units, classification coverage, IfcSystem-grouping). Tiedostot binäärimuodossa `tools/solibri/`-kansiossa.
+- [ ] Task 6: luo `tests/fixtures/solibri_reference_full.ifc` joka on Granlund/Sweco-referenssi-IFC pelkistettynä (yksi seinä per Talo2000-koodi, yksi laite per kylmälaitetyyppi) — käytetään Solibri-tarkistuksen "tämä pitäisi mennä läpi"-baseline:ksi. Failing-testi: load-test joka varmistaa fixture loadattavissa ifcopenshell:llä.
+- [ ] Task 7: dokumentoi `docs/solibri-rules.md`:ssä jokainen rule-set-sääntö suomeksi: nimi, mitä validoi, viite YTV-osaan tai RT-korttiin. Lukijan pitää pystyä ymmärtämään pelkkänä tekstinä mitä Solibri tarkistaa ilman että avaa Solibrin.
+
 ## Section 3: solibri-cli runner + raportin parsija
 
 ## Section 4: Snapshot-raportit + diffaus
