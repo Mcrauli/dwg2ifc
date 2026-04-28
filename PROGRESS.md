@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 13 — build.yml smoke-step (`--version` → exit 0 + stdout sisältää `__version__`).
+**Current task:** Plan E Task 14 — docs/packaging.md "CI build" -osio.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Lisää failing-testi joka tarkistaa että build.yml:ssä Windows-jobin upload-stepin _ennen_ on smoke-step joka ajaa `dist/dxf2ifc-*.exe --version` ja varmistaa exit 0. Toteuta lisäämällä smoke-step build.yml:hen.
+**Seuraavaksi:** Lue `docs/packaging.md` (lyhyt). Lisää "CI build" -osio joka kuvaa: workflow-trigger (pull_request + push master), artifact-naming (dxf2ifc-windows), smoke-step (`--version`), Linux-smoke job (spec-validointi). Lisää huomautus "GUI smoke ajetaan vain manuaalisesti" + "PyInstaller-cache ei cachetä artifactina".
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -166,7 +166,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 - [x] Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh (`738caa7`)
 - [x] Task 11: .github/workflows/build.yml Windows-runner + artifact upload (`e13b683`)
 - [x] Task 12: build.yml ubuntu-matrix smoke-build (`1bdf320`)
-- [ ] Task 13: build.yml smoke-step (--version → exit 0)
+- [x] Task 13: build.yml smoke-step (--version → exit 0) (`45b0d95`)
 - [ ] Task 14: docs/packaging.md "CI build"-osio
 
 ### Section 4: GitHub Actions release-workflow
