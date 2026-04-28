@@ -18,7 +18,7 @@ DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Mu
 - ✅ **Plan D** 25/25 (`2026-04-27-plan-d-pyside6-gui.md`) — PySide6 GUI + profiili-editori, 200 testiä, coverage 89%
 - ✅ **Plan E** 23/23 (`2026-04-27-plan-e-pyinstaller.md`) — PyInstaller-paketointi + Win/Linux build CI + tag-triggered draft release + CHANGELOG + smoke-checklist + README badge + troubleshooting, 246 testiä, coverage 89 %
 - ✅ **Plan F** 16/16 (`2026-04-28-plan-f-solibri-verification.md`) — Solibri-spec-verifiointi + IFC quality gates: `dxf2ifc.core.quality.validate_ifc` (ifcopenshell.validate + YTV Talo2000 warning), CLI `--validate`, GUI PreviewLogPanel-report, `tools/solibri/dxf2ifc.bcfzip` 5-rule BCF 2.1 ruleset, `tests/fixtures/solibri_reference_full.ifc` baseline, `tools/solibri/{verify,parse_report,diff_snapshot,cli}.py` + `python -m tools.solibri verify`-CLI, `@pytest.mark.solibri`-marker (auto-skip jos Solibri.exe puuttuu), CI Linux quality-gate-step, `docs/quality-gates.md` + `docs/solibri-rules.md`, 294 testiä, coverage 91 %
-- ⏳ **Plan H** kirjoittamatta — **IFC 4.3 -migraatio + RAVA-luokitus**. Toteutetaan **Plan F:n jälkeen, ennen Plan G:tä** (kriittinen RAVA Pro3 -yhteensopivuudelle). Avain-päätökset:
+- 🟡 **Plan H** 0/22 (`2026-04-28-plan-h-ifc43-rava.md`) — **IFC 4.3 -migraatio + RAVA-luokitus**. Toteutetaan **Plan F:n jälkeen, ennen Plan G:tä** (kriittinen RAVA Pro3 -yhteensopivuudelle). Plan kirjoitettu (6 sectionia, 22 taskia, `8c85f6a`). Avain-päätökset:
   - Vaihe A: IFC4 → IFC4X3 (IFC 4.3) -skeeman vaihto, regressio testit
   - Vaihe B: Domain-pohjainen luokitus (yksi codeset per element, EI multi-classification):
     - **ARK** (seinät/laatat/ovet/ikkunat/kylmähuone-paneelit) → vain **Talo2000**
