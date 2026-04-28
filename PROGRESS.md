@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 2 — convert_dxf-pipeline regressio IFC4X3:lla.
+**Current task:** Plan H Task 3 — CLI `dxf2ifc convert ... --schema=ifc4x3`-flag.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 2:n osio plan-tiedostosta. TDD: failing-testi joka ajaa full_kylmaelement_dxf-fixturen läpi `convert_dxf` (vaatii uuden `schema` kwargin) ja varmistaa että `ifc.schema == "IFC4X3"` + jokainen 11 IFC-luokkaa syntyy + `ifcopenshell.validate` 0 errors. Lisää `convert_dxf:lle` `schema: str = "IFC4"` kwargi joka välittyy `build_ifc_project_skeleton`:lle.
+**Seuraavaksi:** Lue Task 3:n osio plan-tiedostosta. Lisää CLI:n convert-subparseriin `--schema`-argumentti (choices `ifc4`, `ifc4x3`, default `ifc4`) joka välittyy `convert_dxf`:lle. TDD: in-process CLI-testi --schema=ifc4x3 → IFC.schema == "IFC4X3".
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -173,7 +173,7 @@ Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vai
 
 ### Section 1: IFC4X3-skeema-migraatio
 - [x] Task 1: build_ifc_project_skeleton(schema="IFC4X3") + failing-testi (`5b0d414`)
-- [ ] Task 2: convert_dxf-pipeline regressio IFC4X3:lla (full-fixture, 11 IFC-luokkaa, ifcopenshell.validate clean)
+- [x] Task 2: convert_dxf-pipeline regressio IFC4X3:lla (full-fixture, 11 IFC-luokkaa, ifcopenshell.validate clean) (`069f08e`)
 - [ ] Task 3: convert_dxf + CLI `--schema=ifc4x3`-flag
 - [ ] Task 4: validate_ifc.summary näyttää IFC4X3:n
 
@@ -439,7 +439,8 @@ Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vai
 - **Bugfix 6** (`b1df8c3`) — default-profiili laajennettiin 13 uudella säännöllä ARK / K-prefix arkkitehtilayer-nimille (AR1241_US, AR1242_IKKUNA, AR1245_LASIUS, AR1311_VS, AR1233_PILARI, AR1314_KAIDE, AR1317_TILAPORTAAT, AR1331_KIINTO, K-OVET, K-SEINÄT_VÄLISEINÄT, K-KALUSTEET-variantit, K-VALAISTUS). 13 uutta testiä. ✅ Bugfix kierros 2 valmis (314 passed).
 - Plan H kirjoitettu (Mode B): skeleton (`8be315f`) + 6 sectionia + 22 task-riviä numeroitu globaalisti (`8c85f6a`); CLAUDE.md "Plan H 0/22"-päivitys (sama commit). PROGRESS.md koko Plan H -checklist.
 - Plan H Task 1: `build_ifc_project_skeleton` sai `schema: str = "IFC4"`-kwargin joka välitetään `ifcopenshell.api.run("project.create_file", version=schema):lle`. 2 uutta testiä (default IFC4 + opt-in IFC4X3) (`5b0d414`).
+- Plan H Task 2: `convert_dxf` sai `schema`-kwargin joka välittyy skeletoniin. Full-fixture-pipeline tuottaa IFC4X3:n joka validoituu cleanisti + jokainen 11 IFC-luokkaa syntyy. 3 uutta testiä, koko 319 passed (`069f08e`).
 
-**Kesken:** Plan H Task 2 — convert_dxf-pipeline regressio IFC4X3:lla.
+**Kesken:** Plan H Task 3 — CLI `--schema`-flag.
 
 **Blokkerit:** ei.
