@@ -89,3 +89,26 @@ def test_spec_excludes_dev_only_packages() -> None:
         assert f"'{module}'" in text or f'"{module}"' in text, (
             f"excludes missing: {module}"
         )
+
+
+def test_spec_uses_windows_version_info() -> None:
+    """EXE() should reference the build/version_info.py file."""
+    text = _spec_text()
+    assert "build/version_info.py" in text or "build\\version_info.py" in text
+
+
+VERSION_INFO_PATH = (
+    Path(__file__).resolve().parents[1] / "build" / "version_info.py"
+)
+
+
+def test_version_info_file_carries_company_and_version() -> None:
+    """The Win32 VSVersionInfo block must encode brand metadata + version."""
+    assert VERSION_INFO_PATH.exists(), f"missing {VERSION_INFO_PATH}"
+    text = VERSION_INFO_PATH.read_text(encoding="utf-8")
+    assert "VSVersionInfo" in text
+    assert "Radika Oy" in text
+    assert "dxf2ifc" in text
+    from dxf2ifc._version import __version__
+
+    assert __version__ in text

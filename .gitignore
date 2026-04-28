@@ -30,6 +30,7 @@ build/__pycache__/
 dist/
 *.spec
 !build/dxf2ifc.spec
+!build/version_info.py
 
 # OS / editor
 .DS_Store
