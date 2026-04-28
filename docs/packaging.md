@@ -106,6 +106,60 @@ ihminen GitHub-UI:ssa.
 > orpoon SHA:han ja loppukäyttäjien shasums menevät rikki. Bumpataan aina
 > uusi patch-versio.
 
+## Troubleshooting
+
+### Windows Defender / SmartScreen blokkaa `.exe`:n
+
+`.exe` ei ole code-signattu MVP-vaiheessa, joten Windows SmartScreen näyttää
+"Windows protected your PC" -warningin ja Defender voi karanteeniin
+juuri ladatun tiedoston.
+
+- **SmartScreen**: napauta dialogissa **More info → Run anyway**.
+- **Defender quarantine**: avaa "Virus & threat protection" → "Allowed
+  threats" / "Protection history" ja palauta tiedosto. Tai pidä `.exe`
+  user-folderin sijaan kansiossa joka ei ole reaaliaikaisen skannin
+  scopessa (esim. `C:\Tools\dxf2ifc\`).
+- **Pitkän aikavälin ratkaisu**: code-signing-sertifikaatti (esim.
+  Sectigo / SSL.com EV CodeSigning) lisätään tulevaisuudessa Plan E:n
+  follow-up:ssa. SmartScreen-reputaatio rakentuu vasta kymmenien tuhansien
+  asennuksien jälkeen.
+
+### `dxf2ifc.exe` käynnistyy mutta kaatuu "ifcopenshell schema not found"
+
+PyInstaller ei aina ymmärrä että `ifcopenshell` lataa `IFC4.exp` /
+`IFC4X3_ADD2.exp`-skemoja runtime-resourceina. Spec-tiedoston `Analysis(...)`
+pitää sisältää `(ifcopenshell-data, dxf2ifc/ifcopenshell)` tai vastaava
+`--add-data`. Tarkista `build/dxf2ifc.spec`:in `datas`-lista — jos puuttuu,
+lisää:
+
+```python
+("path/to/site-packages/ifcopenshell/", "ifcopenshell"),
+```
+
+ja buildaa uudestaan `--clean`-flag:in kanssa.
+
+### PySide6 antaa `ImportError: cannot find Qt platform plugin "windows"`
+
+Symptomi: GUI ei avaudu, terminaalissa Qt-virhe. Syy: PyInstaller ei kerännyt
+`PySide6/Qt/plugins/platforms/qwindows.dll`-pluginia. Korjaus: varmista että
+PySide6 on yhtä versiota kuin lock-filessä ja että `--clean`-flag on käytössä
+buildissa. Tarvittaessa lisää `hiddenimports=['PySide6.QtSvg',
+'PySide6.QtSvgWidgets']` Spec:hen (Plan E Task 6).
+
+### `--onefile` käynnistyy hitaasti
+
+PyInstallerin `--onefile`-build extractoi koko payloadin `%TEMP%`:iin joka
+käynnistyksessä, mikä lisää 3-8 sekuntia cold start -aikaa.
+
+- **`--onefile`** (nykyinen oletus): yksi `.exe`, helppo jakaa, hidas
+  käynnistys, Windows Defender skannaa joka kerta.
+- **`--onedir`**: jakelu on `dxf2ifc/`-kansio + sen sisällä olevat DLL/PYD
+  -tiedostot, käynnistys nopea (<1 s), mutta loppukäyttäjälle vaikeampi
+  käsitellä (zip vaaditaan).
+
+Jos cold start -aika nousee ongelmaksi, vaihda `.spec`:n `EXE(...)` →
+`COLLECT(...)` -reseptiin ja jaa zip-paketointina.
+
 ## Icon TODO
 
 `build/dxf2ifc.spec` ei vielä viittaa `.ico`-tiedostoon (`icon=None`). Brand-icon
