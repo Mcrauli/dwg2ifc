@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 1 — `build_ifc_project_skeleton(schema="IFC4X3")`-parametri + failing-testi.
+**Current task:** Plan H Task 2 — convert_dxf-pipeline regressio IFC4X3:lla.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue plan-tiedostosta Task 1:n osio (`grep -nA 2 "Task 1:" docs/superpowers/plans/2026-04-28-plan-h-ifc43-rava.md`). TDD: failing-testi `tests/test_ifc_writer.py` joka kutsuu skeleton-funktion schema="IFC4X3" -kwargilla ja odottaa `ifc.schema == "IFC4X3"`. Toteuta parametri + ifcopenshell.api.run("project.create_file", schema=schema).
+**Seuraavaksi:** Lue Task 2:n osio plan-tiedostosta. TDD: failing-testi joka ajaa full_kylmaelement_dxf-fixturen läpi `convert_dxf` (vaatii uuden `schema` kwargin) ja varmistaa että `ifc.schema == "IFC4X3"` + jokainen 11 IFC-luokkaa syntyy + `ifcopenshell.validate` 0 errors. Lisää `convert_dxf:lle` `schema: str = "IFC4"` kwargi joka välittyy `build_ifc_project_skeleton`:lle.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -172,7 +172,7 @@ Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vai
 ## Plan H status (0/22)
 
 ### Section 1: IFC4X3-skeema-migraatio
-- [ ] Task 1: build_ifc_project_skeleton(schema="IFC4X3") + failing-testi
+- [x] Task 1: build_ifc_project_skeleton(schema="IFC4X3") + failing-testi (`5b0d414`)
 - [ ] Task 2: convert_dxf-pipeline regressio IFC4X3:lla (full-fixture, 11 IFC-luokkaa, ifcopenshell.validate clean)
 - [ ] Task 3: convert_dxf + CLI `--schema=ifc4x3`-flag
 - [ ] Task 4: validate_ifc.summary näyttää IFC4X3:n
@@ -437,7 +437,9 @@ Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vai
 - **Bugfix 4** (`2f827ea`) — placement-bug 1000× world coords: ifcopenshell.api 0.8.5:n `geometry.edit_object_placement` defaultaa `is_si=True` joka kertoo matriisin translaation 1000:lla. Korjattu kaikki 9 paikkaa `is_si=False`. Bonus: dxf_reader LWPOLYLINE-vertexien OCS→WCS-muunnos (`entity.ocs().to_wcs()`). 3 uutta testiä.
 - **Bugfix 5** (`230f327`) — mapper.layer_matches strippaa xref-pipe-prefixin (`KCM Kauhajoki|AR1241_US` → `AR1241_US`) kun pattern ei sisällä pipea. 4 uutta testiä.
 - **Bugfix 6** (`b1df8c3`) — default-profiili laajennettiin 13 uudella säännöllä ARK / K-prefix arkkitehtilayer-nimille (AR1241_US, AR1242_IKKUNA, AR1245_LASIUS, AR1311_VS, AR1233_PILARI, AR1314_KAIDE, AR1317_TILAPORTAAT, AR1331_KIINTO, K-OVET, K-SEINÄT_VÄLISEINÄT, K-KALUSTEET-variantit, K-VALAISTUS). 13 uutta testiä. ✅ Bugfix kierros 2 valmis (314 passed).
+- Plan H kirjoitettu (Mode B): skeleton (`8be315f`) + 6 sectionia + 22 task-riviä numeroitu globaalisti (`8c85f6a`); CLAUDE.md "Plan H 0/22"-päivitys (sama commit). PROGRESS.md koko Plan H -checklist.
+- Plan H Task 1: `build_ifc_project_skeleton` sai `schema: str = "IFC4"`-kwargin joka välitetään `ifcopenshell.api.run("project.create_file", version=schema):lle`. 2 uutta testiä (default IFC4 + opt-in IFC4X3) (`5b0d414`).
 
-**Kesken:** Plan H Mode B aloitus seuraavalla sessiolla.
+**Kesken:** Plan H Task 2 — convert_dxf-pipeline regressio IFC4X3:lla.
 
 **Blokkerit:** ei.
