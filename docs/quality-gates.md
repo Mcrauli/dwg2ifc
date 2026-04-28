@@ -80,8 +80,16 @@ koska Solibri Anywhere on lisensoitu desktop-ohjelma. Pytest-marker
    sallittuja sääntöpoikkeamia tunnistettiin.
 6. Vasta sitten julkaise tagin draft-release lopulliseksi.
 
+## Domain-pohjainen luokitus (Plan H)
+
+Plan H:n jälkeen Taso 1 -gate tarkistaa rinnakkain Talo2000- ja RAVA-
+luokitukset suunnittelualan mukaan: ARK-puolen rakennusosat (Talo 2000) ja
+TATE-puolen tuoteosat (RAVA-LVI / RAVA-TATE). Domain-säännöt, codeset:t ja
+viralliset koodit on kuvattu [`docs/rava-classification.md`](rava-classification.md):ssä.
+
 ## Mitä Plan F EI vielä kata
 
 - Solibri-tarkistuksen automatisointi — ei mahdollista ilman lisenssipalvelinta.
-- IFC 4.3 -migraatio + RAVA-luokitus — tehdään Plan H:ssa.
+- ~~IFC 4.3 -migraatio + RAVA-luokitus~~ — toteutettu Plan H:ssa
+  (ks. [`docs/rava-classification.md`](rava-classification.md)).
 - Coordinate System / georeferenced IFC — tehdään Plan G:ssä.
