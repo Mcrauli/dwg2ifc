@@ -1,12 +1,24 @@
 # PROGRESS
 
-**Current plan:** Plan E — PyInstaller-pakkaus + GitHub Releases (kirjoitettu `a3620f7`, 23 tehtävää, 5 sectionia).
+**Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 11 — `.github/workflows/build.yml` Windows-runner + artifact upload (BLOKKI).
+**Current task:** Bugfix 1 — `add_furniture` polygon-tuki (KYL-LEVYHYLLY DXF:ssä polylinena).
 
-**Mode:** A (implementointi, blokattu).
+**Mode:** A (implementointi).
 
-**Seuraavaksi:** Pyydä Lauria päivittämään GitHub PAT (sandboxin `PAT`-arvo): fine-grained tokenin "Actions"-permission tarvitaan read+write -oikeuksin jotta `.github/workflows/*`-tiedostoja voi pushata. Kun PAT:n on päivitetty, tehtävä on luoda `.github/workflows/build.yml` joka triggeröityy `pull_request`+`push:master`, ajaa windows-latest-runnerilla python 3.12+uv setupin, ajaa `scripts/build_exe.ps1`:n ja uploadaa `dist/dxf2ifc-*.exe` artifactina `dxf2ifc-windows`. Tehtävät 11–17 (build.yml + release.yml -workflowit) ovat saman blokkerin alla; Task 18 (CHANGELOG.md) on non-workflow ja voitaisiin tehdä järjestyksen vastaisesti, mutta plan-kuri kieltää skipping:n.
+**Seuraavaksi:** Aja `pytest tests/test_ifc_writer.py -q --tb=line` nähdäksesi nykyiset furniture-testit. Lisää failing-testi `test_add_furniture_accepts_polygon_geometry` joka antaa add_furniture:lle PolygonGeometry-objektin (closed polyline, esim. KYL-LEVYHYLLY) ja odottaa IfcFurniture syntyvän polygonin bounding-boxista. Toteuta tuki: jos geometry on PolygonGeometry, laske bbox + extrude box-solid; jos BlockInstance, käytä nykyistä polkua. Commit + push.
+
+## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
+
+Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task ennen Plan E Task 11:n jatkoa (PAT on päivitetty Workflow-scopella, mutta bugifx tehdään ensin).
+
+- [ ] **Bugfix 1** — `add_furniture` polygon-tuki: kun KYL-LEVYHYLLY/KYL-TIKASHYLLY on piirretty closed polylinena (PolygonGeometry), `add_furniture` heittää `TypeError: add_furniture expects BlockInstance, got PolygonGeometry`. Korjaus: laske bbox + extrude box, palauta IfcFurniture; jos polygon on degeneroitu (alle 50mm sivu), nosta selkeä virhe. Tiedostot: `src/dxf2ifc/core/ifc_writer.py`, `tests/test_ifc_writer.py`.
+
+- [ ] **Bugfix 2** — Profiili load + persistointi GUI:ssa: ProfileEditorDialog tukee vain Save:n, ei Load:ia. Lisäksi GUI ei muista viimeksi käytettyä TOML:ia sessioiden välillä. Korjaus: a) lisää "Load profile..." -nappi ProfileEditorDialogiin (avaa file picker → load_profile(path) → täyttää rules-taulun); b) laajenna RecentFilesStore tukemaan "last_profile_path" + lataa appin käynnistyksessä jos olemassa. Tiedostot: `src/dxf2ifc/gui/profile_editor.py`, `src/dxf2ifc/gui/main_window.py`, `src/dxf2ifc/gui/recent_files.py`, vastaavat testit.
+
+- [ ] **Bugfix 3** — Preview & log -paneeli kytkemättä: oikean laidan paneeli on tyhjä DXF:n latauksen ja Convert:in jälkeen. Korjaus: a) DXF-latauksessa näytä yhteenveto (entity-määrä per layer, kokonais-bbox, units); b) Convert-vaiheessa logaa per-layer-mappauksia ("Mapped 12 IfcWall entities (1241)") ja valmistus/virhe; käytä JetBrains Mono -fonttia, värikoodit per status. Tiedostot: `src/dxf2ifc/gui/preview_log.py` (uusi widget), `src/dxf2ifc/gui/main_window.py` (kytkentä), vastaavat testit.
+
+Kun kaikki kolme bugia korjattuna ja `pytest -q` passes, päivitä tämän kierroksen rivit `[x]`-rikseihin SHA:n kera, ja siirry Plan E Task 11 jatkoon.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -298,6 +310,8 @@
 - Plan E Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh + tests/test_build_scripts.py (uv sync, pyinstaller, version-stamping, SHA256, +x bit) (`738caa7`). 3 build-script-testiä passed.
 - Plan E Task 11 yritetty: build.yml + tests/test_workflows.py kirjoitettu paikallisesti, mutta `git push` hylättiin (PAT:lla ei workflow-scopea). Paikalliset tiedostot poistettiin commitia ennen, työtä ei kommittoitu master:iin. ⚠ blokkeri.
 
-**Kesken:** Plan E Task 11–23 (13 jäljellä) — Task 11–17 odottavat PAT-päivitystä, Task 18–23 odottavat 11–17:n valmistumista (plan-järjestys).
+**Tämän session muutokset:** PROGRESS.md uudelleenstruktuoitu — bugfix-kierros lisätty Plan E:n keskeytykseksi. CLAUDE.md trim 16KB→6.5KB. PAT päivitetty (Workflow-scope mukana).
 
-**Blokkerit:** **on** — Plan E Task 11 yritti pushata `.github/workflows/build.yml`:n, mutta GitHub hylkäsi `remote rejected: refusing to allow a Personal Access Token to create or update workflow without 'workflow' scope`. Sandboxin fine-grained PAT (`github_pat_11CCKC33I0oBitsKhgnAW...`) ei sisällä Actions-permission read+write -oikeutta. Workflow-pohjaiset tehtävät 11–17 ovat blokattuna kunnes PAT päivitetään. Pyydä Lauria uudistamaan PAT GitHub-tilin Settings → Developer settings → Personal access tokens → Fine-grained → Repository permissions → Actions (Read and write).
+**Kesken:** Bugfix-kierros aloittamatta (3 task:ia). Plan E Task 11–23 (13 jäljellä) odottavat bugfix-kierroksen valmistumista.
+
+**Blokkerit:** ei (PAT päivitetty Workflow-scopella, bugfix-kierros voi alkaa heti).
