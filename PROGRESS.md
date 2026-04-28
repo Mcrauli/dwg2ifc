@@ -2,11 +2,11 @@
 
 **Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan F Task 1 — `src/dxf2ifc/core/quality.py` `validate_ifc(path) -> ValidationReport` -wrapper + failing-testi.
+**Current task:** Plan F Task 2 — `validate_ifc` raportoi YTV-spesifit Talo2000-luokittelutarkistukset (warnings).
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue plan-tiedostosta Task 1:n osio (`grep -nA 5 "Task 1:"`). TDD: failing-testi `tests/test_quality.py` joka antaa Plan B:n full-fixture-IFC:n ja odottaa `len(report.errors) == 0`. Toteuta `validate_ifc(path) -> ValidationReport` joka kutsuu `ifcopenshell.validate.validate(file, json=True, return_json=True)` ja palauttaa structured-tuloksen.
+**Seuraavaksi:** Lue Task 2:n osio plan-tiedostosta. TDD: failing-testi joka rakentaa custom-profiilin tuottamaan luokittelemattoman seinän (Talo2000-koodi tyhjä) ja varmistaa että `validate_ifc` palauttaa warning "missing Talo2000 classification". Lisää `quality.py`:hyn IfcWall/IfcSlab/IfcDoor/IfcWindow-skannaus joka tarkistaa IfcRelAssociatesClassification-linkityksen.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -173,7 +173,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 ## Plan F status (0/16)
 
 ### Section 1: Automaattinen ifcopenshell.validate -gate
-- [ ] Task 1: src/dxf2ifc/core/quality.py validate_ifc(path) wrapper + tests/test_quality.py
+- [x] Task 1: src/dxf2ifc/core/quality.py validate_ifc(path) wrapper + tests/test_quality.py (`b16f424`)
 - [ ] Task 2: validate_ifc raportoi YTV-spesifit Talo2000-luokittelutarkistukset (warnings)
 - [ ] Task 3: CLI-flag `dxf2ifc convert --validate` (exit 1 jos errors)
 - [ ] Task 4: convert_dxf(..., validate: bool) palauttaa (IfcFile, ValidationReport | None) + GUI-näyttö
@@ -382,6 +382,9 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 
 - Plan F kirjoitettu (Mode B): skeleton + 5 sectionia + 16 task-riviä numeroitu globaalisti, CLAUDE.md "Plans B–F"-lista päivitetty (`3651f00` → `e921b35` → `086daa7` → `ae735fe` → `3866ab4` → `30404cb`). PROGRESS.md sisältää nyt täyden Plan F -checklistin.
 
-**Kesken:** Plan F Mode A aloitus Task 1:llä seuraavalla sessiolla.
+**Tämän session muutokset:**
+- Plan F Task 1: `src/dxf2ifc/core/quality.py` `ValidationReport`-dataclass (errors/warnings/summary) + `validate_ifc(path)` joka wrappaa `ifcopenshell.validate.validate` json_loggerilla; `tests/test_quality.py` 3 testiä (dataclass-shape + full-fixture 0 errors + str-path) (`b16f424`).
+
+**Kesken:** Plan F Task 2 — YTV Talo2000-classification-warning-tarkistus.
 
 **Blokkerit:** ei.
