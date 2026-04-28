@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoittaminen käynnissä.
+**Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G section 6/6 (integraatio + docs + plan-loppupiste).
+**Current task:** Plan G Task 1 — CRSConfig pydantic-malli `src/dxf2ifc/profiles/schema.py`:hen.
 
-**Mode:** B (plan writing, section 6/6).
+**Mode:** A (toteutus).
 
-**Seuraavaksi:** B4 — kirjoita Section 6 task-rivit (full-fixture-integraatiotesti, Solibri rule "CRS coverage", docs/coordinate-system.md, plan-loppupiste).
+**Seuraavaksi:** Lue plan-tiedostosta Task 1:n osio (`grep -nA 3 "Task 1:" docs/superpowers/plans/2026-04-28-plan-g-georeferenced-ifc.md`). Aloita TDD: failing test `tests/test_profile_schema.py` CRSConfig-default-arvoille + invalid-scale-validointi → minimal impl `src/dxf2ifc/profiles/schema.py`:hen → pytest pass → commit + push.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -489,6 +489,41 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 - Plan H Task 6: stub JSON:t neljälle RAVA-codesetille `src/dxf2ifc/profiles/rava/`-kansiossa (LVI-TUOTEOSA: 11 verifioitua koodia, TALOTEKNIIKKA-TUOTEOSA: 2 koodia, kaksi placeholderia). 3 uutta testiä (`31ecdb8`).
 - Plan H Task 7: `dxf2ifc.profiles.rava.loader.load_rava_codes() -> dict[str, RAVACode]` kokoaa kaikki 4 JSON:ää codeValue-keyksiin; RAVACode-dataclass (code/name/codeset). 4 uutta testiä (`fd9e8e5`). ✅ Section 2 (Tasks 5–7) valmis.
 
-**Kesken:** Plan H Task 8 — Rule.domain laajennus.
+**Kesken:** Plan G Task 1 — CRSConfig pydantic-malli + tests.
 
 **Blokkerit:** ei.
+
+## Plan G status (0/21)
+
+### Section 1: CRSConfig profile-skeemaan + storey_z_levels
+- [ ] Task 1: CRSConfig pydantic-malli (epsg/name/datum/eastings/northings/orth_height/x_axis/scale)
+- [ ] Task 2: Profile.crs + storey_z_levels_mm + strictly-increasing validator
+- [ ] Task 3: loader load_profile + dump_profile crs round-trip
+- [ ] Task 4: default_kylmalaite.toml kommentoitu [crs]-osio + storey_z_levels_mm
+
+### Section 2: IfcProjectedCRS + IfcMapConversion -kirjoitus
+- [ ] Task 5: build_ifc_project_skeleton crs-kwarg, None → ei georeferenssiä
+- [ ] Task 6: IfcProjectedCRS + IfcMapConversion linkitetty IfcGeometricRepresentationContextiin
+- [ ] Task 7: scale + orthogonal_height edge-case-testit
+
+### Section 3: Site → Building → Storey -placement-hierarkia
+- [ ] Task 8: build_ifc_project_skeleton tuottaa Site → Building → list[Storey]
+- [ ] Task 9: resolve_storey(storeys, z_mm) helper + 5 case-test
+- [ ] Task 10: IfcSkeleton dataclass paluuarvo + kutsujien päivitys
+
+### Section 4: Element-add-funktiot kerros-aware + orchestrator
+- [ ] Task 11: add_* ottaa storey-kwarg + RelContainedInSpatialStructure storey:hyn
+- [ ] Task 12: convert_dxf orchestrator resolvoi storey anchor-z:stä
+- [ ] Task 13: validate_local_extent skannaa vertex-koordinaatit max_extent_mm:n suhteen
+
+### Section 5: CLI + GUI georeferenssi-input + validointi
+- [ ] Task 14: CLI --eastings/--northings/--orthogonal-height-flagit
+- [ ] Task 15: GUI CRSDialog + Profile-menubar "Set CRS…"
+- [ ] Task 16: validate_ifc warning/error MapConversion-orphan + missing-MapConversion + double-transform-shadow
+
+### Section 6: Integraatio + dokumentointi + plan-loppupiste
+- [ ] Task 17: full_kylmaelement_dxf 2-storey + integration-test full CRS-stack
+- [ ] Task 18: Solibri rule-set "CRS coverage" + bcfzip 6 sääntöä
+- [ ] Task 19: docs/coordinate-system.md
+- [ ] Task 20: docs/quality-gates.md päivitys + solibri_reference_full.ifc rebuild
+- [ ] Task 21: plan-loppupiste — ≥320 testiä + ruff + CLAUDE.md/README status
