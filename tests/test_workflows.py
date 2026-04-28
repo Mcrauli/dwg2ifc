@@ -127,7 +127,9 @@ def test_release_workflow_collects_licenses_md_into_dist():
     # Must reference LICENSES.md somewhere as a step instruction.
     assert "LICENSES.md" in text
     # Upload step must include LICENSES.md in its path manifest.
-    upload_steps = [s for s in job["steps"] if s.get("uses", "").startswith("actions/upload-artifact")]
+    upload_steps = [
+        s for s in job["steps"] if s.get("uses", "").startswith("actions/upload-artifact")
+    ]
     assert upload_steps, "no upload step in release workflow"
     paths = [step.get("with", {}).get("path", "") for step in upload_steps]
     joined = "\n".join(paths)
