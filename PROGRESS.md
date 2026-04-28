@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
+**Current plan:** Bugfix kierros 2 (3 reaali-DXF buggia ennen Plan H:ta) → sitten Plan H (IFC 4.3 + RAVA).
 
-**Current task:** Plan F Task 16 — plan-loppupiste (pytest + coverage + ruff + status-päivitys).
+**Current task:** Bugfix 4 — `add_furniture` polygon-geometria + placement-fix (14 hyllystä vain 1 näkyy 3D:ssä Solibrissa).
 
 **Mode:** A.
 
-**Seuraavaksi:** Aja `pytest -q --tb=short`, `pytest --cov=dxf2ifc --cov-report=term -q` (tavoite ≥80 %), `ruff check . && ruff format --check .`. Päivitä CLAUDE.md status: "Plan F valmis (<SHA>)". Päivitä README.md status-taulu Plan F ✅. PLAN-TRANSITION → Plan H Mode B.
+**Seuraavaksi:** Lue `src/dxf2ifc/core/ifc_writer.py` `add_furniture`-funktio, tutki LWPOLYLINE→bbox→IfcLocalPlacement -ketju. TDD: failing-testi joka tuottaa 3 polygoni-pohjaista KYL-LEVYHYLLY-entiteettiä eri keskipisteiden kohdille ja varmistaa että jokaisella IfcFurniture:lla on uniikki `IfcLocalPlacement.RelativePlacement.Location.Coordinates`.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -170,7 +170,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
-## Plan F status (0/16)
+## Plan F status (16/16) ✅
 
 ### Section 1: Automaattinen ifcopenshell.validate -gate
 - [x] Task 1: src/dxf2ifc/core/quality.py validate_ifc(path) wrapper + tests/test_quality.py (`b16f424`)
@@ -196,7 +196,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 ### Section 5: CI-integraatio + dokumentaatio + plan-loppupiste
 - [x] Task 14: build.yml linux-jobissa pytest tests/test_quality.py (`d6c78bd`)
 - [x] Task 15: docs/quality-gates.md (auto + manuaali two-tier prosessi) (`fb7487d`)
-- [ ] Task 16: plan-loppupiste — pytest + coverage + ruff + status-päivitys
+- [x] Task 16: plan-loppupiste — pytest 294 + coverage 91% + ruff format clean + status-päivitys (`165a0db`) 🎉 Plan F 16/16 valmis
 
 ## Plan E status (23/23) ✅
 
@@ -398,7 +398,8 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - Plan F Task 13: `solibri` pytest-marker `pyproject.toml`:ssa + `tests/conftest.py:pytest_collection_modifyitems` skippaa kaikki marker-testit kun `Solibri.exe` ei PATH:ssa. tests/test_solibri_snapshot_chain.py ajaa täysketjun verify→parse→diff vs. baseline (`cbb3d76`). ✅ Section 4 (Tasks 11–13) valmis.
 - Plan F Task 14: `.github/workflows/build.yml` Linux-jobiin uusi "Plan F quality gate"-step joka ajaa `uv sync --all-extras` + `uv run pytest tests/test_quality.py`. 1 uusi workflow-testi (`d6c78bd`).
 - Plan F Task 15: `docs/quality-gates.md` two-tier prosessikuvaus suomeksi (Taso 1: ifcopenshell.validate-gate, Taso 2: Solibri-snapshot-verify); release-flow-tarkistuslista linkittää packaging-smoke.md:hen ja solibri-rules.md:hen. 2 uutta testiä (`fb7487d`).
+- Plan F Task 16: plan-loppupiste — pytest 294 passed + 1 skipped (solibri-marker), coverage 91 %, `ruff format` applied 18 tiedostoon (uudet tiedostot pitkien rivien rikkomista varten), CLAUDE.md + README.md "Plan F ✅" -päivitys (`165a0db`). 🎉 Plan F 16/16 valmis. Ruff check edelleen flagaa `build/version_info.py` + `tests/test_spec_file.py` F821:t — pre-existing PyInstaller VS DSL placeholderit.
 
-**Kesken:** Plan F Task 16 — plan-loppupiste.
+**Kesken:** Bugfix 4 — add_furniture polygon-placement-bugi.
 
 **Blokkerit:** ei.
