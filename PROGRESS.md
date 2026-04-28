@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
+**Current plan:** Plan E — PyInstaller-pakkaus + GitHub Releases (kirjoitettu `a3620f7`, 23 tehtävää, 5 sectionia).
 
-**Current task:** Plan E (Mode B) — section 5/5: Smoke + checksum + dokumentointi.
+**Current task:** Plan E Task 1 — PyInstaller dev-extraan + smoke import test.
 
-**Mode:** B (plan-kirjoitus, section 5/5). Section 4 (5 taskia) committed.
+**Mode:** A (implementointi).
 
-**Seuraavaksi:** täytä Plan E section 5 (smoke + dokumentointi + plan-loppupiste) 3-5 task-rivillä — manuaalinen Windows smoke-checklist, README "Lataa .exe" -ohje, troubleshooting-osio (Smartscreen, AV-warnings), plan-loppupiste (pytest, ruff, status-päivitys). Commit + push, sitten B7 (numerointi globaaliksi) + B8 (PROGRESS.md checklist).
+**Seuraavaksi:** lisää `pyproject.toml`:n `dev`-extraan `pyinstaller>=6.10`, aja `uv sync --extra dev --extra gui`, luo failing test `tests/test_pyinstaller_bootstrap.py` joka tarkistaa `import PyInstaller` toimii ja `PyInstaller.__main__` on suoritettavissa moduulina.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -135,6 +135,41 @@
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
+## Plan E status (0/23)
+
+### Section 1: PyInstaller bootstrap
+- [ ] Task 1: pyinstaller>=6.10 dev-extraan + smoke import test
+- [ ] Task 2: build/dxf2ifc.spec base + tests/test_spec_file.py
+- [ ] Task 3: src/dxf2ifc/_version.py + tests/test_version.py
+- [ ] Task 4: docs/packaging.md "Local build"-osio
+
+### Section 2: .spec-konfiguraatio + asset bundling
+- [ ] Task 5: .spec datas (TOML/QSS/fontit/LICENSES) + spec-test
+- [ ] Task 6: .spec hidden_imports (ifcopenshell/ezdxf/QtSvg) + spec-test
+- [ ] Task 7: .spec excludes (tkinter/pytest/pip jne.) + spec-test
+- [ ] Task 8: .spec VSVersionInfo Windows-resourcesille + version_info.py
+- [ ] Task 9: .spec BUNDLE icon-konfig + placeholder-todo
+
+### Section 3: Windows build (paikallinen + CI matrix)
+- [ ] Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh
+- [ ] Task 11: .github/workflows/build.yml Windows-runner + artifact upload
+- [ ] Task 12: build.yml ubuntu-matrix smoke-build
+- [ ] Task 13: build.yml smoke-step (--version → exit 0)
+- [ ] Task 14: docs/packaging.md "CI build"-osio
+
+### Section 4: GitHub Actions release-workflow
+- [ ] Task 15: .github/workflows/release.yml tag-trigger + permissions
+- [ ] Task 16: release.yml checksum + LICENSES.md pakkaus
+- [ ] Task 17: release.yml gh release create --draft step
+- [ ] Task 18: CHANGELOG.md ensimmäinen versio (v0.1.0)
+- [ ] Task 19: docs/packaging.md "Release-prosessi"-osio
+
+### Section 5: Smoke + checksum + dokumentointi
+- [ ] Task 20: docs/packaging-smoke.md manuaalinen Windows-checklist
+- [ ] Task 21: README "Lataa .exe"-osio + version-badge
+- [ ] Task 22: docs/packaging.md "Troubleshooting"-osio
+- [ ] Task 23: plan-loppupiste — pytest + coverage + ruff + status-päivitys
+
 ## Plan C status (12/12) ✅
 
 ### Section 1: Profiili — system_name -arvot ✅
@@ -159,7 +194,7 @@
 - [x] Task 11: full_kylmaelement -testi varmistaa neljä IfcSystem-ryhmää (`7e09716`)
 - [x] Task 12: ruff clean + 151 passed + 91 % coverage + README/CLAUDE.md "Plan C valmis"
 
-**Viimeisin tila:** Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 valmis. PySide6-GUI tuotannossa (200 testiä, coverage 89 %, ruff clean). Seuraava: Plan E (PyInstaller-pakkaus) kirjoittamatta — Mode B alkaa B1:llä.
+**Viimeisin tila:** Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 valmis. Plan E kirjoitettu (5 sectionia, 23 taskia, `a3620f7`). Mode A toteutus alkaa Task 1:llä (pyinstaller dev-extraan).
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -249,7 +284,8 @@
 
 - Plan D Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`, tehty edellisessä sessiossa, PROGRESS.md-checklist päivitetty tässä sessiossa).
 - Plan D Task 25: ruff format six lingering files (file_panel/layer_table/profile_editor + kolme testiä), README + CLAUDE.md status Plan D ✅ (200 passed, coverage 89 %, ruff clean) (`011bd5e`). 🎉 Plan D 25/25.
+- Plan E kirjoitettu (Mode B): skeleton + 5 sectionia + 23 task-riviä numeroitu globaalisti, CLAUDE.md "Plans B–F"-lista päivitetty (`432a277` → `a3620f7`). PROGRESS.md sisältää nyt täyden Plan E -checklistin.
 
-**Kesken:** Plan E (PyInstaller-pakkaus) — Mode B kirjoittamatta.
+**Kesken:** Plan E Task 1–23 (23 jäljellä).
 
 **Blokkerit:** ei.
