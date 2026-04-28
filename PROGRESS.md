@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 17 — release.yml `gh release create --draft` -step.
+**Current task:** Plan E Task 18 — CHANGELOG.md ensimmäinen versio (v0.1.0).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Failing-testi joka tarkistaa että release.yml ajaa `gh release create $TAG dxf2ifc-*.exe dxf2ifc-*.exe.sha256 LICENSES.md --title $TAG --notes-file CHANGELOG.md --draft` -käskyn. Ympäristömuuttuja GH_TOKEN: `${{ secrets.GITHUB_TOKEN }}`. CHANGELOG.md tulee Task 18:ssa, joten step voi viitata siihen vaikka tiedostoa ei vielä ole. Toteuta release-step.
+**Seuraavaksi:** Luo `CHANGELOG.md` repon juureen. Otsikko `## v0.1.0 — 2026-04-XX` (TBD-päivä). Tiivis Plan A–D feature-roadmap: CLI core, kaikki 11 Talo2000-elementtityyppiä, IfcSystem-grouping, PySide6 GUI + profiili-editori. Lopussa pakettijakelu .exe (Plan E käynnissä).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -172,7 +172,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 ### Section 4: GitHub Actions release-workflow
 - [x] Task 15: .github/workflows/release.yml tag-trigger + permissions (`a8430be`)
 - [x] Task 16: release.yml checksum + LICENSES.md pakkaus (`3dfdd91`)
-- [ ] Task 17: release.yml gh release create --draft step
+- [x] Task 17: release.yml gh release create --draft step (`47a7021`)
 - [ ] Task 18: CHANGELOG.md ensimmäinen versio (v0.1.0)
 - [ ] Task 19: docs/packaging.md "Release-prosessi"-osio
 
