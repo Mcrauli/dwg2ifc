@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 2 — Profile.crs + storey_z_levels_mm + strictly-increasing validator.
+**Current task:** Plan G Task 3 — loader.py round-trip crs + storey_z_levels_mm TOML:n läpi.
 
 **Mode:** A (toteutus).
 
-**Seuraavaksi:** Failing-testit `tests/test_profile_schema.py`: 1-storey default, 3-storey [0,3500,7000], invalid descending list → impl Profile-malliin (Field default_factory + model_validator). `grep -nA 1 "Task 2:" docs/superpowers/plans/...`
+**Seuraavaksi:** Lue `src/dxf2ifc/profiles/loader.py` (load_profile + dump_profile), kirjoita failing-roundtrip-testit `tests/test_profile_loader.py`:hen (Profile crs:llä → dump → load → identtinen + None-crs:n yhteydessä [crs]-osio EI emit:ä).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -497,7 +497,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 
 ### Section 1: CRSConfig profile-skeemaan + storey_z_levels
 - [x] Task 1: CRSConfig pydantic-malli (epsg/name/datum/eastings/northings/orth_height/x_axis/scale) (`4e3a473`)
-- [ ] Task 2: Profile.crs + storey_z_levels_mm + strictly-increasing validator
+- [x] Task 2: Profile.crs + storey_z_levels_mm + strictly-increasing validator (`3e97dd8`)
 - [ ] Task 3: loader load_profile + dump_profile crs round-trip
 - [ ] Task 4: default_kylmalaite.toml kommentoitu [crs]-osio + storey_z_levels_mm
 
