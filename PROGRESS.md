@@ -56,7 +56,30 @@ Lauri testasi 4001_1krs.dxf:n Bugfix kierros 2:n jälkeen (Plan F + Bugfix 4-6 +
 
 - [ ] **Bugfix 11** — **GUI Profile editor RAVA-laajennus** (Plan H jätti tämän tekemättä — section reorganisoitu): Profile editor:in Rule-dialogissa ei ole UI-kenttää RAVA-koodeille (lvi_code / talotekniikka_code) eikä domain-valitsinta. Korjaus: a) Rule-dialog domain-valikko (TATE-only nyt että scope kavennettu, ks. Bugfix 12), b) lvi_code- ja talotekniikka_code -pudotusvalikot (yksi täytetään, ehdotukset Plan H:n LVI_TUOTEOSA/TALOTEKNIIKKA_TUOTEOSA-konstanteista), c) Layer-table-näkymä näyttää käytetty koodisto. Tiedostot: `src/dxf2ifc/gui/rule_dialog.py`, `src/dxf2ifc/gui/profile_editor.py`, `src/dxf2ifc/gui/layer_table.py`, vastaavat testit.
 
-- [ ] **Bugfix 12** — **Default-profiilin scope-kavennus pelkästään kylmälaitesuunnitteluun** (Lauri 2026-04-28): dxf2ifc on kylmälaitesuunnittelu-tuoteappi, ei yleinen DXF→IFC-konvertteri. Default-profiili sisältää vain kylmälaitesuunnittelijan toimialueeseen kuuluvat element-tyypit. **POISTETAAN default-profiilista** (Bugfix 6 lisätyt + Plan H lisätyt ARK-säännöt): AR1241_US, AR1242_IKKUNA, AR1245_LASIUS, AR1311_VS, AR1233_PILARI, AR1314_KAIDE, AR1317_TILAPORTAAT, AR1331_KIINTO, AR1221_AP, K-OVET, K-SEINÄT_VÄLISEINÄT, K-KALUSTEET, K-KIINTOKALUSTEET, K-RST-KALUSTEET, K-VALAISTUS. **PIDETÄÄN** (kylmälaitesuunnittelu-relevantit, kaikki TATE/LVI domain + RAVA-koodit): KYL-LEVYHYLLY, KYL-TIKASHYLLY, KYL-HÖYRYSTIMET (T-LVI-01-01-023), KYL-LAUHDUTIN (T-LVI-01-01-018), KYL-KOMPRESSORI (T-LVI-01-01-017), KYL-KONEIKKO (T-LVI-01-01-005), KYL-VÄLIJÄÄHDYTIN (T-LVI-01-01-024), KYL-VEDENJÄÄHDYTYS (T-LVI-01-01-003), KYL-KYLMÄVESIASEMA (T-LVI-01-01-004), KYL-VARAAJA (T-LVI-03-07-012), KYL-VIEMARI (T-LVI-04-01-001), KYL-LT-IMU/KYL-MT-IMU/KYL-MT-NESTE/KYL-NESTE (T-LVI-02), KYL-KAAPELIHYLLY (T-TATE-01-01-001), KYL-ASENNUSKANAVA (T-TATE-01-02), KYL-PANEELI (kylmähuone-paneeli, T-LVI tai sopiva), KYL-OVI (kylmähuoneen ovi, sopiva T-LVI). Profile editor antaa käyttäjälle mahdollisuuden lisätä custom-sääntöjä jos haluaa ARK-mappingia, mutta default-profiili on **puhtaasti kylmälaitesuunnittelua**. Tiedostot: `src/dxf2ifc/profiles/default_kylmalaite.toml`, `tests/test_default_profile.py` (poista ARK-test:t, lisää tarkistus että kaikki säännöt domain=TATE).
+- [ ] **Bugfix 12** — **Default-profiili pelkästään kylmälaitesuunnitteluun** (Lauri 2026-04-28: "kylmähuoneen rakenteet ei kuulu ku niit ei ees mallineta kylmälaite suunnittelussa"): dxf2ifc:n default-profiili kattaa **vain TATE-domain-elementit jotka kylmälaitesuunnittelija oikeasti mallintaa**. Kaikki ARK-elementit (myös KYL-* arkkitehtuuriset = kylmähuone-rakenteet) poistetaan.
+
+**POISTETAAN default-profiilista (kaikki ARK-domain-säännöt):**
+- AR-prefix: AR1241_US, AR1242_IKKUNA, AR1245_LASIUS, AR1311_VS, AR1233_PILARI, AR1314_KAIDE, AR1317_TILAPORTAAT, AR1331_KIINTO, AR1221_AP
+- K-prefix: K-OVET, K-SEINÄT_VÄLISEINÄT, K-KALUSTEET, K-KIINTOKALUSTEET, K-RST-KALUSTEET, K-VALAISTUS
+- KYL-* arkkitehtuuriset (kylmähuone-rakenteet ei kuulu): KYL-ULKOSEINA, KYL-VALISEINA, KYL-LASIVALISEINA, KYL-ALAPOHJA, KYL-VALIPOHJA, KYL-YLAPOHJA, KYL-OVET-ULKO, KYL-OVET-VALI, KYL-OVET-ERITYIS, KYL-IKKUNA, KYL-LEVY (kylmähuone-paneeli), KYL-NURKKA
+
+**PIDETÄÄN (puhtaat kylmälaite-tuoteosat, kaikki domain=TATE + RAVA):**
+- KYL-HOYRYSTIN* → T-LVI-01-01-023 Höyrystin
+- KYL-LAUHDUTIN* → T-LVI-01-01-018 Lauhdutin
+- KYL-KOMPRESSORI* → T-LVI-01-01-017 Kompressori
+- KYL-KONEIKKO* → T-LVI-01-01-005 Jäähdytyskompressorikoneikko
+- KYL-VIEMARI* → T-LVI-04-01-001 Viemäriputki (defrost)
+- LT IMU, MT IMU, MT NESTE → T-LVI-02 Kylmäaineputkisto (yleinen, erottelu pset:eillä)
+- KAAPELIHYLLY* → T-TATE-01-01-001 Asennushylly
+- KYL-LEVYHYLLY*, KYL-TIKASHYLLY*, KYL-TIKASHYLLY-V* → T-TATE-01-01-001 Asennushylly (kylmälaitehylly)
+
+**Aspirational (lisätään LISP-työkalujen mukaan myöhemmin):**
+- KYL-VALIJAAHDYTIN → T-LVI-01-01-024 Välijäähdytin
+- KYL-VEDENJAAHDYTYS → T-LVI-01-01-003 Vedenjäähdytyskone
+- KYL-KYLMAVESI → T-LVI-01-01-004 Kylmävesiasema
+- KYL-VARAAJA → T-LVI-03-07-012 Kylmäainevaraajasäiliö
+
+Profile editor antaa käyttäjälle mahdollisuuden lisätä custom-sääntöjä jos haluaa esim. kylmähuone-rakenteita ARK-domainilla, mutta default-profiili = **puhdas kylmälaiteputki + laitteet + hyllyt**, ei rakennustekniikkaa eikä kylmähuone-paneelointia. Tiedostot: `src/dxf2ifc/profiles/default_kylmalaite.toml`, `tests/test_default_profile.py` (poista kaikki ARK-testit, lisää tarkistus että jokainen rule domain="TATE" ja TODO-listaa aspirational-säännöt). Lisäksi Sireenit/merkinnät/yms. ei-mallinnettavat layerit (KYL-MERKINNÄT, KYL-SIREENI, KYL-KALUSTEET, KYL-KALUSTEET HATCH) jätetään profiilissa mappaamattomina eli tuottavat warning:in mut ei IFC-entiteettejä — Lauri katsoo nämä myöhemmin tarvittaessa.
 
 Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geometria) → Bugfix 8 (TIKAS) → Bugfix 9 (Profile Load) → Bugfix 11 (GUI RAVA-laajennus) → **Bugfix 12 (default-profiili kavennus)**. Sit Plan G.
 
