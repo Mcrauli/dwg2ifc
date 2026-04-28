@@ -1020,28 +1020,52 @@ def _z_rotation_matrix(x: float, y: float, z: float, angle: float) -> list[list[
     ]
 
 
-def add_talo2000_classification(
-    ifc, product, *, code: str | None, name: str | None
-) -> object | None:
-    """Attach a Talo2000 IfcClassificationReference to the given product.
+_CLASSIFICATION_SOURCES: dict[str, dict[str, str]] = {
+    "Talo2000": {"Source": "Rakennustieto Oy", "Edition": "Talo 2000"},
+    "RAVA-LVI": {"Source": "Rakennustietojärjestelmä RYTJ", "Edition": "LVI-TUOTEOSA v1.0"},
+    "RAVA-TATE": {
+        "Source": "Rakennustietojärjestelmä RYTJ",
+        "Edition": "TALOTEKNIIKKA-TUOTEOSA v1.0",
+    },
+}
 
-    Creates (once per file) an IfcClassification named 'Talo2000', then
-    references it from an IfcClassificationReference tied to the product.
-    Returns ``None`` and does nothing for products without a Talo2000 code
-    (e.g. TATE-domain rules whose classification lives under RAVA — handled
-    by the Plan H domain-aware classifier).
+
+def _classification_name_for(domain: str, code: str) -> str:
+    """Resolve the IfcClassification.Name for a (domain, code) pair."""
+    if domain == "ARK":
+        return "Talo2000"
+    if domain == "TATE":
+        if code.startswith("T-LVI"):
+            return "RAVA-LVI"
+        if code.startswith("T-TATE"):
+            return "RAVA-TATE"
+    raise ValueError(f"Cannot resolve classification source for domain={domain!r}, code={code!r}")
+
+
+def add_classification(
+    ifc, product, *, domain: str, code: str | None, name: str | None = None
+) -> object | None:
+    """Attach a discipline-aware IfcClassificationReference to ``product``.
+
+    domain="ARK" emits IfcClassification "Talo2000".
+    domain="TATE" emits "RAVA-LVI" for T-LVI-… codes and "RAVA-TATE" for
+    T-TATE-… codes. Returns ``None`` and does nothing if ``code`` is empty.
+    Each IfcClassification entity is created at most once per file and
+    reused across products.
     """
     if not code:
         return None
-    existing = [c for c in ifc.by_type("IfcClassification") if c.Name == "Talo2000"]
+    classification_name = _classification_name_for(domain, code)
+    existing = [c for c in ifc.by_type("IfcClassification") if c.Name == classification_name]
     if existing:
         classification = existing[0]
     else:
+        meta = _CLASSIFICATION_SOURCES[classification_name]
         classification = ifc.create_entity(
             "IfcClassification",
-            Source="Rakennustieto Oy",
-            Edition="Talo 2000",
-            Name="Talo2000",
+            Source=meta["Source"],
+            Edition=meta["Edition"],
+            Name=classification_name,
         )
 
     reference = ifc.create_entity(
@@ -1057,6 +1081,17 @@ def add_talo2000_classification(
         RelatingClassification=reference,
     )
     return reference
+
+
+def add_talo2000_classification(
+    ifc, product, *, code: str | None, name: str | None
+) -> object | None:
+    """Backwards-compatible wrapper around :func:`add_classification` (ARK domain).
+
+    Returns ``None`` and does nothing for products without a Talo2000 code
+    (TATE-domain rules use ``add_classification`` directly with their RAVA code).
+    """
+    return add_classification(ifc, product, domain="ARK", code=code, name=name)
 
 
 def convert_dxf(

@@ -8,6 +8,7 @@ import pytest
 from dxf2ifc.core.ifc_writer import (
     add_building_element_proxy,
     add_cable_carrier_segment,
+    add_classification,
     add_cooling_equipment,
     add_door,
     add_furniture,
@@ -786,6 +787,55 @@ def test_add_talo2000_classification_attaches_reference():
     assert any(r.Identification == "1241" for r in refs)
     classifications = ifc.by_type("IfcClassification")
     assert any(c.Name == "Talo2000" for c in classifications)
+
+
+def test_add_classification_ark_emits_talo2000():
+    ifc = build_ifc_project_skeleton(project_name="ARK")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    wall = add_wall(ifc, _wall_mapped_entity(), parent_storey=storey)
+    add_classification(ifc, wall, domain="ARK", code="1241", name="Ulkoseinät")
+
+    classifications = {c.Name for c in ifc.by_type("IfcClassification")}
+    assert "Talo2000" in classifications
+    refs = ifc.by_type("IfcClassificationReference")
+    assert any(r.Identification == "1241" for r in refs)
+
+
+def test_add_classification_tate_lvi_emits_rava_lvi():
+    ifc = build_ifc_project_skeleton(project_name="TATE-LVI")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    wall = add_wall(ifc, _wall_mapped_entity(), parent_storey=storey)
+    add_classification(ifc, wall, domain="TATE", code="T-LVI-01-01-023", name=None)
+
+    classifications = {c.Name for c in ifc.by_type("IfcClassification")}
+    assert "RAVA-LVI" in classifications
+    assert "Talo2000" not in classifications
+    refs = ifc.by_type("IfcClassificationReference")
+    assert any(r.Identification == "T-LVI-01-01-023" for r in refs)
+
+
+def test_add_classification_tate_talotekniikka_emits_rava_tate():
+    ifc = build_ifc_project_skeleton(project_name="TATE-TATE")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    wall = add_wall(ifc, _wall_mapped_entity(), parent_storey=storey)
+    add_classification(ifc, wall, domain="TATE", code="T-TATE-01-01-001", name=None)
+
+    classifications = {c.Name for c in ifc.by_type("IfcClassification")}
+    assert "RAVA-TATE" in classifications
+    refs = ifc.by_type("IfcClassificationReference")
+    assert any(r.Identification == "T-TATE-01-01-001" for r in refs)
+
+
+def test_add_classification_reuses_existing_classification():
+    ifc = build_ifc_project_skeleton(project_name="Reuse")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    wall_a = add_wall(ifc, _wall_mapped_entity(), parent_storey=storey)
+    wall_b = add_wall(ifc, _wall_mapped_entity(), parent_storey=storey)
+    add_classification(ifc, wall_a, domain="TATE", code="T-LVI-01-01-023", name=None)
+    add_classification(ifc, wall_b, domain="TATE", code="T-LVI-01-01-018", name=None)
+
+    rava_lvi = [c for c in ifc.by_type("IfcClassification") if c.Name == "RAVA-LVI"]
+    assert len(rava_lvi) == 1
 
 
 def test_convert_dxf_produces_ifc_with_wall(fixtures_dir: Path, tmp_path: Path):
