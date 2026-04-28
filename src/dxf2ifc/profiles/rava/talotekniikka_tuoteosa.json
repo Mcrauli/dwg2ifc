@@ -1,0 +1,8 @@
+{
+  "_origin": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-TUOTEOSA_Versio_1_0/codes",
+  "_note": "Plan H Task 6 stub. Replace with live sync_codes download.",
+  "results": [
+    {"codeValue": "T-TATE-01-01-001", "prefLabel": {"fi": "Kaapelihylly"}},
+    {"codeValue": "T-TATE-01-02", "prefLabel": {"fi": "Asennuskanavat"}}
+  ]
+}

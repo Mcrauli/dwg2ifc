@@ -1,0 +1,17 @@
+{
+  "_origin": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/LVI-TUOTEOSA_Versio_1_0/codes",
+  "_note": "Plan H Task 6 stub. Lauri replaces this with the live download via 'python -m tools.rava.sync_codes' when the project is online.",
+  "results": [
+    {"codeValue": "T-LVI-01-01-003", "prefLabel": {"fi": "Vedenjäähdytyskone"}},
+    {"codeValue": "T-LVI-01-01-004", "prefLabel": {"fi": "Kylmävesiasema"}},
+    {"codeValue": "T-LVI-01-01-005", "prefLabel": {"fi": "Jäähdytyskompressorikoneikko"}},
+    {"codeValue": "T-LVI-01-01-017", "prefLabel": {"fi": "Kompressori"}},
+    {"codeValue": "T-LVI-01-01-018", "prefLabel": {"fi": "Lauhdutin"}},
+    {"codeValue": "T-LVI-01-01-019", "prefLabel": {"fi": "Kompressorilauhdutin"}},
+    {"codeValue": "T-LVI-01-01-023", "prefLabel": {"fi": "Höyrystin"}},
+    {"codeValue": "T-LVI-01-01-024", "prefLabel": {"fi": "Välijäähdytin"}},
+    {"codeValue": "T-LVI-02", "prefLabel": {"fi": "Putkiosat (yleiskategoria)"}},
+    {"codeValue": "T-LVI-03-07-012", "prefLabel": {"fi": "Kylmäainevaraajasäiliö"}},
+    {"codeValue": "T-LVI-04-01-001", "prefLabel": {"fi": "Viemäriputki"}}
+  ]
+}
