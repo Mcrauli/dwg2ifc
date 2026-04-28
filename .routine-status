@@ -1,1 +1,1 @@
-🟡 dxf2ifc alkoi: Mode A, Plan G Task 8 (multi-storey skeleton). SHA: 173b043. Yöruutiini: ei. Seuraavaksi: failing-test 1-storey-default + 3-storey-list + IfcLocalPlacement-parent.
+🟢 dxf2ifc valmis (32min): Plan G 21/21 ✅ kokonaan toteutettu (SHAt 8e107ed→7f8272b). Roadmap A→B→C→D→E→F→G→H 100 %. 375 ei-GUI testiä passed, ruff format clean. Seuraavaksi: ei suunnitelmaa. Blokkerit: ei.
