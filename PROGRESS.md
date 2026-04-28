@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 5 — build_ifc_project_skeleton crs-kwarg, None → ei georeferenssiä.
+**Current task:** Plan G Task 6 — IfcProjectedCRS + IfcMapConversion linkitys IfcGeometricRepresentationContextiin kun crs annettu.
 
-**Mode:** A (toteutus, Section 2 alkaa).
+**Mode:** A (toteutus, Section 2).
 
-**Seuraavaksi:** Lue `src/dxf2ifc/core/ifc_writer.py:build_ifc_project_skeleton`, lisää `crs: CRSConfig | None = None`-kwarg. Failing-testi: skeleton crs=None → ei IfcProjectedCRS-entiteettiä mutta validate clean. Section 1 valmis (Task 1-4).
+**Seuraavaksi:** Failing-testit `tests/test_ifc_writer.py`: crs=CRSConfig(...) → IfcProjectedCRS(Name=epsg, Description=name, GeodeticDatum=datum) eksistoi + IfcMapConversion linkki Eastings/Northings/Scale → IfcGeometricRepresentationContext.HasCoordinateOperation. ifcopenshell.api.run("georeference.add_georeferencing"...) tai manual ifc.create_entity.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -502,7 +502,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 - [x] Task 4: default_kylmalaite.toml kommentoitu [crs]-osio + storey_z_levels_mm (`e1fa0ab`)
 
 ### Section 2: IfcProjectedCRS + IfcMapConversion -kirjoitus
-- [ ] Task 5: build_ifc_project_skeleton crs-kwarg, None → ei georeferenssiä
+- [x] Task 5: build_ifc_project_skeleton crs-kwarg, None → ei georeferenssiä (`bce689f`)
 - [ ] Task 6: IfcProjectedCRS + IfcMapConversion linkitetty IfcGeometricRepresentationContextiin
 - [ ] Task 7: scale + orthogonal_height edge-case-testit
 
