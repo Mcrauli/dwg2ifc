@@ -112,3 +112,17 @@ def test_version_info_file_carries_company_and_version() -> None:
     from dxf2ifc._version import __version__
 
     assert __version__ in text
+
+
+def test_spec_icon_is_ico_or_none() -> None:
+    """Icon line must be either icon=None or end with `.ico`."""
+    import re
+
+    text = _spec_text()
+    if "icon=None" in text:
+        return
+    match = re.search(r"icon\s*=\s*['\"]([^'\"]+)['\"]", text)
+    assert match, "spec missing an icon= directive (or a placeholder None)"
+    assert match.group(1).endswith(".ico"), (
+        f"icon path must end with .ico, got: {match.group(1)}"
+    )

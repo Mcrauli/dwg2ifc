@@ -71,4 +71,7 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     version='build/version_info.py',
+    # TODO: replace with assets/dxf2ifc.ico once the brand icon ships.
+    # See docs/packaging.md "Icon TODO" for the design brief.
+    icon=None,
 )

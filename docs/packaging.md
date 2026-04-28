@@ -31,3 +31,12 @@ host-koneen alustalle.
 
 Tämän projektin pääjakelu on `dxf2ifc.exe`, joka rakennetaan
 GitHub Actions -workflow:lla (ks. Section 3 + 4).
+
+## Icon TODO
+
+`build/dxf2ifc.spec` ei vielä viittaa `.ico`-tiedostoon (`icon=None`). Brand-icon
+suunnitellaan ja toimitetaan polkuun `assets/dxf2ifc.ico` ennen ensimmäistä
+julkaisua, ja `.spec`:n `icon=None` vaihdetaan polkuun. ICO-vaatimukset:
+multi-resolution (16/32/48/256 px) ja sininen-amber-paletti (CLAUDE.md
+brand-värit). Kunnes icon on olemassa, .exe käyttää PyInstallerin
+oletusbootloader-kuvaketta.
