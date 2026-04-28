@@ -2,17 +2,17 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Bugfix 1 — `add_furniture` polygon-tuki (KYL-LEVYHYLLY DXF:ssä polylinena).
+**Current task:** Bugfix 2 — Profiili load + persistointi GUI:ssä (ProfileEditorDialog Load-nappi + RecentFilesStore last_profile_path).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Aja `pytest tests/test_ifc_writer.py -q --tb=line` nähdäksesi nykyiset furniture-testit. Lisää failing-testi `test_add_furniture_accepts_polygon_geometry` joka antaa add_furniture:lle PolygonGeometry-objektin (closed polyline, esim. KYL-LEVYHYLLY) ja odottaa IfcFurniture syntyvän polygonin bounding-boxista. Toteuta tuki: jos geometry on PolygonGeometry, laske bbox + extrude box-solid; jos BlockInstance, käytä nykyistä polkua. Commit + push.
+**Seuraavaksi:** Lisää failing-testi `test_profile_editor_load_button_replaces_rules` joka avaa dialogin tyhjällä profiililla, kutsuu `dialog.load_from_path(toml_path)` valmiiseen TOML-tiedostoon ja odottaa rules-taulun täyttyvän. Toteuta `load_from_path` joka kutsuu `load_profile()` ja päivittää modelin. Sen jälkeen lisää RecentFilesStore.last_profile_path getteri/setteri + persistointitestit. Commit per pieni vaihe + push.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
 Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task ennen Plan E Task 11:n jatkoa (PAT on päivitetty Workflow-scopella, mutta bugifx tehdään ensin).
 
-- [ ] **Bugfix 1** — `add_furniture` polygon-tuki: kun KYL-LEVYHYLLY/KYL-TIKASHYLLY on piirretty closed polylinena (PolygonGeometry), `add_furniture` heittää `TypeError: add_furniture expects BlockInstance, got PolygonGeometry`. Korjaus: laske bbox + extrude box, palauta IfcFurniture; jos polygon on degeneroitu (alle 50mm sivu), nosta selkeä virhe. Tiedostot: `src/dxf2ifc/core/ifc_writer.py`, `tests/test_ifc_writer.py`.
+- [x] **Bugfix 1** — `add_furniture` polygon-tuki: kun KYL-LEVYHYLLY/KYL-TIKASHYLLY on piirretty closed polylinena (PolygonGeometry), `add_furniture` heittää `TypeError: add_furniture expects BlockInstance, got PolygonGeometry`. Korjaus: laske bbox + extrude box, palauta IfcFurniture; jos polygon on degeneroitu (alle 50mm sivu), nosta selkeä virhe. Tiedostot: `src/dxf2ifc/core/ifc_writer.py`, `tests/test_ifc_writer.py`. (`8e7c9c8`)
 
 - [ ] **Bugfix 2** — Profiili load + persistointi GUI:ssa: ProfileEditorDialog tukee vain Save:n, ei Load:ia. Lisäksi GUI ei muista viimeksi käytettyä TOML:ia sessioiden välillä. Korjaus: a) lisää "Load profile..." -nappi ProfileEditorDialogiin (avaa file picker → load_profile(path) → täyttää rules-taulun); b) laajenna RecentFilesStore tukemaan "last_profile_path" + lataa appin käynnistyksessä jos olemassa. Tiedostot: `src/dxf2ifc/gui/profile_editor.py`, `src/dxf2ifc/gui/main_window.py`, `src/dxf2ifc/gui/recent_files.py`, vastaavat testit.
 
@@ -310,8 +310,9 @@ Kun kaikki kolme bugia korjattuna ja `pytest -q` passes, päivitä tämän kierr
 - Plan E Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh + tests/test_build_scripts.py (uv sync, pyinstaller, version-stamping, SHA256, +x bit) (`738caa7`). 3 build-script-testiä passed.
 - Plan E Task 11 yritetty: build.yml + tests/test_workflows.py kirjoitettu paikallisesti, mutta `git push` hylättiin (PAT:lla ei workflow-scopea). Paikalliset tiedostot poistettiin commitia ennen, työtä ei kommittoitu master:iin. ⚠ blokkeri.
 
-**Tämän session muutokset:** PROGRESS.md uudelleenstruktuoitu — bugfix-kierros lisätty Plan E:n keskeytykseksi. CLAUDE.md trim 16KB→6.5KB. PAT päivitetty (Workflow-scope mukana).
+**Tämän session muutokset:**
+- Bugfix 1: `add_furniture` hyväksyy nyt PolygonGeometry-syötteen (closed polyline) — laskee bbox:n ja extrudaa boxin, default-korkeus 2000 mm extra_props:sta. Degeneroitu outline (sivu < 50 mm) → `ValueError`. 47 ifc_writer-testiä passed (`8e7c9c8`).
 
-**Kesken:** Bugfix-kierros aloittamatta (3 task:ia). Plan E Task 11–23 (13 jäljellä) odottavat bugfix-kierroksen valmistumista.
+**Kesken:** Bugfix 2 + Bugfix 3 jäljellä. Plan E Task 11–23 (13 jäljellä) odottavat bugfix-kierroksen valmistumista.
 
-**Blokkerit:** ei (PAT päivitetty Workflow-scopella, bugfix-kierros voi alkaa heti).
+**Blokkerit:** ei.
