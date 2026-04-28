@@ -15,12 +15,15 @@ EXPECTED_TALO2000_CODES = {
     "1221",
     "1243",
     "1242",
-    "2151",
-    "2160",
     "1331",
-    "2380",
     "1352",
-    "2510",
+}
+
+EXPECTED_RAVA_CODES = {
+    "T-LVI-02",  # LT IMU → IfcPipeSegment (refrigerant)
+    "T-LVI-04-01-001",  # KYL-VIEMARI → IfcPipeSegment (drainpipe)
+    "T-LVI-01-01-023",  # KYL-HOYRYSTIN → IfcEvaporator
+    "T-TATE-01-01-001",  # KAAPELIHYLLY → IfcCableCarrierSegment
 }
 
 
@@ -38,6 +41,17 @@ def test_reference_ifc_covers_every_required_talo2000_code():
     refs = {r.Identification for r in ifc.by_type("IfcClassificationReference")}
     missing = EXPECTED_TALO2000_CODES - refs
     assert not missing, f"missing Talo2000 codes: {sorted(missing)}"
+
+
+def test_reference_ifc_covers_every_required_rava_code():
+    """Plan H Task 20: TATE-domain codes (RAVA-LVI / RAVA-TATE) ship in the
+    same baseline IFC as the Talo2000 codes."""
+    ifc = ifcopenshell.open(str(FIXTURE_PATH))
+    refs = {r.Identification for r in ifc.by_type("IfcClassificationReference")}
+    missing = EXPECTED_RAVA_CODES - refs
+    assert not missing, f"missing RAVA codes: {sorted(missing)}"
+    classification_names = {c.Name for c in ifc.by_type("IfcClassification")}
+    assert {"Talo2000", "RAVA-LVI", "RAVA-TATE"}.issubset(classification_names)
 
 
 def test_reference_ifc_covers_each_required_ifc_class():
