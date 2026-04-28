@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan E (Mode B) — section 2/5: .spec-konfiguraatio + asset bundling.
+**Current task:** Plan E (Mode B) — section 3/5: Windows build (paikallinen + CI matrix).
 
-**Mode:** B (plan-kirjoitus, section 2/5). Section 1 (4 taskia) committed.
+**Mode:** B (plan-kirjoitus, section 3/5). Section 2 (5 taskia) committed.
 
-**Seuraavaksi:** täytä Plan E section 2 (.spec-konfig + asset bundling) 4-5 task-rivillä — laajenna `dxf2ifc.spec` datas-listalla (default-profiili-TOML, fontit, QSS, ifcopenshell schemat), hidden_imports-listalla (ifcopenshell, ezdxf, PySide6.QtSvg), excludes-optimointi, version_info Windows-resourcesille. Commit + push, sitten section 3.
+**Seuraavaksi:** täytä Plan E section 3 (Windows build + CI matrix) 4-5 task-rivillä — paikallinen build-skripti `scripts/build_exe.ps1`, GitHub Actions matrix windows-latest jossa pyinstaller, artifact-upload, smoke-launch (`Get-Item dxf2ifc.exe`), build cache. Commit + push, sitten section 4.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
