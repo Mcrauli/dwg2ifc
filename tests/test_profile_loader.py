@@ -16,6 +16,47 @@ def test_default_profile_resource_uses_new_name():
     assert not package_files.joinpath("default_kylmalaite_talo2000.toml").is_file()
 
 
+def test_default_profile_marks_ark_rules_with_domain():
+    profile = load_default_profile()
+    ark_layers = {
+        "KYL-ULKOSEINA*",
+        "KYL-VALISEINA*",
+        "KYL-LASIVALISEINA*",
+        "KYL-ALAPOHJA*",
+        "KYL-VALIPOHJA*",
+        "KYL-YLAPOHJA*",
+        "KYL-OVET-ULKO*",
+        "KYL-OVET-VALI*",
+        "KYL-OVET-ERITYIS*",
+        "KYL-IKKUNA*",
+        "KYL-TIKASHYLLY-V*",
+        "KYL-TIKASHYLLY*",
+        "KYL-LEVYHYLLY*",
+        "KYL-LEVY*",
+        "KYL-NURKKA*",
+        "AR1241_US",
+        "AR1242_IKKUNA",
+        "AR1245_LASIUS",
+        "AR1311_VS",
+        "AR1233_PILARI",
+        "AR1314_KAIDE",
+        "AR1317_TILAPORTAAT",
+        "AR1331_KIINTO",
+        "K-OVET",
+        "K-SEINÄT_VÄLISEINÄT",
+        "K-KALUSTEET",
+        "K-KIINTOKALUSTEET",
+        "K-RST-KALUSTEET",
+        "K-VALAISTUS",
+    }
+    by_layer = {r.layer_pattern: r for r in profile.rules}
+    for layer in ark_layers:
+        assert layer in by_layer, f"missing ARK rule for {layer}"
+        rule = by_layer[layer]
+        assert rule.domain == "ARK", f"{layer}: expected domain ARK, got {rule.domain}"
+        assert rule.talo2000_code, f"{layer}: ARK rule must keep talo2000_code"
+
+
 def test_load_default_profile_returns_profile():
     profile = load_default_profile()
     assert isinstance(profile, Profile)
