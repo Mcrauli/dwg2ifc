@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 14 — CLI --eastings/--northings/--orthogonal-height-flagit.
+**Current task:** Plan G Task 16 — validate_ifc CRS-warningit.
 
-**Mode:** A (toteutus, Section 5 alkaa). Sections 1–4 ✅ (13/21).
+**Mode:** A (toteutus, Section 5 lopussa). Sections 1–4 ✅ + Tasks 14–15 ✅ (15/21).
 
-**Seuraavaksi:** Plan-Task 14: CLI `dxf2ifc convert --eastings <mm> --northings <mm> [--orthogonal-height <mm>]`. Jos kaikki kolme annettu, override profile.crs (käyttäen profiilin epsg/name/datum:ia jos olemassa). Failing-testit: kaikki kolme flag → CRS overrides; vain eastings → ArgparseError; ei flag → profile.crs säilyy.
+**Seuraavaksi:** Plan-Task 16: laajenna `validate_ifc` (a) jos IfcMapConversion löytyy mutta IfcProjectedCRS puuttuu → error; (b) jos profile.crs annettu mutta IFC:ssä ei MapConversionia → error; (c) jos local-vertex > 1 km origosta → warning ("possible double-transform"). Failing-testit: 3 case + clean baseline.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -527,8 +527,8 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 - [x] Task 13: validate_local_extent skannaa vertex-koordinaatit max_extent_mm:n suhteen (`0006ffd`)
 
 ### Section 5: CLI + GUI georeferenssi-input + validointi
-- [ ] Task 14: CLI --eastings/--northings/--orthogonal-height-flagit
-- [ ] Task 15: GUI CRSDialog + Profile-menubar "Set CRS…"
+- [x] Task 14: CLI --eastings/--northings/--orthogonal-height-flagit (`67cebd8`)
+- [x] Task 15: GUI CRSDialog + Profile-menubar "Set CRS…" (`80eff1e`, GUI-testit Windowsilla)
 - [ ] Task 16: validate_ifc warning/error MapConversion-orphan + missing-MapConversion + double-transform-shadow
 
 ### Section 6: Integraatio + dokumentointi + plan-loppupiste
