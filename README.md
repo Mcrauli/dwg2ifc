@@ -1,6 +1,25 @@
 # dxf2ifc
 
+[![Latest release](https://img.shields.io/github/v/release/Mcrauli/dxf2ifc?include_prereleases&sort=semver)](https://github.com/Mcrauli/dxf2ifc/releases/latest)
+
 **AutoCAD DXF → IFC 4 -konvertteri suomalaiseen kylmälaite- ja LVI-suunnitteluun. Tarjoaa Talo2000-luokittelun ja oikeat IFC-tyyppitiedot layer-pohjaisen mappauksen kautta.**
+
+## Lataa .exe (Windows)
+
+Uusin Windows-build on aina [Releases-sivulla](https://github.com/Mcrauli/dxf2ifc/releases/latest).
+Lataa `dxf2ifc-vX.Y.Z.exe` ja (suositeltava) `dxf2ifc-vX.Y.Z.exe.sha256`,
+ja vahvista checksum PowerShellissä:
+
+```powershell
+Get-FileHash -Algorithm SHA256 dxf2ifc-vX.Y.Z.exe
+```
+
+Tuplaklikkaa `.exe` käynnistyäkseen GUI:n, tai aja PowerShellissä
+`.\dxf2ifc-vX.Y.Z.exe convert input.dxf output.ifc` CLI:lle.
+
+> **Windows SmartScreen** näyttää "Windows protected your PC" -dialogin —
+> binäärit eivät ole code-signattu MVP-vaiheessa. Napauta **More info →
+> Run anyway**. Allekirjoitus arvioidaan myöhemmissä versioissa.
 
 ## Status
 
