@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 24 — README "GUI"-osio + screenshot placeholder.
+**Current task:** Plan D Task 25 — plan-loppupiste (pytest, coverage, ruff, docs).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** luo `gui/about.py` `show_about(parent)` joka avaa modaalisen QDialog:n: brand-otsikko, versionumero (`importlib.metadata.version("dxf2ifc")`), MIT-lisenssi, GitHub-URL. Failing-test varmistaa että dialog sisältää "dxf2ifc" + versiotekstin tunnistettavasti.
+**Seuraavaksi:** aja koko suite `pytest -q --tb=short`, `pytest --cov=dxf2ifc --cov-report=term` (≥80 %), `ruff check . && ruff format --check .`. Päivitä CLAUDE.md:n "Status" + README.md status-taulu Plan D ✅:ksi viimeisellä SHA:lla, commit + push.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (23/25)
+## Plan D status (24/25)
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -132,7 +132,7 @@
 - [x] Task 21: `gui/about.py` show_about (`13e882d`)
 - [x] Task 22: `gui/recent_files.py` QSettings:n kautta + Open recent (`54adf38`)
 - [x] Task 23: pytest-qt config + offscreen QPA + shared QApplication (`cb5e14a`)
-- [ ] Task 24: README "GUI"-osio + screenshot placeholder
+- [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [ ] Task 25: plan-loppupiste — pytest, ruff, coverage, docs status
 
 ## Plan C status (12/12) ✅
@@ -247,6 +247,8 @@
 - Plan D Task 21: `gui/about.py` `AboutDialog` modal QDialog brand+version+GitHub-linkillä; Help → About kutsuu sitä (`13e882d`). 2 about-testiä passed.
 - Plan D Task 22: `gui/recent_files.py` `RecentFilesStore` LRU 5 path:lla QSettings-backendillä (Radika/dxf2ifc) (`54adf38`). 3 recent-files-testiä passed.
 
-**Kesken:** Plan D Task 23–25 (3 jäljellä).
+- Plan D Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`, tehty edellisessä sessiossa, PROGRESS.md-checklist päivitetty tässä sessiossa).
+
+**Kesken:** Plan D Task 25 (1 jäljellä — plan-loppupiste).
 
 **Blokkerit:** ei.
