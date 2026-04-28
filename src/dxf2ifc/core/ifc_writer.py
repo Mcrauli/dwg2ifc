@@ -598,8 +598,7 @@ def add_furniture(
         length = math.hypot(dx, dy)
         if length < 50.0:
             raise ValueError(
-                "add_furniture line is degenerate "
-                f"(length={length:.1f} mm; min 50 mm)"
+                f"add_furniture line is degenerate (length={length:.1f} mm; min 50 mm)"
             )
         depth = float(mapped.extra_props.get("default_depth_mm", 400.0))
         height = float(mapped.extra_props.get("default_height_mm", 60.0))

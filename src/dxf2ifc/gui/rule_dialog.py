@@ -123,8 +123,9 @@ class RuleEditDialog(QtWidgets.QDialog):
         self.talotekniikka_code_combo.setCurrentText(rule.talotekniikka_code or _BLANK)
         self.system_name_edit.setText(rule.system_name or "")
 
-    def _set_row_visible(self, label: QtWidgets.QWidget, field: QtWidgets.QWidget,
-                          visible: bool) -> None:
+    def _set_row_visible(
+        self, label: QtWidgets.QWidget, field: QtWidgets.QWidget, visible: bool
+    ) -> None:
         label.setVisible(visible)
         field.setVisible(visible)
 
@@ -152,9 +153,9 @@ class RuleEditDialog(QtWidgets.QDialog):
             "talo2000_code": (self.talo2000_code_edit.text().strip() or None) if is_ark else None,
             "talo2000_name": (self.talo2000_name_edit.text().strip() or None) if is_ark else None,
             "lvi_code": (self.lvi_code_combo.currentText().strip() or None) if not is_ark else None,
-            "talotekniikka_code": (
-                self.talotekniikka_code_combo.currentText().strip() or None
-            ) if not is_ark else None,
+            "talotekniikka_code": (self.talotekniikka_code_combo.currentText().strip() or None)
+            if not is_ark
+            else None,
             "system_name": self.system_name_edit.text().strip() or None,
         }
 

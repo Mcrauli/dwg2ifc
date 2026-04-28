@@ -33,9 +33,7 @@ def _write_tikashylly_dxf(path: Path) -> None:
     doc.layers.add(name="KYL-TIKASHYLLY")
     msp = doc.modelspace()
     # Two parallel rails 400 mm apart, each 1200 mm long, at z = 1500 mm.
-    msp.add_line(
-        (0.0, 0.0, 1500.0), (1200.0, 0.0, 1500.0), dxfattribs={"layer": "KYL-TIKASHYLLY"}
-    )
+    msp.add_line((0.0, 0.0, 1500.0), (1200.0, 0.0, 1500.0), dxfattribs={"layer": "KYL-TIKASHYLLY"})
     msp.add_line(
         (0.0, 400.0, 1500.0), (1200.0, 400.0, 1500.0), dxfattribs={"layer": "KYL-TIKASHYLLY"}
     )

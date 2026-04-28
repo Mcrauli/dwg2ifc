@@ -26,15 +26,14 @@ def _origin(product) -> tuple[float, float, float]:
     return float(coords[0]), float(coords[1]), float(coords[2])
 
 
-def _approx_xy(actual: tuple[float, float, float], expected_xy: tuple[float, float],
-               tol_mm: float = 50.0) -> None:
+def _approx_xy(
+    actual: tuple[float, float, float], expected_xy: tuple[float, float], tol_mm: float = 50.0
+) -> None:
     assert actual[0] == pytest.approx(expected_xy[0], abs=tol_mm)
     assert actual[1] == pytest.approx(expected_xy[1], abs=tol_mm)
 
 
-def test_full_kylmaelement_roundtrip_per_layer(
-    full_kylmaelement_dxf: Path, tmp_path: Path
-) -> None:
+def test_full_kylmaelement_roundtrip_per_layer(full_kylmaelement_dxf: Path, tmp_path: Path) -> None:
     out = tmp_path / "full_kylmaelement.ifc"
     convert_dxf(dxf_path=full_kylmaelement_dxf, output_path=out, profile=load_default_profile())
 
@@ -63,8 +62,19 @@ def test_full_kylmaelement_roundtrip_per_layer(
     assert len(evaporators) == 1, f"expected 1 evaporator, got {len(evaporators)}"
 
     # Placement origins (XY) should match the DXF source coordinates within 50 mm.
-    by_layer = {p.Name: p for p in walls + slabs + doors + windows
-                + pipes + cables + furniture + proxies + evaporators if p.Name}
+    by_layer = {
+        p.Name: p
+        for p in walls
+        + slabs
+        + doors
+        + windows
+        + pipes
+        + cables
+        + furniture
+        + proxies
+        + evaporators
+        if p.Name
+    }
     _approx_xy(_origin(by_layer["KYL-ULKOSEINA"]), (0.0, 0.0))
     _approx_xy(_origin(by_layer["KYL-VALISEINA"]), (0.0, 0.0))
     _approx_xy(_origin(by_layer["KYL-ALAPOHJA"]), (0.0, 0.0))

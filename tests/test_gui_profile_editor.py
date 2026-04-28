@@ -118,10 +118,13 @@ def test_profile_editor_load_invalid_toml_emits_failure_signal(qtbot, tmp_path):
     received: list[tuple[str, str]] = []
     dialog.profile_load_failed.connect(lambda p, msg: received.append((p, msg)))
 
-    with patch(
-        "dxf2ifc.gui.profile_editor.QtWidgets.QFileDialog.getOpenFileName",
-        return_value=(str(bad_path), "TOML files (*.toml)"),
-    ), patch("dxf2ifc.gui.profile_editor.QtWidgets.QMessageBox.critical") as msgbox:
+    with (
+        patch(
+            "dxf2ifc.gui.profile_editor.QtWidgets.QFileDialog.getOpenFileName",
+            return_value=(str(bad_path), "TOML files (*.toml)"),
+        ),
+        patch("dxf2ifc.gui.profile_editor.QtWidgets.QMessageBox.critical") as msgbox,
+    ):
         dialog.load_button.click()
 
     assert len(received) == 1

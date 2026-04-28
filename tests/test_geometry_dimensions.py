@@ -196,9 +196,7 @@ def test_add_pipe_horizontal_line_correct_bbox():
     )
     ifc = build_ifc_project_skeleton(project_name="Pipe Bbox")
     storey = ifc.by_type("IfcBuildingStorey")[0]
-    pipe = add_pipe_segment(
-        ifc, mapped, parent_storey=storey, predefined_type="RIGIDSEGMENT"
-    )
+    pipe = add_pipe_segment(ifc, mapped, parent_storey=storey, predefined_type="RIGIDSEGMENT")
 
     assert _placement_origin(pipe) == (0.0, 0.0, 1000.0)
     extruded = _swept(pipe)
