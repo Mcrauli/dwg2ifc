@@ -45,6 +45,10 @@ Plan A–F + H valmis. Master `<TBD>`. 302 ei-GUI testiä passed + 1 skipped (So
 
 ## Section 4: Element-add-funktiot kerros-aware + orchestrator dispatch storeyhin
 
+- [ ] Task 11: päivitä `add_wall` / `add_slab` / `add_door` / `add_window` / `add_pipe_segment` / `add_furniture` / `add_cable_carrier_segment` / `add_building_element_proxy` / `add_cooling_equipment` ottamaan `storey: IfcBuildingStorey`-parametri (kwarg, default = None → fallback ensimmäiseen storey:hin via `IfcSkeleton.storeys[0]`). Sisäinen IfcRelContainedInSpatialStructure linkitetään storey:hyn (ei enää suoraan building:iin). Failing-testit: kaksi storey:tä, jokainen add_* sijoittaa elementin oikeaan storey:hyn (RelContainedInSpatialStructure-RelatingStructure check).
+- [ ] Task 12: laajenna `convert_dxf`-orchestrator: jokaiselle MappedEntity:lle resolvoi storey `resolve_storey(skeleton.storeys, entity_anchor_z_mm)`. Anchor-z = LineGeometry → `min(start.z, end.z)`, PolygonGeometry → `min(p.z for p in points)`, BlockInstance → `insertion_point.z`. Failing-testit: full-fixture jossa kerros-2-elementit (z=3500) menevät storeys[1]:een ja kerros-1 (z=0) storeys[0]:aan.
+- [ ] Task 13: geometria-validaattori `validate_local_extent(skeleton, max_extent_mm: float = 5_000_000)` joka skannaa kaikki IfcShapeRepresentation-vertex-koordinaatit ja heittää RuntimeError jos local-koordinaatti ylittää max_extent (defensiivinen tarkistus kaksoismuunnos-bugille — geometria pysyy LOCAL, eli ei koskaan saisi olla 25_496_000:ssa). Failing-testit: clean-pass + simulated-double-transform → RuntimeError.
+
 ## Section 5: CLI + GUI georeferenssi-input + validointi (max_coord + MapConversion-required)
 
 ## Section 6: Integraatio + dokumentointi + plan-loppupiste

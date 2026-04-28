@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoittaminen käynnissä.
 
-**Current task:** Plan G section 3/6 (Site → Building → Storey -placement-hierarkia).
+**Current task:** Plan G section 4/6 (Element-add-funktiot kerros-aware + orchestrator).
 
-**Mode:** B (plan writing, section 3/6).
+**Mode:** B (plan writing, section 4/6).
 
-**Seuraavaksi:** B4 — kirjoita Section 3 task-rivit (IfcSite RefLatitude/RefLongitude pois, full Site→Building→Storey-ketju, IfcLocalPlacement-hierarkia, multi-storey storey-resolverin storey_z_levels:n perusteella).
+**Seuraavaksi:** B4 — kirjoita Section 4 task-rivit (add_*-funktiot ottavat storey-paramin, orchestrator resolvoi storeyn entityn z:stä, geometria pysyy LOCAL).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
