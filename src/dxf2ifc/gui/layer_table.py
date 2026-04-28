@@ -8,7 +8,18 @@ from dxf2ifc.core.mapper import layer_matches
 from dxf2ifc.profiles.schema import Profile, Rule
 
 _PLACEHOLDER = "—"
-_HEADERS = ("Layer", "IFC type", "Talo2000", "System")
+_HEADERS = ("Layer", "IFC type", "Domain", "Code", "System")
+
+
+def _domain_code(rule: Rule) -> tuple[str, str]:
+    """Return (codeset_label, code_value) for the rule's active classification."""
+    if rule.domain == "ARK":
+        return "Talo2000", rule.talo2000_code or _PLACEHOLDER
+    if rule.lvi_code:
+        return "RAVA-LVI", rule.lvi_code
+    if rule.talotekniikka_code:
+        return "RAVA-TATE", rule.talotekniikka_code
+    return rule.domain, _PLACEHOLDER
 
 
 class LayerTable(QtWidgets.QTableWidget):
@@ -26,16 +37,21 @@ class LayerTable(QtWidgets.QTableWidget):
         mono = QtGui.QFont("JetBrains Mono")
         for row, layer in enumerate(layers):
             rule = _first_matching_rule(layer, profile)
-            cells = [
-                layer,
-                rule.ifc_type if rule else _PLACEHOLDER,
-                rule.talo2000_code if rule else _PLACEHOLDER,
-                (rule.system_name if rule and rule.system_name else _PLACEHOLDER),
-            ]
+            if rule is None:
+                cells = [layer, _PLACEHOLDER, _PLACEHOLDER, _PLACEHOLDER, _PLACEHOLDER]
+            else:
+                domain_label, code_text = _domain_code(rule)
+                cells = [
+                    layer,
+                    rule.ifc_type,
+                    domain_label,
+                    code_text,
+                    rule.system_name or _PLACEHOLDER,
+                ]
             for col, text in enumerate(cells):
                 item = QtWidgets.QTableWidgetItem(text)
                 item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
-                if col in (0, 2):
+                if col in (0, 3):
                     item.setFont(mono)
                 self.setItem(row, col, item)
 

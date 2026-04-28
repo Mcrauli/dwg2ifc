@@ -14,7 +14,8 @@ def test_layer_table_columns_and_default_profile_rows(qtbot):
     assert [table.horizontalHeaderItem(i).text() for i in range(table.columnCount())] == [
         "Layer",
         "IFC type",
-        "Talo2000",
+        "Domain",
+        "Code",
         "System",
     ]
 
@@ -27,15 +28,19 @@ def test_layer_table_columns_and_default_profile_rows(qtbot):
             table.item(r, c).text() for c in range(table.columnCount())
         ]
 
+    # LT IMU is a TATE-domain pipe rule after Plan H — code comes from
+    # LVI-TUOTEOSA, not Talo2000.
     assert rows["LT IMU"][1] == "IfcPipeSegment"
-    assert rows["LT IMU"][2] == "2151"
-    assert rows["LT IMU"][3] == "Refrigeration LT"
+    assert rows["LT IMU"][2] == "RAVA-LVI"
+    assert rows["LT IMU"][3].startswith("T-LVI-")
+    assert rows["LT IMU"][4] == "Refrigeration LT"
 
     assert rows["KYL-ULKOSEINA"][1] == "IfcWall"
-    assert rows["KYL-ULKOSEINA"][2] == "1241"
-    assert rows["KYL-ULKOSEINA"][3] == "—"
+    assert rows["KYL-ULKOSEINA"][2] == "Talo2000"
+    assert rows["KYL-ULKOSEINA"][3] == "1241"
+    assert rows["KYL-ULKOSEINA"][4] == "—"
 
-    assert rows["UNKNOWN-LAYER"] == ["UNKNOWN-LAYER", "—", "—", "—"]
+    assert rows["UNKNOWN-LAYER"] == ["UNKNOWN-LAYER", "—", "—", "—", "—"]
 
 
 def test_layer_table_uses_jetbrains_mono_for_layer_column(qtbot):
@@ -46,4 +51,4 @@ def test_layer_table_uses_jetbrains_mono_for_layer_column(qtbot):
     qtbot.addWidget(table)
     table.set_layers(["LT IMU"], load_default_profile())
     assert table.item(0, 0).font().family() == "JetBrains Mono"
-    assert table.item(0, 2).font().family() == "JetBrains Mono"
+    assert table.item(0, 3).font().family() == "JetBrains Mono"
