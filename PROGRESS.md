@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros 3 (3 bugia) — Plan H 22/22 ✅, mutta käyttäjän testissä geometria edelleen rikki (kaikki element-tyypit, ei vain hyllyt). Korjataan ennen Plan G:tä.
 
-**Current task:** Bugfix 9 (Profile editor Load-nappi ei toimi).
+**Current task:** Bugfix 11 (GUI Profile editor RAVA-laajennus — domain-valitsin + lvi_code/talotekniikka_code -kentät).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Avaa `src/dxf2ifc/gui/profile_editor.py`, lisää try/except + log Load-toimintoon (file-picker → load_profile → täytä rules-table → emittoi `profile_loaded`-signaali). Lisää testi (`tests/test_gui_profile_editor.py` tai uusi `test_bugfix9_profile_editor_load.py`) joka simuloi Load-buttonin painalluksen `monkeypatch`:lla ja varmistaa että rules-table:n sisältö muuttuu valitun TOML:n mukaiseksi. Kun Bugfix 9 valmis, siirry **Bugfix 11 (GUI Profile editor RAVA-laajennus — domain-valitsin + lvi_code/talotekniikka_code -kentät)**. Vasta sit Bugfix 12 (default-profiilin TATE-only kavennus) ja Plan G MODE B.
+**Seuraavaksi:** Avaa `src/dxf2ifc/gui/rule_dialog.py`. Lisää: a) Domain-pudotusvalikko (ARK / TATE) joka piilottaa/näyttää oikeat code-kentät, b) lvi_code-pudotusvalikko (ehdotukset Plan H:n LVI_TUOTEOSA-konstanteista, src/dxf2ifc/profiles/rava/lvi_tuoteosa.json), c) talotekniikka_code-pudotusvalikko (TALOTEKNIIKKA_TUOTEOSA-konstanteista). Validointi: TATE-domainissa täsmälleen 1 RAVA-koodi täytetty. Vie `src/dxf2ifc/gui/layer_table.py` näkyviin "Domain"-sarake + RAVA-koodi-sarake. Testit: `tests/test_gui_rule_dialog.py::test_domain_switch_shows_rava_fields`, `::test_tate_rule_validates_exactly_one_rava_code`. Bugfix 12:n jälkeen Plan G MODE B.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -50,7 +50,7 @@ Lauri testasi 4001_1krs.dxf:n Bugfix kierros 2:n jälkeen (Plan F + Bugfix 4-6 +
 
 - [x] **Bugfix 8** — Defensive fix: `add_furniture` hyväksyy nyt LineGeometry-syötteen (KLHYLLY-TIKAS LISP piirtää shelf-rails inline-LINEinä eikä blokkina, mikä aiemmin TypeError-ilmoitti ja kaatoi konversion). Yksi LINE = yksi IfcFurniture-laatikko (length × default_depth × default_height, anchorointi line.start, kierto line-kulman mukaan). Aggregaatio "kahden kiskon + poikkitikkujen yhdistelmä → 1 IfcFurniture per koko hylly" jätetty follow-up:iin koska real-world DXF puuttuu sandboxista — ensin halutaan että layer ei katoa kokonaan IFC:stä. (`2bf30da`)
 
-- [ ] **Bugfix 9** — Profile editor Load-nappi ei toimi: Bugfix 2 piti hoitaa tämän mutta käyttäjän palautteen perusteella ei toimi. Repro: avaa GUI, Profile → Edit profile → Load profile…-nappi → valitse TOML → ei mitään. Korjaus: lisää virhelogi (try/except + log:iin per failure case) + varmista että `profile_loaded`-signaali laukeaa + UI päivittyy. Tiedostot: `src/dxf2ifc/gui/profile_editor.py`, vastaavat testit (testi joka simuloi load-buttonin painalluksen + varmistaa että rule-table:n sisältö muuttuu).
+- [x] **Bugfix 9** — Profile editor Load-nappi: kääri `load_from_path` try/except:iin, logaa exception, emittoi uusi `profile_load_failed(path, message)` -signaali ja näytä `QMessageBox.critical`, jotta TOML-parser-/schema-virhe ei katoa Qt-event-loopiin. Tilanne ennen oli "ei mitään tapahtu" → nyt käyttäjä näkee virheen ja edellinen rule-table säilyy. (`d22d564`)
 
 - [x] **Bugfix 10** — KYL-* layer-säännöt domain=TATE: hoidettu Plan H Section 4:ssä (default profile RAVA-päivitys), KYL-LEVYHYLLY/KYL-TIKASHYLLY ovat nyt TATE-domain + LVI-TUOTEOSA-koodit.
 
