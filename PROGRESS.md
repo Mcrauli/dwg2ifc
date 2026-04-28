@@ -2,11 +2,11 @@
 
 **Current plan:** Plan E — PyInstaller-pakkaus + GitHub Releases (kirjoitettu `a3620f7`, 23 tehtävää, 5 sectionia).
 
-**Current task:** Plan E Task 10 — `scripts/build_exe.ps1` + `scripts/build_exe.sh`.
+**Current task:** Plan E Task 11 — `.github/workflows/build.yml` Windows-runner + artifact upload.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** luo `scripts/build_exe.ps1` joka (a) ajaa uv sync (b) ajaa pyinstaller (c) kopioi dist/dxf2ifc.exe versionoituun nimeen + tulostaa SHA256-hash. Lisää `scripts/build_exe.sh` Linux-vastine.
+**Seuraavaksi:** lisää `.github/workflows/build.yml` joka triggeröityy `pull_request` + `push: master` -tapahtumissa, ajaa Windows-runnerilla python3.12 + uv setupin, ajaa `scripts/build_exe.ps1`:n ja uploadaa `dist/dxf2ifc-*.exe` artifactina nimellä `dxf2ifc-windows`.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -135,7 +135,7 @@
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
-## Plan E status (9/23)
+## Plan E status (10/23)
 
 ### Section 1: PyInstaller bootstrap ✅
 - [x] Task 1: pyinstaller>=6.10 dev-extraan + smoke import test (`22875d0`)
@@ -151,7 +151,7 @@
 - [x] Task 9: .spec icon=None placeholder + docs/packaging.md "Icon TODO" + spec-testi (`bb08517`)
 
 ### Section 3: Windows build (paikallinen + CI matrix)
-- [ ] Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh
+- [x] Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh (`738caa7`)
 - [ ] Task 11: .github/workflows/build.yml Windows-runner + artifact upload
 - [ ] Task 12: build.yml ubuntu-matrix smoke-build
 - [ ] Task 13: build.yml smoke-step (--version → exit 0)
@@ -295,7 +295,8 @@
 - Plan E Task 7: .spec excludes tkinter + pytest + unittest + numpy.distutils + setuptools._distutils + pip + spec-testi (`a65ef52`). 5 spec-testiä passed.
 - Plan E Task 8: build/version_info.py VSVersionInfo Win32-resource (Radika Oy + dxf2ifc + 0.1.0) + .spec EXE(version=...) + .gitignore-whitelist + spec/version_info-testi (`da778e4`). 7 spec-testiä passed.
 - Plan E Task 9: .spec EXE(icon=None) placeholder TODO + docs/packaging.md "Icon TODO"-osio + spec-testi (`bb08517`). 8 spec-testiä passed. ✅ Section 2 valmis.
+- Plan E Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh + tests/test_build_scripts.py (uv sync, pyinstaller, version-stamping, SHA256, +x bit) (`738caa7`). 3 build-script-testiä passed.
 
-**Kesken:** Plan E Task 10–23 (14 jäljellä).
+**Kesken:** Plan E Task 11–23 (13 jäljellä).
 
 **Blokkerit:** ei.
