@@ -2,11 +2,11 @@
 
 **Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan F Task 3 — CLI-flag `dxf2ifc convert --validate` joka exit 1 jos errors > 0.
+**Current task:** Plan F Task 4 — orchestrator `convert_dxf(..., validate: bool = False)` palauttaa `(IfcFile, ValidationReport | None)` + GUI näyttää errors PreviewLogPanelissa.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 3:n osio plan-tiedostosta. TDD: failing-testi joka ajaa CLI:n simple_wall.dxf:llä ja varmistaa exit-koodin 0; sitten failing-testi virheellisellä IFC:llä → exit 1 + stderr sisältää virhe. Lisää `--validate`-argparse-flag CLI:hin ja kytkin `validate_ifc`-kutsuun.
+**Seuraavaksi:** Lue Task 4:n osio plan-tiedostosta. Failing-testi: `convert_dxf` validate=True palauttaa tuplen (ifc, report). Päivitä convert_dxf return-tyyppiä + lisää validate-arg. GUI: ConvertWorker välittää reportin MainWindow:lle, PreviewLogPanel logaa errors. Huom: `convert_dxf` palauttaa nyt `dict[str, list]` (system mapping) — uusi paluuarvo on `tuple[dict, ValidationReport | None]` tai vastaava yhteensopiva muoto.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -175,7 +175,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 ### Section 1: Automaattinen ifcopenshell.validate -gate
 - [x] Task 1: src/dxf2ifc/core/quality.py validate_ifc(path) wrapper + tests/test_quality.py (`b16f424`)
 - [x] Task 2: validate_ifc raportoi YTV-spesifit Talo2000-luokittelutarkistukset (warnings) (`cdc9426`)
-- [ ] Task 3: CLI-flag `dxf2ifc convert --validate` (exit 1 jos errors)
+- [x] Task 3: CLI-flag `dxf2ifc convert --validate` (exit 1 jos errors) (`ea1f490`)
 - [ ] Task 4: convert_dxf(..., validate: bool) palauttaa (IfcFile, ValidationReport | None) + GUI-näyttö
 
 ### Section 2: Solibri rule-set ja referenssimallit
@@ -385,7 +385,8 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 **Tämän session muutokset:**
 - Plan F Task 1: `src/dxf2ifc/core/quality.py` `ValidationReport`-dataclass (errors/warnings/summary) + `validate_ifc(path)` joka wrappaa `ifcopenshell.validate.validate` json_loggerilla; `tests/test_quality.py` 3 testiä (dataclass-shape + full-fixture 0 errors + str-path) (`b16f424`).
 - Plan F Task 2: `validate_ifc` skannaa IfcWall/IfcSlab/IfcDoor/IfcWindow-entiteetit ja emittaa "missing Talo2000 classification" -warningin jos `IfcRelAssociatesClassification`-linkki Talo2000-codesetiin puuttuu; helper `_talo2000_classified_products` keräilee classifiedien id:t. 2 uutta testiä (unclassified-wall warning + full-fixture clean). 5 quality-testiä passed (`cdc9426`).
+- Plan F Task 3: `dxf2ifc convert --validate` argparse-flag joka kutsuu `validate_ifc(output_path)` muunnoksen jälkeen, printtaa summaryn + warnings stderriin, ja palauttaa exit 1 jos errors > 0. 3 uutta CLI-testiä (clean-exit-zero, monkeypatched-error-exit-one, no-validate-bypass) (`ea1f490`).
 
-**Kesken:** Plan F Task 3 — CLI `--validate` flag.
+**Kesken:** Plan F Task 4 — orchestrator validate=-arg + GUI preview-loki.
 
 **Blokkerit:** ei.
