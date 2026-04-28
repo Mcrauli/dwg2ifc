@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 11 — add_* storey-aware kwarg.
+**Current task:** Plan G Task 12 — convert_dxf orchestrator resolvoi storey anchor-z:stä.
 
-**Mode:** A (toteutus, Section 4 alkaa). Section 1+2+3 ✅ (10/21).
+**Mode:** A (toteutus, Section 4 jatkuu). Sections 1–3 ✅ + Task 11 ✅ (11/21).
 
-**Seuraavaksi:** Plan-Task 11: lisää `storey` kwarg add_wall/add_slab/add_door/add_window/add_pipe_segment/add_furniture/add_cable_carrier_segment/add_building_element_proxy/add_cooling_equipment-funktioihin. RelContainedInSpatialStructure linkitetään storey:hyn (ei buildingiin). Failing-testi: 2-storey skeleton + per-funktio sijoitus eri storey:hyn.
+**Seuraavaksi:** Plan-Task 12: convert_dxf käyttää profile.storey_z_levels_mm:ää skeletoniin, ja jokaiselle MappedEntity:lle resolvoi storey via `resolve_storey(skeleton.storeys, anchor_z)`. Anchor-z: LineGeometry → min(start.z, end.z), PolygonGeometry → min(p.z), BlockInstance → insertion_point.z. Failing-testi: 2-storey-skeleton, kerros-2-elementit (z=3500) menevät storeys[1]:een.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -522,7 +522,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 - [x] Task 10: IfcSkeleton dataclass paluuarvo + kutsujien päivitys (`c4b1d83`)
 
 ### Section 4: Element-add-funktiot kerros-aware + orchestrator
-- [ ] Task 11: add_* ottaa storey-kwarg + RelContainedInSpatialStructure storey:hyn
+- [x] Task 11: add_* ottaa storey-kwarg + RelContainedInSpatialStructure storey:hyn (`5bf557f`, lock-in test)
 - [ ] Task 12: convert_dxf orchestrator resolvoi storey anchor-z:stä
 - [ ] Task 13: validate_local_extent skannaa vertex-koordinaatit max_extent_mm:n suhteen
 
