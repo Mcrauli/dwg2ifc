@@ -2,11 +2,11 @@
 
 **Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan F Task 5 — `tools/solibri/dxf2ifc.bcfzip` BCF 2.1 rule-set (Talo2000 + YTV).
+**Current task:** Plan F Task 6 — `tests/fixtures/solibri_reference_full.ifc` baseline-IFC.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 5:n osio plan-tiedostosta. Tee `tools/solibri/`-kansio + dxf2ifc.bcfzip-skripti tai placeholder. BCF 2.1 -formaatti on ZIP jossa on TopicFolder/markup.bcf + version.bcfv. TDD: failing-testi joka varmistaa tools/solibri/dxf2ifc.bcfzip eksistoi ja sisältää bcf.version-tiedoston ja minimissään yhden topicin.
+**Seuraavaksi:** Lue Task 6:n osio plan-tiedostosta. Generoi pelkistetty referenssi-IFC (yksi seinä per Talo2000-koodi, yksi laite per kylmälaitetyyppi). TDD: load-test joka varmistaa fixture loadattavissa ifcopenshell:llä + IfcSchema=IFC4. Helpoin tapa: kierrätä `convert_dxf` full_kylmaelement_dxf-fixturella ja kopioi tulos `tests/fixtures/solibri_reference_full.ifc`:hen, mutta paremmin: kirjoita `tools/solibri/build_reference_ifc.py`-skripti joka tuottaa fixtureen.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -179,7 +179,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - [x] Task 4: convert_dxf(..., validate: bool) palauttaa (IfcFile, ValidationReport | None) + GUI-näyttö (`c5fa6f0`)
 
 ### Section 2: Solibri rule-set ja referenssimallit
-- [ ] Task 5: tools/solibri/dxf2ifc.bcfzip BCF 2.1 rule-set (Talo2000 + YTV)
+- [x] Task 5: tools/solibri/dxf2ifc.bcfzip BCF 2.1 rule-set (Talo2000 + YTV) (`9ff1347`)
 - [ ] Task 6: tests/fixtures/solibri_reference_full.ifc baseline-IFC
 - [ ] Task 7: docs/solibri-rules.md sääntöjen suomenkielinen kuvaus
 
@@ -387,7 +387,8 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - Plan F Task 2: `validate_ifc` skannaa IfcWall/IfcSlab/IfcDoor/IfcWindow-entiteetit ja emittaa "missing Talo2000 classification" -warningin jos `IfcRelAssociatesClassification`-linkki Talo2000-codesetiin puuttuu; helper `_talo2000_classified_products` keräilee classifiedien id:t. 2 uutta testiä (unclassified-wall warning + full-fixture clean). 5 quality-testiä passed (`cdc9426`).
 - Plan F Task 3: `dxf2ifc convert --validate` argparse-flag joka kutsuu `validate_ifc(output_path)` muunnoksen jälkeen, printtaa summaryn + warnings stderriin, ja palauttaa exit 1 jos errors > 0. 3 uutta CLI-testiä (clean-exit-zero, monkeypatched-error-exit-one, no-validate-bypass) (`ea1f490`).
 - Plan F Task 4: `convert_dxf(..., validate: bool = False)` palauttaa nyt `tuple[dict[str, list], ValidationReport | None]`; ConvertWorker.run sai validate-kwarg + uuden `report_ready(object)`-signaalin; MainWindow kytki signaalin uuteen `_on_report_ready`-slottiin joka logaa summary/warnings/errors PreviewLogPanelissa, ja kutsuu workerin validate=True (GUI ottaa YTV gate käyttöön defaultisti). Päivitti 1 vanhan integraatio-testin (systems-dict-unpack) + 6 uutta testiä. Koko 260 testiä passed (`c5fa6f0`).
+- Plan F Task 5: `tools/solibri/build_bcfzip.py` deterministinen BCF 2.1 -arkistogeneraattori + `tools/solibri/dxf2ifc.bcfzip` (5 Topic-rule:ia: units, classification coverage, IfcSystem grouping, cold-room paneelit, kylmälaitteiden MEP-entiteetit). 3 uutta testiä (existence + version=2.1 + required-rule-titles) (`9ff1347`).
 
-**Kesken:** Plan F Task 5 — Solibri BCF 2.1 rule-set.
+**Kesken:** Plan F Task 6 — solibri_reference_full.ifc baseline.
 
 **Blokkerit:** ei.
