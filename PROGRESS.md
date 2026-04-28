@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoittaminen käynnissä.
 
-**Current task:** Plan G section 5/6 (CLI + GUI input + validointi).
+**Current task:** Plan G section 6/6 (integraatio + docs + plan-loppupiste).
 
-**Mode:** B (plan writing, section 5/6).
+**Mode:** B (plan writing, section 6/6).
 
-**Seuraavaksi:** B4 — kirjoita Section 5 task-rivit (CLI --crs flag, GUI CRS-dialog, validate_ifc-extension MapConversion-required-säännölle).
+**Seuraavaksi:** B4 — kirjoita Section 6 task-rivit (full-fixture-integraatiotesti, Solibri rule "CRS coverage", docs/coordinate-system.md, plan-loppupiste).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
