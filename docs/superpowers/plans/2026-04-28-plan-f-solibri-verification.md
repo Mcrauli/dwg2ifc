@@ -50,3 +50,7 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 + Plan E 23/23 valmis 
 - [ ] Task 13: lisää `pytest`-marker `@pytest.mark.solibri` joka skipautuu jos `Solibri.exe` ei ole PATH:ssa, ja `tests/test_solibri_snapshot.py` joka markerin alla ajaa täyden ketjun (verify → parse → diff vs. baseline) — Lauri-driven CI-target. Default ei aja.
 
 ## Section 5: CI-integraatio + dokumentaatio + plan-loppupiste
+
+- [ ] Task 14: laajenna `.github/workflows/build.yml` ajamaan `pytest tests/test_quality.py -q` Linux-jobissa kun Section 1 valmis. ifcopenshell.validate-gate ei vaadi Solibri-asennusta. Failing-testi: workflow-tiedoston yaml-skeema sisältää quality-step:n ennen artifact-uploadia.
+- [ ] Task 15: lisää `docs/quality-gates.md` joka kuvaa kahden tason gate-prosessin: (a) automaattinen ifcopenshell.validate joka ajaa CI:ssä joka push:lla, (b) manuaalinen Solibri-snapshot-verify Lauri-driven ennen jokaista tag-releasea. Linkitä `docs/packaging-smoke.md`-checklistiin.
+- [ ] Task 16: plan-loppupiste — aja `pytest -q --tb=short` (kaikki passed), `pytest --cov=dxf2ifc --cov-report=term -q` ≥80%, `ruff check . && ruff format --check .` puhdas. Päivitä CLAUDE.md status: "Plan F valmis (<SHA>)". Päivitä README.md status-taulu Plan F ✅. Plan G:lle siirrytään PLAN-TRANSITIONissa (Coordinate System & Georeferenced IFC).
