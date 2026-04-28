@@ -45,21 +45,30 @@ def build_ifc_project_skeleton(
     project_name: str = "Untitled",
     site_name: str = "Default Site",
     building_name: str = "Default Building",
-    storey_name: str = "Ground Floor",
     schema: str = "IFC4",
     crs: CRSConfig | None = None,
+    storey_z_levels_mm: list[float] | None = None,
 ) -> ifcopenshell.file:
     """Create a minimal IFC project file with the requested ``schema``
     (``"IFC4"`` or ``"IFC4X3"``) and the IfcProject → Site → Building →
-    Storey spatial hierarchy. Length units are millimetres via
+    list[Storey] spatial hierarchy. Length units are millimetres via
     IfcUnitAssignment.
+
+    ``storey_z_levels_mm`` is a list of Z-elevations (millimetres) — one
+    ``IfcBuildingStorey`` per entry, named ``"Kerros 1"``, ``"Kerros 2"``…
+    Defaults to ``[0.0]`` (single ground-level storey). Each storey gets an
+    ``IfcLocalPlacement`` whose ``RelativePlacement`` puts the origin at
+    ``(0, 0, z_mm)`` and whose ``PlacementRelTo`` chains to the building.
+    Site→Building placements use the same chain with ``z=0``.
 
     When ``crs`` is provided, an ``IfcProjectedCRS`` and ``IfcMapConversion``
     are written linking the model context to a real-world projected CRS
     (Plan G Section 2). When ``crs`` is ``None`` (the default), no
-    georeferencing entities are emitted and the file remains backward
-    compatible with the pre-Plan-G behaviour.
+    georeferencing entities are emitted.
     """
+    if storey_z_levels_mm is None:
+        storey_z_levels_mm = [0.0]
+
     ifc = ifcopenshell.api.run("project.create_file", version=schema)
 
     project = ifcopenshell.api.run(
@@ -86,19 +95,49 @@ def build_ifc_project_skeleton(
     building = ifcopenshell.api.run(
         "root.create_entity", ifc, ifc_class="IfcBuilding", name=building_name
     )
-    storey = ifcopenshell.api.run(
-        "root.create_entity", ifc, ifc_class="IfcBuildingStorey", name=storey_name
-    )
+
+    site.ObjectPlacement = _make_origin_placement(ifc)
+    building.ObjectPlacement = _make_origin_placement(ifc, parent=site.ObjectPlacement)
+
+    storeys = []
+    for index, z_mm in enumerate(storey_z_levels_mm, start=1):
+        storey = ifcopenshell.api.run(
+            "root.create_entity",
+            ifc,
+            ifc_class="IfcBuildingStorey",
+            name=f"Kerros {index}",
+        )
+        storey.ObjectPlacement = _make_origin_placement(
+            ifc, parent=building.ObjectPlacement, z_mm=float(z_mm)
+        )
+        storey.Elevation = float(z_mm)
+        storeys.append(storey)
+
     ifcopenshell.api.run("aggregate.assign_object", ifc, products=[site], relating_object=project)
     ifcopenshell.api.run("aggregate.assign_object", ifc, products=[building], relating_object=site)
-    ifcopenshell.api.run(
-        "aggregate.assign_object", ifc, products=[storey], relating_object=building
-    )
+    ifcopenshell.api.run("aggregate.assign_object", ifc, products=storeys, relating_object=building)
 
     if crs is not None:
         _attach_projected_crs(ifc, crs)
 
     return ifc
+
+
+def _make_origin_placement(
+    ifc: ifcopenshell.file,
+    parent: object | None = None,
+    z_mm: float = 0.0,
+) -> object:
+    """Create an ``IfcLocalPlacement`` whose RelativePlacement is at
+    ``(0, 0, z_mm)`` and whose PlacementRelTo points at ``parent`` (or
+    ``None`` for the root site placement)."""
+    location = ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, float(z_mm)))
+    axis_placement = ifc.create_entity("IfcAxis2Placement3D", Location=location)
+    return ifc.create_entity(
+        "IfcLocalPlacement",
+        PlacementRelTo=parent,
+        RelativePlacement=axis_placement,
+    )
 
 
 def _attach_projected_crs(ifc: ifcopenshell.file, crs: CRSConfig) -> None:
