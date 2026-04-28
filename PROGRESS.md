@@ -532,7 +532,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 - [x] Task 16: validate_ifc warning/error MapConversion-orphan + missing-MapConversion + double-transform-shadow (`ff4a2cd`)
 
 ### Section 6: Integraatio + dokumentointi + plan-loppupiste
-- [ ] Task 17: full_kylmaelement_dxf 2-storey + integration-test full CRS-stack
+- [x] Task 17: full_kylmaelement_dxf 2-storey + integration-test full CRS-stack (`b0d0299`)
 - [ ] Task 18: Solibri rule-set "CRS coverage" + bcfzip 6 sääntöä
 - [ ] Task 19: docs/coordinate-system.md
 - [ ] Task 20: docs/quality-gates.md päivitys + solibri_reference_full.ifc rebuild

@@ -107,6 +107,26 @@ samaan järjestykseen kuin `tools/solibri/build_bcfzip.py:RULES`-vakio.
 - **Solibri-säännön tyyppi:** "MEP / Cooling" _Cooling equipment must
   use MEP types_.
 
+## 7. CRS coverage (IfcProjectedCRS + IfcMapConversion)
+
+- **GUID:** `77777777-1111-4111-1111-777777777777`
+- **Mitä validoi:** Kun mallissa on `IfcMapConversion`, sen `TargetCRS`
+  viittaa `IfcProjectedCRS`-entiteettiin (orphan-MapConversion = error).
+  `IfcSite.RefLatitude` ja `RefLongitude` jätetään asettamatta — sijainti
+  tulee Plan G:n mukaan `IfcMapConversion.Eastings/Northings`-arvoista,
+  ei lat/lon-koordinaateista. Geometria pysyy LOCAL-koordinaateissa
+  (max ~5 km origosta); jos vertex-koordinaatti ylittää 1 km, sääntö
+  varoittaa mahdollisesta MapConversion-kaksoismuunnoksesta.
+- **Miksi:** ETRS-TM35FIN (`EPSG:3067`) on Suomen virallinen
+  projektioperhe rakennushankkeissa. Plan G:n MAP-A
+  (Coordinate-System-architecture) erottaa tarkasti LOCAL-geometrian
+  ja WORLD-koordinaatit, jotta projektit voi yhdistää saumattomasti
+  YTV 2012 -koordinaattien sekä InfraBIM-tiedonsiirron kanssa.
+- **Viite:** ISO 19111 + buildingSMART CRS-Best-Practice + Plan G.
+- **Solibri-säännön tyyppi:** "Quality Assurance / Coordinate System"
+  _MapConversion linked to ProjectedCRS, no orphan, no double
+  transform_.
+
 ## Manuaalinen ajaminen
 
 ```bash

@@ -101,6 +101,19 @@ RULES: tuple[Rule, ...] = (
         ),
         reference="IFC 4 MEP-skeema + Plan B Section 11",
     ),
+    Rule(
+        guid="77777777-1111-4111-1111-777777777777",
+        title="CRS coverage (IfcProjectedCRS + IfcMapConversion)",
+        description=(
+            "Georeferenssi: kun mallissa on IfcMapConversion, sen TargetCRS "
+            "viittaa IfcProjectedCRS-entiteettiin (orphan-MapConversion = error). "
+            "IfcSite.RefLatitude ja RefLongitude jätetään asettamatta — sijainti "
+            "tulee Plan G:n mukaan IfcMapConversion:n Eastings/Northings-arvoista, "
+            "ei lat/lon-koordinaateista. Kaikki vertex-koordinaatit pysyvät "
+            "LOCAL-koordinaateissa (max 1 km origosta) — kaksoismuunnos kielletty."
+        ),
+        reference="ISO 19111 + buildingSMART CRS-Best-Practice + Plan G",
+    ),
 )
 
 

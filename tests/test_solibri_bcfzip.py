@@ -15,7 +15,16 @@ REQUIRED_RULE_TITLES = {
     "Talo2000 classification coverage",
     "RAVA classification coverage",
     "IfcSystem grouping for refrigeration networks",
+    "CRS coverage (IfcProjectedCRS + IfcMapConversion)",
 }
+
+
+def test_bcfzip_has_at_least_seven_rule_topics():
+    """Plan G Task 18: rule-set ships at least 7 rules
+    (units + Talo2000 + RAVA + systems + cold-room + cooling + CRS)."""
+    with zipfile.ZipFile(BCFZIP_PATH) as zf:
+        markup_paths = [n for n in zf.namelist() if n.endswith("/markup.bcf")]
+    assert len(markup_paths) >= 7, f"expected >= 7 markup.bcf entries, got {len(markup_paths)}"
 
 
 def test_bcfzip_exists():
