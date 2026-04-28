@@ -489,11 +489,21 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 - Plan H Task 6: stub JSON:t neljälle RAVA-codesetille `src/dxf2ifc/profiles/rava/`-kansiossa (LVI-TUOTEOSA: 11 verifioitua koodia, TALOTEKNIIKKA-TUOTEOSA: 2 koodia, kaksi placeholderia). 3 uutta testiä (`31ecdb8`).
 - Plan H Task 7: `dxf2ifc.profiles.rava.loader.load_rava_codes() -> dict[str, RAVACode]` kokoaa kaikki 4 JSON:ää codeValue-keyksiin; RAVACode-dataclass (code/name/codeset). 4 uutta testiä (`fd9e8e5`). ✅ Section 2 (Tasks 5–7) valmis.
 
-**Kesken:** Plan G Task 1 — CRSConfig pydantic-malli + tests.
+**Kesken:** Plan G Task 8 — build_ifc_project_skeleton multi-storey refaktorointi (iso, alkaa seuraavalla sessiolla).
 
 **Blokkerit:** ei.
 
-## Plan G status (0/21)
+## Plan G status (7/21)
+
+**Tämän session muutokset (Plan G Mode B + Tasks 1–7):**
+- Plan G kirjoitettu (Mode B): skeleton (`<TBD>`) + 6 sectionia + 21 task-riviä numeroitu globaalisti; CLAUDE.md "Plan G 0/21"-päivitys.
+- Plan G Task 1: `CRSConfig` pydantic-malli `src/dxf2ifc/profiles/schema.py`:hen, ETRS-TM35FIN-defaultit (epsg_code/name/geodetic_datum), eastings/northings pakollisia, scale > 0 -validaattori. 5 uutta testiä (`4e3a473`).
+- Plan G Task 2: `Profile.crs: CRSConfig | None` + `Profile.storey_z_levels_mm: list[float] = [0.0]`-defaultti, model_validator strictly-increasing + 0–100000 mm range. 7 uutta testiä (`3e97dd8`).
+- Plan G Task 3: loader-roundtrip-testit (3 kpl) jotka varmistivat että `dump_profile` exclude_none + tomli_w käsittelee crs-objektin ja storey-listan ilman impl-muutoksia (`04ac097`).
+- Plan G Task 4: `default_kylmalaite.toml` saa kommentoidun `[profile.crs]`-osion Helsinki-keskustan ETRS-TM35FIN-arvoilla (eastings 25496000, northings 6672000) + `storey_z_levels_mm = [0.0]` -rivin (`e1fa0ab`). ✅ Section 1 (Tasks 1–4) valmis.
+- Plan G Task 5: `build_ifc_project_skeleton(*, crs: CRSConfig | None = None)`-kwarg, no-op stub jos None. 2 uutta testiä (`bce689f`).
+- Plan G Task 6: `_attach_projected_crs`-helper kirjoittaa IfcProjectedCRS (Name=epsg, Description=name, GeodeticDatum=datum) + IfcMapConversion (Eastings/Northings/OrthogonalHeight/XAxis*/Scale, SourceCRS=Model-context, TargetCRS=projected). 2 uutta testiä (round-trip + ifcopenshell.validate clean) (`62b92a0`).
+- Plan G Task 7: 3 regressiotestiä CRS-edge-case:lle: orthogonal_height_mm=15000, scale=0.9996, X-axis-rotaatio 30° (`788f5e7`). ✅ Section 2 (Tasks 5–7) valmis.
 
 ### Section 1: CRSConfig profile-skeemaan + storey_z_levels
 - [x] Task 1: CRSConfig pydantic-malli (epsg/name/datum/eastings/northings/orth_height/x_axis/scale) (`4e3a473`)
