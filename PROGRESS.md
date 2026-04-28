@@ -20,6 +20,29 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 
 ✅ Bugfix kierros valmis (1+2+3, `8e7c9c8` + `4955ac2` + `9fe0395` + `52a5695`). 230 testiä passed, ruff puhdas omalle koodille (build/version_info.py + tests/test_spec_file.py F821:t ovat pre-existing PyInstaller-DSL-poikkeuksia). Plan E Task 11 voi alkaa.
 
+## Bugfix kierros 2 (löydetty Solibri-testissä 2026-04-28, ennen Plan H:ta)
+
+Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vain 1 näkyy 3D:ssä, AR-prefix-layerit (xref-format "AR1241_US") eivät matchaa profiilin sääntöihin, default-profiili kattaa pelkästään KYL-* layereitä — sun real-world DXF:llä on 77 layeria mukaan lukien AR1241_US/AR1311_VS/AR1242_IKKUNA jne. joilla on Talo2000-koodit jo nimessä.
+
+- [ ] **Bugfix 4** — `add_furniture` polygon-geometria väärin: 14 KYL-LEVYHYLLY/TIKASHYLLY-entiteettiä luodaan IFC:hen mutta vain 1 näkyy 3D:ssä Solibrissa. Bugfix 1 hoiti TypeErrorin mutta bbox/placement edelleen rikki — entiteetit menevät päällekkäin (0,0,0)-pisteeseen tai tulee degeneroituja. Korjaus: tutki LWPOLYLINE-polygonin world-coord-vertexien luenta, varmista että jokainen IfcFurniture saa oman placementin polygonin keskipisteen mukaan. Tiedostot: `src/dxf2ifc/core/ifc_writer.py` add_furniture, `src/dxf2ifc/core/geometry.py` (bbox-helper jos olemassa), `tests/test_ifc_writer.py`.
+
+- [ ] **Bugfix 5** — Profile pattern matching ei tue xref-prefixiä: AutoCAD-DXF:t käyttävät usein layer-nimissä xref-prefixiä `<xref>|<layername>` (esim. `KCM Kauhajoki...|AR1241_US`). Nykyiset säännöt matchaavat vain täydellistä nimeä, joten oikeat layerit jäävät mappamatta. Korjaus: laajenna `mapper.layer_matches`-funktiota sallimaan suffix-match jos layer-nimi sisältää `|`-merkin (split + ota viimeinen pala vertailuun). Tiedostot: `src/dxf2ifc/core/mapper.py`, `tests/test_mapper.py`.
+
+- [ ] **Bugfix 6** — Default-profiilin laajennus ARK-layereille: lisää säännöt yleisille AutoCAD-arkkitehtilayer-nimille jotka käyttävät Talo2000-koodi-prefixiä:
+  - `AR1241_US` → IfcWall STANDARD, Talo2000 1241
+  - `AR1242_IKKUNA` → IfcWindow, Talo2000 1242
+  - `AR1245_LASIUS` → IfcWall STANDARD (lasi-US)
+  - `AR1311_VS` → IfcWall PARTITIONING, Talo2000 1311
+  - `AR1233_PILARI` → IfcColumn
+  - `AR1314_KAIDE` → IfcRailing
+  - `AR1317_TILAPORTAAT` → IfcStair
+  - `AR1331_KIINTO` → IfcFurniture, Talo2000 1331
+  - K-arkkitehtuuriset: `K-OVET` → IfcDoor, `K-SEINÄT_VÄLISEINÄT` → IfcWall PARTITIONING, `K-KALUSTEET`/`K-KIINTOKALUSTEET`/`K-RST-KALUSTEET` → IfcFurniture, `K-VALAISTUS` → IfcLightFixture
+  - **HUOM:** KYL-* layerit (höyrystimet/hyllyt/laitteet) säilyvät nykyisellä mapping:lla kunnes Plan H toteutuu — Plan H vaihtaa nämä RAVA-koodeihin (LVI-TUOTEOSA + Talotekniikka-tuoteosa), siihen asti pidetään Talo2000-luokitus.
+  Tiedostot: `src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml`, `tests/test_default_profile.py`.
+
+Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivitä Current plan + Current task, kun Plan F:n PLAN-LOPPUPISTE saavutettu.
+
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
 - [x] Task 15 — `WallExtrusion` + `line_to_wall_extrusion` (`6c63c22`)
