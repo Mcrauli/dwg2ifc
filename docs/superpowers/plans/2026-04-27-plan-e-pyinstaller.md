@@ -33,6 +33,12 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 valmis (master `011bd5
 
 ## Section 2: .spec-konfiguraatio + asset bundling
 
+- [ ] Task 2.1: laajenna `build/dxf2ifc.spec`:n `Analysis(datas=...)`-listaa siten että se sisältää (a) `src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml` → `dxf2ifc/profiles/`, (b) `src/dxf2ifc/gui/style.qss` → `dxf2ifc/gui/`, (c) kaikki `assets/fonts/*.ttf` → `dxf2ifc/gui/fonts/`, (d) `assets/fonts/LICENSES.md` + `*-LICENSE.txt` → `dxf2ifc/gui/fonts/`. Päivitä `tests/test_spec_file.py` varmistamaan että jokaisen TOML/QSS/TTF-tiedoston destination-polku löytyy datas-listalta.
+- [ ] Task 2.2: lisää `.spec`-tiedostoon `hidden_imports`-lista jossa `ifcopenshell`, `ifcopenshell.api`, `ifcopenshell.geom`, `ifcopenshell.guid`, `ifcopenshell.template`, `ezdxf`, `ezdxf.entities`, `PySide6.QtSvg`, `PySide6.QtSvgWidgets`. Laajenna `tests/test_spec_file.py` testaamaan että jokainen näistä moduuleista on listalla.
+- [ ] Task 2.3: lisää `.spec`-tiedostoon `excludes`-lista jossa karsitaan turhia heavy-deps (`tkinter`, `pytest`, `unittest`, `numpy.distutils`, `setuptools._distutils`, `pip`). Tämä pienentää onefile-koon. Päivitä spec-testi.
+- [ ] Task 2.4: lisää `.spec`-tiedostoon Windows-spesifinen `version_info`-blokki (`VSVersionInfo`) joka käyttää `dxf2ifc._version.__version__`-stringiä CompanyName="Radika Oy" ProductName="dxf2ifc" -metadatan kanssa. Failing test: `tests/test_spec_file.py` varmistaa että VSVersionInfo on muodostettu ja sisältää version-stringin. Luo `build/version_info.py`-helperi joka generoi blokin.
+- [ ] Task 2.5: lisää `.spec`-tiedostoon `bundle = BUNDLE(exe, name='dxf2ifc.exe', icon='assets/dxf2ifc.ico', console=False)` -konfiguraatio. Jos icon-tiedostoa ei ole vielä olemassa, lisää placeholder-todo `docs/packaging.md`:hen ja kommentoi icon-rivin mutta jätä testi joka odottaa että `bundle.icon == None or path.endswith('.ico')`.
+
 ## Section 3: Windows build (paikallinen + CI matrix)
 
 ## Section 4: GitHub Actions release-workflow
