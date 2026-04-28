@@ -1,0 +1,8 @@
+{
+  "$schema": "tools/solibri/parse_report.RuleResult[]",
+  "model": "tests/fixtures/solibri_reference_full.ifc",
+  "ruleset": "tools/solibri/dxf2ifc.bcfzip",
+  "captured": "2026-04-28",
+  "captured_by": "Lauri Rekola (Radika Oy) — Solibri Anywhere manual run",
+  "results": []
+}
