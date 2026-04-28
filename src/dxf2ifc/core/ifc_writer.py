@@ -208,6 +208,30 @@ def write_ifc(ifc: ifcopenshell.file, output_path: str | Path) -> None:
     ifc.write(str(output_path))
 
 
+def validate_local_extent(
+    skeleton: object, *, max_extent_mm: float = 5_000_000.0
+) -> None:
+    """Defensive double-transform guard. Scans every ``IfcCartesianPoint``
+    in the file and raises ``RuntimeError`` if any coordinate component
+    exceeds ``max_extent_mm`` (default 5 000 000 mm = 5 km).
+
+    Geometry must stay in LOCAL coordinates; the MapConversion linking
+    the model to a real-world projected CRS does the LOCAL→WORLD
+    projection at view time. A vertex at e.g. 25 496 000 mm (ETRS-TM35FIN
+    easting magnitude) is a clear signal that the MapConversion was
+    applied twice — once into the geometry and once again at view time.
+    """
+    ifc = skeleton.file if hasattr(skeleton, "file") else skeleton
+    for point in ifc.by_type("IfcCartesianPoint"):
+        for component in point.Coordinates:
+            if abs(component) > max_extent_mm:
+                raise RuntimeError(
+                    f"Local coordinate {component} exceeds max_extent_mm="
+                    f"{max_extent_mm} on {point} — possible double-transform "
+                    f"(CRS world coordinates leaked into LOCAL geometry)."
+                )
+
+
 def _entity_anchor_z(geometry: object) -> float:
     """Anchor-Z used by the orchestrator to pick a storey:
     LineGeometry → min(start.z, end.z), PolygonGeometry → min(p.z),
