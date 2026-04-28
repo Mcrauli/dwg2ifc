@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import logging
 from copy import deepcopy
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from dxf2ifc.profiles.loader import dump_profile, load_profile
 from dxf2ifc.profiles.schema import Profile, Rule
+
+_log = logging.getLogger(__name__)
 
 _HEADERS = ("Layer pattern", "IFC type", "Predefined", "Talo2000 code", "Talo2000 name", "System")
 
@@ -78,6 +81,7 @@ class _RuleTableModel(QtCore.QAbstractTableModel):
 class ProfileEditorDialog(QtWidgets.QDialog):
     profile_saved = QtCore.Signal(str)
     profile_loaded = QtCore.Signal(str)
+    profile_load_failed = QtCore.Signal(str, str)
 
     def __init__(
         self,
@@ -155,7 +159,18 @@ class ProfileEditorDialog(QtWidgets.QDialog):
         self._model.remove_row(row)
 
     def load_from_path(self, path: str) -> None:
-        loaded = load_profile(path)
+        try:
+            loaded = load_profile(path)
+        except Exception as exc:  # surface validation / IO errors to the GUI
+            message = f"{type(exc).__name__}: {exc}"
+            _log.exception("Failed to load profile from %s", path)
+            self.profile_load_failed.emit(path, message)
+            QtWidgets.QMessageBox.critical(
+                self,
+                "Profile load failed",
+                f"Could not load profile from\n{path}\n\n{message}",
+            )
+            return
         self._profile = deepcopy(loaded)
         old_model = self._model
         self._model = _RuleTableModel(self._profile.rules, self)
