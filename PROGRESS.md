@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 4 — default_kylmalaite.toml kommentoitu [crs]-osio + storey_z_levels_mm.
+**Current task:** Plan G Task 5 — build_ifc_project_skeleton crs-kwarg, None → ei georeferenssiä.
 
-**Mode:** A (toteutus).
+**Mode:** A (toteutus, Section 2 alkaa).
 
-**Seuraavaksi:** Failing-testi: default profile load → `profile.crs is None` ja `profile.storey_z_levels_mm == [0.0]` (jälkimmäinen jo Task 3:n testissä). Lisää `src/dxf2ifc/profiles/default_kylmalaite.toml`-tiedostoon kommentoitu `[profile.crs]`-osio Helsinki-keskustan ETRS-TM35FIN-arvoilla (eastings 25496000, northings 6672000) + `storey_z_levels_mm = [0.0]` -rivi joka eksplisiittisesti dokumentoi default:n.
+**Seuraavaksi:** Lue `src/dxf2ifc/core/ifc_writer.py:build_ifc_project_skeleton`, lisää `crs: CRSConfig | None = None`-kwarg. Failing-testi: skeleton crs=None → ei IfcProjectedCRS-entiteettiä mutta validate clean. Section 1 valmis (Task 1-4).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -499,7 +499,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 - [x] Task 1: CRSConfig pydantic-malli (epsg/name/datum/eastings/northings/orth_height/x_axis/scale) (`4e3a473`)
 - [x] Task 2: Profile.crs + storey_z_levels_mm + strictly-increasing validator (`3e97dd8`)
 - [x] Task 3: loader load_profile + dump_profile crs round-trip (`04ac097`, ei impl-muutoksia, pydantic+tomli_w hoiti)
-- [ ] Task 4: default_kylmalaite.toml kommentoitu [crs]-osio + storey_z_levels_mm
+- [x] Task 4: default_kylmalaite.toml kommentoitu [crs]-osio + storey_z_levels_mm (`e1fa0ab`)
 
 ### Section 2: IfcProjectedCRS + IfcMapConversion -kirjoitus
 - [ ] Task 5: build_ifc_project_skeleton crs-kwarg, None → ei georeferenssiä
