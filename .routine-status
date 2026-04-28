@@ -1,1 +1,1 @@
-🟢 dxf2ifc valmis (~1h 30min): Plan G Mode B kirjoitettu (21 task, 6 sectionia) + Tasks 1-7 toteutettu (Section 1 ✅ CRSConfig+storey_z_levels, Section 2 ✅ IfcProjectedCRS+IfcMapConversion). SHA-historia: 4e3a473, 3e97dd8, 04ac097, e1fa0ab, bce689f, 62b92a0, 788f5e7. Seuraavaksi: Task 8 build_ifc_project_skeleton multi-storey refaktorointi (iso). Blokkerit: ei.
+🟡 dxf2ifc alkoi: Mode A, Plan G Task 8 (multi-storey skeleton). SHA: 173b043. Yöruutiini: ei. Seuraavaksi: failing-test 1-storey-default + 3-storey-list + IfcLocalPlacement-parent.
