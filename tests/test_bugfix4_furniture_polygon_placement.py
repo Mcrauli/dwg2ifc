@@ -94,8 +94,7 @@ def test_lwpolyline_with_flipped_extrusion_reads_world_coords(tmp_path: Path):
     assert len(furnitures) == 2
 
     coords = sorted(
-        tuple(f.ObjectPlacement.RelativePlacement.Location.Coordinates)
-        for f in furnitures
+        tuple(f.ObjectPlacement.RelativePlacement.Location.Coordinates) for f in furnitures
     )
     # Expected WCS anchors (bbox min) after OCS→WCS conversion. The
     # extrusion=(0,0,-1) flip mirrors X, so OCS x in [0..1000] becomes

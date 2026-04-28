@@ -28,9 +28,7 @@ def test_url_for_codeset_targets_official_api():
 def test_sync_codes_writes_one_json_per_codeset(monkeypatch, tmp_path: Path):
     fake_payloads = {
         scheme: {
-            "results": [
-                {"codeValue": f"{scheme}-001", "prefLabel": {"fi": f"{scheme} dummy 1"}}
-            ]
+            "results": [{"codeValue": f"{scheme}-001", "prefLabel": {"fi": f"{scheme} dummy 1"}}]
         }
         for scheme in sync_codes.CODESETS
     }

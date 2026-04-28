@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
+**Current plan:** Plan H valmis ✅ (22/22). Siirrytään Plan G:hen (Coordinate System & georeferenced IFC).
 
-**Current task:** Plan H Task 22 — plan-loppupiste (pytest + ruff + status-päivitys).
+**Current task:** Plan G Task 1 (kun plan kirjoitettu).
 
-**Mode:** A.
+**Mode:** B (Plan G kirjoittamatta — seuraava sessio aloittaa MODE B:llä, kirjoita plan-skeleton).
 
-**Seuraavaksi:** Aja `pytest -q --tb=short` (kaikki passed) + `ruff check . && ruff format --check .` puhdas. Päivitä CLAUDE.md status: "Plan H valmis (<SHA>)" + Plan G:hen siirtyminen. Päivitä README.md.
+**Seuraavaksi:** Plan G plan-tiedosto on kirjoittamatta. Seuraava sessio aloittaa MODE B:llä: lue Plan H frontmatter, kirjoita `docs/superpowers/plans/2026-04-XX-plan-g-coordinate-system.md` skeleton (YAML frontmatter + intro + section-otsikot, ~30 riviä), sitten section per turn.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -217,7 +217,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 - [x] Task 19: Solibri rule-set: lisää "RAVA classification coverage" + docs/solibri-rules.md (`7212eae`)
 - [x] Task 20: rebuild solibri_reference_full.ifc + päivitä snapshot-baseline jos tarvitaan (`3ebdf50`)
 - [x] Task 21: docs/rava-classification.md (`5c692e5`)
-- [ ] Task 22: plan-loppupiste — pytest + coverage + ruff + status-päivitys
+- [x] Task 22: plan-loppupiste — 302 ei-GUI testiä passed, ruff format clean, F821:t pre-existing PyInstaller-DSL-poikkeuksia, CLAUDE.md + README.md status päivitetty (`<TBD>`)
 
 ## Plan F status (16/16) ✅
 

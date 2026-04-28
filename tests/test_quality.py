@@ -112,9 +112,9 @@ def test_validate_ifc_warns_when_pipe_lacks_rava_classification(tmp_path: Path):
 
     report = validate_ifc(out)
 
-    assert any(
-        "missing RAVA classification" in w.get("message", "") for w in report.warnings
-    ), f"expected RAVA warning, got: {report.warnings}"
+    assert any("missing RAVA classification" in w.get("message", "") for w in report.warnings), (
+        f"expected RAVA warning, got: {report.warnings}"
+    )
     assert report.errors == [], f"unexpected errors: {report.errors}"
 
 

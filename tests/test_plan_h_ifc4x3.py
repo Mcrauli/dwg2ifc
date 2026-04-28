@@ -29,9 +29,7 @@ def test_skeleton_schema_ifc4x3_yields_ifc4x3_file():
     assert len(ifc.by_type("IfcBuildingStorey")) == 1
 
 
-def test_convert_dxf_emits_ifc4x3_when_schema_passed(
-    full_kylmaelement_dxf: Path, tmp_path: Path
-):
+def test_convert_dxf_emits_ifc4x3_when_schema_passed(full_kylmaelement_dxf: Path, tmp_path: Path):
     out = tmp_path / "full_ifc4x3.ifc"
     convert_dxf(
         dxf_path=full_kylmaelement_dxf,
@@ -103,9 +101,7 @@ def test_cli_convert_schema_flag_emits_ifc4x3(fixtures_dir: Path, tmp_path: Path
 
 def test_cli_convert_schema_default_is_ifc4(fixtures_dir: Path, tmp_path: Path):
     out = tmp_path / "cli_ifc4.ifc"
-    rc = cli.main(
-        ["convert", str(fixtures_dir / "simple_wall.dxf"), str(out)]
-    )
+    rc = cli.main(["convert", str(fixtures_dir / "simple_wall.dxf"), str(out)])
     assert rc == 0
     ifc = ifcopenshell.open(str(out))
     assert ifc.schema == "IFC4"
