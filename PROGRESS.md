@@ -2,11 +2,11 @@
 
 **Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan F Task 8 — `tools/solibri/verify.py` Solibri.exe-CLI-wrapper (subprocess).
+**Current task:** Plan F Task 9 — `tools/solibri/parse_report.py` XML→RuleResult-dict (lxml-vapaa, ElementTree riittää).
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 8:n osio plan-tiedostosta. Wrappaa Solibri.exe subprocess-puhelu joka ottaa --ifc + --ruleset + --report-out -argumentit ja palauttaa report-polun. TDD: failing-testi joka monkeypatch:aa subprocess.run:n ja varmistaa puhelun argumentit. Solibri.exe ei ole sandboxissa joten testit mokataan.
+**Seuraavaksi:** Lue Task 9:n osio plan-tiedostosta. Pieni mock-XML `tests/fixtures/solibri_report_sample.xml` + parse_report.py joka palauttaa list[RuleResult-dict]. RuleResult kentät: rule_name, severity, ifc_guid, message. TDD: failing-testi joka antaa fixture-XML:n ja odottaa N entry:tä.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -184,7 +184,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - [x] Task 7: docs/solibri-rules.md sääntöjen suomenkielinen kuvaus (`6042595`)
 
 ### Section 3: solibri-cli runner + raportin parsija
-- [ ] Task 8: tools/solibri/verify.py Solibri.exe-CLI-wrapper (subprocess)
+- [x] Task 8: tools/solibri/verify.py Solibri.exe-CLI-wrapper (subprocess) (`5b6bcea`)
 - [ ] Task 9: tools/solibri/parse_report.py XML→RuleResult dict (lxml)
 - [ ] Task 10: `python -m dxf2ifc.tools.solibri verify` CLI-entry
 
@@ -390,7 +390,8 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - Plan F Task 5: `tools/solibri/build_bcfzip.py` deterministinen BCF 2.1 -arkistogeneraattori + `tools/solibri/dxf2ifc.bcfzip` (5 Topic-rule:ia: units, classification coverage, IfcSystem grouping, cold-room paneelit, kylmälaitteiden MEP-entiteetit). 3 uutta testiä (existence + version=2.1 + required-rule-titles) (`9ff1347`).
 - Plan F Task 6: `tools/solibri/build_reference_ifc.py` luo `tests/fixtures/solibri_reference_full.ifc`-baselinen ajamalla saman DXF-patternin kuin conftest full_kylmaelement_dxf läpi convert_dxf:n default-profile:lla. 4 uutta testiä (existence + IFC4 + 11 Talo2000-koodia + 9 IFC-luokkaa) (`8d2a798`).
 - Plan F Task 7: `docs/solibri-rules.md` dokumentoi kaikki 5 BCF-sääntöä suomeksi (Mitä validoi / Miksi / Viite / Solibri-säännön tyyppi / dxf2ifc:n vastaava automaattinen tarkistus). 2 uutta testiä (existence + heading-coverage) (`6042595`). ✅ Section 2 (Tasks 5–7) valmis.
+- Plan F Task 8: `tools/solibri/verify.py` `build_command` + `run_solibri` Solibri Anywhere CLI-wrapper. Käyttää shutil.which:n etsimään Solibri.exe:n. 5 uutta testiä (argv-shape, subprocess-mock, missing-exe FileNotFoundError, non-zero-exit RuntimeError, shutil-attached). `tools/__init__.py` + `tools/solibri/__init__.py` muunsivat tools/-kansion paketiksi (`5b6bcea`).
 
-**Kesken:** Plan F Task 8 — Solibri.exe CLI-wrapper.
+**Kesken:** Plan F Task 9 — XML-raportin parsija.
 
 **Blokkerit:** ei.
