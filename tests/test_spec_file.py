@@ -52,3 +52,23 @@ def test_spec_bundles_runtime_assets() -> None:
     ]
     for dest in expected_destinations:
         assert dest in text, f"datas missing destination: {dest}"
+
+
+def test_spec_lists_runtime_hidden_imports() -> None:
+    """ifcopenshell submodules and Qt SVG plugins must be hidden_imports."""
+    text = _spec_text()
+    expected = [
+        "ifcopenshell",
+        "ifcopenshell.api",
+        "ifcopenshell.geom",
+        "ifcopenshell.guid",
+        "ifcopenshell.template",
+        "ezdxf",
+        "ezdxf.entities",
+        "PySide6.QtSvg",
+        "PySide6.QtSvgWidgets",
+    ]
+    for module in expected:
+        assert f"'{module}'" in text or f'"{module}"' in text, (
+            f"hiddenimports missing: {module}"
+        )
