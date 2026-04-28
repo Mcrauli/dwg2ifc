@@ -166,6 +166,8 @@ ifc_type = "IfcFurniture"
 domain = "ARK"
 talo2000_code = "1331"
 talo2000_name = "Vakiokiintokalusteet"
+# Vertical ladder shelf — tall narrow cabinet.
+default_height_mm = 2000
 
 [[rules]]
 layer_pattern = "KYL-TIKASHYLLY*"
@@ -175,6 +177,8 @@ ifc_type = "IfcFurniture"
 domain = "ARK"
 talo2000_code = "1331"
 talo2000_name = "Vakiokiintokalusteet"
+# Horizontal ladder shelf — single shelf board (~30 mm slats), render as 60 mm.
+default_height_mm = 60
 
 [[rules]]
 layer_pattern = "KYL-LEVYHYLLY*"
@@ -184,6 +188,8 @@ ifc_type = "IfcFurniture"
 domain = "ARK"
 talo2000_code = "1331"
 talo2000_name = "Vakiokiintokalusteet"
+# LEVY shelf — single sheet-metal shelf board ~60 mm thick.
+default_height_mm = 60
 
 # Section 9: Kaapelihyllyt — RAVA TALOTEKNIIKKA-TUOTEOSA T-TATE-01-01-001.
 [[rules]]
