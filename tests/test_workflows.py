@@ -57,3 +57,22 @@ def test_build_workflow_uploads_dxf2ifc_windows_artifact():
                 upload_steps.append(step)
     names = [step.get("with", {}).get("name", "") for step in upload_steps]
     assert any("dxf2ifc-windows" in name for name in names), names
+
+
+def test_build_workflow_includes_ubuntu_smoke_job():
+    data = _load_workflow()
+    runner_strings: list[str] = []
+    for job in data["jobs"].values():
+        runs_on = job.get("runs-on", "")
+        if isinstance(runs_on, str):
+            runner_strings.append(runs_on)
+        strategy = (job.get("strategy") or {}).get("matrix") or {}
+        for value in strategy.values():
+            if isinstance(value, list):
+                runner_strings.extend(str(v) for v in value)
+    assert any("ubuntu" in s.lower() for s in runner_strings)
+
+
+def test_build_workflow_invokes_build_exe_sh_on_linux():
+    text = WORKFLOW_PATH.read_text(encoding="utf-8")
+    assert "scripts/build_exe.sh" in text
