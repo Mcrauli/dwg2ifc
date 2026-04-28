@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 13 — validate_local_extent (geometria-validaattori).
+**Current task:** Plan G Task 14 — CLI --eastings/--northings/--orthogonal-height-flagit.
 
-**Mode:** A (toteutus, Section 4 lopussa). Sections 1–3 ✅ + Tasks 11–12 ✅ (12/21).
+**Mode:** A (toteutus, Section 5 alkaa). Sections 1–4 ✅ (13/21).
 
-**Seuraavaksi:** Plan-Task 13: `validate_local_extent(skeleton, max_extent_mm: float = 5_000_000)` skannaa kaikki IfcShapeRepresentation-vertex-koordinaatit ja heittää RuntimeError jos local-koordinaatti ylittää max_extent (defensiivinen kaksoismuunnos-tarkistus). Failing-testit: clean-pass + simulated-double-transform → RuntimeError.
+**Seuraavaksi:** Plan-Task 14: CLI `dxf2ifc convert --eastings <mm> --northings <mm> [--orthogonal-height <mm>]`. Jos kaikki kolme annettu, override profile.crs (käyttäen profiilin epsg/name/datum:ia jos olemassa). Failing-testit: kaikki kolme flag → CRS overrides; vain eastings → ArgparseError; ei flag → profile.crs säilyy.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -524,7 +524,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 ### Section 4: Element-add-funktiot kerros-aware + orchestrator
 - [x] Task 11: add_* ottaa storey-kwarg + RelContainedInSpatialStructure storey:hyn (`5bf557f`, lock-in test)
 - [x] Task 12: convert_dxf orchestrator resolvoi storey anchor-z:stä (`1a00798`)
-- [ ] Task 13: validate_local_extent skannaa vertex-koordinaatit max_extent_mm:n suhteen
+- [x] Task 13: validate_local_extent skannaa vertex-koordinaatit max_extent_mm:n suhteen (`0006ffd`)
 
 ### Section 5: CLI + GUI georeferenssi-input + validointi
 - [ ] Task 14: CLI --eastings/--northings/--orthogonal-height-flagit
