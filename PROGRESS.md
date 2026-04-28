@@ -217,7 +217,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 - [x] Task 19: Solibri rule-set: lisää "RAVA classification coverage" + docs/solibri-rules.md (`7212eae`)
 - [x] Task 20: rebuild solibri_reference_full.ifc + päivitä snapshot-baseline jos tarvitaan (`3ebdf50`)
 - [x] Task 21: docs/rava-classification.md (`5c692e5`)
-- [x] Task 22: plan-loppupiste — 302 ei-GUI testiä passed, ruff format clean, F821:t pre-existing PyInstaller-DSL-poikkeuksia, CLAUDE.md + README.md status päivitetty (`<TBD>`)
+- [x] Task 22: plan-loppupiste — 302 ei-GUI testiä passed, ruff format clean, F821:t pre-existing PyInstaller-DSL-poikkeuksia, CLAUDE.md + README.md status päivitetty (`e2172db`)
 
 ## Plan F status (16/16) ✅
 
