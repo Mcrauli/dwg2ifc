@@ -71,6 +71,41 @@ PyInstaller-buildia.
   artifactina — `--clean`-flag tyhjentää sen joka build:ssa, ja stale cache
   on ollut PyInstallerin tunnettu virhelähde.
 
+## Release-prosessi
+
+Tag-pohjainen release on Lauri-driven manuaaliprosessi — workflow tekee
+buildin ja luo draft-releasen, mutta lopullisen julkaisun napauttaa
+ihminen GitHub-UI:ssa.
+
+1. **Bumpaa versio.** Päivitä molemmat:
+   - `src/dxf2ifc/_version.py` (`__version__ = "X.Y.Z"`)
+   - `pyproject.toml` (`version = "X.Y.Z"`)
+2. **Päivitä CHANGELOG.md.** Lisää uusi `## vX.Y.Z — YYYY-MM-DD` -otsikko ja
+   listaus käyttäjälle näkyvistä muutoksista (Added / Changed / Fixed).
+   Release-workflow käyttää tätä `--notes-file`:nä joten teksti näkyy suoraan
+   GitHub Releasessa.
+3. **Commit + annotated tag.**
+   ```bash
+   git add src/dxf2ifc/_version.py pyproject.toml CHANGELOG.md
+   git commit -m "release: vX.Y.Z"
+   git tag -a vX.Y.Z -m "vX.Y.Z"
+   git push origin master
+   git push origin vX.Y.Z
+   ```
+4. **Workflow ajaa.** `.github/workflows/release.yml` triggeröityy `v*.*.*`
+   -tagista, buildaa Windows-`.exe`:n, ajaa `--version`-smoke-testin, kerää
+   `LICENSES.md`:n ja luo *draft* GitHub Releasen tagista. Artifactit:
+   `dxf2ifc-X.Y.Z.exe`, `dxf2ifc-X.Y.Z.exe.sha256`, `LICENSES.md`.
+5. **Tarkista ja julkaise.** Lataa `.exe` GitHub-UI:n draft-releasesta omalle
+   Windows-koneelle, vertaa SHA256:ta `.sha256`-sidecariin, aja
+   `docs/packaging-smoke.md`-checklist (Task 20). Kun kaikki vihreää,
+   napauta "Publish release" GitHub-UI:ssa. Jos jokin on rikki, poista draft
+   ja aloita alusta korotetulla bugfix-versiolla.
+
+> **Älä koskaan force-poista jo julkaistua tagia** — Releases jää viittaamaan
+> orpoon SHA:han ja loppukäyttäjien shasums menevät rikki. Bumpataan aina
+> uusi patch-versio.
+
 ## Icon TODO
 
 `build/dxf2ifc.spec` ei vielä viittaa `.ico`-tiedostoon (`icon=None`). Brand-icon
