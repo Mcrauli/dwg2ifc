@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 3 — loader.py round-trip crs + storey_z_levels_mm TOML:n läpi.
+**Current task:** Plan G Task 4 — default_kylmalaite.toml kommentoitu [crs]-osio + storey_z_levels_mm.
 
 **Mode:** A (toteutus).
 
-**Seuraavaksi:** Lue `src/dxf2ifc/profiles/loader.py` (load_profile + dump_profile), kirjoita failing-roundtrip-testit `tests/test_profile_loader.py`:hen (Profile crs:llä → dump → load → identtinen + None-crs:n yhteydessä [crs]-osio EI emit:ä).
+**Seuraavaksi:** Failing-testi: default profile load → `profile.crs is None` ja `profile.storey_z_levels_mm == [0.0]` (jälkimmäinen jo Task 3:n testissä). Lisää `src/dxf2ifc/profiles/default_kylmalaite.toml`-tiedostoon kommentoitu `[profile.crs]`-osio Helsinki-keskustan ETRS-TM35FIN-arvoilla (eastings 25496000, northings 6672000) + `storey_z_levels_mm = [0.0]` -rivi joka eksplisiittisesti dokumentoi default:n.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -498,7 +498,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 ### Section 1: CRSConfig profile-skeemaan + storey_z_levels
 - [x] Task 1: CRSConfig pydantic-malli (epsg/name/datum/eastings/northings/orth_height/x_axis/scale) (`4e3a473`)
 - [x] Task 2: Profile.crs + storey_z_levels_mm + strictly-increasing validator (`3e97dd8`)
-- [ ] Task 3: loader load_profile + dump_profile crs round-trip
+- [x] Task 3: loader load_profile + dump_profile crs round-trip (`04ac097`, ei impl-muutoksia, pydantic+tomli_w hoiti)
 - [ ] Task 4: default_kylmalaite.toml kommentoitu [crs]-osio + storey_z_levels_mm
 
 ### Section 2: IfcProjectedCRS + IfcMapConversion -kirjoitus
