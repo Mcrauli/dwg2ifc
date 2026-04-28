@@ -10,6 +10,7 @@ from dxf2ifc import __version__
 from dxf2ifc.core.ifc_writer import convert_dxf
 from dxf2ifc.core.quality import validate_ifc
 from dxf2ifc.profiles.loader import load_default_profile, load_profile
+from dxf2ifc.profiles.schema import CRSConfig
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -43,6 +44,24 @@ def build_parser() -> argparse.ArgumentParser:
         default="ifc4",
         help="IFC schema to emit (default: ifc4). Plan H switches default to ifc4x3.",
     )
+    convert.add_argument(
+        "--eastings",
+        type=float,
+        default=None,
+        help="ETRS-TM35FIN easting (mm) for IfcMapConversion. Requires --northings.",
+    )
+    convert.add_argument(
+        "--northings",
+        type=float,
+        default=None,
+        help="ETRS-TM35FIN northing (mm) for IfcMapConversion. Requires --eastings.",
+    )
+    convert.add_argument(
+        "--orthogonal-height",
+        type=float,
+        default=None,
+        help="Orthogonal height (mm) for IfcMapConversion (default: profile value or 0).",
+    )
     return parser
 
 
@@ -50,7 +69,27 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.command == "convert":
+        if (args.eastings is None) != (args.northings is None):
+            parser.error("--eastings and --northings must be given together")
         profile = load_profile(args.profile) if args.profile else load_default_profile()
+        if args.eastings is not None:
+            base = profile.crs
+            crs = CRSConfig(
+                epsg_code=base.epsg_code if base else "EPSG:3067",
+                name=base.name if base else "ETRS-TM35FIN",
+                geodetic_datum=base.geodetic_datum if base else "ETRS89",
+                eastings_mm=args.eastings,
+                northings_mm=args.northings,
+                orthogonal_height_mm=(
+                    args.orthogonal_height
+                    if args.orthogonal_height is not None
+                    else (base.orthogonal_height_mm if base else 0.0)
+                ),
+                x_axis_abscissa=base.x_axis_abscissa if base else 1.0,
+                x_axis_ordinate=base.x_axis_ordinate if base else 0.0,
+                scale=base.scale if base else 1.0,
+            )
+            profile = profile.model_copy(update={"crs": crs})
         convert_dxf(
             dxf_path=args.input,
             output_path=args.output,
