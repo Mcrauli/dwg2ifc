@@ -292,3 +292,45 @@ def test_crs_config_rejects_zero_scale():
 def test_crs_config_rejects_negative_scale():
     with pytest.raises(ValidationError):
         CRSConfig(eastings_mm=0.0, northings_mm=0.0, scale=-0.5)
+
+
+def _profile_no_rules(**extra) -> Profile:
+    return Profile(name="t", ifc_schema="IFC4", rules=[], **extra)
+
+
+def test_profile_default_storey_levels_single_zero():
+    profile = _profile_no_rules()
+    assert profile.crs is None
+    assert profile.storey_z_levels_mm == [0.0]
+
+
+def test_profile_accepts_three_storey_z_levels():
+    profile = _profile_no_rules(storey_z_levels_mm=[0.0, 3500.0, 7000.0])
+    assert profile.storey_z_levels_mm == [0.0, 3500.0, 7000.0]
+
+
+def test_profile_rejects_descending_storey_levels():
+    with pytest.raises(ValidationError):
+        _profile_no_rules(storey_z_levels_mm=[0.0, 7000.0, 3500.0])
+
+
+def test_profile_rejects_empty_storey_levels():
+    with pytest.raises(ValidationError):
+        _profile_no_rules(storey_z_levels_mm=[])
+
+
+def test_profile_rejects_storey_level_above_cap():
+    with pytest.raises(ValidationError):
+        _profile_no_rules(storey_z_levels_mm=[0.0, 100_001.0])
+
+
+def test_profile_rejects_negative_storey_level():
+    with pytest.raises(ValidationError):
+        _profile_no_rules(storey_z_levels_mm=[-1.0])
+
+
+def test_profile_with_crs_round_trip():
+    crs = CRSConfig(eastings_mm=25496000.0, northings_mm=6672000.0)
+    profile = _profile_no_rules(crs=crs, storey_z_levels_mm=[0.0, 3500.0])
+    assert profile.crs == crs
+    assert profile.storey_z_levels_mm == [0.0, 3500.0]
