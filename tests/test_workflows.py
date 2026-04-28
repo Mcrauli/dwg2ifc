@@ -152,6 +152,21 @@ def test_release_workflow_creates_draft_release():
     assert "GH_TOKEN" in text or "GITHUB_TOKEN" in text
 
 
+def test_build_workflow_runs_quality_pytests_in_linux_job():
+    """Plan F Task 14: the Linux job must run the quality-gate pytests
+    so each push verifies ifcopenshell.validate stays clean."""
+    data = _load_workflow()
+    linux_job = None
+    for job in data["jobs"].values():
+        if "ubuntu" in str(job.get("runs-on", "")).lower():
+            linux_job = job
+            break
+    assert linux_job is not None, "no ubuntu job in build.yml"
+    runs = "\n".join(step.get("run", "") for step in linux_job.get("steps", []))
+    assert "tests/test_quality.py" in runs, runs
+    assert "pytest" in runs
+
+
 def test_build_workflow_runs_version_smoke_before_upload():
     data = _load_workflow()
     windows_job = next(

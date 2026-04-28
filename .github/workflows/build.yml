@@ -69,3 +69,8 @@ jobs:
         run: |
           chmod +x scripts/build_exe.sh
           ./scripts/build_exe.sh
+
+      - name: Plan F quality gate (ifcopenshell.validate)
+        run: |
+          uv sync --all-extras
+          uv run pytest tests/test_quality.py -q --tb=short
