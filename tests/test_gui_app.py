@@ -249,6 +249,18 @@ def test_main_window_persists_profile_path_after_load(qtbot, tmp_path):
     assert store.last_profile_path == str(snapshot)
 
 
+def test_main_window_preview_log_summarizes_dxf_on_open(qtbot, fixtures_dir):
+    from dxf2ifc.gui.app import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    window.file_panel.input_edit.setText(str(fixtures_dir / "simple_wall.dxf"))
+    window.file_panel.input_edit.editingFinished.emit()
+    text = window.preview_log.text()
+    assert "simple_wall.dxf" in text
+    assert "KYL-ULKOSEINA" in text
+
+
 def test_main_window_skips_missing_last_profile(qtbot, tmp_path):
     from dxf2ifc.gui.app import MainWindow
 

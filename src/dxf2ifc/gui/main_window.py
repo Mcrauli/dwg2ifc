@@ -6,10 +6,13 @@ from PySide6 import QtCore, QtGui, QtWidgets
 
 from pathlib import Path
 
-from dxf2ifc.core.dxf_reader import list_layers
+from collections import Counter
+
+from dxf2ifc.core.dxf_reader import list_layers, read_dxf
 from dxf2ifc.gui.convert_worker import ConvertWorker
 from dxf2ifc.gui.file_panel import FilePanel
 from dxf2ifc.gui.layer_table import LayerTable
+from dxf2ifc.gui.preview_log import PreviewLogPanel
 from dxf2ifc.gui.recent_files import RecentFilesStore
 from dxf2ifc.profiles.loader import load_default_profile, load_profile
 
@@ -108,19 +111,23 @@ class MainWindow(QtWidgets.QMainWindow):
     def _on_convert_requested(self, dxf: str, out: str) -> None:
         if not dxf or not out:
             self.set_status("Pick both a DXF input and an IFC output first", level="error")
+            self.preview_log.append_error("Pick both a DXF input and an IFC output first")
             return
         self.file_panel.convert_button.setEnabled(False)
         self.set_status(f"Converting {dxf}…")
+        self.preview_log.append_info(f"Converting {Path(dxf).name} -> {Path(out).name}")
         self._worker.run(dxf=dxf, out=out, profile=self._profile)
 
     def _on_convert_finished(self, out: str) -> None:
         self.file_panel.convert_button.setEnabled(True)
         self.set_status(f"Done: {out}", level="success")
+        self.preview_log.append_success(f"Wrote {Path(out).name}")
         self.convert_finished.emit(out)
 
     def _on_convert_failed(self, message: str) -> None:
         self.file_panel.convert_button.setEnabled(True)
         self.set_status(f"Error: {message}", level="error")
+        self.preview_log.append_error(message)
         self.convert_failed.emit(message)
 
     def _on_about(self) -> None:
@@ -162,15 +169,26 @@ class MainWindow(QtWidgets.QMainWindow):
             layers = list_layers(path)
         except Exception as exc:  # noqa: BLE001 — bad DXF should not crash GUI
             self.set_status(f"Failed to read DXF layers: {exc}", level="error")
+            self.preview_log.append_error(f"Failed to read {path.name}: {exc}")
             return
         self.layer_table.set_layers(layers, self._profile)
+        try:
+            records = read_dxf(path)
+        except Exception as exc:  # noqa: BLE001 — summary is best-effort
+            self.preview_log.append_error(f"Failed to summarize {path.name}: {exc}")
+            return
+        layer_counts = dict(Counter(record.layer for record in records))
+        self.preview_log.set_dxf_summary(
+            path=str(path), entity_count=len(records), layer_counts=layer_counts
+        )
 
     def _build_right_panel(self) -> QtWidgets.QWidget:
         panel = QtWidgets.QWidget()
         layout = QtWidgets.QVBoxLayout(panel)
         layout.setContentsMargins(12, 8, 0, 16)
-        placeholder = QtWidgets.QLabel("Preview & log")
-        placeholder.setProperty("role", "h2")
-        layout.addWidget(placeholder)
-        layout.addStretch(1)
+        heading = QtWidgets.QLabel("Preview & log")
+        heading.setProperty("role", "h2")
+        layout.addWidget(heading)
+        self.preview_log = PreviewLogPanel()
+        layout.addWidget(self.preview_log, stretch=1)
         return panel
