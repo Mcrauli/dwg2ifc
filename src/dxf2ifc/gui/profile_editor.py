@@ -91,12 +91,8 @@ class ProfileEditorDialog(QtWidgets.QDialog):
         layout = QtWidgets.QVBoxLayout(self)
         self.table = QtWidgets.QTableView()
         self.table.setModel(self._model)
-        self.table.setSelectionBehavior(
-            QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows
-        )
-        self.table.horizontalHeader().setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.Stretch
-        )
+        self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
+        self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
         layout.addWidget(self.table)
 
         toolbar = QtWidgets.QHBoxLayout()

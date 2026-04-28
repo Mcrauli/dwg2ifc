@@ -4,7 +4,7 @@
 
 ## Status
 
-✅ **Plan A 21/21 + Plan B 50/50 + Plan C 12/12** — koko Talo2000-elementtisetti tuetaan, ja kylmäjärjestelmät on ryhmitelty IfcSystem-entiteeteiksi (Refrigeration LT/MT, Drainage, Cable carriers, Refrigeration plant) IfcRelAssignsToGroup-relaatiolla. Pytest 151 ✅, coverage 91 %, `ifcopenshell.validate.validate` ei-ERROR full-fixture-suiteessa. Seuraava askel ja per-task SHA-historia: [`PROGRESS.md`](PROGRESS.md).
+✅ **Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25** — koko Talo2000-elementtisetti tuetaan, kylmäjärjestelmät on ryhmitelty IfcSystem-entiteeteiksi (Refrigeration LT/MT, Drainage, Cable carriers, Refrigeration plant) IfcRelAssignsToGroup-relaatiolla, ja PySide6-pohjainen desktop-GUI wrappaa CLI-coren (layer-preview, profiili-editori, taustasäikeen konversio). Pytest 200 ✅, coverage 89 %, `ifcopenshell.validate.validate` ei-ERROR full-fixture-suiteessa, ruff clean. Seuraava askel ja per-task SHA-historia: [`PROGRESS.md`](PROGRESS.md).
 
 | Vaihe | Tila |
 |---|---|
@@ -12,7 +12,7 @@
 | Plan A: Core CLI wall pipeline | ✅ 21/21 |
 | Plan B: Full element set | ✅ 50/50 |
 | Plan C: IfcSystem-ryhmittely | ✅ 12/12 |
-| Plan D: PySide6 GUI | ⏳ kirjoittamatta |
+| Plan D: PySide6 GUI | ✅ 25/25 |
 | Plan E: PyInstaller-pakkaus | ⏳ kirjoittamatta |
 | Plan F: Spec verifiointi Solibrilla | ⏳ kirjoittamatta |
 

@@ -46,16 +46,12 @@ class FilePanel(QtWidgets.QWidget):
         return label
 
     def _on_browse_input(self) -> None:
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self, "Open DXF", "", "DXF files (*.dxf)"
-        )
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Open DXF", "", "DXF files (*.dxf)")
         if path:
             self.input_edit.setText(path)
 
     def _on_browse_output(self) -> None:
-        path, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self, "Save IFC", "", "IFC files (*.ifc)"
-        )
+        path, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save IFC", "", "IFC files (*.ifc)")
         if path:
             self.output_edit.setText(path)
 

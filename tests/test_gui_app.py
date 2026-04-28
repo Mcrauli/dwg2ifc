@@ -168,9 +168,7 @@ def test_main_window_layer_table_updates_when_input_path_set(qtbot, fixtures_dir
     window.file_panel.input_edit.setText(str(fixtures_dir / "simple_wall.dxf"))
     window.file_panel.input_edit.editingFinished.emit()
     assert window.layer_table.rowCount() >= 1
-    layers = [
-        window.layer_table.item(r, 0).text() for r in range(window.layer_table.rowCount())
-    ]
+    layers = [window.layer_table.item(r, 0).text() for r in range(window.layer_table.rowCount())]
     assert "KYL-ULKOSEINA" in layers
 
 

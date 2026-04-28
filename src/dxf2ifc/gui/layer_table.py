@@ -19,9 +19,7 @@ class LayerTable(QtWidgets.QTableWidget):
         self.verticalHeader().setVisible(False)
         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
         self.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
-        self.horizontalHeader().setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.Stretch
-        )
+        self.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
 
     def set_layers(self, layers: list[str], profile: Profile) -> None:
         self.setRowCount(len(layers))

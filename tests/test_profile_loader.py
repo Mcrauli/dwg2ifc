@@ -263,7 +263,7 @@ talo2000_name = "Ulkoseinät"
 
 def test_dump_profile_round_trips_default(tmp_path: Path):
     original = load_default_profile()
-    out = tmp_path / 'roundtrip.toml'
+    out = tmp_path / "roundtrip.toml"
     dump_profile(original, out)
     reloaded = load_profile(out)
     assert isinstance(reloaded, Profile)
@@ -278,7 +278,7 @@ def test_dump_profile_round_trips_default(tmp_path: Path):
 
 def test_dump_profile_writes_valid_utf8_toml(tmp_path: Path):
     profile = load_default_profile()
-    out = tmp_path / 'roundtrip.toml'
+    out = tmp_path / "roundtrip.toml"
     dump_profile(profile, out)
-    text = out.read_text(encoding='utf-8')
-    assert text.startswith('[profile]') or '[[rules]]' in text
+    text = out.read_text(encoding="utf-8")
+    assert text.startswith("[profile]") or "[[rules]]" in text

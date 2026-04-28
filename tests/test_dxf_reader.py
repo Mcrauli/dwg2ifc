@@ -104,9 +104,7 @@ def test_list_layers_returns_unique_sorted_names_from_modelspace(tmp_path: Path)
     doc.layers.add(name="KYL-VIEMARI-LATTIA")
     msp = doc.modelspace()
     msp.add_line((0.0, 0.0, 0.0), (1.0, 0.0, 0.0), dxfattribs={"layer": "LT IMU"})
-    msp.add_line(
-        (0.0, 1.0, 0.0), (1.0, 1.0, 0.0), dxfattribs={"layer": "KYL-VIEMARI-LATTIA"}
-    )
+    msp.add_line((0.0, 1.0, 0.0), (1.0, 1.0, 0.0), dxfattribs={"layer": "KYL-VIEMARI-LATTIA"})
     msp.add_line((0.0, 2.0, 0.0), (1.0, 2.0, 0.0), dxfattribs={"layer": "LT IMU"})
     doc.saveas(str(dxf))
 
