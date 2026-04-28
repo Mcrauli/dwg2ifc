@@ -19,6 +19,7 @@ import ezdxf
 
 from dxf2ifc.core.ifc_writer import convert_dxf
 from dxf2ifc.profiles.loader import load_default_profile
+from dxf2ifc.profiles.schema import CRSConfig
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 FIXTURE_PATH = REPO_ROOT / "tests" / "fixtures" / "solibri_reference_full.ifc"
@@ -78,6 +79,15 @@ def _author_dxf(target: Path) -> Path:
 
 def build(output: Path = FIXTURE_PATH) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True)
+    profile = load_default_profile().model_copy(
+        update={
+            "crs": CRSConfig(
+                eastings_mm=25_496_000.0,
+                northings_mm=6_672_000.0,
+                orthogonal_height_mm=0.0,
+            ),
+        }
+    )
     with tempfile.TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
         dxf_path = _author_dxf(tmp_dir / "solibri_reference_full.dxf")
@@ -85,7 +95,7 @@ def build(output: Path = FIXTURE_PATH) -> Path:
         convert_dxf(
             dxf_path=dxf_path,
             output_path=ifc_tmp,
-            profile=load_default_profile(),
+            profile=profile,
             project_name="Solibri Reference (full)",
         )
         shutil.copyfile(ifc_tmp, output)

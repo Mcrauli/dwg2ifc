@@ -87,9 +87,17 @@ luokitukset suunnittelualan mukaan: ARK-puolen rakennusosat (Talo 2000) ja
 TATE-puolen tuoteosat (RAVA-LVI / RAVA-TATE). Domain-säännöt, codeset:t ja
 viralliset koodit on kuvattu [`docs/rava-classification.md`](rava-classification.md):ssä.
 
+Plan G:n jälkeen Taso 1 -gate sisältää myös **CRS-coverage-tarkistuksen**
+(`crs_orphan_map_conversion`, `crs_missing_map_conversion`,
+`crs_possible_double_transform`). Solibri-rule-set:iin lisätty rule #7
+"CRS coverage" (`tools/solibri/dxf2ifc.bcfzip`) tekee saman
+manuaalisesti Tasolla 2. Yksityiskohdat ja ETRS-TM35FIN-konventio:
+[`docs/coordinate-system.md`](coordinate-system.md).
+
 ## Mitä Plan F EI vielä kata
 
 - Solibri-tarkistuksen automatisointi — ei mahdollista ilman lisenssipalvelinta.
 - ~~IFC 4.3 -migraatio + RAVA-luokitus~~ — toteutettu Plan H:ssa
   (ks. [`docs/rava-classification.md`](rava-classification.md)).
-- Coordinate System / georeferenced IFC — tehdään Plan G:ssä.
+- ~~Coordinate System / georeferenced IFC~~ — toteutettu Plan G:ssa
+  (ks. [`docs/coordinate-system.md`](coordinate-system.md)).
