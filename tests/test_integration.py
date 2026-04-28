@@ -185,10 +185,11 @@ def test_lt_imu_roundtrip_produces_ifcpipesegment(tmp_path: Path):
     types = ifc.by_type("IfcPipeSegmentType")
     assert any(t.ElementType == "REFRIGERATION" for t in types)
 
-    # Plan H Task 14: refrigerant pipes are TATE-domain → no Talo2000
-    # classification. RAVA-LVI classification arrives in Plan H Tasks 15-17.
+    # Plan H Task 14: refrigerant pipes are TATE-domain → RAVA-LVI.
     refs = ifc.by_type("IfcClassificationReference")
-    assert all(r.Identification != "2151" for r in refs)
+    rava = [r for r in refs if r.Identification == "T-LVI-02"]
+    assert len(rava) == 1
+    assert rava[0].ReferencedSource.Name == "RAVA-LVI"
 
     logger = ifcopenshell.validate.json_logger()
     ifcopenshell.validate.validate(ifc, logger=logger)
@@ -214,9 +215,11 @@ def test_kyl_viemari_lattia_roundtrip_produces_drainpipe(tmp_path: Path):
     drain_types = [t for t in ifc.by_type("IfcPipeSegmentType") if t.ElementType == "DRAINPIPE"]
     assert len(drain_types) == 1
 
-    # Plan H Task 14: drainpipe is TATE-domain → no Talo2000.
+    # Plan H Task 14: drainpipe is TATE-domain → RAVA-LVI T-LVI-04-01-001.
     refs = ifc.by_type("IfcClassificationReference")
-    assert all(r.Identification != "2160" for r in refs)
+    rava = [r for r in refs if r.Identification == "T-LVI-04-01-001"]
+    assert len(rava) == 1
+    assert rava[0].ReferencedSource.Name == "RAVA-LVI"
 
     logger = ifcopenshell.validate.json_logger()
     ifcopenshell.validate.validate(ifc, logger=logger)
@@ -269,9 +272,11 @@ def test_kaapelihylly_roundtrip_produces_cable_carrier_segment(tmp_path: Path):
     types = ifc.by_type("IfcCableCarrierSegmentType")
     assert any(t.PredefinedType == "CABLETRUNKINGSEGMENT" for t in types)
 
-    # Plan H Task 14: cable carrier is TATE-domain → no Talo2000.
+    # Plan H Task 14: cable carrier is TATE-domain → RAVA-TATE.
     refs = ifc.by_type("IfcClassificationReference")
-    assert all(r.Identification != "2380" for r in refs)
+    rava = [r for r in refs if r.Identification == "T-TATE-01-01-001"]
+    assert len(rava) == 1
+    assert rava[0].ReferencedSource.Name == "RAVA-TATE"
 
     logger = ifcopenshell.validate.json_logger()
     ifcopenshell.validate.validate(ifc, logger=logger)
@@ -321,9 +326,11 @@ def test_hoyrystin_roundtrip_produces_ifcevaporator_with_talo2000_2510(tmp_path:
     assert len(evaps) == 1
     assert evaps[0].Name == "KYL-HOYRYSTIN-CR-30"
 
-    # Plan H Task 13: cooling equipment is TATE-domain → no Talo2000.
+    # Plan H Task 13: cooling equipment is TATE-domain → RAVA-LVI.
     refs = ifc.by_type("IfcClassificationReference")
-    assert all(r.Identification != "2510" for r in refs)
+    rava = [r for r in refs if r.Identification == "T-LVI-01-01-023"]
+    assert len(rava) == 1
+    assert rava[0].ReferencedSource.Name == "RAVA-LVI"
 
     logger = ifcopenshell.validate.json_logger()
     ifcopenshell.validate.validate(ifc, logger=logger)

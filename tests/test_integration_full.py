@@ -90,6 +90,58 @@ def test_full_kylmaelement_pipeline_emits_each_ifc_class(
         assert ifc.by_type(ifc_class), f"expected at least one {ifc_class}"
 
 
+def test_full_kylmaelement_pipeline_emits_rava_classifications(
+    full_kylmaelement_dxf: Path, tmp_path: Path
+):
+    """Plan H Task 16: TATE-domain rules emit IfcClassification 'RAVA-LVI'
+    (refrigerant pipes, drainpipe, cooling equipment) and 'RAVA-TATE'
+    (cable carrier) alongside the existing 'Talo2000' classification."""
+    out = tmp_path / "full_kylmaelement.ifc"
+    convert_dxf(
+        dxf_path=full_kylmaelement_dxf,
+        output_path=out,
+        profile=load_default_profile(),
+    )
+
+    ifc = ifcopenshell.open(str(out))
+    classification_names = {c.Name for c in ifc.by_type("IfcClassification")}
+    assert "Talo2000" in classification_names
+    assert "RAVA-LVI" in classification_names
+    assert "RAVA-TATE" in classification_names
+
+    codes = {r.Identification for r in ifc.by_type("IfcClassificationReference")}
+    # Cooling equipment HOYRYSTIN
+    assert "T-LVI-01-01-023" in codes
+    # Refrigerant pipe T-LVI-02 generic category
+    assert "T-LVI-02" in codes
+    # Drainpipe (defrost)
+    assert "T-LVI-04-01-001" in codes
+    # Cable carrier (TALOTEKNIIKKA)
+    assert "T-TATE-01-01-001" in codes
+
+
+def test_full_kylmaelement_pipeline_does_not_double_classify(
+    full_kylmaelement_dxf: Path, tmp_path: Path
+):
+    """Plan H Task 16: every classified product carries exactly one
+    IfcClassificationReference (no element belongs to both Talo2000 and
+    a RAVA codeset)."""
+    out = tmp_path / "full_kylmaelement.ifc"
+    convert_dxf(
+        dxf_path=full_kylmaelement_dxf,
+        output_path=out,
+        profile=load_default_profile(),
+    )
+
+    ifc = ifcopenshell.open(str(out))
+    refs_per_product: dict[int, int] = {}
+    for rel in ifc.by_type("IfcRelAssociatesClassification"):
+        for product in rel.RelatedObjects:
+            refs_per_product[product.id()] = refs_per_product.get(product.id(), 0) + 1
+    over_classified = {pid: n for pid, n in refs_per_product.items() if n > 1}
+    assert not over_classified, f"products with >1 classification: {over_classified}"
+
+
 def test_full_kylmaelement_pipeline_emits_four_grouped_ifcsystems(
     full_kylmaelement_dxf: Path, tmp_path: Path
 ):
