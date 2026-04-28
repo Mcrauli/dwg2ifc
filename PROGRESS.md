@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan E — PyInstaller-pakkaus (kirjoittamatta, Mode B alkaa B1:llä).
+**Current task:** Plan E (Mode B) — section 1/5: PyInstaller bootstrap.
 
-**Mode:** A (siirtymä Plan D → Plan E pending). Seuraavalla sessiolla Mode B kun Plan E -plan-tiedostoa kirjoitetaan.
+**Mode:** B (plan-kirjoitus, section 1/5). Skeleton committed `432a277`.
 
-**Seuraavaksi:** kirjoita Plan E:n skeleton — luo `docs/superpowers/plans/2026-04-27-plan-e-pyinstaller.md` YAML-frontmatterilla + 1-3 rivin introlla + ~5 sectionin otsikoilla (esim. PyInstaller spec, Windows .exe build, font/asset bundling, GitHub Releases CI, smoke + checksum), ~30 riviä. Commit + push, päivitä PROGRESS.md "Mode B, section 1/N".
+**Seuraavaksi:** täytä Plan E section 1 (PyInstaller bootstrap) 3-5 task-rivillä — lisää PyInstaller dev-extraan, base .spec generointi (`pyinstaller --onefile --windowed src/dxf2ifc/gui/__main__.py` aluksi), .spec-tiedosto checked-iniin, smoke `.exe`-launch test (paikallisesti Windowsissa, CI:ssa Wine ehkä). Commit + push, sitten section 2.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
