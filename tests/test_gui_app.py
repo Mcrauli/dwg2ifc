@@ -190,3 +190,75 @@ def test_run_is_callable():
     from dxf2ifc.gui.app import run
 
     assert callable(run)
+
+
+def _isolated_store(tmp_path):
+    from PySide6 import QtCore
+
+    from dxf2ifc.gui.recent_files import RecentFilesStore
+
+    settings = QtCore.QSettings(str(tmp_path / "settings.ini"), QtCore.QSettings.Format.IniFormat)
+    return RecentFilesStore(settings=settings)
+
+
+def test_main_window_loads_last_profile_on_startup(qtbot, tmp_path):
+    from dxf2ifc.gui.app import MainWindow
+    from dxf2ifc.profiles.loader import dump_profile, load_default_profile
+    from dxf2ifc.profiles.schema import Profile, Rule
+
+    custom_path = tmp_path / "last.toml"
+    dump_profile(
+        Profile(
+            name="last",
+            ifc_schema="IFC4",
+            rules=[
+                Rule(
+                    layer_pattern="ZZ",
+                    ifc_type="IfcWall",
+                    predefined_type="STANDARD",
+                    talo2000_code="1241",
+                    talo2000_name="Ulkoseinät",
+                )
+            ],
+        ),
+        str(custom_path),
+    )
+
+    store = _isolated_store(tmp_path)
+    store.last_profile_path = str(custom_path)
+
+    window = MainWindow(recent_files=store)
+    qtbot.addWidget(window)
+
+    assert [r.layer_pattern for r in window._profile.rules] == ["ZZ"]
+    _ = load_default_profile  # imported to keep parity with sibling tests
+
+
+def test_main_window_persists_profile_path_after_load(qtbot, tmp_path):
+    from dxf2ifc.gui.app import MainWindow
+    from dxf2ifc.profiles.loader import dump_profile, load_default_profile
+
+    snapshot = tmp_path / "snapshot.toml"
+    dump_profile(load_default_profile(), str(snapshot))
+
+    store = _isolated_store(tmp_path)
+    window = MainWindow(recent_files=store)
+    qtbot.addWidget(window)
+
+    window.apply_profile_from_path(str(snapshot))
+    assert store.last_profile_path == str(snapshot)
+
+
+def test_main_window_skips_missing_last_profile(qtbot, tmp_path):
+    from dxf2ifc.gui.app import MainWindow
+
+    store = _isolated_store(tmp_path)
+    store.last_profile_path = str(tmp_path / "ghost.toml")
+
+    window = MainWindow(recent_files=store)
+    qtbot.addWidget(window)
+
+    # Falls back to default profile when last_profile_path no longer exists.
+    assert window._profile.name != "last"
+    # And forgets the dangling path.
+    assert store.last_profile_path is None

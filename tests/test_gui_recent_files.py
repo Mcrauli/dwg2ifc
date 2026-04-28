@@ -40,3 +40,19 @@ def test_recent_files_persists_across_store_instances(qtbot, tmp_path):
     store.add("/x.dxf")
     fresh = _make_store(tmp_path)
     assert fresh.list() == ["/x.dxf"]
+
+
+def test_recent_files_last_profile_path_round_trips(qtbot, tmp_path):
+    store = _make_store(tmp_path)
+    assert store.last_profile_path is None
+    store.last_profile_path = "/profiles/custom.toml"
+    fresh = _make_store(tmp_path)
+    assert fresh.last_profile_path == "/profiles/custom.toml"
+
+
+def test_recent_files_last_profile_path_clears_on_none(qtbot, tmp_path):
+    store = _make_store(tmp_path)
+    store.last_profile_path = "/profiles/custom.toml"
+    store.last_profile_path = None
+    fresh = _make_store(tmp_path)
+    assert fresh.last_profile_path is None

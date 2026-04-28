@@ -5,6 +5,7 @@ from __future__ import annotations
 from PySide6 import QtCore
 
 _KEY = "recent_files"
+_LAST_PROFILE_KEY = "last_profile_path"
 _MAX_ENTRIES = 5
 
 
@@ -26,4 +27,17 @@ class RecentFilesStore:
 
     def clear(self) -> None:
         self._settings.remove(_KEY)
+        self._settings.sync()
+
+    @property
+    def last_profile_path(self) -> str | None:
+        raw = self._settings.value(_LAST_PROFILE_KEY, None)
+        return str(raw) if raw else None
+
+    @last_profile_path.setter
+    def last_profile_path(self, path: str | None) -> None:
+        if path is None:
+            self._settings.remove(_LAST_PROFILE_KEY)
+        else:
+            self._settings.setValue(_LAST_PROFILE_KEY, path)
         self._settings.sync()

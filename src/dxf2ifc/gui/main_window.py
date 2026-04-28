@@ -10,6 +10,7 @@ from dxf2ifc.core.dxf_reader import list_layers
 from dxf2ifc.gui.convert_worker import ConvertWorker
 from dxf2ifc.gui.file_panel import FilePanel
 from dxf2ifc.gui.layer_table import LayerTable
+from dxf2ifc.gui.recent_files import RecentFilesStore
 from dxf2ifc.profiles.loader import load_default_profile, load_profile
 
 
@@ -17,11 +18,17 @@ class MainWindow(QtWidgets.QMainWindow):
     convert_finished = QtCore.Signal(str)
     convert_failed = QtCore.Signal(str)
 
-    def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
+    def __init__(
+        self,
+        parent: QtWidgets.QWidget | None = None,
+        *,
+        recent_files: RecentFilesStore | None = None,
+    ) -> None:
         super().__init__(parent)
         self.setWindowTitle("dxf2ifc")
         self.resize(1100, 700)
-        self._profile = load_default_profile()
+        self._recent_files = recent_files or RecentFilesStore()
+        self._profile = self._load_initial_profile()
         self._worker = ConvertWorker(self)
         self._worker.finished.connect(self._on_convert_finished)
         self._worker.failed.connect(self._on_convert_failed)
@@ -78,10 +85,23 @@ class MainWindow(QtWidgets.QMainWindow):
 
         dialog = ProfileEditorDialog(self._profile, parent=self)
         dialog.profile_saved.connect(self.apply_profile_from_path)
+        dialog.profile_loaded.connect(self.apply_profile_from_path)
         dialog.exec()
+
+    def _load_initial_profile(self):
+        last = self._recent_files.last_profile_path
+        if last and Path(last).is_file():
+            try:
+                return load_profile(last)
+            except Exception:  # noqa: BLE001 — corrupt cached path should not crash startup
+                self._recent_files.last_profile_path = None
+        elif last:
+            self._recent_files.last_profile_path = None
+        return load_default_profile()
 
     def apply_profile_from_path(self, path: str) -> None:
         self._profile = load_profile(path)
+        self._recent_files.last_profile_path = path
         self._refresh_layer_table()
         self.set_status(f"Profile loaded: {path}", level="success")
 
