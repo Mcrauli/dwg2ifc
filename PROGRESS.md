@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 14 — docs/packaging.md "CI build" -osio.
+**Current task:** Plan E Task 15 — .github/workflows/release.yml tag-trigger + permissions: contents-write.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Lue `docs/packaging.md` (lyhyt). Lisää "CI build" -osio joka kuvaa: workflow-trigger (pull_request + push master), artifact-naming (dxf2ifc-windows), smoke-step (`--version`), Linux-smoke job (spec-validointi). Lisää huomautus "GUI smoke ajetaan vain manuaalisesti" + "PyInstaller-cache ei cachetä artifactina".
+**Seuraavaksi:** Failing-testi joka tarkistaa: release.yml on olemassa, triggeröityy `push: tags: ['v*.*.*']`, sisältää `permissions: contents: write`, ja sisältää saman build-jobin Windows-runnerilla. Toteuta workflow-tiedosto. Commit + push.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -167,7 +167,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 - [x] Task 11: .github/workflows/build.yml Windows-runner + artifact upload (`e13b683`)
 - [x] Task 12: build.yml ubuntu-matrix smoke-build (`1bdf320`)
 - [x] Task 13: build.yml smoke-step (--version → exit 0) (`45b0d95`)
-- [ ] Task 14: docs/packaging.md "CI build"-osio
+- [x] Task 14: docs/packaging.md "CI build"-osio (`a23b6bb`)
 
 ### Section 4: GitHub Actions release-workflow
 - [ ] Task 15: .github/workflows/release.yml tag-trigger + permissions
