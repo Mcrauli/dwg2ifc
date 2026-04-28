@@ -2,11 +2,11 @@
 
 **Current plan:** Plan E — PyInstaller-pakkaus + GitHub Releases (kirjoitettu `a3620f7`, 23 tehtävää, 5 sectionia).
 
-**Current task:** Plan E Task 11 — `.github/workflows/build.yml` Windows-runner + artifact upload.
+**Current task:** Plan E Task 11 — `.github/workflows/build.yml` Windows-runner + artifact upload (BLOKKI).
 
-**Mode:** A (implementointi).
+**Mode:** A (implementointi, blokattu).
 
-**Seuraavaksi:** lisää `.github/workflows/build.yml` joka triggeröityy `pull_request` + `push: master` -tapahtumissa, ajaa Windows-runnerilla python3.12 + uv setupin, ajaa `scripts/build_exe.ps1`:n ja uploadaa `dist/dxf2ifc-*.exe` artifactina nimellä `dxf2ifc-windows`.
+**Seuraavaksi:** Pyydä Lauria päivittämään GitHub PAT (sandboxin `PAT`-arvo): fine-grained tokenin "Actions"-permission tarvitaan read+write -oikeuksin jotta `.github/workflows/*`-tiedostoja voi pushata. Kun PAT:n on päivitetty, tehtävä on luoda `.github/workflows/build.yml` joka triggeröityy `pull_request`+`push:master`, ajaa windows-latest-runnerilla python 3.12+uv setupin, ajaa `scripts/build_exe.ps1`:n ja uploadaa `dist/dxf2ifc-*.exe` artifactina `dxf2ifc-windows`. Tehtävät 11–17 (build.yml + release.yml -workflowit) ovat saman blokkerin alla; Task 18 (CHANGELOG.md) on non-workflow ja voitaisiin tehdä järjestyksen vastaisesti, mutta plan-kuri kieltää skipping:n.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -296,7 +296,8 @@
 - Plan E Task 8: build/version_info.py VSVersionInfo Win32-resource (Radika Oy + dxf2ifc + 0.1.0) + .spec EXE(version=...) + .gitignore-whitelist + spec/version_info-testi (`da778e4`). 7 spec-testiä passed.
 - Plan E Task 9: .spec EXE(icon=None) placeholder TODO + docs/packaging.md "Icon TODO"-osio + spec-testi (`bb08517`). 8 spec-testiä passed. ✅ Section 2 valmis.
 - Plan E Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh + tests/test_build_scripts.py (uv sync, pyinstaller, version-stamping, SHA256, +x bit) (`738caa7`). 3 build-script-testiä passed.
+- Plan E Task 11 yritetty: build.yml + tests/test_workflows.py kirjoitettu paikallisesti, mutta `git push` hylättiin (PAT:lla ei workflow-scopea). Paikalliset tiedostot poistettiin commitia ennen, työtä ei kommittoitu master:iin. ⚠ blokkeri.
 
-**Kesken:** Plan E Task 11–23 (13 jäljellä).
+**Kesken:** Plan E Task 11–23 (13 jäljellä) — Task 11–17 odottavat PAT-päivitystä, Task 18–23 odottavat 11–17:n valmistumista (plan-järjestys).
 
-**Blokkerit:** ei.
+**Blokkerit:** **on** — Plan E Task 11 yritti pushata `.github/workflows/build.yml`:n, mutta GitHub hylkäsi `remote rejected: refusing to allow a Personal Access Token to create or update workflow without 'workflow' scope`. Sandboxin fine-grained PAT (`github_pat_11CCKC33I0oBitsKhgnAW...`) ei sisällä Actions-permission read+write -oikeutta. Workflow-pohjaiset tehtävät 11–17 ovat blokattuna kunnes PAT päivitetään. Pyydä Lauria uudistamaan PAT GitHub-tilin Settings → Developer settings → Personal access tokens → Fine-grained → Repository permissions → Actions (Read and write).
