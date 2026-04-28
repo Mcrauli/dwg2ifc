@@ -4,7 +4,7 @@
 
 **Current task:** Plan F — kirjoita plan (MODE B). Spec verifiointi Solibrissa.
 
-**Mode:** B section 2/5.
+**Mode:** B section 3/5.
 
 **Seuraavaksi:** Aloita Mode B B1: lue Plan E:n frontmatter + ensimmäiset 30 riviä. Luo `docs/superpowers/plans/2026-04-XX-plan-f-solibri-verification.md` skeleton (frontmatter + intro + section-otsikot). Section-ehdotukset: 1) Solibri rule-set määritelmä, 2) Validation-runner kutsuva Solibri Anywheren komentoriviltä, 3) Validation-raportin parsinta, 4) CI-integraatio (full-fixture IFC vasten Solibri rules), 5) Plan-loppupiste.
 
