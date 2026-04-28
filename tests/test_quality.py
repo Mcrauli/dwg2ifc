@@ -107,3 +107,33 @@ def test_validate_ifc_full_fixture_has_no_talo2000_warnings(
         if "missing Talo2000 classification" in w.get("message", "")
     ]
     assert talo_warnings == [], f"unexpected Talo2000 warnings: {talo_warnings}"
+
+
+def test_convert_dxf_default_returns_tuple_with_none_report(
+    full_kylmaelement_dxf: Path, tmp_path: Path
+):
+    out = tmp_path / "full_kylmaelement.ifc"
+    result = convert_dxf(
+        dxf_path=full_kylmaelement_dxf,
+        output_path=out,
+        profile=load_default_profile(),
+    )
+    assert isinstance(result, tuple)
+    systems, report = result
+    assert isinstance(systems, dict)
+    assert report is None
+
+
+def test_convert_dxf_validate_true_returns_validation_report(
+    full_kylmaelement_dxf: Path, tmp_path: Path
+):
+    out = tmp_path / "full_kylmaelement.ifc"
+    systems, report = convert_dxf(
+        dxf_path=full_kylmaelement_dxf,
+        output_path=out,
+        profile=load_default_profile(),
+        validate=True,
+    )
+    assert isinstance(systems, dict)
+    assert isinstance(report, ValidationReport)
+    assert report.errors == []

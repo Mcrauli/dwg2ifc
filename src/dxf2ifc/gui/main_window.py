@@ -35,6 +35,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._worker = ConvertWorker(self)
         self._worker.finished.connect(self._on_convert_finished)
         self._worker.failed.connect(self._on_convert_failed)
+        self._worker.report_ready.connect(self._on_report_ready)
 
         central = QtWidgets.QWidget(self)
         root = QtWidgets.QVBoxLayout(central)
@@ -116,7 +117,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.file_panel.convert_button.setEnabled(False)
         self.set_status(f"Converting {dxf}…")
         self.preview_log.append_info(f"Converting {Path(dxf).name} -> {Path(out).name}")
-        self._worker.run(dxf=dxf, out=out, profile=self._profile)
+        self._worker.run(dxf=dxf, out=out, profile=self._profile, validate=True)
 
     def _on_convert_finished(self, out: str) -> None:
         self.file_panel.convert_button.setEnabled(True)
@@ -129,6 +130,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_status(f"Error: {message}", level="error")
         self.preview_log.append_error(message)
         self.convert_failed.emit(message)
+
+    def _on_report_ready(self, report: object) -> None:
+        """Display ValidationReport summary, warnings and errors in the
+        preview log so the user sees Plan F's quality-gate results."""
+        summary = getattr(report, "summary", "")
+        if summary:
+            self.preview_log.append_info(summary)
+        for warning in getattr(report, "warnings", []) or []:
+            message = warning.get("message") if isinstance(warning, dict) else str(warning)
+            self.preview_log.append_info(f"WARNING: {message}")
+        for error in getattr(report, "errors", []) or []:
+            message = error.get("message") if isinstance(error, dict) else str(error)
+            self.preview_log.append_error(f"ERROR: {message}")
 
     def _on_about(self) -> None:
         from dxf2ifc.gui.about import show_about

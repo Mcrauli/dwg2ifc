@@ -94,7 +94,7 @@ def test_main_window_convert_flow_updates_status_on_success(qtbot, tmp_path):
     panel.input_edit.setText(str(tmp_path / "in.dxf"))
     panel.output_edit.setText(str(tmp_path / "out.ifc"))
 
-    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value={}):
+    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value=({}, None)):
         with qtbot.waitSignal(window.convert_finished, timeout=2000):
             panel.convert_button.click()
 
@@ -115,7 +115,7 @@ def test_main_window_convert_flow_disables_button_during_run(qtbot, tmp_path):
     panel.input_edit.setText(str(tmp_path / "in.dxf"))
     panel.output_edit.setText(str(tmp_path / "out.ifc"))
 
-    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value={}):
+    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value=({}, None)):
         panel.convert_button.click()
         assert not panel.convert_button.isEnabled()
         qtbot.waitUntil(lambda: panel.convert_button.isEnabled(), timeout=2000)
@@ -170,6 +170,48 @@ def test_main_window_layer_table_updates_when_input_path_set(qtbot, fixtures_dir
     assert window.layer_table.rowCount() >= 1
     layers = [window.layer_table.item(r, 0).text() for r in range(window.layer_table.rowCount())]
     assert "KYL-ULKOSEINA" in layers
+
+
+def test_main_window_logs_report_errors_in_preview_log(qtbot):
+    from dxf2ifc.core.quality import ValidationReport
+    from dxf2ifc.gui.app import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+
+    report = ValidationReport(
+        errors=[{"level": "ERROR", "message": "fake validation error 42"}],
+        warnings=[
+            {"level": "WARNING", "message": "missing Talo2000 classification on IfcWall 'X'"}
+        ],
+        summary="IFC4: 1 errors, 1 warnings",
+    )
+    window._on_report_ready(report)
+
+    text = window.preview_log.toPlainText()
+    assert "fake validation error 42" in text
+    assert "missing Talo2000 classification" in text
+    assert "IFC4: 1 errors" in text
+
+
+def test_main_window_convert_flow_passes_validate_true(qtbot, tmp_path):
+    from unittest.mock import patch
+
+    from dxf2ifc.gui.app import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    panel = window.file_panel
+    panel.input_edit.setText(str(tmp_path / "in.dxf"))
+    panel.output_edit.setText(str(tmp_path / "out.ifc"))
+
+    with patch(
+        "dxf2ifc.gui.convert_worker.convert_dxf", return_value=({}, None)
+    ) as mock_convert:
+        with qtbot.waitSignal(window.convert_finished, timeout=2000):
+            panel.convert_button.click()
+
+    assert mock_convert.call_args.kwargs.get("validate") is True
 
 
 def test_main_window_renders_h1_and_caption_labels(qtbot):

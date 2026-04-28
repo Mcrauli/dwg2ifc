@@ -9,10 +9,14 @@ from __future__ import annotations
 
 import math
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import ifcopenshell
 import ifcopenshell.api
 import ifcopenshell.guid
+
+if TYPE_CHECKING:  # pragma: no cover
+    from dxf2ifc.core.quality import ValidationReport
 
 from dxf2ifc.core.dxf_reader import read_dxf
 from dxf2ifc.core.geometry import (
@@ -1042,12 +1046,15 @@ def convert_dxf(
     output_path: str | Path,
     profile: Profile,
     project_name: str | None = None,
-) -> dict[str, list]:
+    validate: bool = False,
+) -> tuple[dict[str, list], ValidationReport | None]:
     """Orchestrate DXF -> IFC conversion end-to-end.
 
-    Returns a mapping of ``system_name`` to the list of IFC products that
-    were grouped under that system. Entities whose mapping rule did not
-    set ``system_name`` are not included in the result.
+    Returns a tuple ``(systems, report)`` where ``systems`` maps each
+    ``Rule.system_name`` to the IFC products that were grouped under that
+    system, and ``report`` is a :class:`ValidationReport` produced by
+    :func:`dxf2ifc.core.quality.validate_ifc` when ``validate=True`` (or
+    ``None`` otherwise).
     """
     name = project_name or Path(dxf_path).stem
     entities = read_dxf(dxf_path)
@@ -1134,4 +1141,10 @@ def convert_dxf(
         assign_to_system(ifc, products=products, system=system)
 
     write_ifc(ifc, output_path)
-    return systems
+
+    report: ValidationReport | None = None
+    if validate:
+        from dxf2ifc.core.quality import validate_ifc as _validate_ifc
+
+        report = _validate_ifc(output_path)
+    return systems, report
