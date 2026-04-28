@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 20 — docs/packaging-smoke.md manuaalinen Windows-checklist.
+**Current task:** Plan E Task 21 — README "Lataa .exe" -osio + version-badge.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Luo `docs/packaging-smoke.md`. Lista askeleet: (1) lataa .exe artifactina draft-releasesta (2) tarkista SHA256 vastaa .sha256-sidecaria (3) tuplaklikkaa → GUI avautuu (Inter+amber-aksentti) (4) konvertoi `tests/fixtures/simple_wall.dxf` → IFC, varmista validi (5) PowerShellissä `dxf2ifc.exe convert input.dxf output.ifc` ajetaan myös. Loppukäyttäjäohje, ei automaattinen testi.
+**Seuraavaksi:** Päivitä README.md: lisää version-badge (img.shields.io/github/v/release/Mcrauli/dxf2ifc), "Lataa .exe" -osio (linkki uusimpaan releaseen, SmartScreen-ohje, signed-disclaimer). Sijoita ennen "Asennus"-osiota tai vastaavaa.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -177,7 +177,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 - [x] Task 19: docs/packaging.md "Release-prosessi"-osio (`849b104`)
 
 ### Section 5: Smoke + checksum + dokumentointi
-- [ ] Task 20: docs/packaging-smoke.md manuaalinen Windows-checklist
+- [x] Task 20: docs/packaging-smoke.md manuaalinen Windows-checklist (`8a26b77`)
 - [ ] Task 21: README "Lataa .exe"-osio + version-badge
 - [ ] Task 22: docs/packaging.md "Troubleshooting"-osio
 - [ ] Task 23: plan-loppupiste — pytest + coverage + ruff + status-päivitys
