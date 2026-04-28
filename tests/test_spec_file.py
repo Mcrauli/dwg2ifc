@@ -72,3 +72,20 @@ def test_spec_lists_runtime_hidden_imports() -> None:
         assert f"'{module}'" in text or f'"{module}"' in text, (
             f"hiddenimports missing: {module}"
         )
+
+
+def test_spec_excludes_dev_only_packages() -> None:
+    """tkinter, pytest et al. should not bloat the bundle."""
+    text = _spec_text()
+    expected = [
+        "tkinter",
+        "pytest",
+        "unittest",
+        "numpy.distutils",
+        "setuptools._distutils",
+        "pip",
+    ]
+    for module in expected:
+        assert f"'{module}'" in text or f'"{module}"' in text, (
+            f"excludes missing: {module}"
+        )
