@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan D Task 25 — plan-loppupiste (pytest, coverage, ruff, docs).
+**Current task:** Plan E — PyInstaller-pakkaus (kirjoittamatta, Mode B alkaa B1:llä).
 
-**Mode:** A (implementointi).
+**Mode:** A (siirtymä Plan D → Plan E pending). Seuraavalla sessiolla Mode B kun Plan E -plan-tiedostoa kirjoitetaan.
 
-**Seuraavaksi:** aja koko suite `pytest -q --tb=short`, `pytest --cov=dxf2ifc --cov-report=term` (≥80 %), `ruff check . && ruff format --check .`. Päivitä CLAUDE.md:n "Status" + README.md status-taulu Plan D ✅:ksi viimeisellä SHA:lla, commit + push.
+**Seuraavaksi:** kirjoita Plan E:n skeleton — luo `docs/superpowers/plans/2026-04-27-plan-e-pyinstaller.md` YAML-frontmatterilla + 1-3 rivin introlla + ~5 sectionin otsikoilla (esim. PyInstaller spec, Windows .exe build, font/asset bundling, GitHub Releases CI, smoke + checksum), ~30 riviä. Commit + push, päivitä PROGRESS.md "Mode B, section 1/N".
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -94,7 +94,7 @@
 - [x] Task 49: ruff clean + ≥85 % coverage (`cab7ea7`, 143 passed, 91 %)
 - [x] Task 50: README.md + CLAUDE.md status-päivitys (Plan B valmis) (`2494841`)
 
-## Plan D status (24/25)
+## Plan D status (25/25) ✅
 
 ### Section 1: Bootstrap & dependencies
 - [x] Task 1: PySide6 + pytest-qt deps + smoke import (`10d50c2`)
@@ -133,7 +133,7 @@
 - [x] Task 22: `gui/recent_files.py` QSettings:n kautta + Open recent (`54adf38`)
 - [x] Task 23: pytest-qt config + offscreen QPA + shared QApplication (`cb5e14a`)
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
-- [ ] Task 25: plan-loppupiste — pytest, ruff, coverage, docs status
+- [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
 ## Plan C status (12/12) ✅
 
@@ -159,7 +159,7 @@
 - [x] Task 11: full_kylmaelement -testi varmistaa neljä IfcSystem-ryhmää (`7e09716`)
 - [x] Task 12: ruff clean + 151 passed + 91 % coverage + README/CLAUDE.md "Plan C valmis"
 
-**Viimeisin tila:** Plan A 21/21 + Plan B 50/50 + Plan C 12/12 valmis. Plan D 0/25 — Mode B kirjoitus valmis (skeleton + 7 sectionia + 25 taskia), implementaatio alkaa Task 1:llä Mode A:ssa.
+**Viimeisin tila:** Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 valmis. PySide6-GUI tuotannossa (200 testiä, coverage 89 %, ruff clean). Seuraava: Plan E (PyInstaller-pakkaus) kirjoittamatta — Mode B alkaa B1:llä.
 
 **Tämän session muutokset:**
 - Plan B Task 2: Rule-skeeman `extrusion_height` + `pset_overrides` -kentät, `model_validator` joka vaatii `block_name` INSERT-säännöille (`29f01e4`). 10 schema-testiä passed.
@@ -248,7 +248,8 @@
 - Plan D Task 22: `gui/recent_files.py` `RecentFilesStore` LRU 5 path:lla QSettings-backendillä (Radika/dxf2ifc) (`54adf38`). 3 recent-files-testiä passed.
 
 - Plan D Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`, tehty edellisessä sessiossa, PROGRESS.md-checklist päivitetty tässä sessiossa).
+- Plan D Task 25: ruff format six lingering files (file_panel/layer_table/profile_editor + kolme testiä), README + CLAUDE.md status Plan D ✅ (200 passed, coverage 89 %, ruff clean) (`011bd5e`). 🎉 Plan D 25/25.
 
-**Kesken:** Plan D Task 25 (1 jäljellä — plan-loppupiste).
+**Kesken:** Plan E (PyInstaller-pakkaus) — Mode B kirjoittamatta.
 
 **Blokkerit:** ei.
