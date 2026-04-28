@@ -4,7 +4,62 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+
+class CRSConfig(BaseModel):
+    """Projected coordinate reference system + IfcMapConversion parameters.
+
+    Default values target ETRS-TM35FIN (EPSG:3067) which is the Finnish
+    national projected CRS used in BIM deliverables for public-sector
+    refrigeration projects.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    epsg_code: str = Field(
+        default="EPSG:3067",
+        description="EPSG identifier written to IfcProjectedCRS.Name.",
+    )
+    name: str = Field(
+        default="ETRS-TM35FIN",
+        description="Human-readable CRS name written to IfcProjectedCRS.Description.",
+    )
+    geodetic_datum: str = Field(
+        default="ETRS89",
+        description="Geodetic datum written to IfcProjectedCRS.GeodeticDatum.",
+    )
+    eastings_mm: float = Field(
+        ...,
+        description="IfcMapConversion.Eastings (mm).",
+    )
+    northings_mm: float = Field(
+        ...,
+        description="IfcMapConversion.Northings (mm).",
+    )
+    orthogonal_height_mm: float = Field(
+        default=0.0,
+        description="IfcMapConversion.OrthogonalHeight (mm).",
+    )
+    x_axis_abscissa: float = Field(
+        default=1.0,
+        description="IfcMapConversion.XAxisAbscissa (cosine of rotation, default 1.0).",
+    )
+    x_axis_ordinate: float = Field(
+        default=0.0,
+        description="IfcMapConversion.XAxisOrdinate (sine of rotation, default 0.0).",
+    )
+    scale: float = Field(
+        default=1.0,
+        description="IfcMapConversion.Scale (default 1.0, must be > 0).",
+    )
+
+    @field_validator("scale")
+    @classmethod
+    def _scale_must_be_positive(cls, value: float) -> float:
+        if value <= 0:
+            raise ValueError("scale must be > 0")
+        return value
 
 
 class Rule(BaseModel):
