@@ -76,3 +76,22 @@ def test_build_workflow_includes_ubuntu_smoke_job():
 def test_build_workflow_invokes_build_exe_sh_on_linux():
     text = WORKFLOW_PATH.read_text(encoding="utf-8")
     assert "scripts/build_exe.sh" in text
+
+
+def test_build_workflow_runs_version_smoke_before_upload():
+    data = _load_workflow()
+    windows_job = next(
+        job for job in data["jobs"].values() if "windows" in str(job.get("runs-on", "")).lower()
+    )
+    steps = windows_job["steps"]
+    smoke_index = None
+    upload_index = None
+    for index, step in enumerate(steps):
+        run = step.get("run", "")
+        if "--version" in run and ".exe" in run:
+            smoke_index = index
+        if step.get("uses", "").startswith("actions/upload-artifact"):
+            upload_index = index
+    assert smoke_index is not None, "Windows job has no --version smoke step"
+    assert upload_index is not None
+    assert smoke_index < upload_index, "smoke step must run before artifact upload"

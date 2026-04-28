@@ -26,6 +26,16 @@ jobs:
         run: |
           .\scripts\build_exe.ps1
 
+      - name: Smoke test --version
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem dist/dxf2ifc-*.exe | Select-Object -First 1
+          if (-not $exe) { throw "No dxf2ifc-*.exe in dist/" }
+          $output = & $exe.FullName --version
+          if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
+          if ($output -notmatch "dxf2ifc") { throw "missing version banner: $output" }
+          Write-Host "Smoke OK: $output"
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
