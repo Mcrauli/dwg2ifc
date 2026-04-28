@@ -1,1 +1,1 @@
-🟡 Plan E Mode A Task 1 alkaa: pyinstaller dev-extraan + smoke import
+🔴 dxf2ifc blokannut: Plan E Task 11 — PAT puuttuu workflow-scope. Lauri: Settings → Developer settings → Fine-grained PAT → Actions (read+write). Eteneminen tähän asti: Plan D Task 24+25 valmis (200 testiä, 89% coverage), Plan E kirjoitettu (5 sectionia 23 taskia), Task 1-10 valmis (Section 1+2 ✅). Tasks 11-17 lukossa kunnes PAT päivitetty.
