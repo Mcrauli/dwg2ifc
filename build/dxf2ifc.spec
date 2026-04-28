@@ -9,7 +9,7 @@ a = Analysis(
     pathex=['src'],
     binaries=[],
     datas=[
-        ('src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml', 'dxf2ifc/profiles'),
+        ('src/dxf2ifc/profiles/default_kylmalaite.toml', 'dxf2ifc/profiles'),
         ('src/dxf2ifc/gui/style.qss', 'dxf2ifc/gui'),
         ('assets/fonts/Inter-Regular.ttf', 'dxf2ifc/gui/fonts'),
         ('assets/fonts/Inter-Medium.ttf', 'dxf2ifc/gui/fonts'),

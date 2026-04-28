@@ -10,7 +10,7 @@ import tomli_w
 
 from dxf2ifc.profiles.schema import Profile
 
-_DEFAULT_RESOURCE = "default_kylmalaite_talo2000.toml"
+_DEFAULT_RESOURCE = "default_kylmalaite.toml"
 
 
 def _parse_profile(toml_text: str) -> Profile:

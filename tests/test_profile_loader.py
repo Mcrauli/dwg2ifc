@@ -8,6 +8,14 @@ from dxf2ifc.profiles.loader import dump_profile, load_default_profile, load_pro
 from dxf2ifc.profiles.schema import Profile
 
 
+def test_default_profile_resource_uses_new_name():
+    from importlib import resources
+
+    package_files = resources.files("dxf2ifc.profiles")
+    assert package_files.joinpath("default_kylmalaite.toml").is_file()
+    assert not package_files.joinpath("default_kylmalaite_talo2000.toml").is_file()
+
+
 def test_load_default_profile_returns_profile():
     profile = load_default_profile()
     assert isinstance(profile, Profile)

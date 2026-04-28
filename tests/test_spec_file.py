@@ -28,7 +28,7 @@ def test_spec_bundles_runtime_assets() -> None:
     """Runtime resources (profile TOML, QSS, fonts, font licences) must ship."""
     text = _spec_text()
     expected_sources = [
-        "src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml",
+        "src/dxf2ifc/profiles/default_kylmalaite.toml",
         "src/dxf2ifc/gui/style.qss",
         "assets/fonts/Inter-Regular.ttf",
         "assets/fonts/Inter-Medium.ttf",
