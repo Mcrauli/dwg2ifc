@@ -2,11 +2,11 @@
 
 **Current plan:** Plan E — PyInstaller-pakkaus + GitHub Releases (kirjoitettu `a3620f7`, 23 tehtävää, 5 sectionia).
 
-**Current task:** Plan E Task 8 — `.spec` VSVersionInfo + `build/version_info.py`.
+**Current task:** Plan E Task 9 — `.spec` BUNDLE icon-konfig + placeholder-todo.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** luo `build/version_info.py` joka generoi PyInstallerin VSVersionInfo-blokin (`dxf2ifc._version.__version__`-stringistä). Lisää `.spec`-tiedostoon `version='build/version_info.py'`-parametri EXE-kutsuun. Spec-testi varmistaa että VSVersionInfo on muodostettu ja sisältää version-stringin.
+**Seuraavaksi:** dokumentoi `docs/packaging.md`:hen TODO-kohta icon-tiedostosta `assets/dxf2ifc.ico`. Tämä on placeholder; .spec EXE() ei käytä iconia vielä mutta `console=False` + version_info riittää. Spec-testi: tarkista että icon-rivi joko puuttuu tai loppuu `.ico`:on.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -135,7 +135,7 @@
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
-## Plan E status (7/23)
+## Plan E status (8/23)
 
 ### Section 1: PyInstaller bootstrap ✅
 - [x] Task 1: pyinstaller>=6.10 dev-extraan + smoke import test (`22875d0`)
@@ -147,7 +147,7 @@
 - [x] Task 5: .spec datas (TOML/QSS/fontit/LICENSES) + spec-test (`eb3acf4`)
 - [x] Task 6: .spec hidden_imports (ifcopenshell/ezdxf/QtSvg) + spec-test (`b7c1133`)
 - [x] Task 7: .spec excludes (tkinter/pytest/pip jne.) + spec-test (`a65ef52`)
-- [ ] Task 8: .spec VSVersionInfo Windows-resourcesille + version_info.py
+- [x] Task 8: .spec VSVersionInfo Windows-resourcesille + version_info.py (`da778e4`)
 - [ ] Task 9: .spec BUNDLE icon-konfig + placeholder-todo
 
 ### Section 3: Windows build (paikallinen + CI matrix)
@@ -293,7 +293,8 @@
 - Plan E Task 5: .spec Analysis(datas=...) profile TOML + QSS + 7 fonttia + 4 LICENSE-tiedostoa (destinaatiot dxf2ifc/profiles, dxf2ifc/gui, dxf2ifc/gui/fonts) + tests/test_spec_file.py varmistaa jokaisen polun (`eb3acf4`). 3 spec-testiä passed.
 - Plan E Task 6: .spec hiddenimports ifcopenshell.{api,geom,guid,template} + ezdxf.entities + PySide6.{QtSvg,QtSvgWidgets} + spec-testi (`b7c1133`). 4 spec-testiä passed.
 - Plan E Task 7: .spec excludes tkinter + pytest + unittest + numpy.distutils + setuptools._distutils + pip + spec-testi (`a65ef52`). 5 spec-testiä passed.
+- Plan E Task 8: build/version_info.py VSVersionInfo Win32-resource (Radika Oy + dxf2ifc + 0.1.0) + .spec EXE(version=...) + .gitignore-whitelist + spec/version_info-testi (`da778e4`). 7 spec-testiä passed.
 
-**Kesken:** Plan E Task 8–23 (16 jäljellä).
+**Kesken:** Plan E Task 9–23 (15 jäljellä).
 
 **Blokkerit:** ei.
