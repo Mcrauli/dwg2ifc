@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 8 — Rule.domain Literal["ARK", "TATE"] + lvi_code/talotekniikka_code + validointi.
+**Current task:** Plan H Task 9 — loader.dump_profile + load_profile uudet domain/lvi_code/talotekniikka_code TOML round-trip.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 8:n osio plan-tiedostosta. Laajenna `Rule`-pydantic-malli kentillä `domain: Literal["ARK", "TATE"]` (pakollinen) ja `lvi_code: str | None`, `talotekniikka_code: str | None`. Lisää model_validator joka tarkistaa: ARK→talo2000_code pakollinen, lvi/talotekniikka tyhjät; TATE→tasan yksi lvi_code TAI talotekniikka_code, talo2000_code tyhjä.
+**Seuraavaksi:** Lue Task 9:n osio plan-tiedostosta. Lisää failing-testi `tests/test_profile_loader.py` jossa TOML sisältää `domain="TATE"` + `lvi_code="T-LVI-01-01-023"` → `load_profile` säilyttää, `dump_profile` kirjoittaa ne takaisin.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -197,7 +197,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 - [x] Task 7: dxf2ifc.profiles.rava.loader.load_rava_codes() (`fd9e8e5`)
 
 ### Section 3: Profile-skeeman domain-laajennus
-- [ ] Task 8: Rule.domain Literal["ARK", "TATE"] + lvi_code/talotekniikka_code + validointi
+- [x] Task 8: Rule.domain Literal["ARK", "TATE"] + lvi_code/talotekniikka_code + validointi (`2bd5be6`)
 - [ ] Task 9: loader.dump_profile + load_profile uudet kentät TOML round-trip
 - [ ] Task 10: MappedEntity.domain + lvi_code + talotekniikka_code + apply_profile välitys
 
