@@ -4,9 +4,9 @@
 
 **Current task:** Plan H Mode B B1 — skeleton-kirjoitus.
 
-**Mode:** B (section 0/?).
+**Mode:** B (section 1/6).
 
-**Seuraavaksi:** Plan F valmis 16/16 ✅, Bugfix kierros 2 valmis (Bugfix 4 systeeminen 1000× placement + OCS→WCS, Bugfix 5 xref-prefix mapper, Bugfix 6 ARK-layerit). Aloita Plan H Mode B: lue Plan F frontmatter + ensimmäiset 30 riviä → kirjoita skeleton (YAML frontmatter + 1-3 rivin intro + section-otsikot ~30 riviä) tiedostoon `docs/superpowers/plans/2026-04-28-plan-h-ifc43-rava.md`.
+**Seuraavaksi:** Plan H skeleton kirjoitettu (`8be315f`, 6 sectionia). Section 1 = IFC4X3-skeema-migraatio. Kirjoita Section 1:lle 3-5 task-riviä: (1) `build_ifc_project_skeleton` `schema="IFC4X3"`-flag + failing-testi joka odottaa `ifc.schema == "IFC4X3"`, (2) regressio: koko full-fixture-pipeline tuottaa IFC4X3:n + ifcopenshell.validate clean, (3) verify_ifc summary näyttää IFC4X3:n, (4) `dxf2ifc convert --schema=ifc4x3` CLI-flag (default: ifc4x3 kun Plan H valmis).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
