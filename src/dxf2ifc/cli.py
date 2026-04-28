@@ -8,6 +8,7 @@ from pathlib import Path
 
 from dxf2ifc import __version__
 from dxf2ifc.core.ifc_writer import convert_dxf
+from dxf2ifc.core.quality import validate_ifc
 from dxf2ifc.profiles.loader import load_default_profile, load_profile
 
 
@@ -28,6 +29,14 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Custom profile TOML. Omit to use the shipped Kylmälaite Talo2000 profile.",
     )
+    convert.add_argument(
+        "--validate",
+        action="store_true",
+        help=(
+            "Run ifcopenshell.validate + YTV Talo2000 checks on the output IFC. "
+            "Exits with code 1 if validation errors are reported."
+        ),
+    )
     return parser
 
 
@@ -42,6 +51,15 @@ def main(argv: list[str] | None = None) -> int:
             profile=profile,
         )
         print(f"Wrote {args.output}", file=sys.stderr)
+        if args.validate:
+            report = validate_ifc(args.output)
+            print(report.summary, file=sys.stderr)
+            for warning in report.warnings:
+                print(f"WARNING: {warning.get('message', warning)}", file=sys.stderr)
+            if report.errors:
+                for error in report.errors:
+                    print(f"ERROR: {error.get('message', error)}", file=sys.stderr)
+                return 1
         return 0
     return 1
 
