@@ -7,10 +7,15 @@ import pytest
 yaml = pytest.importorskip("yaml")
 
 WORKFLOW_PATH = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "build.yml"
+RELEASE_PATH = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "release.yml"
 
 
 def _load_workflow() -> dict:
     return yaml.safe_load(WORKFLOW_PATH.read_text(encoding="utf-8"))
+
+
+def _load_release_workflow() -> dict:
+    return yaml.safe_load(RELEASE_PATH.read_text(encoding="utf-8"))
 
 
 def test_build_workflow_file_exists():
@@ -76,6 +81,43 @@ def test_build_workflow_includes_ubuntu_smoke_job():
 def test_build_workflow_invokes_build_exe_sh_on_linux():
     text = WORKFLOW_PATH.read_text(encoding="utf-8")
     assert "scripts/build_exe.sh" in text
+
+
+def test_release_workflow_file_exists():
+    assert RELEASE_PATH.is_file(), f"missing workflow: {RELEASE_PATH}"
+
+
+def test_release_workflow_triggers_on_version_tags_only():
+    data = _load_release_workflow()
+    triggers = data.get("on") or data.get(True)
+    assert triggers is not None
+    push = triggers.get("push") or {}
+    tags = push.get("tags") or []
+    assert any("v" in pattern for pattern in tags), tags
+
+
+def test_release_workflow_has_contents_write_permission():
+    data = _load_release_workflow()
+    permissions = data.get("permissions") or {}
+    if isinstance(permissions, dict):
+        assert permissions.get("contents") == "write"
+    else:
+        assert permissions == "write-all"
+
+
+def test_release_workflow_uses_windows_runner():
+    data = _load_release_workflow()
+    runner_strings: list[str] = []
+    for job in data["jobs"].values():
+        runs_on = job.get("runs-on", "")
+        if isinstance(runs_on, str):
+            runner_strings.append(runs_on)
+    assert any("windows" in s.lower() for s in runner_strings)
+
+
+def test_release_workflow_runs_build_exe_script():
+    text = RELEASE_PATH.read_text(encoding="utf-8")
+    assert "scripts/build_exe.ps1" in text or "scripts\\build_exe.ps1" in text
 
 
 def test_build_workflow_runs_version_smoke_before_upload():

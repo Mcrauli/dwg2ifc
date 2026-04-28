@@ -1,0 +1,49 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Windows release build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Build dxf2ifc.exe
+        shell: pwsh
+        run: |
+          .\scripts\build_exe.ps1
+
+      - name: Smoke test --version
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem dist/dxf2ifc-*.exe | Select-Object -First 1
+          if (-not $exe) { throw "No dxf2ifc-*.exe in dist/" }
+          $output = & $exe.FullName --version
+          if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
+          if ($output -notmatch "dxf2ifc") { throw "missing version banner: $output" }
+          Write-Host "Smoke OK: $output"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dxf2ifc-windows-release
+          path: |
+            dist/dxf2ifc-*.exe
+            dist/dxf2ifc-*.exe.sha256
+          if-no-files-found: error
