@@ -51,4 +51,8 @@ Plan A–F + H valmis. Master `<TBD>`. 302 ei-GUI testiä passed + 1 skipped (So
 
 ## Section 5: CLI + GUI georeferenssi-input + validointi (max_coord + MapConversion-required)
 
+- [ ] Task 14: CLI `dxf2ifc convert --eastings <mm> --northings <mm> [--orthogonal-height <mm>]`-flagit. Jos kaikki kolme annettu, override profiilin crs (käyttäen profiilin epsg_code/name/datum:ia jos olemassa, muuten defaultit). Failing-testit: kaikki kolme flag → CRS overrides, vain eastings annettu → ArgparseError, ei flag → profiilin crs säilyy.
+- [ ] Task 15: GUI `gui/crs_dialog.py` `CRSDialog` (QDialog) — Eastings/Northings/OrthogonalHeight-QLineEditit (mm), EPSG-combo (vain "EPSG:3067 ETRS-TM35FIN" toistaiseksi), OK/Cancel. MainWindow:n Profile-menubariin "Set CRS…"-action joka avaa dialogin ja päivittää current profile.crs:n. Failing-testit: dialog-fields-defaults, OK-callback assignaa CRS:n, persistointi RecentFilesStoreen.
+- [ ] Task 16: laajenna `validate_ifc`-warning-säännöt: a) jos IfcMapConversion eksistoi mutta IfcProjectedCRS puuttuu (orphan) → error, b) jos profiilissa crs mutta IFC:ssä ei MapConversionia → error, c) jos local-vertex > 1 km origosta → warning ("possible double-transform"). Failing-testit: 3 case + clean baseline.
+
 ## Section 6: Integraatio + dokumentointi + plan-loppupiste
