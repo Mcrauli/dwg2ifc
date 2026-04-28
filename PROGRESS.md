@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 9 — loader.dump_profile + load_profile uudet domain/lvi_code/talotekniikka_code TOML round-trip.
+**Current task:** Plan H Task 10 — MappedEntity.domain + lvi_code + talotekniikka_code + apply_profile välitys.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 9:n osio plan-tiedostosta. Lisää failing-testi `tests/test_profile_loader.py` jossa TOML sisältää `domain="TATE"` + `lvi_code="T-LVI-01-01-023"` → `load_profile` säilyttää, `dump_profile` kirjoittaa ne takaisin.
+**Seuraavaksi:** Lue Task 10:n osio plan-tiedostosta. Lisää failing-testi `tests/test_mapper.py`:hen joka varmistaa että `apply_profile` kopioi `Rule.domain`/`lvi_code`/`talotekniikka_code` MappedEntity:hin. Laajenna MappedEntity-dataclass + apply_profile.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -198,7 +198,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 
 ### Section 3: Profile-skeeman domain-laajennus
 - [x] Task 8: Rule.domain Literal["ARK", "TATE"] + lvi_code/talotekniikka_code + validointi (`2bd5be6`)
-- [ ] Task 9: loader.dump_profile + load_profile uudet kentät TOML round-trip
+- [x] Task 9: loader.dump_profile + load_profile uudet kentät TOML round-trip (`e8bc454`)
 - [ ] Task 10: MappedEntity.domain + lvi_code + talotekniikka_code + apply_profile välitys
 
 ### Section 4: Default-profiilin uudistus
