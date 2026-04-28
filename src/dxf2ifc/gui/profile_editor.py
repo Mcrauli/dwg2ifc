@@ -6,7 +6,7 @@ from copy import deepcopy
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from dxf2ifc.profiles.loader import dump_profile
+from dxf2ifc.profiles.loader import dump_profile, load_profile
 from dxf2ifc.profiles.schema import Profile, Rule
 
 _HEADERS = ("Layer pattern", "IFC type", "Predefined", "Talo2000 code", "Talo2000 name", "System")
@@ -77,6 +77,7 @@ class _RuleTableModel(QtCore.QAbstractTableModel):
 
 class ProfileEditorDialog(QtWidgets.QDialog):
     profile_saved = QtCore.Signal(str)
+    profile_loaded = QtCore.Signal(str)
 
     def __init__(
         self,
@@ -102,17 +103,21 @@ class ProfileEditorDialog(QtWidgets.QDialog):
         self.edit_button.setProperty("secondary", "true")
         self.remove_button = QtWidgets.QPushButton("Remove")
         self.remove_button.setProperty("secondary", "true")
+        self.load_button = QtWidgets.QPushButton("Load profile…")
+        self.load_button.setProperty("secondary", "true")
         self.save_button = QtWidgets.QPushButton("Save profile…")
         self.save_button.setProperty("primary", "true")
         for button in (self.add_button, self.edit_button, self.remove_button):
             toolbar.addWidget(button)
         toolbar.addStretch(1)
+        toolbar.addWidget(self.load_button)
         toolbar.addWidget(self.save_button)
         layout.addLayout(toolbar)
 
         self.add_button.clicked.connect(self._on_add)
         self.edit_button.clicked.connect(self._on_edit)
         self.remove_button.clicked.connect(self._on_remove)
+        self.load_button.clicked.connect(self._on_load)
         self.save_button.clicked.connect(self._on_save)
 
     def current_rules(self) -> list[Rule]:
@@ -148,6 +153,23 @@ class ProfileEditorDialog(QtWidgets.QDialog):
         if row is None:
             return
         self._model.remove_row(row)
+
+    def load_from_path(self, path: str) -> None:
+        loaded = load_profile(path)
+        self._profile = deepcopy(loaded)
+        old_model = self._model
+        self._model = _RuleTableModel(self._profile.rules, self)
+        self.table.setModel(self._model)
+        old_model.deleteLater()
+        self.profile_loaded.emit(path)
+
+    def _on_load(self) -> None:
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Load profile", "", "TOML files (*.toml)"
+        )
+        if not path:
+            return
+        self.load_from_path(path)
 
     def _on_save(self) -> None:
         path, _ = QtWidgets.QFileDialog.getSaveFileName(
