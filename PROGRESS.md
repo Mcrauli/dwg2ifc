@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 12 — merkitse jokainen ARK-sääntö default-TOML:ssa `domain = "ARK"`.
+**Current task:** Plan H Task 13 — kylmälaitesäännöt domain='TATE' + lvi_code RAVA-koodit (HOYRYSTIN T-LVI-01-01-023, LAUHDUTIN T-LVI-01-01-018, KOMPRESSORI T-LVI-01-01-017).
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 12:n osio plan-tiedostosta. Lisää `domain = "ARK"` jokaiseen ARK-sääntöön (seinät / laatat / ovet / ikkunat / paneelit / pilarit / kaiteet / portaat / kalusteet / ARK-prefix-säännöt). Failing-testi: jokainen rule sisältää domainin ja kaikki ARK-säännöt valid.
+**Seuraavaksi:** Lue Task 13:n osio plan-tiedostosta. Korvaa KYL-HOYRYSTIN/LAUHDUTIN/KOMPRESSORI-säännöt: poista talo2000_code/name, aseta `domain = "TATE"` + `lvi_code = "T-LVI-..."`. Failing-testi: HOYRYSTIN-sääntö palauttaa lvi_code "T-LVI-01-01-023".
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -203,7 +203,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 
 ### Section 4: Default-profiilin uudistus
 - [x] Task 11: git mv default_kylmalaite_talo2000.toml → default_kylmalaite.toml (`11c5801`)
-- [ ] Task 12: ARK-säännöt domain="ARK"-merkintä
+- [x] Task 12: ARK-säännöt domain="ARK"-merkintä (`203306a`)
 - [ ] Task 13: TATE-säännöt (kylmälaitteet) domain="TATE" + lvi_code RAVA-koodit
 - [ ] Task 14: Kylmäaineputket + kaapelihylly domain="TATE" + RAVA-LVI-02 / RAVA-TATE
 
