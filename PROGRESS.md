@@ -2,11 +2,11 @@
 
 **Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan F — kirjoita plan (MODE B). Spec verifiointi Solibrissa.
+**Current task:** Plan F Task 1 — `src/dxf2ifc/core/quality.py` `validate_ifc(path) -> ValidationReport` -wrapper + failing-testi.
 
-**Mode:** B section 5/5.
+**Mode:** A.
 
-**Seuraavaksi:** Aloita Mode B B1: lue Plan E:n frontmatter + ensimmäiset 30 riviä. Luo `docs/superpowers/plans/2026-04-XX-plan-f-solibri-verification.md` skeleton (frontmatter + intro + section-otsikot). Section-ehdotukset: 1) Solibri rule-set määritelmä, 2) Validation-runner kutsuva Solibri Anywheren komentoriviltä, 3) Validation-raportin parsinta, 4) CI-integraatio (full-fixture IFC vasten Solibri rules), 5) Plan-loppupiste.
+**Seuraavaksi:** Lue plan-tiedostosta Task 1:n osio (`grep -nA 5 "Task 1:"`). TDD: failing-testi `tests/test_quality.py` joka antaa Plan B:n full-fixture-IFC:n ja odottaa `len(report.errors) == 0`. Toteuta `validate_ifc(path) -> ValidationReport` joka kutsuu `ifcopenshell.validate.validate(file, json=True, return_json=True)` ja palauttaa structured-tuloksen.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -147,7 +147,35 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
-## Plan E status (10/23)
+## Plan F status (0/16)
+
+### Section 1: Automaattinen ifcopenshell.validate -gate
+- [ ] Task 1: src/dxf2ifc/core/quality.py validate_ifc(path) wrapper + tests/test_quality.py
+- [ ] Task 2: validate_ifc raportoi YTV-spesifit Talo2000-luokittelutarkistukset (warnings)
+- [ ] Task 3: CLI-flag `dxf2ifc convert --validate` (exit 1 jos errors)
+- [ ] Task 4: convert_dxf(..., validate: bool) palauttaa (IfcFile, ValidationReport | None) + GUI-näyttö
+
+### Section 2: Solibri rule-set ja referenssimallit
+- [ ] Task 5: tools/solibri/dxf2ifc.bcfzip BCF 2.1 rule-set (Talo2000 + YTV)
+- [ ] Task 6: tests/fixtures/solibri_reference_full.ifc baseline-IFC
+- [ ] Task 7: docs/solibri-rules.md sääntöjen suomenkielinen kuvaus
+
+### Section 3: solibri-cli runner + raportin parsija
+- [ ] Task 8: tools/solibri/verify.py Solibri.exe-CLI-wrapper (subprocess)
+- [ ] Task 9: tools/solibri/parse_report.py XML→RuleResult dict (lxml)
+- [ ] Task 10: `python -m dxf2ifc.tools.solibri verify` CLI-entry
+
+### Section 4: Snapshot-raportit + diffaus
+- [ ] Task 11: tests/snapshots/solibri/full_kylmaelement.json baseline
+- [ ] Task 12: tools/solibri/diff_snapshot.py uusi-vs-baseline diffaus
+- [ ] Task 13: pytest @solibri-marker (skipautuu jos Solibri.exe ei PATH:ssa)
+
+### Section 5: CI-integraatio + dokumentaatio + plan-loppupiste
+- [ ] Task 14: build.yml linux-jobissa pytest tests/test_quality.py
+- [ ] Task 15: docs/quality-gates.md (auto + manuaali two-tier prosessi)
+- [ ] Task 16: plan-loppupiste — pytest + coverage + ruff + status-päivitys
+
+## Plan E status (23/23) ✅
 
 ### Section 1: PyInstaller bootstrap ✅
 - [x] Task 1: pyinstaller>=6.10 dev-extraan + smoke import test (`22875d0`)
@@ -329,6 +357,8 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 - Plan E Task 22: docs/packaging.md "Troubleshooting"-osio: Defender/SmartScreen, ifcopenshell schema not found, Qt platform plugin import error, --onefile vs --onedir trade-off (`2bb9055`).
 - Plan E Task 23: plan-loppupiste — pytest 246 passed, coverage 89%, ruff clean. CLAUDE.md + README.md status päivitetty Plan E ✅ (`b27b8c6`). 🎉 Plan E 23/23.
 
-**Kesken:** Plan F kirjoittamatta. Mode B aloitus seuraavaksi.
+- Plan F kirjoitettu (Mode B): skeleton + 5 sectionia + 16 task-riviä numeroitu globaalisti, CLAUDE.md "Plans B–F"-lista päivitetty (`3651f00` → `e921b35` → `086daa7` → `ae735fe` → `3866ab4` → `30404cb`). PROGRESS.md sisältää nyt täyden Plan F -checklistin.
+
+**Kesken:** Plan F Mode A aloitus Task 1:llä seuraavalla sessiolla.
 
 **Blokkerit:** ei.
