@@ -76,6 +76,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self._edit_profile_action = QtGui.QAction("Edit profile…", self)
         self._edit_profile_action.triggered.connect(self._on_edit_profile)
         profile_menu.addAction(self._edit_profile_action)
+        self._set_crs_action = QtGui.QAction("Set CRS…", self)
+        self._set_crs_action.triggered.connect(self._on_set_crs)
+        profile_menu.addAction(self._set_crs_action)
         help_menu = menubar.addMenu("Help")
         self._about_action = QtGui.QAction("About", self)
         self._about_action.triggered.connect(self._on_about)
@@ -91,6 +94,20 @@ class MainWindow(QtWidgets.QMainWindow):
         dialog.profile_saved.connect(self.apply_profile_from_path)
         dialog.profile_loaded.connect(self.apply_profile_from_path)
         dialog.exec()
+
+    def _on_set_crs(self) -> None:
+        from dxf2ifc.gui.crs_dialog import CRSDialog
+
+        dialog = CRSDialog(self._profile.crs, parent=self)
+        dialog.crs_accepted.connect(self._on_crs_accepted)
+        dialog.exec()
+
+    def _on_crs_accepted(self, crs) -> None:
+        self._profile = self._profile.model_copy(update={"crs": crs})
+        self.set_status(
+            f"CRS set: {crs.epsg_code} eastings={crs.eastings_mm} northings={crs.northings_mm}",
+            level="success",
+        )
 
     def _load_initial_profile(self):
         last = self._recent_files.last_profile_path
