@@ -41,6 +41,12 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 valmis (master `011bd5
 
 ## Section 3: Windows build (paikallinen + CI matrix)
 
+- [ ] Task 3.1: luo `scripts/build_exe.ps1` PowerShell-skripti joka (a) ajaa `uv sync --extra dev --extra gui` (b) ajaa `uv run pyinstaller build/dxf2ifc.spec --clean --noconfirm` (c) kopioi `dist/dxf2ifc.exe` polkuun `dist/dxf2ifc-${env:DXF2IFC_VERSION}.exe` ja tulostaa SHA256-hash:n. Lisää `scripts/build_exe.sh` Linux-vastine joka tuottaa ELF-binaarin (smoke testausta varten).
+- [ ] Task 3.2: lisää `.github/workflows/build.yml` GitHub Actions -workflow joka triggeröityy `pull_request` ja `push: branches: [master]`-tapahtumissa, ajaa Windows-runnerilla pythonin 3.12 + uv setupin, ajaa `scripts/build_exe.ps1`:n ja uploadaa `dist/dxf2ifc-*.exe`:n artifactina nimellä `dxf2ifc-windows`.
+- [ ] Task 3.3: lisää workflow:in matrix joka ajaa myös ubuntu-latest runnerilla `scripts/build_exe.sh` -käännöksen (smoke-tarkoitus, varmistaa että .spec on cross-platform-validi vaikka .exe-output ei tule).
+- [ ] Task 3.4: laajenna build-workflow:ia "smoke" steppillä joka Windowsissa ajaa `& dist/dxf2ifc-*.exe --version` (CLI-stub) ja varmistaa että exit code on 0 ja stdout sisältää `__version__`. GUI-launchia ei testata CI:ssä.
+- [ ] Task 3.5: dokumentoi `docs/packaging.md`:n "CI build" -osio: workflow trigger, artifact-naming, smoke-step. Lisää huomautus "GUI smoke ajetaan vain manuaalisesti" + "PyInstaller-cache on `~/AppData/Local/pyinstaller`-pohjainen, älä cachetä artifactina".
+
 ## Section 4: GitHub Actions release-workflow
 
 ## Section 5: Smoke + checksum + dokumentointi
