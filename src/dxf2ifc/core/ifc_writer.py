@@ -8,6 +8,7 @@ Plan B extends with slabs, doors, windows, pipes, furniture, etc.
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -40,6 +41,23 @@ from dxf2ifc.core.types import (
 from dxf2ifc.profiles.schema import CRSConfig, Profile
 
 
+@dataclass
+class IfcSkeleton:
+    """Bundle of the spatial structure produced by
+    :func:`build_ifc_project_skeleton`. Behaves like the underlying
+    ``ifcopenshell.file`` for legacy callers via ``__getattr__`` proxy."""
+
+    file: ifcopenshell.file
+    project: object
+    site: object
+    building: object
+    storeys: list[object] = field(default_factory=list)
+    contexts: dict[str, object] = field(default_factory=dict)
+
+    def __getattr__(self, name: str):
+        return getattr(self.file, name)
+
+
 def build_ifc_project_skeleton(
     *,
     project_name: str = "Untitled",
@@ -48,7 +66,7 @@ def build_ifc_project_skeleton(
     schema: str = "IFC4",
     crs: CRSConfig | None = None,
     storey_z_levels_mm: list[float] | None = None,
-) -> ifcopenshell.file:
+) -> IfcSkeleton:
     """Create a minimal IFC project file with the requested ``schema``
     (``"IFC4"`` or ``"IFC4X3"``) and the IfcProject → Site → Building →
     list[Storey] spatial hierarchy. Length units are millimetres via
@@ -81,14 +99,14 @@ def build_ifc_project_skeleton(
         length={"is_metric": True, "raw": "MILLIMETERS"},
     )
 
-    context = ifcopenshell.api.run("context.add_context", ifc, context_type="Model")
-    ifcopenshell.api.run(
+    model_context = ifcopenshell.api.run("context.add_context", ifc, context_type="Model")
+    body_context = ifcopenshell.api.run(
         "context.add_context",
         ifc,
         context_type="Model",
         context_identifier="Body",
         target_view="MODEL_VIEW",
-        parent=context,
+        parent=model_context,
     )
 
     site = ifcopenshell.api.run("root.create_entity", ifc, ifc_class="IfcSite", name=site_name)
@@ -120,7 +138,14 @@ def build_ifc_project_skeleton(
     if crs is not None:
         _attach_projected_crs(ifc, crs)
 
-    return ifc
+    return IfcSkeleton(
+        file=ifc,
+        project=project,
+        site=site,
+        building=building,
+        storeys=storeys,
+        contexts={"Model": model_context, "Body": body_context},
+    )
 
 
 def _make_origin_placement(
@@ -1238,8 +1263,9 @@ def convert_dxf(
     name = project_name or Path(dxf_path).stem
     entities = read_dxf(dxf_path)
     mapped = apply_profile(entities, profile)
-    ifc = build_ifc_project_skeleton(project_name=name, schema=schema)
-    storey = ifc.by_type("IfcBuildingStorey")[0]
+    skeleton = build_ifc_project_skeleton(project_name=name, schema=schema)
+    ifc = skeleton.file
+    storey = skeleton.storeys[0]
     systems: dict[str, list] = {}
 
     def _record(m: object, product: object) -> None:
