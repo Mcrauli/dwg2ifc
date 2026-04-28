@@ -2,11 +2,11 @@
 
 **Current plan:** Plan E — PyInstaller-pakkaus + GitHub Releases (kirjoitettu `a3620f7`, 23 tehtävää, 5 sectionia).
 
-**Current task:** Plan E Task 6 — `.spec` hidden_imports (ifcopenshell/ezdxf/QtSvg) + spec-test.
+**Current task:** Plan E Task 7 — `.spec` excludes (tkinter/pytest/pip jne.) + spec-test.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** lisää `.spec`:n `hiddenimports`-listaan `ifcopenshell`, `ifcopenshell.api`, `ifcopenshell.geom`, `ifcopenshell.guid`, `ifcopenshell.template`, `ezdxf`, `ezdxf.entities`, `PySide6.QtSvg`, `PySide6.QtSvgWidgets`. Laajenna spec-testiä varmistamaan jokainen.
+**Seuraavaksi:** lisää `.spec`:n `excludes`-listaan `tkinter`, `pytest`, `unittest`, `numpy.distutils`, `setuptools._distutils`, `pip`. Päivitä spec-testi varmistamaan jokainen.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -135,7 +135,7 @@
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
-## Plan E status (5/23)
+## Plan E status (6/23)
 
 ### Section 1: PyInstaller bootstrap ✅
 - [x] Task 1: pyinstaller>=6.10 dev-extraan + smoke import test (`22875d0`)
@@ -145,7 +145,7 @@
 
 ### Section 2: .spec-konfiguraatio + asset bundling
 - [x] Task 5: .spec datas (TOML/QSS/fontit/LICENSES) + spec-test (`eb3acf4`)
-- [ ] Task 6: .spec hidden_imports (ifcopenshell/ezdxf/QtSvg) + spec-test
+- [x] Task 6: .spec hidden_imports (ifcopenshell/ezdxf/QtSvg) + spec-test (`b7c1133`)
 - [ ] Task 7: .spec excludes (tkinter/pytest/pip jne.) + spec-test
 - [ ] Task 8: .spec VSVersionInfo Windows-resourcesille + version_info.py
 - [ ] Task 9: .spec BUNDLE icon-konfig + placeholder-todo
@@ -291,7 +291,8 @@
 - Plan E Task 3: src/dxf2ifc/_version.py kanoninen versio-string + __init__ re-exportti + tests/test_version.py (metadata-roundtrip + module-level shape) (`394f6ed`). 2 version-testiä passed.
 - Plan E Task 4: docs/packaging.md "Local build" -osio (`a655f0c`). ✅ Section 1 valmis.
 - Plan E Task 5: .spec Analysis(datas=...) profile TOML + QSS + 7 fonttia + 4 LICENSE-tiedostoa (destinaatiot dxf2ifc/profiles, dxf2ifc/gui, dxf2ifc/gui/fonts) + tests/test_spec_file.py varmistaa jokaisen polun (`eb3acf4`). 3 spec-testiä passed.
+- Plan E Task 6: .spec hiddenimports ifcopenshell.{api,geom,guid,template} + ezdxf.entities + PySide6.{QtSvg,QtSvgWidgets} + spec-testi (`b7c1133`). 4 spec-testiä passed.
 
-**Kesken:** Plan E Task 6–23 (18 jäljellä).
+**Kesken:** Plan E Task 7–23 (17 jäljellä).
 
 **Blokkerit:** ei.
