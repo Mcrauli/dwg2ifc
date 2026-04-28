@@ -2,11 +2,11 @@
 
 **Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan F Task 10 — `python -m dxf2ifc.tools.solibri verify` CLI-entry.
+**Current task:** Plan F Task 11 — `tests/snapshots/solibri/full_kylmaelement.json` baseline.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 10:n osio plan-tiedostosta. Lisää `tools/solibri/__main__.py` (tai siirrä __init__.py) ja CLI-entry joka ottaa `verify input.ifc output.xml` -muodon ja ketjuttaa verify+parse_report. Failing-testi: ilman Solibri:ä CLI palauttaa selkeän virheen.
+**Seuraavaksi:** Lue Task 11:n osio plan-tiedostosta. Luo tests/snapshots/solibri/-kansio + JSON-baseline joka kuvaa odotetun Solibri-raportin. Voi olla minimaalinen (tyhjä violations-lista, koska Plan B fixture on clean). TDD: failing-testi joka varmistaa että snapshot eksistoi ja parse_report:n tulos full-fixturesta matchaa.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -186,7 +186,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 ### Section 3: solibri-cli runner + raportin parsija
 - [x] Task 8: tools/solibri/verify.py Solibri.exe-CLI-wrapper (subprocess) (`5b6bcea`)
 - [x] Task 9: tools/solibri/parse_report.py XML→RuleResult dict (lxml-vapaa, ElementTree) (`797e740`)
-- [ ] Task 10: `python -m dxf2ifc.tools.solibri verify` CLI-entry
+- [x] Task 10: `python -m tools.solibri verify` CLI-entry (`25a38f4`)
 
 ### Section 4: Snapshot-raportit + diffaus
 - [ ] Task 11: tests/snapshots/solibri/full_kylmaelement.json baseline
@@ -392,7 +392,8 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - Plan F Task 7: `docs/solibri-rules.md` dokumentoi kaikki 5 BCF-sääntöä suomeksi (Mitä validoi / Miksi / Viite / Solibri-säännön tyyppi / dxf2ifc:n vastaava automaattinen tarkistus). 2 uutta testiä (existence + heading-coverage) (`6042595`). ✅ Section 2 (Tasks 5–7) valmis.
 - Plan F Task 8: `tools/solibri/verify.py` `build_command` + `run_solibri` Solibri Anywhere CLI-wrapper. Käyttää shutil.which:n etsimään Solibri.exe:n. 5 uutta testiä (argv-shape, subprocess-mock, missing-exe FileNotFoundError, non-zero-exit RuntimeError, shutil-attached). `tools/__init__.py` + `tools/solibri/__init__.py` muunsivat tools/-kansion paketiksi (`5b6bcea`).
 - Plan F Task 9: `tools/solibri/parse_report.py` `parse_report(path) -> list[RuleResult]` joka iteroi `<Rule>` ja `<Result>` -nodet ElementTree:llä. tests/fixtures/solibri_report_sample.xml mock-fixture (1 passed + 3 failed) + 4 parser-testiä (`797e740`).
+- Plan F Task 10: `tools/solibri/cli.py` `verify --ifc --ruleset --report` CLI-entry joka ketjuttaa run_solibri + parse_report; exit 0/1/2 (clean/violations/missing-solibri). `tools/solibri/__main__.py` mahdollistaa `python -m tools.solibri verify`-komentoaja. Plan-spec puhuu `python -m dxf2ifc.tools.solibri`-paketista mutta tools/-kansio on repo-rootissa Tasks 5–9 kompositiosta, joten CLI on `tools.solibri`-namespacessa. 4 uutta CLI-testiä (`25a38f4`). ✅ Section 3 (Tasks 8–10) valmis.
 
-**Kesken:** Plan F Task 10 — CLI-entry verify+parse.
+**Kesken:** Plan F Task 11 — snapshot-baseline.
 
 **Blokkerit:** ei.
