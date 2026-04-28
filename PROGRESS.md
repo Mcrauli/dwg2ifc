@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 6 — IfcProjectedCRS + IfcMapConversion linkitys IfcGeometricRepresentationContextiin kun crs annettu.
+**Current task:** Plan G Task 7 — scale + orthogonal_height edge-case-testit.
 
-**Mode:** A (toteutus, Section 2).
+**Mode:** A (toteutus, Section 2 viimeinen task).
 
-**Seuraavaksi:** Failing-testit `tests/test_ifc_writer.py`: crs=CRSConfig(...) → IfcProjectedCRS(Name=epsg, Description=name, GeodeticDatum=datum) eksistoi + IfcMapConversion linkki Eastings/Northings/Scale → IfcGeometricRepresentationContext.HasCoordinateOperation. ifcopenshell.api.run("georeference.add_georeferencing"...) tai manual ifc.create_entity.
+**Seuraavaksi:** Failing-testit kahdelle CRS-konfiguraatiolle: orthogonal_height_mm=15000 (kerrostalon räystäs) ja scale=0.999 (korkeuskorjaus) → IfcMapConversion-arvot vastaavat. Itse impl jo tehty Task 6:ssa, joten Task 7 = pelkkä regressiotesti (parametrisoitu).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -503,7 +503,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 
 ### Section 2: IfcProjectedCRS + IfcMapConversion -kirjoitus
 - [x] Task 5: build_ifc_project_skeleton crs-kwarg, None → ei georeferenssiä (`bce689f`)
-- [ ] Task 6: IfcProjectedCRS + IfcMapConversion linkitetty IfcGeometricRepresentationContextiin
+- [x] Task 6: IfcProjectedCRS + IfcMapConversion linkitetty IfcGeometricRepresentationContextiin (`62b92a0`)
 - [ ] Task 7: scale + orthogonal_height edge-case-testit
 
 ### Section 3: Site → Building → Storey -placement-hierarkia
