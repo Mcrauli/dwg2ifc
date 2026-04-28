@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Bugfix kierros 2 (3 reaali-DXF buggia ennen Plan H:ta) → sitten Plan H (IFC 4.3 + RAVA).
+**Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Bugfix 4 — `add_furniture` polygon-geometria + placement-fix (14 hyllystä vain 1 näkyy 3D:ssä Solibrissa).
+**Current task:** Plan H Mode B B1 — skeleton-kirjoitus.
 
-**Mode:** A.
+**Mode:** B (section 0/?).
 
-**Seuraavaksi:** Lue `src/dxf2ifc/core/ifc_writer.py` `add_furniture`-funktio, tutki LWPOLYLINE→bbox→IfcLocalPlacement -ketju. TDD: failing-testi joka tuottaa 3 polygoni-pohjaista KYL-LEVYHYLLY-entiteettiä eri keskipisteiden kohdille ja varmistaa että jokaisella IfcFurniture:lla on uniikki `IfcLocalPlacement.RelativePlacement.Location.Coordinates`.
+**Seuraavaksi:** Plan F valmis 16/16 ✅, Bugfix kierros 2 valmis (Bugfix 4 systeeminen 1000× placement + OCS→WCS, Bugfix 5 xref-prefix mapper, Bugfix 6 ARK-layerit). Aloita Plan H Mode B: lue Plan F frontmatter + ensimmäiset 30 riviä → kirjoita skeleton (YAML frontmatter + 1-3 rivin intro + section-otsikot ~30 riviä) tiedostoon `docs/superpowers/plans/2026-04-28-plan-h-ifc43-rava.md`.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -24,11 +24,11 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 
 Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vain 1 näkyy 3D:ssä, AR-prefix-layerit (xref-format "AR1241_US") eivät matchaa profiilin sääntöihin, default-profiili kattaa pelkästään KYL-* layereitä — sun real-world DXF:llä on 77 layeria mukaan lukien AR1241_US/AR1311_VS/AR1242_IKKUNA jne. joilla on Talo2000-koodit jo nimessä.
 
-- [ ] **Bugfix 4** — `add_furniture` polygon-geometria väärin: 14 KYL-LEVYHYLLY/TIKASHYLLY-entiteettiä luodaan IFC:hen mutta vain 1 näkyy 3D:ssä Solibrissa. Bugfix 1 hoiti TypeErrorin mutta bbox/placement edelleen rikki — entiteetit menevät päällekkäin (0,0,0)-pisteeseen tai tulee degeneroituja. Korjaus: tutki LWPOLYLINE-polygonin world-coord-vertexien luenta, varmista että jokainen IfcFurniture saa oman placementin polygonin keskipisteen mukaan. Tiedostot: `src/dxf2ifc/core/ifc_writer.py` add_furniture, `src/dxf2ifc/core/geometry.py` (bbox-helper jos olemassa), `tests/test_ifc_writer.py`.
+- [x] **Bugfix 4** — Placement 1000× world coords (is_si default-bug ifcopenshell.api 0.8.5:ssä): `geometry.edit_object_placement` -kutsut korjattu `is_si=False`-flagiksi 9 paikassa (wall/slab/door/window/pipe/furniture/cable/proxy/cooling). Bonus: `dxf_reader` muuntaa LWPOLYLINE-vertexit OCS→WCS:ksi (`entity.ocs().to_wcs()`), joten extrusion=(0,0,-1)-flippaus toimii. 3 uutta testiä, koko 297 passed. (`2f827ea`)
 
-- [ ] **Bugfix 5** — Profile pattern matching ei tue xref-prefixiä: AutoCAD-DXF:t käyttävät usein layer-nimissä xref-prefixiä `<xref>|<layername>` (esim. `KCM Kauhajoki...|AR1241_US`). Nykyiset säännöt matchaavat vain täydellistä nimeä, joten oikeat layerit jäävät mappamatta. Korjaus: laajenna `mapper.layer_matches`-funktiota sallimaan suffix-match jos layer-nimi sisältää `|`-merkin (split + ota viimeinen pala vertailuun). Tiedostot: `src/dxf2ifc/core/mapper.py`, `tests/test_mapper.py`.
+- [x] **Bugfix 5** — `mapper.layer_matches` strippaa xref-pipe-prefixin (`KCM Kauhajoki|AR1241_US` → `AR1241_US`) kun pattern ei sisällä pipea. 4 uutta testiä. (`230f327`)
 
-- [ ] **Bugfix 6** — Default-profiilin laajennus ARK-layereille: lisää säännöt yleisille AutoCAD-arkkitehtilayer-nimille jotka käyttävät Talo2000-koodi-prefixiä:
+- [x] **Bugfix 6** — Default-profiilin laajennus ARK / K-prefix layereille:
   - `AR1241_US` → IfcWall STANDARD, Talo2000 1241
   - `AR1242_IKKUNA` → IfcWindow, Talo2000 1242
   - `AR1245_LASIUS` → IfcWall STANDARD (lasi-US)
@@ -38,10 +38,9 @@ Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vai
   - `AR1317_TILAPORTAAT` → IfcStair
   - `AR1331_KIINTO` → IfcFurniture, Talo2000 1331
   - K-arkkitehtuuriset: `K-OVET` → IfcDoor, `K-SEINÄT_VÄLISEINÄT` → IfcWall PARTITIONING, `K-KALUSTEET`/`K-KIINTOKALUSTEET`/`K-RST-KALUSTEET` → IfcFurniture, `K-VALAISTUS` → IfcLightFixture
-  - **HUOM:** KYL-* layerit (höyrystimet/hyllyt/laitteet) säilyvät nykyisellä mapping:lla kunnes Plan H toteutuu — Plan H vaihtaa nämä RAVA-koodeihin (LVI-TUOTEOSA + Talotekniikka-tuoteosa), siihen asti pidetään Talo2000-luokitus.
-  Tiedostot: `src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml`, `tests/test_default_profile.py`.
+  - **HUOM:** KYL-* layerit (höyrystimet/hyllyt/laitteet) säilyvät nykyisellä mapping:lla kunnes Plan H toteutuu. 13 uutta testiä `tests/test_bugfix6_ark_layer_rules.py` + xref-yhdistelmä-testi. (`b1df8c3`)
 
-Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivitä Current plan + Current task, kun Plan F:n PLAN-LOPPUPISTE saavutettu.
+✅ Bugfix kierros 2 valmis (Bugfix 4 + 5 + 6 = 314 testiä passed). Plan H Mode B alkaa seuraavalla sessiolla.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -399,7 +398,10 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - Plan F Task 14: `.github/workflows/build.yml` Linux-jobiin uusi "Plan F quality gate"-step joka ajaa `uv sync --all-extras` + `uv run pytest tests/test_quality.py`. 1 uusi workflow-testi (`d6c78bd`).
 - Plan F Task 15: `docs/quality-gates.md` two-tier prosessikuvaus suomeksi (Taso 1: ifcopenshell.validate-gate, Taso 2: Solibri-snapshot-verify); release-flow-tarkistuslista linkittää packaging-smoke.md:hen ja solibri-rules.md:hen. 2 uutta testiä (`fb7487d`).
 - Plan F Task 16: plan-loppupiste — pytest 294 passed + 1 skipped (solibri-marker), coverage 91 %, `ruff format` applied 18 tiedostoon (uudet tiedostot pitkien rivien rikkomista varten), CLAUDE.md + README.md "Plan F ✅" -päivitys (`165a0db`). 🎉 Plan F 16/16 valmis. Ruff check edelleen flagaa `build/version_info.py` + `tests/test_spec_file.py` F821:t — pre-existing PyInstaller VS DSL placeholderit.
+- **Bugfix 4** (`2f827ea`) — placement-bug 1000× world coords: ifcopenshell.api 0.8.5:n `geometry.edit_object_placement` defaultaa `is_si=True` joka kertoo matriisin translaation 1000:lla. Korjattu kaikki 9 paikkaa `is_si=False`. Bonus: dxf_reader LWPOLYLINE-vertexien OCS→WCS-muunnos (`entity.ocs().to_wcs()`). 3 uutta testiä.
+- **Bugfix 5** (`230f327`) — mapper.layer_matches strippaa xref-pipe-prefixin (`KCM Kauhajoki|AR1241_US` → `AR1241_US`) kun pattern ei sisällä pipea. 4 uutta testiä.
+- **Bugfix 6** (`b1df8c3`) — default-profiili laajennettiin 13 uudella säännöllä ARK / K-prefix arkkitehtilayer-nimille (AR1241_US, AR1242_IKKUNA, AR1245_LASIUS, AR1311_VS, AR1233_PILARI, AR1314_KAIDE, AR1317_TILAPORTAAT, AR1331_KIINTO, K-OVET, K-SEINÄT_VÄLISEINÄT, K-KALUSTEET-variantit, K-VALAISTUS). 13 uutta testiä. ✅ Bugfix kierros 2 valmis (314 passed).
 
-**Kesken:** Bugfix 4 — add_furniture polygon-placement-bugi.
+**Kesken:** Plan H Mode B aloitus seuraavalla sessiolla.
 
 **Blokkerit:** ei.
