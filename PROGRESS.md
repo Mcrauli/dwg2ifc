@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan E (Mode B) — section 3/5: Windows build (paikallinen + CI matrix).
+**Current task:** Plan E (Mode B) — section 4/5: GitHub Actions release-workflow.
 
-**Mode:** B (plan-kirjoitus, section 3/5). Section 2 (5 taskia) committed.
+**Mode:** B (plan-kirjoitus, section 4/5). Section 3 (5 taskia) committed.
 
-**Seuraavaksi:** täytä Plan E section 3 (Windows build + CI matrix) 4-5 task-rivillä — paikallinen build-skripti `scripts/build_exe.ps1`, GitHub Actions matrix windows-latest jossa pyinstaller, artifact-upload, smoke-launch (`Get-Item dxf2ifc.exe`), build cache. Commit + push, sitten section 4.
+**Seuraavaksi:** täytä Plan E section 4 (release workflow) 4-5 task-rivillä — `release.yml` triggeröityy git tagista `v*`, käyttää saman buildin, lataa .exe + checksum + LICENSES.md GitHub Releaseen `gh release create`, dokumentoi tag-prosessi. Commit + push, sitten section 5.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
