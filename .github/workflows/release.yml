@@ -76,3 +76,19 @@ jobs:
             dist/dxf2ifc-*.exe.sha256
             dist/LICENSES.md
           if-no-files-found: error
+
+      - name: Create draft GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = "${env:GITHUB_REF_NAME}"
+          $assets = @(
+            (Get-ChildItem dist/dxf2ifc-*.exe).FullName,
+            (Get-ChildItem dist/dxf2ifc-*.exe.sha256).FullName,
+            "dist/LICENSES.md"
+          )
+          gh release create $tag @assets `
+            --title $tag `
+            --notes-file CHANGELOG.md `
+            --draft

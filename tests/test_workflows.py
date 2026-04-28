@@ -141,6 +141,15 @@ def test_release_workflow_writes_sha256_sidecar():
     assert ".exe.sha256" in text
 
 
+def test_release_workflow_creates_draft_release():
+    text = RELEASE_PATH.read_text(encoding="utf-8")
+    assert "gh release create" in text
+    assert "--draft" in text
+    assert "CHANGELOG.md" in text
+    # Must wire GITHUB_TOKEN through env so gh CLI authenticates.
+    assert "GH_TOKEN" in text or "GITHUB_TOKEN" in text
+
+
 def test_build_workflow_runs_version_smoke_before_upload():
     data = _load_workflow()
     windows_job = next(
