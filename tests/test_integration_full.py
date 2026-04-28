@@ -16,12 +16,18 @@ EXPECTED_TALO2000_CODES = {
     "1242",  # KYL-IKKUNA → IfcWindow
     "1331",  # KYL-LEVYHYLLY → IfcFurniture
     "1352",  # KYL-LEVY → IfcBuildingElementProxy
-    # Refrigerant pipes (LT/MT IMU, MT NESTE), drainpipe (KYL-VIEMARI),
-    # cable carrier (KAAPELIHYLLY) and cooling equipment (HOYRYSTIN/LAUHDUTIN/
-    # KOMPRESSORI) moved to TATE domain (RAVA classification) in Plan H
-    # Tasks 13-14. Their classification will appear under IfcClassification
-    # "RAVA-LVI" / "RAVA-TATE" once the domain-aware classifier ships in
-    # Plan H Tasks 15-17.
+}
+
+EXPECTED_RAVA_LVI_CODES = {
+    "T-LVI-01-01-023",  # KYL-HOYRYSTIN → IfcEvaporator
+    "T-LVI-02",  # LT IMU → IfcPipeSegment (refrigerant)
+    "T-LVI-04-01-001",  # KYL-VIEMARI → IfcPipeSegment (drainpipe)
+    # NOTE: full_kylmaelement_dxf fixture omits LAUHDUTIN/KOMPRESSORI blocks;
+    # T-LVI-01-01-018/-017 are still supported by the profile.
+}
+
+EXPECTED_RAVA_TATE_CODES = {
+    "T-TATE-01-01-001",  # KAAPELIHYLLY → IfcCableCarrierSegment
 }
 
 
@@ -110,14 +116,38 @@ def test_full_kylmaelement_pipeline_emits_rava_classifications(
     assert "RAVA-TATE" in classification_names
 
     codes = {r.Identification for r in ifc.by_type("IfcClassificationReference")}
-    # Cooling equipment HOYRYSTIN
-    assert "T-LVI-01-01-023" in codes
-    # Refrigerant pipe T-LVI-02 generic category
-    assert "T-LVI-02" in codes
-    # Drainpipe (defrost)
-    assert "T-LVI-04-01-001" in codes
-    # Cable carrier (TALOTEKNIIKKA)
-    assert "T-TATE-01-01-001" in codes
+    missing_lvi = EXPECTED_RAVA_LVI_CODES - codes
+    assert not missing_lvi, f"missing RAVA-LVI codes: {sorted(missing_lvi)}"
+    missing_tate = EXPECTED_RAVA_TATE_CODES - codes
+    assert not missing_tate, f"missing RAVA-TATE codes: {sorted(missing_tate)}"
+
+
+def test_full_kylmaelement_pipeline_ifc4x3_emits_all_classifications(
+    full_kylmaelement_dxf: Path, tmp_path: Path
+):
+    """Plan H Task 18: the IFC4X3 pipeline must emit the same Talo2000 +
+    RAVA-LVI + RAVA-TATE classifications as the IFC4 pipeline."""
+    out = tmp_path / "full_kylmaelement_ifc4x3.ifc"
+    convert_dxf(
+        dxf_path=full_kylmaelement_dxf,
+        output_path=out,
+        profile=load_default_profile(),
+        schema="IFC4X3",
+    )
+
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4X3"
+
+    classification_names = {c.Name for c in ifc.by_type("IfcClassification")}
+    assert {"Talo2000", "RAVA-LVI", "RAVA-TATE"}.issubset(classification_names)
+
+    codes = {r.Identification for r in ifc.by_type("IfcClassificationReference")}
+    missing_ark = EXPECTED_TALO2000_CODES - codes
+    missing_lvi = EXPECTED_RAVA_LVI_CODES - codes
+    missing_tate = EXPECTED_RAVA_TATE_CODES - codes
+    assert not missing_ark, f"missing Talo2000 codes (IFC4X3): {sorted(missing_ark)}"
+    assert not missing_lvi, f"missing RAVA-LVI codes (IFC4X3): {sorted(missing_lvi)}"
+    assert not missing_tate, f"missing RAVA-TATE codes (IFC4X3): {sorted(missing_tate)}"
 
 
 def test_full_kylmaelement_pipeline_does_not_double_classify(
