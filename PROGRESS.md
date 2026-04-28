@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 12 — build.yml ubuntu-matrix smoke-build (`scripts/build_exe.sh`).
+**Current task:** Plan E Task 13 — build.yml smoke-step (`--version` → exit 0 + stdout sisältää `__version__`).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Lisää failing-testi joka varmistaa että build.yml sisältää myös ubuntu-latest job:n (matrix tai erillinen job) joka ajaa `scripts/build_exe.sh`-skriptin. Toteuta lisäämällä `linux`-job tai matrix-runner build.yml:hen. Commit + push.
+**Seuraavaksi:** Lisää failing-testi joka tarkistaa että build.yml:ssä Windows-jobin upload-stepin _ennen_ on smoke-step joka ajaa `dist/dxf2ifc-*.exe --version` ja varmistaa exit 0. Toteuta lisäämällä smoke-step build.yml:hen.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -165,7 +165,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 ### Section 3: Windows build (paikallinen + CI matrix)
 - [x] Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh (`738caa7`)
 - [x] Task 11: .github/workflows/build.yml Windows-runner + artifact upload (`e13b683`)
-- [ ] Task 12: build.yml ubuntu-matrix smoke-build
+- [x] Task 12: build.yml ubuntu-matrix smoke-build (`1bdf320`)
 - [ ] Task 13: build.yml smoke-step (--version → exit 0)
 - [ ] Task 14: docs/packaging.md "CI build"-osio
 
