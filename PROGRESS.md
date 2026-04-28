@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 15 — .github/workflows/release.yml tag-trigger + permissions: contents-write.
+**Current task:** Plan E Task 16 — release.yml checksum (Get-FileHash) + LICENSES.md pakkaus.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Failing-testi joka tarkistaa: release.yml on olemassa, triggeröityy `push: tags: ['v*.*.*']`, sisältää `permissions: contents: write`, ja sisältää saman build-jobin Windows-runnerilla. Toteuta workflow-tiedosto. Commit + push.
+**Seuraavaksi:** Failing-testi joka tarkistaa että release.yml sisältää stepin joka generoi `dist/dxf2ifc-*.exe.sha256`-tiedoston (PowerShell `Get-FileHash SHA256`) — itse asiassa build_exe.ps1 jo tekee tämän, mutta varmista että dist/LICENSES.md kerätään (fontit + ifcopenshell + PySide6 + Python). Voi olla erillinen step tai osa upload-pathia. Toteuta lisäämällä step joka kerää LICENSES.md.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -170,7 +170,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 - [x] Task 14: docs/packaging.md "CI build"-osio (`a23b6bb`)
 
 ### Section 4: GitHub Actions release-workflow
-- [ ] Task 15: .github/workflows/release.yml tag-trigger + permissions
+- [x] Task 15: .github/workflows/release.yml tag-trigger + permissions (`a8430be`)
 - [ ] Task 16: release.yml checksum + LICENSES.md pakkaus
 - [ ] Task 17: release.yml gh release create --draft step
 - [ ] Task 18: CHANGELOG.md ensimmäinen versio (v0.1.0)
