@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 10 — MappedEntity.domain + lvi_code + talotekniikka_code + apply_profile välitys.
+**Current task:** Plan H Task 11 — git mv default_kylmalaite_talo2000.toml → default_kylmalaite.toml + päivitä loader.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 10:n osio plan-tiedostosta. Lisää failing-testi `tests/test_mapper.py`:hen joka varmistaa että `apply_profile` kopioi `Rule.domain`/`lvi_code`/`talotekniikka_code` MappedEntity:hin. Laajenna MappedEntity-dataclass + apply_profile.
+**Seuraavaksi:** Lue Task 11:n osio plan-tiedostosta. `git mv` profiili-TOML uuteen nimeen (säilyttää historian). Päivitä `_DEFAULT_RESOURCE` `loader.py`:ssä. Failing-testi: `load_default_profile()` toimii uudella nimellä; vanhalla nimellä syntyy `FileNotFoundError`.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -199,7 +199,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 ### Section 3: Profile-skeeman domain-laajennus
 - [x] Task 8: Rule.domain Literal["ARK", "TATE"] + lvi_code/talotekniikka_code + validointi (`2bd5be6`)
 - [x] Task 9: loader.dump_profile + load_profile uudet kentät TOML round-trip (`e8bc454`)
-- [ ] Task 10: MappedEntity.domain + lvi_code + talotekniikka_code + apply_profile välitys
+- [x] Task 10: MappedEntity.domain + lvi_code + talotekniikka_code + apply_profile välitys (`be0ed2c`)
 
 ### Section 4: Default-profiilin uudistus
 - [ ] Task 11: git mv default_kylmalaite_talo2000.toml → default_kylmalaite.toml
