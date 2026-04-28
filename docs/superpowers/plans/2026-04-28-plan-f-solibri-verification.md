@@ -39,6 +39,10 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 + Plan E 23/23 valmis 
 
 ## Section 3: solibri-cli runner + raportin parsija
 
+- [ ] Task 8: kirjoita `tools/solibri/verify.py` joka kutsuu Solibri Anywhere CLI:tä (`Solibri.exe -load $ifc -ruleset $bcfzip -output $report.xml -exit`) Windows-hostissa. TDD: failing-testi mock-subprocessilla joka varmistaa että komennon argumentit ovat oikein muodostettu — itse Solibri-prosessia ei ajeta CI:ssä.
+- [ ] Task 9: kirjoita `tools/solibri/parse_report.py` joka parsii Solibrin XML-raportin (lxml) listaksi `RuleResult`-dictejä (rule_name, severity, ifc_guid, message). Failing-testi: pieni mock-XML-fixture (`tests/fixtures/solibri_report_sample.xml`) → parsija palauttaa odotetut entry:t.
+- [ ] Task 10: lisää `python -m dxf2ifc.tools.solibri verify input.ifc output.xml` -CLI-entry joka ketjuttaa verify.py + parse_report.py. Vaatii Solibri Anywhere -asennuksen, sandboxissa skip-marker. Failing-testi: ilman Solibri:ä CLI palauttaa selkeän virheen "Solibri.exe not found in PATH".
+
 ## Section 4: Snapshot-raportit + diffaus
 
 ## Section 5: CI-integraatio + dokumentaatio + plan-loppupiste
