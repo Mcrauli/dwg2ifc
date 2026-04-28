@@ -22,3 +22,33 @@ def test_spec_names_dxf2ifc_and_is_windowed() -> None:
     text = _spec_text()
     assert "name='dxf2ifc'" in text or 'name="dxf2ifc"' in text
     assert "console=False" in text
+
+
+def test_spec_bundles_runtime_assets() -> None:
+    """Runtime resources (profile TOML, QSS, fonts, font licences) must ship."""
+    text = _spec_text()
+    expected_sources = [
+        "src/dxf2ifc/profiles/default_kylmalaite_talo2000.toml",
+        "src/dxf2ifc/gui/style.qss",
+        "assets/fonts/Inter-Regular.ttf",
+        "assets/fonts/Inter-Medium.ttf",
+        "assets/fonts/Inter-SemiBold.ttf",
+        "assets/fonts/Inter-Bold.ttf",
+        "assets/fonts/SpaceGrotesk-Medium.ttf",
+        "assets/fonts/SpaceGrotesk-Bold.ttf",
+        "assets/fonts/JetBrainsMono-Medium.ttf",
+        "assets/fonts/LICENSES.md",
+        "assets/fonts/Inter-LICENSE.txt",
+        "assets/fonts/SpaceGrotesk-LICENSE.txt",
+        "assets/fonts/JetBrainsMono-LICENSE.txt",
+    ]
+    for source in expected_sources:
+        assert source in text, f"datas missing source: {source}"
+
+    expected_destinations = [
+        "dxf2ifc/profiles",
+        "dxf2ifc/gui",
+        "dxf2ifc/gui/fonts",
+    ]
+    for dest in expected_destinations:
+        assert dest in text, f"datas missing destination: {dest}"
