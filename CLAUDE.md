@@ -17,7 +17,7 @@ DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Mu
 - ✅ **Plan C** 12/12 (`2026-04-27-plan-c-ifcsystem-grouping.md`) — IfcSystem-ryhmittely 4 järjestelmälle, 151 testiä
 - ✅ **Plan D** 25/25 (`2026-04-27-plan-d-pyside6-gui.md`) — PySide6 GUI + profiili-editori, 200 testiä, coverage 89%
 - ✅ **Plan E** 23/23 (`2026-04-27-plan-e-pyinstaller.md`) — PyInstaller-paketointi + Win/Linux build CI + tag-triggered draft release + CHANGELOG + smoke-checklist + README badge + troubleshooting, 246 testiä, coverage 89 %
-- ⏳ **Plan F** kirjoittamatta — Spec verifiointi Solibrissä
+- 🟡 **Plan F** 0/16 (`2026-04-28-plan-f-solibri-verification.md`) — Solibri-spec-verifiointi + IFC quality gates: automaattinen ifcopenshell.validate-gate + Solibri rule-set + snapshot-raportit. Plan kirjoitettu, toteutus alkaa Section 1 Task 1:llä
 - ⏳ **Plan G** kirjoittamatta — Coordinate System & Georeferenced IFC. Toteutetaan **Plan F:n jälkeen**. Avain-päätökset:
   - Default CRS: ETRS-TM35FIN, IfcProjectedCRS-kentät: `Name="EPSG:3067"`, `Description="ETRS-TM35FIN"`, `GeodeticDatum="ETRS89"` (kaikki kolme kirjoitetaan parhaan interop:in takaamiseksi)
   - IfcMapConversion linkittää LOCAL geometrian WORLD-koordinaateihin (Eastings/Northings profile-tiedostosta)
