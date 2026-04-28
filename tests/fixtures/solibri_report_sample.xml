@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SolibriReport schema="dxf2ifc-sample">
+  <Rule name="Units are millimetres" severity="info" status="passed">
+    <Description>Length unit is MILLIMETRE.</Description>
+  </Rule>
+  <Rule name="Talo2000 classification coverage" severity="warning" status="failed">
+    <Description>Two IfcWall entities lack a Talo2000 classification.</Description>
+    <Result severity="warning" guid="2N9FQX0000000000000001" message="IfcWall 'KYL-VK-1' missing Talo2000 classification" />
+    <Result severity="warning" guid="2N9FQX0000000000000002" message="IfcWall 'KYL-VK-2' missing Talo2000 classification" />
+  </Rule>
+  <Rule name="IfcSystem grouping for refrigeration networks" severity="error" status="failed">
+    <Result severity="error" guid="2N9FQX0000000000000010" message="LT IMU pipe segment not assigned to IfcSystem 'Refrigeration LT'" />
+  </Rule>
+</SolibriReport>
