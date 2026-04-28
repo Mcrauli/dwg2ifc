@@ -26,6 +26,11 @@ Plan A–F + H valmis. Master `<TBD>`. 302 ei-GUI testiä passed + 1 skipped (So
 
 ## Section 1: CRSConfig profile-skeemaan + storey_z_levels
 
+- [ ] Task 1: lisää `src/dxf2ifc/profiles/schema.py`:hen `CRSConfig`-pydantic-malli kentin: `epsg_code: str = "EPSG:3067"`, `name: str = "ETRS-TM35FIN"`, `geodetic_datum: str = "ETRS89"`, `eastings_mm: float`, `northings_mm: float`, `orthogonal_height_mm: float = 0.0`, `x_axis_abscissa: float = 1.0`, `x_axis_ordinate: float = 0.0`, `scale: float = 1.0`. Failing-testit: defaultit + serialization + invalid scale (<= 0) heittää ValueError.
+- [ ] Task 2: laajenna `Profile`-malli kentin `crs: CRSConfig | None = None` ja `storey_z_levels_mm: list[float] = Field(default_factory=lambda: [0.0])`. Pydantic-validator: storey_z_levels_mm strictly increasing + jokainen 0 ≤ z ≤ 100000 mm; vähintään 1 alkio. Failing-testit: 3 case (default 1-storey, 3-storey [0, 3500, 7000], invalid descending list).
+- [ ] Task 3: päivitä `profiles/loader.py` `load_profile` + `dump_profile` round-trippaamaan crs-objekti ja storey_z_levels_mm-lista TOML:n läpi. Failing-testi: Profile crs:llä → dump → load → identtinen, ja default-profile (ei crs:ää) round-trippaa None:n eikä emit:tä `[crs]`-osiota.
+- [ ] Task 4: lisää `src/dxf2ifc/profiles/default_kylmalaite.toml`-tiedostoon kommentoitu `[crs]`-osio (esimerkki Helsinki-keskustan ETRS-TM35FIN-arvoilla, eastings 25496000, northings 6672000) + `storey_z_levels_mm = [0.0]` (yksi kerros default). Failing-testi: default profile load → `profile.crs is None` (kommentoitu) ja `profile.storey_z_levels_mm == [0.0]`.
+
 ## Section 2: IfcProjectedCRS + IfcMapConversion -kirjoitus skeletoniin
 
 ## Section 3: Site → Building → Storey -placement-hierarkia
