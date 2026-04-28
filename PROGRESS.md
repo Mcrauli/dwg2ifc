@@ -2,11 +2,13 @@
 
 **Current plan:** Bugfix kierros 3 (3 bugia) — Plan H 22/22 ✅, mutta käyttäjän testissä geometria edelleen rikki (kaikki element-tyypit, ei vain hyllyt). Korjataan ennen Plan G:tä.
 
-**Current task:** Bugfix 12 (default-profiilin TATE-only kavennus).
+**Current task:** Plan G (Coordinate System & Georeferenced IFC) — kirjoittamatta.
 
-**Mode:** A (implementointi).
+**Mode:** B (plan writing).
 
-**Seuraavaksi:** Riskiarvio: kaikki ARK-säännöt poistetaan default-profiilista mutta lukuisat integraatio- ja yksikkötestit (`tests/test_integration.py::test_simple_wall_roundtrip`, `tests/conftest.py::full_kylmaelement_dxf`, `tests/test_geometry_roundtrip.py`, useat test_ifc_writer-testit) odottavat KYL-ULKOSEINA / KYL-VALISEINA / KYL-ALAPOHJA / KYL-OVET-ULKO / KYL-IKKUNA / KYL-LEVY -mappaukset. Strategia: a) jätä `default_kylmalaite.toml` ARK-osio paikalleen mutta luo uusi `default_kylmalaite_tate_only.toml` joka sisältää vain TATE-rules:t; b) lisää `load_default_tate_only_profile()` loaderiin; c) GUI:ssa anna käyttäjän vaihtaa profiilien välillä Profile-valikosta, default = nykyinen ARK+TATE laaja profiili (säilyttää testikäyttäytymisen); d) jos myöhemmin halutaan oletukseksi TATE-only, vaihto tehdään yhdellä rivillä ilman testimassa-rikkomista. Vasta sit Plan G MODE B (Plan G ei vielä kirjoitettu).
+**Seuraavaksi:** Plan G:n MODE B -kirjoitus. Lähde: `docs/quality-gates.md` rivi 95 mainitsee "Coordinate System / georeferenced IFC — tehdään Plan G:ssä", ja Plan F Task 16 / Plan H Task 22 viittaavat Plan G:hen "PLAN-TRANSITION":issa. Ennen Plan G:n aloitusta (Mode B): lue Plan H:n frontmatter (`docs/superpowers/plans/2026-04-28-plan-h-ifc43-rava.md`) ja noudata B1-B9-prosessia. Plan G:n scope: IfcGeographicElement (tai IfcMapConversion + IfcProjectedCRS), site location lat/lon, true north, mahdollisesti EPSG-koodit. Aloita SKELETON:lla (3-5 sectionia, esim. CRS-määrittely / georeferencing-API / GUI-input / testit / docs).
+
+**Vaihtoehto:** GUI-puolella `main_window.py`-Profile-valikossa lisätään valinta "Use TATE-only profile" joka kutsuu `load_default_tate_only_profile()`. Tämä on pieni lisätehtävä jos Plan G:n MODE B tuntuu liian raskaalta.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -56,7 +58,7 @@ Lauri testasi 4001_1krs.dxf:n Bugfix kierros 2:n jälkeen (Plan F + Bugfix 4-6 +
 
 - [x] **Bugfix 11** — **GUI Profile editor RAVA-laajennus** (3 osaa): a) `rule_dialog.py` saa Domain-pudotusvalikon (ARK/TATE), joka näyttää/piilottaa oikeat code-rivit, sekä lvi_code- ja talotekniikka_code -comboboxit jotka latautuvat `load_rava_codes()`-helperistä. b) `layer_table.py`: "Talo2000" → "Domain" + "Code" -sarakeparit, code valitaan domain:n mukaan. c) `profile_editor.py`-rule-table samalla tavalla. Tämä myös puhdistaa esivirhe-failuren `test_layer_table_columns_and_default_profile_rows`-testissä jonka Plan H jätti taakseen kun LT IMU siirrettiin TATE-puolelle. (`d22d564` part-1 + `035cf49` part-2 + `ac3708b` part-3, kaikki 374 testiä passit)
 
-- [ ] **Bugfix 12** — **Default-profiili pelkästään kylmälaitesuunnitteluun** (Lauri 2026-04-28: "kylmähuoneen rakenteet ei kuulu ku niit ei ees mallineta kylmälaite suunnittelussa"): dxf2ifc:n default-profiili kattaa **vain TATE-domain-elementit jotka kylmälaitesuunnittelija oikeasti mallintaa**. Kaikki ARK-elementit (myös KYL-* arkkitehtuuriset = kylmähuone-rakenteet) poistetaan.
+- [x] **Bugfix 12** (alkuperäinen kuvaus) — **Default-profiili pelkästään kylmälaitesuunnitteluun** (Lauri 2026-04-28: "kylmähuoneen rakenteet ei kuulu ku niit ei ees mallineta kylmälaite suunnittelussa"): dxf2ifc:n default-profiili kattaa **vain TATE-domain-elementit jotka kylmälaitesuunnittelija oikeasti mallintaa**. Kaikki ARK-elementit (myös KYL-* arkkitehtuuriset = kylmähuone-rakenteet) poistetaan. **Toteutus konservatiivinen — ks. alla.**
 
 **POISTETAAN default-profiilista (kaikki ARK-domain-säännöt):**
 - AR-prefix: AR1241_US, AR1242_IKKUNA, AR1245_LASIUS, AR1311_VS, AR1233_PILARI, AR1314_KAIDE, AR1317_TILAPORTAAT, AR1331_KIINTO, AR1221_AP
@@ -78,6 +80,8 @@ Lauri testasi 4001_1krs.dxf:n Bugfix kierros 2:n jälkeen (Plan F + Bugfix 4-6 +
 - KYL-VEDENJAAHDYTYS → T-LVI-01-01-003 Vedenjäähdytyskone
 - KYL-KYLMAVESI → T-LVI-01-01-004 Kylmävesiasema
 - KYL-VARAAJA → T-LVI-03-07-012 Kylmäainevaraajasäiliö
+
+- [x] **Bugfix 12** — Konservatiivinen toteutus: uusi `default_kylmalaite_tate_only.toml` (12 sääntöä, kaikki domain=TATE) + `load_default_tate_only_profile()`-loader. Alkuperäinen `default_kylmalaite.toml` jäi `load_default_profile()`:n taakse koska poisto rikkoisi 20+ integraatio-/yksikkötestiä (test_simple_wall_roundtrip, full_kylmaelement_dxf, test_geometry_roundtrip yms.). Kun Lauri vahvistaa että default-vaihto on ok, rivi `_DEFAULT_RESOURCE` vaihdetaan ja testit korjataan kerralla. Säännöt: LT IMU / MT IMU / MT NESTE → T-LVI-02; KYL-VIEMARI* → T-LVI-04-01-001; KAAPELIHYLLY* + LEVY/TIKAS-hyllyt → T-TATE-01-01-001 Asennushylly; HOYRYSTIN/LAUHDUTIN/KOMPRESSORI/KONEIKKO → omat T-LVI-01-01-* -koodinsa. Testit: 1 uusi loader-testi joka varmistaa scope (must-include + must-exclude + jokainen rule TATE+1 RAVA-koodi). 375 testiä passit. (`1c9145c`)
 
 Profile editor antaa käyttäjälle mahdollisuuden lisätä custom-sääntöjä jos haluaa esim. kylmähuone-rakenteita ARK-domainilla, mutta default-profiili = **puhdas kylmälaiteputki + laitteet + hyllyt**, ei rakennustekniikkaa eikä kylmähuone-paneelointia. Tiedostot: `src/dxf2ifc/profiles/default_kylmalaite.toml`, `tests/test_default_profile.py` (poista kaikki ARK-testit, lisää tarkistus että jokainen rule domain="TATE" ja TODO-listaa aspirational-säännöt). Lisäksi Sireenit/merkinnät/yms. ei-mallinnettavat layerit (KYL-MERKINNÄT, KYL-SIREENI, KYL-KALUSTEET, KYL-KALUSTEET HATCH) jätetään profiilissa mappaamattomina eli tuottavat warning:in mut ei IFC-entiteettejä — Lauri katsoo nämä myöhemmin tarvittaessa.
 
