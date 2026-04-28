@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan E (Mode B) — section 4/5: GitHub Actions release-workflow.
+**Current task:** Plan E (Mode B) — section 5/5: Smoke + checksum + dokumentointi.
 
-**Mode:** B (plan-kirjoitus, section 4/5). Section 3 (5 taskia) committed.
+**Mode:** B (plan-kirjoitus, section 5/5). Section 4 (5 taskia) committed.
 
-**Seuraavaksi:** täytä Plan E section 4 (release workflow) 4-5 task-rivillä — `release.yml` triggeröityy git tagista `v*`, käyttää saman buildin, lataa .exe + checksum + LICENSES.md GitHub Releaseen `gh release create`, dokumentoi tag-prosessi. Commit + push, sitten section 5.
+**Seuraavaksi:** täytä Plan E section 5 (smoke + dokumentointi + plan-loppupiste) 3-5 task-rivillä — manuaalinen Windows smoke-checklist, README "Lataa .exe" -ohje, troubleshooting-osio (Smartscreen, AV-warnings), plan-loppupiste (pytest, ruff, status-päivitys). Commit + push, sitten B7 (numerointi globaaliksi) + B8 (PROGRESS.md checklist).
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
