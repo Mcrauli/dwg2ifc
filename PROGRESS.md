@@ -2,11 +2,11 @@
 
 **Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan F Task 15 — `docs/quality-gates.md` two-tier prosessikuvaus.
+**Current task:** Plan F Task 16 — plan-loppupiste (pytest + coverage + ruff + status-päivitys).
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 15:n osio plan-tiedostosta. Kirjoita docs/quality-gates.md joka kuvaa (a) automaattinen ifcopenshell.validate joka ajaa CI:ssä joka push:lla, (b) manuaalinen Solibri-snapshot-verify Lauri-driven ennen tag-releasea. Linkitä packaging-smoke.md:hen.
+**Seuraavaksi:** Aja `pytest -q --tb=short`, `pytest --cov=dxf2ifc --cov-report=term -q` (tavoite ≥80 %), `ruff check . && ruff format --check .`. Päivitä CLAUDE.md status: "Plan F valmis (<SHA>)". Päivitä README.md status-taulu Plan F ✅. PLAN-TRANSITION → Plan H Mode B.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -195,7 +195,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 
 ### Section 5: CI-integraatio + dokumentaatio + plan-loppupiste
 - [x] Task 14: build.yml linux-jobissa pytest tests/test_quality.py (`d6c78bd`)
-- [ ] Task 15: docs/quality-gates.md (auto + manuaali two-tier prosessi)
+- [x] Task 15: docs/quality-gates.md (auto + manuaali two-tier prosessi) (`fb7487d`)
 - [ ] Task 16: plan-loppupiste — pytest + coverage + ruff + status-päivitys
 
 ## Plan E status (23/23) ✅
@@ -397,7 +397,8 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - Plan F Task 12: `tools/solibri/diff_snapshot.py` `SnapshotDelta`-dataclass + `diff(baseline, current)` joka käyttää (rule_name, severity, ifc_guid, message)-fingerprintiä järjestys-riippumattomaan vertailuun. 5 uutta testiä (`ae3e411`).
 - Plan F Task 13: `solibri` pytest-marker `pyproject.toml`:ssa + `tests/conftest.py:pytest_collection_modifyitems` skippaa kaikki marker-testit kun `Solibri.exe` ei PATH:ssa. tests/test_solibri_snapshot_chain.py ajaa täysketjun verify→parse→diff vs. baseline (`cbb3d76`). ✅ Section 4 (Tasks 11–13) valmis.
 - Plan F Task 14: `.github/workflows/build.yml` Linux-jobiin uusi "Plan F quality gate"-step joka ajaa `uv sync --all-extras` + `uv run pytest tests/test_quality.py`. 1 uusi workflow-testi (`d6c78bd`).
+- Plan F Task 15: `docs/quality-gates.md` two-tier prosessikuvaus suomeksi (Taso 1: ifcopenshell.validate-gate, Taso 2: Solibri-snapshot-verify); release-flow-tarkistuslista linkittää packaging-smoke.md:hen ja solibri-rules.md:hen. 2 uutta testiä (`fb7487d`).
 
-**Kesken:** Plan F Task 15 — quality-gates.md.
+**Kesken:** Plan F Task 16 — plan-loppupiste.
 
 **Blokkerit:** ei.
