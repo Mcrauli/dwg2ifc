@@ -2,11 +2,11 @@
 
 **Current plan:** Plan E — PyInstaller-pakkaus + GitHub Releases (kirjoitettu `a3620f7`, 23 tehtävää, 5 sectionia).
 
-**Current task:** Plan E Task 3 — `src/dxf2ifc/_version.py` + `tests/test_version.py`.
+**Current task:** Plan E Task 4 — `docs/packaging.md` "Local build"-osio.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** luo `src/dxf2ifc/_version.py` joka exposesi `__version__ = "0.1.0"`. Failing test `tests/test_version.py` varmistaa että `from dxf2ifc import __version__` ja `metadata.version("dxf2ifc")` palauttavat saman. Re-exporttaa `__version__` `src/dxf2ifc/__init__.py`:stä.
+**Seuraavaksi:** luo `docs/packaging.md` jossa "Local build"-osio: `uv run pyinstaller build/dxf2ifc.spec --clean` -ohje + huomautus että Linux-build tuottaa ELF:n eikä `.exe`:tä, Windows-build vaatii Windows-hostin tai GitHub Actions windows-latest -runnerin.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -135,12 +135,12 @@
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
-## Plan E status (2/23)
+## Plan E status (3/23)
 
 ### Section 1: PyInstaller bootstrap
 - [x] Task 1: pyinstaller>=6.10 dev-extraan + smoke import test (`22875d0`)
 - [x] Task 2: build/dxf2ifc.spec base + tests/test_spec_file.py (`23179ec`)
-- [ ] Task 3: src/dxf2ifc/_version.py + tests/test_version.py
+- [x] Task 3: src/dxf2ifc/_version.py + tests/test_version.py (`394f6ed`)
 - [ ] Task 4: docs/packaging.md "Local build"-osio
 
 ### Section 2: .spec-konfiguraatio + asset bundling
@@ -288,7 +288,8 @@
 
 - Plan E Task 1: pyinstaller>=6.10 dev-extraan + tests/test_pyinstaller_bootstrap.py smoke import + `python -m PyInstaller --version`-test (`22875d0`). 2 smoketestiä passed.
 - Plan E Task 2: build/dxf2ifc.spec base (Analysis + EXE GUI-entrylla, console=False) + tests/test_spec_file.py + .gitignore-säätö (whitelist build/dxf2ifc.spec) (`23179ec`). 2 spec-testiä passed.
+- Plan E Task 3: src/dxf2ifc/_version.py kanoninen versio-string + __init__ re-exportti + tests/test_version.py (metadata-roundtrip + module-level shape) (`394f6ed`). 2 version-testiä passed.
 
-**Kesken:** Plan E Task 3–23 (21 jäljellä).
+**Kesken:** Plan E Task 4–23 (20 jäljellä).
 
 **Blokkerit:** ei.
