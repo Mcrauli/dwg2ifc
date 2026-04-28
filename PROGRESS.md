@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 15 — laajenna `add_talo2000_classification` → `add_classification(ifc, product, *, domain, code, name)` joka emittaa Talo2000 / RAVA-LVI / RAVA-TATE -classification:n domainin mukaan.
+**Current task:** Plan H Task 16 — convert_dxf-orchestrator domain-tietoinen luokitus.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 15:n osio plan-tiedostosta. Lisää `add_classification`-funktio (domain-parametrillä) `ifc_writer.py`:hen. Säilytä `add_talo2000_classification` thin wrapper:nä taaksepäin yhteensopivuuden vuoksi. Failing-testi: TATE-domain emittaa IfcClassification "RAVA-LVI"; ARK säilyy "Talo2000".
+**Seuraavaksi:** Lue Task 16:n osio plan-tiedostosta. Päivitä convert_dxf-orchestrator (`src/dxf2ifc/core/ifc_writer.py`) kutsumaan `add_classification` jokaiselle MappedEntity:lle: ARK → talo2000_code; TATE → lvi_code TAI talotekniikka_code. Multi-classification kielletty (tasan yksi per element). Failing-testi: full-fixture-pipeline tuottaa "Talo2000", "RAVA-LVI" ja "RAVA-TATE" classification:t.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -208,7 +208,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 - [x] Task 14: Kylmäaineputket + kaapelihylly domain="TATE" + RAVA-LVI-02 / RAVA-TATE (`fcf5492`)
 
 ### Section 5: Mapper + ifc_writer domain-luokitus
-- [ ] Task 15: add_classification(ifc, product, *, domain, code, name) — Talo2000/RAVA-LVI/RAVA-TATE
+- [x] Task 15: add_classification(ifc, product, *, domain, code, name) — Talo2000/RAVA-LVI/RAVA-TATE (`e2bbf8d`)
 - [ ] Task 16: convert_dxf-orchestrator domain-tietoinen luokitus, multi-classification kielletty
 - [ ] Task 17: validate_ifc Talo2000/RAVA-warning domain-aware
 
