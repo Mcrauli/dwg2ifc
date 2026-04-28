@@ -25,9 +25,11 @@ coverage.xml
 .hypothesis/
 
 # Build / dist
-build/
+build/dxf2ifc/
+build/__pycache__/
 dist/
 *.spec
+!build/dxf2ifc.spec
 
 # OS / editor
 .DS_Store
