@@ -11,6 +11,7 @@ DOC_PATH = Path(__file__).resolve().parent.parent / "docs" / "solibri-rules.md"
 REQUIRED_RULE_HEADINGS = (
     "Units are millimetres",
     "Talo2000 classification coverage",
+    "RAVA classification coverage",
     "IfcSystem grouping for refrigeration networks",
     "Cold-room panels emit IfcBuildingElementProxy 1352",
     "Cooling equipment uses MEP entity types",

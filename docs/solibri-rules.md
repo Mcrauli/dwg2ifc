@@ -5,10 +5,10 @@ Tämä dokumentti kuvaa suomeksi jokaisen säännön, joka kuljetetaan tiedostos
 Solibrin avaamista, jotta dxf2ifc:n laatuporttia voi auditoida ja testata
 manuaalisesti.
 
-BCF 2.1 -arkisto sisältää viisi `TopicType="Rule"`-tyyppistä topicia, yksi
+BCF 2.1 -arkisto sisältää kuusi `TopicType="Rule"`-tyyppistä topicia, yksi
 sääntö per topic. Jokainen sääntö sisältää viittauksen YTV 2012- tai
-RT-kortistoon. Säännöt on järjestetty samaan järjestykseen kuin
-`tools/solibri/build_bcfzip.py:RULES`-vakio.
+RT-kortistoon (tai Plan H:n RAVA-codeset:eihin). Säännöt on järjestetty
+samaan järjestykseen kuin `tools/solibri/build_bcfzip.py:RULES`-vakio.
 
 ## 1. Units are millimetres
 
@@ -38,7 +38,28 @@ RT-kortistoon. Säännöt on järjestetty samaan järjestykseen kuin
   `dxf2ifc.core.quality.validate_ifc` emittaa
   `"missing Talo2000 classification"` -warningin jos linkki puuttuu.
 
-## 3. IfcSystem grouping for refrigeration networks
+## 3. RAVA classification coverage
+
+- **GUID:** `66666666-ffff-4fff-ffff-666666666666`
+- **Mitä validoi:** Jokainen TATE-puolen tuoteosa (`IfcPipeSegment`,
+  `IfcCableCarrierSegment`, `IfcEvaporator`, `IfcCondenser`,
+  `IfcCompressor`) on linkitetty `IfcRelAssociatesClassification`-
+  relaatiolla joko `RAVA-LVI` (LVI-TUOTEOSA, T-LVI-…) tai `RAVA-TATE`
+  (TALOTEKNIIKKA-TUOTEOSA, T-TATE-…) -codesetiin. Talo2000 ei riitä
+  TATE-elementeille.
+- **Miksi:** Plan H linjaa että kylmälaitteet, kylmäaineputket,
+  viemäri- ja kaapelihyllyjärjestelmät kuuluvat RAVA Pro3 -aineiston
+  alle eikä Talo2000-luokitukseen. Yhteensopivuus Granlund/Sweco-
+  referenssimallien kanssa edellyttää RAVA-koodit.
+- **Viite:** `koodistot.suomi.fi` RYTJ — LVI-TUOTEOSA Versio 1.0,
+  TALOTEKNIIKKA-TUOTEOSA Versio 1.0 + Plan H Section 5.
+- **Solibri-säännön tyyppi:** "Information takeoff / Classification"
+  _Required RAVA classification reference present_.
+- **dxf2ifc:n vastaava automaattinen tarkistus:**
+  `dxf2ifc.core.quality.validate_ifc` emittaa
+  `"missing RAVA classification"` -warningin jos linkki puuttuu.
+
+## 4. IfcSystem grouping for refrigeration networks
 
 - **GUID:** `33333333-cccc-4ccc-cccc-333333333333`
 - **Mitä validoi:** Kylmäaineputket (LT IMU, MT IMU, MT NESTE),
@@ -55,7 +76,7 @@ RT-kortistoon. Säännöt on järjestetty samaan järjestykseen kuin
 - **Solibri-säännön tyyppi:** "MEP / System" _Required IfcSystem
   grouping_.
 
-## 4. Cold-room panels emit IfcBuildingElementProxy 1352
+## 5. Cold-room panels emit IfcBuildingElementProxy 1352
 
 - **GUID:** `44444444-dddd-4ddd-dddd-444444444444`
 - **Mitä validoi:** Kylmähuone-elementit (KYL-LEVY\*, KYL-NURKKA\*) on
@@ -71,7 +92,7 @@ RT-kortistoon. Säännöt on järjestetty samaan järjestykseen kuin
 - **dxf2ifc:n vastaava automaattinen tarkistus:** Default-profiilin
   KYL-LEVY*-säännöt mappaavat suoraan `IfcBuildingElementProxy`:lle.
 
-## 5. Cooling equipment uses MEP entity types
+## 6. Cooling equipment uses MEP entity types
 
 - **GUID:** `55555555-eeee-4eee-eeee-555555555555`
 - **Mitä validoi:** HOYRYSTIN-blokit on kartoitettu `IfcEvaporator`-,

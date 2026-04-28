@@ -58,6 +58,18 @@ RULES: tuple[Rule, ...] = (
         reference="RT 10-10962, YTV 2012 osa 3 + osa 4",
     ),
     Rule(
+        guid="66666666-ffff-4fff-ffff-666666666666",
+        title="RAVA classification coverage",
+        description=(
+            "Jokainen TATE-elementti (IfcPipeSegment, IfcCableCarrierSegment, "
+            "IfcEvaporator, IfcCondenser, IfcCompressor) tulee olla luokiteltu "
+            "IfcRelAssociatesClassification-relaatiolla RAVA-LVI- tai "
+            "RAVA-TATE-codesetiin (LVI-TUOTEOSA / TALOTEKNIIKKA-TUOTEOSA). "
+            "Talo2000 ei ole hyväksyttävä korvike TATE-puolen tuoteosille."
+        ),
+        reference="koodistot.suomi.fi RYTJ + Plan H Section 5",
+    ),
+    Rule(
         guid="33333333-cccc-4ccc-cccc-333333333333",
         title="IfcSystem grouping for refrigeration networks",
         description=(

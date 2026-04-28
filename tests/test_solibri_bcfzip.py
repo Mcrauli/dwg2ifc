@@ -13,6 +13,7 @@ BCFZIP_PATH = Path(__file__).resolve().parent.parent / "tools" / "solibri" / "dx
 REQUIRED_RULE_TITLES = {
     "Units are millimetres",
     "Talo2000 classification coverage",
+    "RAVA classification coverage",
     "IfcSystem grouping for refrigeration networks",
 }
 
