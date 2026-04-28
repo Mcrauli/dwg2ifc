@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoittaminen käynnissä.
 
-**Current task:** Plan G section 1/6 (CRSConfig profile-skeemaan + storey_z_levels).
+**Current task:** Plan G section 2/6 (IfcProjectedCRS + IfcMapConversion -kirjoitus).
 
-**Mode:** B (plan writing, section 1/6).
+**Mode:** B (plan writing, section 2/6).
 
-**Seuraavaksi:** B4 — kirjoita Section 1 task-rivit (CRSConfig pydantic-malli, storey_z_levels, default-profile-arvot ETRS-TM35FIN:lle). Plan G skeleton committoitu (`docs/superpowers/plans/2026-04-28-plan-g-georeferenced-ifc.md`, 6 sectionia).
+**Seuraavaksi:** B4 — kirjoita Section 2 task-rivit (skeleton-laajennus crs-parametri, IfcProjectedCRS-entity, IfcMapConversion-entity, IfcGeometricRepresentationContext-linkki).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
