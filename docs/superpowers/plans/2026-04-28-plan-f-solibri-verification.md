@@ -45,4 +45,8 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 + Plan E 23/23 valmis 
 
 ## Section 4: Snapshot-raportit + diffaus
 
+- [ ] Task 11: tallenna `tests/snapshots/solibri/full_kylmaelement.json` baseline-raportti joka generoidaan kerran Lauri-driven manuaalitestissä (Solibri Anywhere) full_kylmaelement-fixture:lle ja committoidaan reposta. Failing-testi: snapshot-tiedosto on JSON jonka skeema vastaa parse_report.py:n outputtia.
+- [ ] Task 12: kirjoita `tools/solibri/diff_snapshot.py` joka vertaa uutta raporttia baseline:iin ja palauttaa erot (uudet rule-failurit, kadonneet rule-passit). Failing-testi: kaksi mock-raporttia → diff palauttaa odotetut delta-entry:t.
+- [ ] Task 13: lisää `pytest`-marker `@pytest.mark.solibri` joka skipautuu jos `Solibri.exe` ei ole PATH:ssa, ja `tests/test_solibri_snapshot.py` joka markerin alla ajaa täyden ketjun (verify → parse → diff vs. baseline) — Lauri-driven CI-target. Default ei aja.
+
 ## Section 5: CI-integraatio + dokumentaatio + plan-loppupiste
