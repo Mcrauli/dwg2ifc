@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 14 — kylmäaineputket + viemäri + kaapelihylly TATE-domainiin (LT IMU/MT IMU/MT NESTE/KYL-VIEMARI lvi_code "T-LVI-02"; KAAPELIHYLLY talotekniikka_code "T-TATE-01-01-001").
+**Current task:** Plan H Task 15 — laajenna `add_talo2000_classification` → `add_classification(ifc, product, *, domain, code, name)` joka emittaa Talo2000 / RAVA-LVI / RAVA-TATE -classification:n domainin mukaan.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 14:n osio plan-tiedostosta. Korvaa pipe-säännöt domain="TATE" + lvi_code="T-LVI-02" (yleinen kylmäaineputki-kategoria) + erottelu pset_overrides:lla. KAAPELIHYLLY → domain="TATE" + talotekniikka_code="T-TATE-01-01-001". Failing-testi: pipe-säännöt saavat T-LVI-02 lvi_codena, kaapelihylly T-TATE-01-01-001.
+**Seuraavaksi:** Lue Task 15:n osio plan-tiedostosta. Lisää `add_classification`-funktio (domain-parametrillä) `ifc_writer.py`:hen. Säilytä `add_talo2000_classification` thin wrapper:nä taaksepäin yhteensopivuuden vuoksi. Failing-testi: TATE-domain emittaa IfcClassification "RAVA-LVI"; ARK säilyy "Talo2000".
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -205,7 +205,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 - [x] Task 11: git mv default_kylmalaite_talo2000.toml → default_kylmalaite.toml (`11c5801`)
 - [x] Task 12: ARK-säännöt domain="ARK"-merkintä (`203306a`)
 - [x] Task 13: TATE-säännöt (kylmälaitteet) domain="TATE" + lvi_code RAVA-koodit (`cca9882`)
-- [ ] Task 14: Kylmäaineputket + kaapelihylly domain="TATE" + RAVA-LVI-02 / RAVA-TATE
+- [x] Task 14: Kylmäaineputket + kaapelihylly domain="TATE" + RAVA-LVI-02 / RAVA-TATE (`fcf5492`)
 
 ### Section 5: Mapper + ifc_writer domain-luokitus
 - [ ] Task 15: add_classification(ifc, product, *, domain, code, name) — Talo2000/RAVA-LVI/RAVA-TATE
