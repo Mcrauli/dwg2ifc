@@ -2,11 +2,11 @@
 
 **Current plan:** Plan D — PySide6 GUI (kirjoitettu `7433ae8`, 25 tehtävää, 7 sectionia).
 
-**Current task:** Plan E (Mode B) — section 1/5: PyInstaller bootstrap.
+**Current task:** Plan E (Mode B) — section 2/5: .spec-konfiguraatio + asset bundling.
 
-**Mode:** B (plan-kirjoitus, section 1/5). Skeleton committed `432a277`.
+**Mode:** B (plan-kirjoitus, section 2/5). Section 1 (4 taskia) committed.
 
-**Seuraavaksi:** täytä Plan E section 1 (PyInstaller bootstrap) 3-5 task-rivillä — lisää PyInstaller dev-extraan, base .spec generointi (`pyinstaller --onefile --windowed src/dxf2ifc/gui/__main__.py` aluksi), .spec-tiedosto checked-iniin, smoke `.exe`-launch test (paikallisesti Windowsissa, CI:ssa Wine ehkä). Commit + push, sitten section 2.
+**Seuraavaksi:** täytä Plan E section 2 (.spec-konfig + asset bundling) 4-5 task-rivillä — laajenna `dxf2ifc.spec` datas-listalla (default-profiili-TOML, fontit, QSS, ifcopenshell schemat), hidden_imports-listalla (ifcopenshell, ezdxf, PySide6.QtSvg), excludes-optimointi, version_info Windows-resourcesille. Commit + push, sitten section 3.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
