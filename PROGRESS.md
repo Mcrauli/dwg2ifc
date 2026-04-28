@@ -2,11 +2,11 @@
 
 **Current plan:** Plan E — PyInstaller-pakkaus + GitHub Releases (kirjoitettu `a3620f7`, 23 tehtävää, 5 sectionia).
 
-**Current task:** Plan E Task 2 — `build/dxf2ifc.spec` base + tests/test_spec_file.py.
+**Current task:** Plan E Task 3 — `src/dxf2ifc/_version.py` + `tests/test_version.py`.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** luo `build/dxf2ifc.spec` PyInstaller .spec -tiedosto Analysis(['src/dxf2ifc/gui/__main__.py'], ...) -entry-pointtilla, name='dxf2ifc' ja windowed=True. Lisää `tests/test_spec_file.py` joka parsii .spec-tiedoston Python-evalilla ja varmistaa Analysis-kutsun argumentit.
+**Seuraavaksi:** luo `src/dxf2ifc/_version.py` joka exposesi `__version__ = "0.1.0"`. Failing test `tests/test_version.py` varmistaa että `from dxf2ifc import __version__` ja `metadata.version("dxf2ifc")` palauttavat saman. Re-exporttaa `__version__` `src/dxf2ifc/__init__.py`:stä.
 
 ## Plan A status (21/21) ✅
 - [x] Task 1–14 — scaffolding, types, profile loader, dxf reader, mapper (commit-historia)
@@ -135,11 +135,11 @@
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
 
-## Plan E status (1/23)
+## Plan E status (2/23)
 
 ### Section 1: PyInstaller bootstrap
 - [x] Task 1: pyinstaller>=6.10 dev-extraan + smoke import test (`22875d0`)
-- [ ] Task 2: build/dxf2ifc.spec base + tests/test_spec_file.py
+- [x] Task 2: build/dxf2ifc.spec base + tests/test_spec_file.py (`23179ec`)
 - [ ] Task 3: src/dxf2ifc/_version.py + tests/test_version.py
 - [ ] Task 4: docs/packaging.md "Local build"-osio
 
@@ -287,7 +287,8 @@
 - Plan E kirjoitettu (Mode B): skeleton + 5 sectionia + 23 task-riviä numeroitu globaalisti, CLAUDE.md "Plans B–F"-lista päivitetty (`432a277` → `a3620f7`). PROGRESS.md sisältää nyt täyden Plan E -checklistin.
 
 - Plan E Task 1: pyinstaller>=6.10 dev-extraan + tests/test_pyinstaller_bootstrap.py smoke import + `python -m PyInstaller --version`-test (`22875d0`). 2 smoketestiä passed.
+- Plan E Task 2: build/dxf2ifc.spec base (Analysis + EXE GUI-entrylla, console=False) + tests/test_spec_file.py + .gitignore-säätö (whitelist build/dxf2ifc.spec) (`23179ec`). 2 spec-testiä passed.
 
-**Kesken:** Plan E Task 2–23 (22 jäljellä).
+**Kesken:** Plan E Task 3–23 (21 jäljellä).
 
 **Blokkerit:** ei.
