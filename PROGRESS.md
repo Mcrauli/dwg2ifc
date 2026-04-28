@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 16 — validate_ifc CRS-warningit.
+**Current task:** Plan G Task 17 — full_kylmaelement_dxf 2-storey + integration test.
 
-**Mode:** A (toteutus, Section 5 lopussa). Sections 1–4 ✅ + Tasks 14–15 ✅ (15/21).
+**Mode:** A (toteutus, Section 6 alkaa). Sections 1–5 ✅ (16/21).
 
-**Seuraavaksi:** Plan-Task 16: laajenna `validate_ifc` (a) jos IfcMapConversion löytyy mutta IfcProjectedCRS puuttuu → error; (b) jos profile.crs annettu mutta IFC:ssä ei MapConversionia → error; (c) jos local-vertex > 1 km origosta → warning ("possible double-transform"). Failing-testit: 3 case + clean baseline.
+**Seuraavaksi:** Plan-Task 17: laajenna `full_kylmaelement_dxf`-fixturea kaksikerroksiseksi (storey-1 z=0, storey-2 z=3500); päivitä test_integration_full käyttämään profile.crs + storey_z_levels=[0, 3500]; varmista IfcSite + IfcProjectedCRS + IfcMapConversion + 2 storey + per-element-storey-containment.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -529,7 +529,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 ### Section 5: CLI + GUI georeferenssi-input + validointi
 - [x] Task 14: CLI --eastings/--northings/--orthogonal-height-flagit (`67cebd8`)
 - [x] Task 15: GUI CRSDialog + Profile-menubar "Set CRS…" (`80eff1e`, GUI-testit Windowsilla)
-- [ ] Task 16: validate_ifc warning/error MapConversion-orphan + missing-MapConversion + double-transform-shadow
+- [x] Task 16: validate_ifc warning/error MapConversion-orphan + missing-MapConversion + double-transform-shadow (`ff4a2cd`)
 
 ### Section 6: Integraatio + dokumentointi + plan-loppupiste
 - [ ] Task 17: full_kylmaelement_dxf 2-storey + integration-test full CRS-stack
