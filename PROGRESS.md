@@ -533,7 +533,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 
 ### Section 6: Integraatio + dokumentointi + plan-loppupiste
 - [x] Task 17: full_kylmaelement_dxf 2-storey + integration-test full CRS-stack (`b0d0299`)
-- [ ] Task 18: Solibri rule-set "CRS coverage" + bcfzip 6 sääntöä
+- [x] Task 18: Solibri rule-set "CRS coverage" + bcfzip 7 sääntöä (`a1c9515`)
 - [ ] Task 19: docs/coordinate-system.md
 - [ ] Task 20: docs/quality-gates.md päivitys + solibri_reference_full.ifc rebuild
 - [ ] Task 21: plan-loppupiste — ≥320 testiä + ruff + CLAUDE.md/README status
