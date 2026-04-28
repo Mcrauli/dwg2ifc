@@ -37,6 +37,12 @@ def build_parser() -> argparse.ArgumentParser:
             "Exits with code 1 if validation errors are reported."
         ),
     )
+    convert.add_argument(
+        "--schema",
+        choices=["ifc4", "ifc4x3"],
+        default="ifc4",
+        help="IFC schema to emit (default: ifc4). Plan H switches default to ifc4x3.",
+    )
     return parser
 
 
@@ -49,6 +55,7 @@ def main(argv: list[str] | None = None) -> int:
             dxf_path=args.input,
             output_path=args.output,
             profile=profile,
+            schema=args.schema.upper(),
         )
         print(f"Wrote {args.output}", file=sys.stderr)
         if args.validate:

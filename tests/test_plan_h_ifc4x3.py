@@ -10,6 +10,7 @@ from pathlib import Path
 import ifcopenshell
 import ifcopenshell.validate
 
+from dxf2ifc import cli
 from dxf2ifc.core.ifc_writer import build_ifc_project_skeleton, convert_dxf
 from dxf2ifc.profiles.loader import load_default_profile
 
@@ -82,3 +83,29 @@ def test_convert_dxf_ifc4x3_full_fixture_emits_each_ifc_class(
         "IfcEvaporator",
     ):
         assert ifc.by_type(ifc_class), f"no {ifc_class} entities in IFC4X3 fixture"
+
+
+def test_cli_convert_schema_flag_emits_ifc4x3(fixtures_dir: Path, tmp_path: Path):
+    out = tmp_path / "cli_ifc4x3.ifc"
+    rc = cli.main(
+        [
+            "convert",
+            str(fixtures_dir / "simple_wall.dxf"),
+            str(out),
+            "--schema",
+            "ifc4x3",
+        ]
+    )
+    assert rc == 0
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4X3"
+
+
+def test_cli_convert_schema_default_is_ifc4(fixtures_dir: Path, tmp_path: Path):
+    out = tmp_path / "cli_ifc4.ifc"
+    rc = cli.main(
+        ["convert", str(fixtures_dir / "simple_wall.dxf"), str(out)]
+    )
+    assert rc == 0
+    ifc = ifcopenshell.open(str(out))
+    assert ifc.schema == "IFC4"
