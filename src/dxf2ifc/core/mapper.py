@@ -55,8 +55,11 @@ def apply_profile(entities: list[EntityRecord], profile: Profile) -> list[Mapped
                 xform=entity.xform,
                 ifc_type=rule.ifc_type,
                 predefined_type=rule.predefined_type,
+                domain=rule.domain,
                 talo2000_code=rule.talo2000_code,
                 talo2000_name=rule.talo2000_name,
+                lvi_code=rule.lvi_code,
+                talotekniikka_code=rule.talotekniikka_code,
                 extra_props=extras,
             )
         )

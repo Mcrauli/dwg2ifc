@@ -78,6 +78,9 @@ class MappedEntity(EntityRecord):
 
     ifc_type: str = ""
     predefined_type: str | None = None
-    talo2000_code: str = ""
-    talo2000_name: str = ""
+    domain: str = "ARK"
+    talo2000_code: str | None = ""
+    talo2000_name: str | None = ""
+    lvi_code: str | None = None
+    talotekniikka_code: str | None = None
     extra_props: dict[str, Any] = field(default_factory=dict)

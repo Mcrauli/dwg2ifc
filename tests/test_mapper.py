@@ -227,3 +227,60 @@ def test_apply_profile_default_profile_emits_four_distinct_system_names():
     assert systems["KYL-VIEMARI-LATTIA"] == "Drainage"
     assert systems["KAAPELIHYLLY"] == "Cable carriers"
     assert systems["KYL-HOYRYSTIN"] == "Refrigeration plant"
+
+
+def test_apply_profile_propagates_domain_and_rava_codes():
+    profile = Profile(
+        name="domain",
+        ifc_schema="IFC4",
+        rules=[
+            Rule(
+                layer_pattern="AR1241_US*",
+                ifc_type="IfcWall",
+                domain="ARK",
+                talo2000_code="1241",
+                talo2000_name="Ulkoseinät",
+            ),
+            Rule(
+                layer_pattern="KYL-HOYRYSTIN*",
+                ifc_type="IfcEvaporator",
+                entity_kind="INSERT",
+                block_name="HOYRYSTIN",
+                domain="TATE",
+                lvi_code="T-LVI-01-01-023",
+            ),
+            Rule(
+                layer_pattern="KAAPELIHYLLY*",
+                ifc_type="IfcCableCarrierSegment",
+                domain="TATE",
+                talotekniikka_code="T-TATE-01-01-001",
+            ),
+        ],
+    )
+    entities = [
+        _sample_line_record(layer="AR1241_US"),
+        EntityRecord(
+            layer="KYL-HOYRYSTIN",
+            dxf_type="INSERT",
+            geometry=BlockInstance(insertion_point=Point3D(0, 0, 0)),
+            block_name="HOYRYSTIN",
+        ),
+        _sample_line_record(layer="KAAPELIHYLLY"),
+    ]
+    mapped = apply_profile(entities, profile)
+    by_layer = {m.layer: m for m in mapped}
+    ark = by_layer["AR1241_US"]
+    assert ark.domain == "ARK"
+    assert ark.talo2000_code == "1241"
+    assert ark.lvi_code is None
+    assert ark.talotekniikka_code is None
+    hoyr = by_layer["KYL-HOYRYSTIN"]
+    assert hoyr.domain == "TATE"
+    assert hoyr.lvi_code == "T-LVI-01-01-023"
+    assert hoyr.talo2000_code is None
+    assert hoyr.talotekniikka_code is None
+    kaapeli = by_layer["KAAPELIHYLLY"]
+    assert kaapeli.domain == "TATE"
+    assert kaapeli.talotekniikka_code == "T-TATE-01-01-001"
+    assert kaapeli.lvi_code is None
+    assert kaapeli.talo2000_code is None
