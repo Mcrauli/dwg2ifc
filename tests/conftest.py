@@ -1,6 +1,7 @@
 """Shared pytest fixtures for dxf2ifc tests."""
 
 import os
+import shutil
 from pathlib import Path
 
 import ezdxf
@@ -9,6 +10,17 @@ import pytest
 # Force the offscreen QPA platform before PySide6 / pytest-qt is imported so that
 # GUI tests run headlessly in CI and sandboxed environments without a display.
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+
+
+def pytest_collection_modifyitems(config, items):
+    """Skip any test marked @pytest.mark.solibri when Solibri.exe is not on
+    PATH (Plan F Section 4 Task 13). Lauri runs these locally on Windows."""
+    if shutil.which("Solibri.exe"):
+        return
+    skip_marker = pytest.mark.skip(reason="Solibri.exe not on PATH")
+    for item in items:
+        if "solibri" in item.keywords:
+            item.add_marker(skip_marker)
 
 
 @pytest.fixture
