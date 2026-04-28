@@ -128,6 +128,7 @@ def add_wall(
         ifc,
         product=wall,
         matrix=matrix,
+        is_si=False,
     )
 
     model_ctx = [
@@ -208,6 +209,7 @@ def add_slab(
         ifc,
         product=slab,
         matrix=matrix,
+        is_si=False,
     )
 
     model_ctx = [
@@ -293,6 +295,7 @@ def add_door(
         ifc,
         product=door,
         matrix=matrix,
+        is_si=False,
     )
 
     model_ctx = [
@@ -381,6 +384,7 @@ def add_window(
         ifc,
         product=window,
         matrix=matrix,
+        is_si=False,
     )
 
     model_ctx = [
@@ -490,6 +494,7 @@ def add_pipe_segment(
         ifc,
         product=pipe,
         matrix=matrix,
+        is_si=False,
     )
 
     model_ctx = [
@@ -598,6 +603,7 @@ def add_furniture(
         ifc,
         product=furniture,
         matrix=matrix,
+        is_si=False,
     )
 
     model_ctx = [
@@ -702,6 +708,7 @@ def add_cable_carrier_segment(
         ifc,
         product=seg,
         matrix=matrix,
+        is_si=False,
     )
 
     model_ctx = [
@@ -786,6 +793,7 @@ def add_building_element_proxy(
         ifc,
         product=proxy,
         matrix=matrix,
+        is_si=False,
     )
 
     model_ctx = [
@@ -874,6 +882,7 @@ def add_cooling_equipment(
         ifc,
         product=product,
         matrix=matrix,
+        is_si=False,
     )
 
     model_ctx = [

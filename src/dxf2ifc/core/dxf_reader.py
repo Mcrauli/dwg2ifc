@@ -46,14 +46,16 @@ def read_dxf(path: str | Path) -> list[EntityRecord]:
             )
         elif dxftype == "LWPOLYLINE" and entity.closed:
             elevation = float(entity.dxf.elevation or 0.0)
-            vertices = tuple(
-                Point3D(float(x), float(y), elevation) for x, y, *_ in entity.get_points()
-            )
+            ocs = entity.ocs()
+            world_vertices: list[Point3D] = []
+            for x, y, *_ in entity.get_points():
+                wx, wy, wz = ocs.to_wcs((float(x), float(y), elevation))
+                world_vertices.append(Point3D(float(wx), float(wy), float(wz)))
             records.append(
                 EntityRecord(
                     layer=entity.dxf.layer,
                     dxf_type="LWPOLYLINE",
-                    geometry=PolygonGeometry(vertices=vertices, closed=True),
+                    geometry=PolygonGeometry(vertices=tuple(world_vertices), closed=True),
                     attributes={},
                 )
             )
