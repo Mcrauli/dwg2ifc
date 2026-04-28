@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 11 — git mv default_kylmalaite_talo2000.toml → default_kylmalaite.toml + päivitä loader.
+**Current task:** Plan H Task 12 — merkitse jokainen ARK-sääntö default-TOML:ssa `domain = "ARK"`.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 11:n osio plan-tiedostosta. `git mv` profiili-TOML uuteen nimeen (säilyttää historian). Päivitä `_DEFAULT_RESOURCE` `loader.py`:ssä. Failing-testi: `load_default_profile()` toimii uudella nimellä; vanhalla nimellä syntyy `FileNotFoundError`.
+**Seuraavaksi:** Lue Task 12:n osio plan-tiedostosta. Lisää `domain = "ARK"` jokaiseen ARK-sääntöön (seinät / laatat / ovet / ikkunat / paneelit / pilarit / kaiteet / portaat / kalusteet / ARK-prefix-säännöt). Failing-testi: jokainen rule sisältää domainin ja kaikki ARK-säännöt valid.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -202,7 +202,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 - [x] Task 10: MappedEntity.domain + lvi_code + talotekniikka_code + apply_profile välitys (`be0ed2c`)
 
 ### Section 4: Default-profiilin uudistus
-- [ ] Task 11: git mv default_kylmalaite_talo2000.toml → default_kylmalaite.toml
+- [x] Task 11: git mv default_kylmalaite_talo2000.toml → default_kylmalaite.toml (`11c5801`)
 - [ ] Task 12: ARK-säännöt domain="ARK"-merkintä
 - [ ] Task 13: TATE-säännöt (kylmälaitteet) domain="TATE" + lvi_code RAVA-koodit
 - [ ] Task 14: Kylmäaineputket + kaapelihylly domain="TATE" + RAVA-LVI-02 / RAVA-TATE
