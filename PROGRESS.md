@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 13 — kylmälaitesäännöt domain='TATE' + lvi_code RAVA-koodit (HOYRYSTIN T-LVI-01-01-023, LAUHDUTIN T-LVI-01-01-018, KOMPRESSORI T-LVI-01-01-017).
+**Current task:** Plan H Task 14 — kylmäaineputket + viemäri + kaapelihylly TATE-domainiin (LT IMU/MT IMU/MT NESTE/KYL-VIEMARI lvi_code "T-LVI-02"; KAAPELIHYLLY talotekniikka_code "T-TATE-01-01-001").
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 13:n osio plan-tiedostosta. Korvaa KYL-HOYRYSTIN/LAUHDUTIN/KOMPRESSORI-säännöt: poista talo2000_code/name, aseta `domain = "TATE"` + `lvi_code = "T-LVI-..."`. Failing-testi: HOYRYSTIN-sääntö palauttaa lvi_code "T-LVI-01-01-023".
+**Seuraavaksi:** Lue Task 14:n osio plan-tiedostosta. Korvaa pipe-säännöt domain="TATE" + lvi_code="T-LVI-02" (yleinen kylmäaineputki-kategoria) + erottelu pset_overrides:lla. KAAPELIHYLLY → domain="TATE" + talotekniikka_code="T-TATE-01-01-001". Failing-testi: pipe-säännöt saavat T-LVI-02 lvi_codena, kaapelihylly T-TATE-01-01-001.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -204,7 +204,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 ### Section 4: Default-profiilin uudistus
 - [x] Task 11: git mv default_kylmalaite_talo2000.toml → default_kylmalaite.toml (`11c5801`)
 - [x] Task 12: ARK-säännöt domain="ARK"-merkintä (`203306a`)
-- [ ] Task 13: TATE-säännöt (kylmälaitteet) domain="TATE" + lvi_code RAVA-koodit
+- [x] Task 13: TATE-säännöt (kylmälaitteet) domain="TATE" + lvi_code RAVA-koodit (`cca9882`)
 - [ ] Task 14: Kylmäaineputket + kaapelihylly domain="TATE" + RAVA-LVI-02 / RAVA-TATE
 
 ### Section 5: Mapper + ifc_writer domain-luokitus
