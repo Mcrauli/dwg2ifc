@@ -6,6 +6,25 @@
 [profile]
 name = "Kylmälaite Talo2000 v1"
 ifc_schema = "IFC4"
+# storey_z_levels_mm: list of base elevations (mm) for IfcBuildingStorey,
+# strictly increasing. Default = single ground-floor storey at z=0.
+# Multi-storey example: storey_z_levels_mm = [0.0, 3500.0, 7000.0]
+storey_z_levels_mm = [0.0]
+
+# Optional projected CRS + IfcMapConversion (Plan G).
+# Uncomment and adjust eastings_mm / northings_mm to your site location
+# (Helsinki Mannerheimintie 1 sample below in ETRS-TM35FIN / EPSG:3067).
+#
+# [profile.crs]
+# epsg_code = "EPSG:3067"
+# name = "ETRS-TM35FIN"
+# geodetic_datum = "ETRS89"
+# eastings_mm = 25496000.0
+# northings_mm = 6672000.0
+# orthogonal_height_mm = 0.0
+# x_axis_abscissa = 1.0
+# x_axis_ordinate = 0.0
+# scale = 1.0
 
 [[rules]]
 layer_pattern = "KYL-ULKOSEINA*"
