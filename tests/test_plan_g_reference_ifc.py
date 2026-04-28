@@ -11,9 +11,7 @@ import ifcopenshell
 
 from dxf2ifc.core.quality import validate_ifc
 
-REFERENCE_IFC = (
-    Path(__file__).resolve().parent / "fixtures" / "solibri_reference_full.ifc"
-)
+REFERENCE_IFC = Path(__file__).resolve().parent / "fixtures" / "solibri_reference_full.ifc"
 
 
 def test_reference_ifc_has_projected_crs():

@@ -6,7 +6,6 @@ existing ``crs`` is preserved."""
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
@@ -21,9 +20,7 @@ def _stub_convert(*, recorder):
     return fake
 
 
-def test_cli_all_three_flags_override_profile_crs(
-    fixtures_dir: Path, tmp_path: Path, monkeypatch
-):
+def test_cli_all_three_flags_override_profile_crs(fixtures_dir: Path, tmp_path: Path, monkeypatch):
     recorder: dict = {}
     monkeypatch.setattr(cli, "convert_dxf", _stub_convert(recorder=recorder))
 
@@ -47,9 +44,7 @@ def test_cli_all_three_flags_override_profile_crs(
     assert recorder["profile"].crs.orthogonal_height_mm == 15_000.0
 
 
-def test_cli_only_eastings_raises_argparse_error(
-    fixtures_dir: Path, tmp_path: Path, monkeypatch
-):
+def test_cli_only_eastings_raises_argparse_error(fixtures_dir: Path, tmp_path: Path, monkeypatch):
     monkeypatch.setattr(cli, "convert_dxf", _stub_convert(recorder={}))
 
     with pytest.raises(SystemExit):
@@ -64,9 +59,7 @@ def test_cli_only_eastings_raises_argparse_error(
         )
 
 
-def test_cli_no_crs_flags_preserves_profile_crs(
-    fixtures_dir: Path, tmp_path: Path, monkeypatch
-):
+def test_cli_no_crs_flags_preserves_profile_crs(fixtures_dir: Path, tmp_path: Path, monkeypatch):
     recorder: dict = {}
     monkeypatch.setattr(cli, "convert_dxf", _stub_convert(recorder=recorder))
 

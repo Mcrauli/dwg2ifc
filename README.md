@@ -23,7 +23,7 @@ Tuplaklikkaa `.exe` käynnistyäkseen GUI:n, tai aja PowerShellissä
 
 ## Status
 
-✅ **Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 + Plan E 23/23 + Plan F 16/16 + Plan H 22/22** — koko Talo2000-elementtisetti tuetaan, kylmäjärjestelmät on ryhmitelty IfcSystem-entiteeteiksi (Refrigeration LT/MT, Drainage, Cable carriers, Refrigeration plant) IfcRelAssignsToGroup-relaatiolla, PySide6-pohjainen desktop-GUI wrappaa CLI-coren (layer-preview, profiili-editori, taustasäikeen konversio, preview/log-paneeli), Windows `.exe` jaetaan tag-pohjaisen draft-releasen kautta GitHub Actions -workflow:lla, IFC-luovutus käy kahden tason laatuportin läpi (`ifcopenshell.validate` + YTV Talo2000- ja RAVA-warning automaattisesti CI:ssä, Solibri-snapshot-verify Lauri-driven ennen tag-releasea — ks. [`docs/quality-gates.md`](docs/quality-gates.md)) ja IFC 4.3 -skeema + suunnitteluala-domainit (ARK Talo2000, TATE RAVA-LVI / RAVA-TATE) ovat saatavilla `--schema=ifc4x3`-flagillä ja default-profiilin `domain`-kentillä (ks. [`docs/rava-classification.md`](docs/rava-classification.md)). Pytest 302 ei-GUI ✅ ruff format clean. Seuraava askel ja per-task SHA-historia: [`PROGRESS.md`](PROGRESS.md).
+✅ **Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 + Plan E 23/23 + Plan F 16/16 + Plan G 21/21 + Plan H 22/22** — koko Talo2000-elementtisetti tuetaan, kylmäjärjestelmät on ryhmitelty IfcSystem-entiteeteiksi (Refrigeration LT/MT, Drainage, Cable carriers, Refrigeration plant) IfcRelAssignsToGroup-relaatiolla, PySide6-pohjainen desktop-GUI wrappaa CLI-coren (layer-preview, profiili-editori, taustasäikeen konversio, preview/log-paneeli, CRS-dialogi), Windows `.exe` jaetaan tag-pohjaisen draft-releasen kautta GitHub Actions -workflow:lla, IFC-luovutus käy kahden tason laatuportin läpi (`ifcopenshell.validate` + YTV Talo2000- ja RAVA-warning + Plan G CRS-coverage automaattisesti CI:ssä, Solibri-snapshot-verify Lauri-driven ennen tag-releasea — ks. [`docs/quality-gates.md`](docs/quality-gates.md)), IFC 4.3 -skeema + suunnitteluala-domainit (ARK Talo2000, TATE RAVA-LVI / RAVA-TATE) ovat saatavilla `--schema=ifc4x3`-flagillä ja default-profiilin `domain`-kentillä (ks. [`docs/rava-classification.md`](docs/rava-classification.md)) ja Plan G:stä lähtien IFC kirjoitetaan **georeferensoituna** (ETRS-TM35FIN `EPSG:3067` IfcProjectedCRS + IfcMapConversion, geometria pysyy LOCAL — ks. [`docs/coordinate-system.md`](docs/coordinate-system.md)). Pytest 375 ei-GUI ✅ ruff format clean. Seuraava askel ja per-task SHA-historia: [`PROGRESS.md`](PROGRESS.md).
 
 | Vaihe | Tila |
 |---|---|
@@ -34,8 +34,8 @@ Tuplaklikkaa `.exe` käynnistyäkseen GUI:n, tai aja PowerShellissä
 | Plan D: PySide6 GUI | ✅ 25/25 |
 | Plan E: PyInstaller-pakkaus | ✅ 23/23 |
 | Plan F: Spec verifiointi Solibrilla | ✅ 16/16 |
+| Plan G: Coordinate System & georeferenced IFC | ✅ 21/21 |
 | Plan H: IFC 4.3 + RAVA-luokitus | ✅ 22/22 |
-| Plan G: Coordinate System & georeferenced IFC | ⏳ Plan H:n jälkeen |
 
 ## Idea
 

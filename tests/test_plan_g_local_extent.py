@@ -44,9 +44,7 @@ def test_validate_local_extent_raises_on_simulated_double_transform():
     to mimic the geometry being projected into world coordinates by a
     double MapConversion."""
     skeleton = _wall_skeleton()
-    skeleton.file.create_entity(
-        "IfcCartesianPoint", Coordinates=(25_496_000.0, 6_672_000.0, 0.0)
-    )
+    skeleton.file.create_entity("IfcCartesianPoint", Coordinates=(25_496_000.0, 6_672_000.0, 0.0))
     with pytest.raises(RuntimeError, match="exceeds"):
         validate_local_extent(skeleton)
 

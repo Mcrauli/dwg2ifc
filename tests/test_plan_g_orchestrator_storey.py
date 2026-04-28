@@ -55,9 +55,7 @@ def test_orchestrator_routes_pipes_to_anchor_z_storey(tmp_path: Path):
     by_z = {}
     for pipe in pipes:
         rel = next(
-            r
-            for r in ifc.by_type("IfcRelContainedInSpatialStructure")
-            if pipe in r.RelatedElements
+            r for r in ifc.by_type("IfcRelContainedInSpatialStructure") if pipe in r.RelatedElements
         )
         by_z[rel.RelatingStructure.Elevation] = pipe
 

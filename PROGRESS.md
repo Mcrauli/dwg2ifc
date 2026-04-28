@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 17 — full_kylmaelement_dxf 2-storey + integration test.
+**Current task:** 🎉 **Plan G valmis (21/21).** Roadmap A→B→C→D→E→F→G→H kokonaan toteutettu.
 
-**Mode:** A (toteutus, Section 6 alkaa). Sections 1–5 ✅ (16/21).
+**Mode:** Plan-loppupiste suoritettu. Kaikki suunnitellut planit valmiit.
 
-**Seuraavaksi:** Plan-Task 17: laajenna `full_kylmaelement_dxf`-fixturea kaksikerroksiseksi (storey-1 z=0, storey-2 z=3500); päivitä test_integration_full käyttämään profile.crs + storey_z_levels=[0, 3500]; varmista IfcSite + IfcProjectedCRS + IfcMapConversion + 2 storey + per-element-storey-containment.
+**Seuraavaksi:** Ei seuraavaa planiä roadmapissa. Mahdollinen Plan I (TrueNorth-rotaatio + jatko-MEP-koodit) voidaan kirjoittaa jos tarve syntyy. Plan G:n viimeinen SHA: 43b1255 (Task 20), plan-loppupiste-SHA tämän commit:in jälkeen.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -534,6 +534,6 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 ### Section 6: Integraatio + dokumentointi + plan-loppupiste
 - [x] Task 17: full_kylmaelement_dxf 2-storey + integration-test full CRS-stack (`b0d0299`)
 - [x] Task 18: Solibri rule-set "CRS coverage" + bcfzip 7 sääntöä (`a1c9515`)
-- [ ] Task 19: docs/coordinate-system.md
-- [ ] Task 20: docs/quality-gates.md päivitys + solibri_reference_full.ifc rebuild
-- [ ] Task 21: plan-loppupiste — ≥320 testiä + ruff + CLAUDE.md/README status
+- [x] Task 19: docs/coordinate-system.md (`cf3d8dd`)
+- [x] Task 20: docs/quality-gates.md päivitys + solibri_reference_full.ifc CRS-rebuild (`43b1255`)
+- [x] Task 21: plan-loppupiste — pytest 375 ei-GUI passed, ruff format clean, CLAUDE.md/README Plan G ✅

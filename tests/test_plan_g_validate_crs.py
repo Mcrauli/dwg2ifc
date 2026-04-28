@@ -23,9 +23,6 @@ def test_validate_ifc_clean_no_crs(tmp_path: Path):
 
 def test_validate_ifc_orphan_map_conversion_is_error(tmp_path: Path):
     """IfcMapConversion present but no IfcProjectedCRS in the file."""
-    skeleton = build_ifc_project_skeleton(project_name="Orphan")
-    ifc = skeleton.file
-    # Force an orphan: create a MapConversion whose TargetCRS we then strip.
     crs = CRSConfig(eastings_mm=25_496_000.0, northings_mm=6_672_000.0)
     skel2 = build_ifc_project_skeleton(project_name="WithCRS", crs=crs)
     # Manually craft an orphan: copy MapConversion entity into a fresh file
@@ -57,9 +54,7 @@ def test_validate_ifc_expect_crs_missing_map_conversion(tmp_path: Path):
 
 def test_validate_ifc_double_transform_warning(tmp_path: Path):
     skeleton = build_ifc_project_skeleton(project_name="Double TX")
-    skeleton.file.create_entity(
-        "IfcCartesianPoint", Coordinates=(25_496_000.0, 6_672_000.0, 0.0)
-    )
+    skeleton.file.create_entity("IfcCartesianPoint", Coordinates=(25_496_000.0, 6_672_000.0, 0.0))
     out = tmp_path / "double_tx.ifc"
     write_ifc(skeleton.file, out)
     report = validate_ifc(out)

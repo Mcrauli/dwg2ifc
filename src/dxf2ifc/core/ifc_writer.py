@@ -208,9 +208,7 @@ def write_ifc(ifc: ifcopenshell.file, output_path: str | Path) -> None:
     ifc.write(str(output_path))
 
 
-def validate_local_extent(
-    skeleton: object, *, max_extent_mm: float = 5_000_000.0
-) -> None:
+def validate_local_extent(skeleton: object, *, max_extent_mm: float = 5_000_000.0) -> None:
     """Defensive double-transform guard. Scans every ``IfcCartesianPoint``
     in the file and raises ``RuntimeError`` if any coordinate component
     exceeds ``max_extent_mm`` (default 5 000 000 mm = 5 km).
