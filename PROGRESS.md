@@ -2,11 +2,11 @@
 
 **Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan F Task 13 — pytest @solibri-marker (skipautuu jos Solibri.exe ei PATH:ssa) + täysketju-testi.
+**Current task:** Plan F Task 14 — `build.yml` linux-jobiin `pytest tests/test_quality.py`.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 13:n osio plan-tiedostosta. Lisää `@pytest.mark.solibri` -marker pyproject.toml:iin + autouse-skip jos `shutil.which("Solibri.exe")` on None. Lisää tests/test_solibri_snapshot_chain.py joka markerin alla ajaa verify→parse→diff vs. baseline.
+**Seuraavaksi:** Lue Task 14:n osio plan-tiedostosta. Lisää linux-jobin pytest-vaihe joka ajaa quality-testit ifcopenshell.validate-gaten alle. TDD: failing-testi joka tarkistaa workflow-yamlin sisältää `pytest tests/test_quality.py` askeleen.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -191,7 +191,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 ### Section 4: Snapshot-raportit + diffaus
 - [x] Task 11: tests/snapshots/solibri/full_kylmaelement.json baseline (`b7de018`)
 - [x] Task 12: tools/solibri/diff_snapshot.py uusi-vs-baseline diffaus (`ae3e411`)
-- [ ] Task 13: pytest @solibri-marker (skipautuu jos Solibri.exe ei PATH:ssa)
+- [x] Task 13: pytest @solibri-marker + tests/test_solibri_snapshot_chain.py (`cbb3d76`)
 
 ### Section 5: CI-integraatio + dokumentaatio + plan-loppupiste
 - [ ] Task 14: build.yml linux-jobissa pytest tests/test_quality.py
@@ -395,7 +395,8 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - Plan F Task 10: `tools/solibri/cli.py` `verify --ifc --ruleset --report` CLI-entry joka ketjuttaa run_solibri + parse_report; exit 0/1/2 (clean/violations/missing-solibri). `tools/solibri/__main__.py` mahdollistaa `python -m tools.solibri verify`-komentoaja. Plan-spec puhuu `python -m dxf2ifc.tools.solibri`-paketista mutta tools/-kansio on repo-rootissa Tasks 5–9 kompositiosta, joten CLI on `tools.solibri`-namespacessa. 4 uutta CLI-testiä (`25a38f4`). ✅ Section 3 (Tasks 8–10) valmis.
 - Plan F Task 11: `tests/snapshots/solibri/full_kylmaelement.json` baseline-snapshot RuleResult-skeemalla; tällä hetkellä `results: []` koska full-fixture passaa cleanisti. 4 uutta testiä (existence + metadata + schema + clean) (`b7de018`).
 - Plan F Task 12: `tools/solibri/diff_snapshot.py` `SnapshotDelta`-dataclass + `diff(baseline, current)` joka käyttää (rule_name, severity, ifc_guid, message)-fingerprintiä järjestys-riippumattomaan vertailuun. 5 uutta testiä (`ae3e411`).
+- Plan F Task 13: `solibri` pytest-marker `pyproject.toml`:ssa + `tests/conftest.py:pytest_collection_modifyitems` skippaa kaikki marker-testit kun `Solibri.exe` ei PATH:ssa. tests/test_solibri_snapshot_chain.py ajaa täysketjun verify→parse→diff vs. baseline (`cbb3d76`). ✅ Section 4 (Tasks 11–13) valmis.
 
-**Kesken:** Plan F Task 13 — solibri-marker + chain-testi.
+**Kesken:** Plan F Task 14 — CI-integraatio.
 
 **Blokkerit:** ei.
