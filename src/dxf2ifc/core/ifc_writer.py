@@ -183,6 +183,19 @@ def write_ifc(ifc: ifcopenshell.file, output_path: str | Path) -> None:
     ifc.write(str(output_path))
 
 
+def resolve_storey(storeys: list[object], z_mm: float) -> object:
+    """Return the highest ``IfcBuildingStorey`` whose ``Elevation`` is
+    ``<= z_mm``. When ``z_mm`` is below the lowest storey, falls back to
+    ``storeys[0]`` so an element never ends up unparented."""
+    if not storeys:
+        raise ValueError("resolve_storey requires at least one storey")
+    candidate = storeys[0]
+    for storey in storeys:
+        if storey.Elevation is not None and storey.Elevation <= z_mm:
+            candidate = storey
+    return candidate
+
+
 def add_wall(
     ifc,
     mapped: MappedEntity,
