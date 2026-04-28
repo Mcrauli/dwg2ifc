@@ -18,7 +18,14 @@ DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Mu
 - ✅ **Plan D** 25/25 (`2026-04-27-plan-d-pyside6-gui.md`) — PySide6 GUI + profiili-editori, 200 testiä, coverage 89%
 - 🟡 **Plan E** 10/23 (`2026-04-27-plan-e-pyinstaller.md`) — PyInstaller-paketointi käynnissä, Tasks 11-17 odottaa Workflow-PAT-scopea
 - ⏳ **Plan F** kirjoittamatta — Spec verifiointi Solibrissä
-- ⏳ **Plan G** kirjoittamatta — Coordinate System & Georeferenced IFC (ETRS-TM35FIN/EPSG:3067 default, IfcMapConversion + IfcProjectedCRS, world→local koordinaattimuunnos, full Site→Storey placement hierarchy, storey_z_levels pakollinen profiilissa). Toteutetaan **Plan F:n jälkeen**. TrueNorth skipataan MVP:stä.
+- ⏳ **Plan G** kirjoittamatta — Coordinate System & Georeferenced IFC. Toteutetaan **Plan F:n jälkeen**. Avain-päätökset:
+  - Default CRS: ETRS-TM35FIN, IfcProjectedCRS-kentät: `Name="EPSG:3067"`, `Description="ETRS-TM35FIN"`, `GeodeticDatum="ETRS89"` (kaikki kolme kirjoitetaan parhaan interop:in takaamiseksi)
+  - IfcMapConversion linkittää LOCAL geometrian WORLD-koordinaateihin (Eastings/Northings profile-tiedostosta)
+  - Geometria kirjoitetaan LOCAL-koordinaateissa (NEVER world coords + MapConversion samaan aikaan = double-transform-riski)
+  - Full placement hierarchy: Site → Building → Storey → Element, IfcLocalPlacement-ketju
+  - `storey_z_levels` pakollinen profiilissa (lista mm-arvoja, esim. `[0, 3500, 7000]`); virhe jos puuttuu
+  - Validointi: max_coord-tarkistus, MapConversion-pakollinen-jos-CRS-määritelty, ei kaksoismuunnoksia
+  - TrueNorth-rotaatio skipataan MVP:stä, mahdollinen Plan H:ssa myöhemmin
 - 🔁 Routine `trig_014mxffDUvDZkafKftutpgwo` 3× päivässä (08/14/20 Helsinki)
 
 ## Päätetyt valinnat
