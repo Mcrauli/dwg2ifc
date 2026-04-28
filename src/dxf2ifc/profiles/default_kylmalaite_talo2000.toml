@@ -223,3 +223,97 @@ ifc_type = "IfcCompressor"
 talo2000_code = "2530"
 talo2000_name = "Laiteosat — kompressori"
 system_name = "Refrigeration plant"
+
+# Bugfix 6 — AutoCAD ARK / K-prefix layers (real-world CAD layer naming)
+# These rules cover layers that already encode their Talo2000 code in the
+# layer name (AR<koodi>_<lyhenne>) plus generic K-prefix architect layers.
+
+# AR12xx — runko / vaippa
+[[rules]]
+layer_pattern = "AR1241_US"
+ifc_type = "IfcWall"
+predefined_type = "STANDARD"
+talo2000_code = "1241"
+talo2000_name = "Ulkoseinät"
+
+[[rules]]
+layer_pattern = "AR1242_IKKUNA"
+ifc_type = "IfcWindow"
+talo2000_code = "1242"
+talo2000_name = "Ikkunat"
+
+[[rules]]
+layer_pattern = "AR1245_LASIUS"
+ifc_type = "IfcWall"
+predefined_type = "STANDARD"
+talo2000_code = "1241"
+talo2000_name = "Ulkoseinät — lasi"
+
+[[rules]]
+layer_pattern = "AR1311_VS"
+ifc_type = "IfcWall"
+predefined_type = "PARTITIONING"
+talo2000_code = "1311"
+talo2000_name = "Väliseinät"
+
+[[rules]]
+layer_pattern = "AR1233_PILARI"
+ifc_type = "IfcColumn"
+talo2000_code = "1233"
+talo2000_name = "Pilarit"
+
+[[rules]]
+layer_pattern = "AR1314_KAIDE"
+ifc_type = "IfcRailing"
+talo2000_code = "1314"
+talo2000_name = "Kaiteet"
+
+[[rules]]
+layer_pattern = "AR1317_TILAPORTAAT"
+ifc_type = "IfcStair"
+talo2000_code = "1317"
+talo2000_name = "Tilaportaat"
+
+[[rules]]
+layer_pattern = "AR1331_KIINTO"
+ifc_type = "IfcFurniture"
+talo2000_code = "1331"
+talo2000_name = "Vakiokiintokalusteet"
+
+# K-prefix — Granlund/Sweco-tyyliset arkkitehtilayerit
+[[rules]]
+layer_pattern = "K-OVET"
+ifc_type = "IfcDoor"
+talo2000_code = "1315"
+talo2000_name = "Väliovet"
+
+[[rules]]
+layer_pattern = "K-SEINÄT_VÄLISEINÄT"
+ifc_type = "IfcWall"
+predefined_type = "PARTITIONING"
+talo2000_code = "1311"
+talo2000_name = "Väliseinät"
+
+[[rules]]
+layer_pattern = "K-KALUSTEET"
+ifc_type = "IfcFurniture"
+talo2000_code = "1331"
+talo2000_name = "Vakiokiintokalusteet"
+
+[[rules]]
+layer_pattern = "K-KIINTOKALUSTEET"
+ifc_type = "IfcFurniture"
+talo2000_code = "1331"
+talo2000_name = "Vakiokiintokalusteet"
+
+[[rules]]
+layer_pattern = "K-RST-KALUSTEET"
+ifc_type = "IfcFurniture"
+talo2000_code = "1331"
+talo2000_name = "RST-kiintokalusteet"
+
+[[rules]]
+layer_pattern = "K-VALAISTUS"
+ifc_type = "IfcLightFixture"
+talo2000_code = "2511"
+talo2000_name = "Valaistus"
