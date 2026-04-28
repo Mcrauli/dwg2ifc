@@ -208,6 +208,19 @@ def write_ifc(ifc: ifcopenshell.file, output_path: str | Path) -> None:
     ifc.write(str(output_path))
 
 
+def _entity_anchor_z(geometry: object) -> float:
+    """Anchor-Z used by the orchestrator to pick a storey:
+    LineGeometry → min(start.z, end.z), PolygonGeometry → min(p.z),
+    BlockInstance → insertion_point.z. Other geometry types fall back to 0."""
+    if isinstance(geometry, LineGeometry):
+        return min(geometry.start.z, geometry.end.z)
+    if isinstance(geometry, PolygonGeometry):
+        return min(p.z for p in geometry.vertices)
+    if isinstance(geometry, BlockInstance):
+        return geometry.insertion_point.z
+    return 0.0
+
+
 def resolve_storey(storeys: list[object], z_mm: float) -> object:
     """Return the highest ``IfcBuildingStorey`` whose ``Elevation`` is
     ``<= z_mm``. When ``z_mm`` is below the lowest storey, falls back to
@@ -1263,10 +1276,17 @@ def convert_dxf(
     name = project_name or Path(dxf_path).stem
     entities = read_dxf(dxf_path)
     mapped = apply_profile(entities, profile)
-    skeleton = build_ifc_project_skeleton(project_name=name, schema=schema)
+    skeleton = build_ifc_project_skeleton(
+        project_name=name,
+        schema=schema,
+        crs=profile.crs,
+        storey_z_levels_mm=list(profile.storey_z_levels_mm),
+    )
     ifc = skeleton.file
-    storey = skeleton.storeys[0]
     systems: dict[str, list] = {}
+
+    def _storey_for(m) -> object:
+        return resolve_storey(skeleton.storeys, _entity_anchor_z(m.geometry))
 
     def _record(m: object, product: object) -> None:
         sys_name = m.extra_props.get("system_name") if m.extra_props else None
@@ -1287,7 +1307,7 @@ def convert_dxf(
             wall = add_wall(
                 ifc,
                 m,
-                parent_storey=storey,
+                parent_storey=_storey_for(m),
                 predefined_type=m.predefined_type or "STANDARD",
             )
             _classify(wall, m)
@@ -1296,7 +1316,7 @@ def convert_dxf(
             slab = add_slab(
                 ifc,
                 m,
-                parent_storey=storey,
+                parent_storey=_storey_for(m),
                 predefined_type=m.predefined_type or "FLOOR",
             )
             _classify(slab, m)
@@ -1305,7 +1325,7 @@ def convert_dxf(
             door = add_door(
                 ifc,
                 m,
-                parent_storey=storey,
+                parent_storey=_storey_for(m),
                 predefined_type=m.predefined_type or "DOOR",
             )
             _classify(door, m)
@@ -1314,7 +1334,7 @@ def convert_dxf(
             window = add_window(
                 ifc,
                 m,
-                parent_storey=storey,
+                parent_storey=_storey_for(m),
                 predefined_type=m.predefined_type or "WINDOW",
             )
             _classify(window, m)
@@ -1323,30 +1343,30 @@ def convert_dxf(
             pipe = add_pipe_segment(
                 ifc,
                 m,
-                parent_storey=storey,
+                parent_storey=_storey_for(m),
                 predefined_type=m.predefined_type or "REFRIGERATION",
             )
             _classify(pipe, m)
             _record(m, pipe)
         elif m.ifc_type == "IfcFurniture":
-            furniture = add_furniture(ifc, m, parent_storey=storey)
+            furniture = add_furniture(ifc, m, parent_storey=_storey_for(m))
             _classify(furniture, m)
             _record(m, furniture)
         elif m.ifc_type == "IfcCableCarrierSegment":
             seg = add_cable_carrier_segment(
                 ifc,
                 m,
-                parent_storey=storey,
+                parent_storey=_storey_for(m),
                 predefined_type=m.predefined_type or "CABLETRUNKINGSEGMENT",
             )
             _classify(seg, m)
             _record(m, seg)
         elif m.ifc_type == "IfcBuildingElementProxy":
-            proxy = add_building_element_proxy(ifc, m, parent_storey=storey)
+            proxy = add_building_element_proxy(ifc, m, parent_storey=_storey_for(m))
             _classify(proxy, m)
             _record(m, proxy)
         elif m.ifc_type in _COOLING_EQUIPMENT_CLASSES:
-            equipment = add_cooling_equipment(ifc, m, parent_storey=storey)
+            equipment = add_cooling_equipment(ifc, m, parent_storey=_storey_for(m))
             _classify(equipment, m)
             _record(m, equipment)
 
