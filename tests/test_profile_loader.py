@@ -396,3 +396,55 @@ def test_dump_profile_writes_valid_utf8_toml(tmp_path: Path):
     dump_profile(profile, out)
     text = out.read_text(encoding="utf-8")
     assert text.startswith("[profile]") or "[[rules]]" in text
+
+
+def test_load_default_tate_only_profile_drops_architecture():
+    """Bugfix 12: the TATE-only profile is the cleaned-up scope a refrigeration
+    designer actually models. Every rule must be domain=TATE with one RAVA
+    code; no architectural Talo2000 codes (1xxx) may leak in."""
+    from dxf2ifc.profiles.loader import load_default_tate_only_profile
+
+    profile = load_default_tate_only_profile()
+    assert profile.ifc_schema == "IFC4"
+    assert profile.rules, "TATE-only profile must contain at least one rule"
+
+    layers = {r.layer_pattern for r in profile.rules}
+    # Must include the cooling-tooling layers Lauri keeps in scope.
+    must_include = {
+        "LT IMU",
+        "MT IMU",
+        "MT NESTE",
+        "KYL-VIEMARI*",
+        "KAAPELIHYLLY*",
+        "KYL-LEVYHYLLY*",
+        "KYL-TIKASHYLLY*",
+        "KYL-TIKASHYLLY-V*",
+        "KYL-HOYRYSTIN*",
+        "KYL-LAUHDUTIN*",
+        "KYL-KOMPRESSORI*",
+        "KYL-KONEIKKO*",
+    }
+    missing = must_include - layers
+    assert not missing, f"TATE-only profile is missing cooling layers: {missing}"
+
+    # Must NOT include architectural KYL-* / AR-prefix / K-prefix layers.
+    must_exclude = {
+        "KYL-ULKOSEINA*",
+        "KYL-VALISEINA*",
+        "KYL-ALAPOHJA*",
+        "KYL-OVET-ULKO*",
+        "KYL-IKKUNA*",
+        "KYL-LEVY*",
+        "AR1241_US",
+        "K-OVET",
+    }
+    leaked = must_exclude & layers
+    assert not leaked, f"TATE-only profile leaks architecture layers: {leaked}"
+
+    # Every rule must be TATE-domain with exactly one RAVA code.
+    for rule in profile.rules:
+        assert rule.domain == "TATE", f"{rule.layer_pattern}: domain must be TATE"
+        assert rule.talo2000_code is None
+        assert bool(rule.lvi_code) ^ bool(rule.talotekniikka_code), (
+            f"{rule.layer_pattern}: exactly one RAVA code required"
+        )
