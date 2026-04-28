@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
+**Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan E Task 23 — plan-loppupiste (pytest + coverage + ruff + status päivitys).
+**Current task:** Plan F — kirjoita plan (MODE B). Spec verifiointi Solibrissa.
 
-**Mode:** A (implementointi).
+**Mode:** B (suunnittelu).
 
-**Seuraavaksi:** Aja `pytest -q --tb=short` (kaikki passed), `pytest --cov=dxf2ifc --cov-report=term -q` ≥80%, `ruff check . && ruff format --check .`. Päivitä CLAUDE.md status: "Plan E valmis (<SHA>)". Päivitä README.md status-taulu Plan E ✅. Plan F:lle siirrytään PLAN-TRANSITIONissa.
+**Seuraavaksi:** Aloita Mode B B1: lue Plan E:n frontmatter + ensimmäiset 30 riviä. Luo `docs/superpowers/plans/2026-04-XX-plan-f-solibri-verification.md` skeleton (frontmatter + intro + section-otsikot). Section-ehdotukset: 1) Solibri rule-set määritelmä, 2) Validation-runner kutsuva Solibri Anywheren komentoriviltä, 3) Validation-raportin parsinta, 4) CI-integraatio (full-fixture IFC vasten Solibri rules), 5) Plan-loppupiste.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -180,7 +180,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 - [x] Task 20: docs/packaging-smoke.md manuaalinen Windows-checklist (`8a26b77`)
 - [x] Task 21: README "Lataa .exe"-osio + version-badge (`787b72c`)
 - [x] Task 22: docs/packaging.md "Troubleshooting"-osio (`2bb9055`)
-- [ ] Task 23: plan-loppupiste — pytest + coverage + ruff + status-päivitys
+- [x] Task 23: plan-loppupiste — pytest 246 + coverage 89% + ruff + status-päivitys (`b27b8c6`) 🎉 Plan E 23/23 valmis
 
 ## Plan C status (12/12) ✅
 
@@ -315,7 +315,20 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 - Bugfix 2 part a: ProfileEditorDialog "Load profile…" -nappi + `load_from_path()` + `profile_loaded(str)`-signaali; rules-taulu rakennetaan uudelleen kun TOML ladataan (`4955ac2`).
 - Bugfix 2 part b: RecentFilesStore.last_profile_path (QSettings property + setter joka tukee None-clearin); MainWindow ottaa optional `recent_files=`-parametrin, palauttaa cached profile-polun käynnistyksessä (fallback default jos puuttuu), ja persistoi polun joka apply-vaiheessa. ProfileEditorDialog.profile_loaded kytketty MainWindow:in apply_profile_from_path:iin (`9fe0395`). 25 GUI-testiä passed.
 - Bugfix 3: `gui/preview_log.py` `PreviewLogPanel` (read-only QTextEdit JetBrains Monolla, append_info/success/error + set_dxf_summary). MainWindow:n right pane käyttää sitä; DXF-input-muutos printtaa yhteenvedon (entity-count + per-layer counts), Convert-vaihe logaa start/done/error värikoodattuna (`52a5695`). 230 testiä passed kokonaisuudessaan.
+- Plan E Task 11: build.yml Windows-runner (windows-latest) joka ajaa scripts/build_exe.ps1 ja uploadaa dxf2ifc-windows-artifactin (`e13b683`). pyyaml lisätty dev-extraan tests/test_workflows.py:n driveriksi.
+- Plan E Task 12: build.yml linux-smoke-job (ubuntu-latest) joka ajaa scripts/build_exe.sh:n spec-validointia varten + asentaa libegl1/libgl1/libxkbcommon0/libdbus-1-3 (`1bdf320`).
+- Plan E Task 13: Windows-jobiin smoke-step joka ajaa `dxf2ifc-*.exe --version` + tarkistaa exit 0 + stdout sisältää "dxf2ifc"; smoke-step ennen artifact-uploadia (`45b0d95`).
+- Plan E Task 14: docs/packaging.md "CI build"-osio (Windows job + Linux smoke job + Qt runtime libs + mitä CI ei tee) (`a23b6bb`).
+- Plan E Task 15: .github/workflows/release.yml — `push: tags: ['v*.*.*']`-trigger + `permissions: contents: write` + sama Windows build + smoke-step (`a8430be`).
+- Plan E Task 16: release.yml Bundle LICENSES.md -step joka aggregoi font OFL + ifcopenshell + PySide6 + Python -lisenssit `dist/LICENSES.md`:hen, upload-pathiin lisätty (`3dfdd91`).
+- Plan E Task 17: release.yml `gh release create $TAG ... --draft` -step joka liittää .exe + .sha256 + LICENSES.md tag-pohjaiseen draft-releaseen (`47a7021`).
+- Plan E Task 18: CHANGELOG.md v0.1.0 -versiomerkintä Plan A-D + Plan E in-progress feature-roadmapilla (`d946ac5`).
+- Plan E Task 19: docs/packaging.md "Release-prosessi" -osio (5-step manuaalinen Lauri-driven release-flow + warning published tag deletion:sta) (`849b104`).
+- Plan E Task 20: docs/packaging-smoke.md manuaalinen Windows-smoke-checklist (download → SHA256 → GUI → simple_wall.dxf → CLI → publish/discard) (`8a26b77`).
+- Plan E Task 21: README.md version-badge (shields.io/github/v/release/Mcrauli/dxf2ifc) + "Lataa .exe (Windows)" -osio Releases-linkillä + SmartScreen-ohjeella (`787b72c`).
+- Plan E Task 22: docs/packaging.md "Troubleshooting"-osio: Defender/SmartScreen, ifcopenshell schema not found, Qt platform plugin import error, --onefile vs --onedir trade-off (`2bb9055`).
+- Plan E Task 23: plan-loppupiste — pytest 246 passed, coverage 89%, ruff clean. CLAUDE.md + README.md status päivitetty Plan E ✅ (`b27b8c6`). 🎉 Plan E 23/23.
 
-**Kesken:** ei mitään aktiivista task:ia — bugfix-kierros valmis. Plan E Task 11 seuraavana.
+**Kesken:** Plan F kirjoittamatta. Mode B aloitus seuraavaksi.
 
-**Blokkerit:** ei (PAT:lla nyt workflow-scope, voi committia .github/workflows-tiedostoja).
+**Blokkerit:** ei.
