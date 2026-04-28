@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 8 — build_ifc_project_skeleton tuottaa Site → Building → list[Storey].
+**Current task:** Plan G Task 9 — resolve_storey-helper.
 
-**Mode:** A (toteutus, Section 3 alkaa). Sections 1+2 ✅ (7/21).
+**Mode:** A (toteutus, Section 3 jatkuu). Sections 1+2 ✅ + Task 8 ✅ (8/21).
 
-**Seuraavaksi:** Lue plan-Task 8: skeleton ottaa storey_z_levels_mm:n profile-objektista (tai kwargina) ja luo N×IfcBuildingStorey jokaiselle z-arvolle (nimet "Kerros 1"…). IfcLocalPlacement-ketju Site→Building→Storey relatiivinen. **Iso refaktorointi**: tämä muuttaa skeleton:n paluuarvon (tai sen rakenteen, jolloin Task 10 tekee dataclass:n). Aloita TDD: failing-testit 1-storey-default, 3-storey-list, IfcLocalPlacement-parent-relaatiot.
+**Seuraavaksi:** Lue plan-Task 9: `resolve_storey(storeys, z_mm)` palauttaa korkeimman storeyn jonka z_level ≤ z. Edge: z alle ensimmäisen → storeys[0]. Failing-testit: 5 case (alin, ylin, keskellä, alle alimman → fallback, tasan kerros-z:llä).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -517,7 +517,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 - [x] Task 7: scale + orthogonal_height edge-case-testit (`788f5e7`)
 
 ### Section 3: Site → Building → Storey -placement-hierarkia
-- [ ] Task 8: build_ifc_project_skeleton tuottaa Site → Building → list[Storey]
+- [x] Task 8: build_ifc_project_skeleton tuottaa Site → Building → list[Storey] (`8e107ed`)
 - [ ] Task 9: resolve_storey(storeys, z_mm) helper + 5 case-test
 - [ ] Task 10: IfcSkeleton dataclass paluuarvo + kutsujien päivitys
 
