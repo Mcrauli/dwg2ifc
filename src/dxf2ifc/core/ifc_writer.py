@@ -16,6 +16,7 @@ import ifcopenshell.guid
 
 from dxf2ifc.core.dxf_reader import read_dxf
 from dxf2ifc.core.geometry import (
+    FurnitureBoxExtrusion,
     block_to_furniture_box,
     door_block_to_box,
     line_to_cable_carrier,
@@ -29,6 +30,7 @@ from dxf2ifc.core.types import (
     BlockInstance,
     LineGeometry,
     MappedEntity,
+    Point3D,
     PolygonGeometry,
 )
 from dxf2ifc.profiles.schema import Profile
@@ -539,20 +541,45 @@ def add_furniture(
     """Create an IfcFurniture from a MappedEntity whose geometry is a BlockInstance.
 
     The fixture is rendered as a width × depth × height rectangular
-    extrusion anchored at the block's insertion point. Dimensions
-    come from extra_props (default_width_mm / default_depth_mm /
-    default_height_mm) with shelving-friendly defaults
-    (1000 × 600 × 2000 mm).
+    extrusion. For BlockInstance geometry the box is anchored at the
+    insertion point and dimensions come from extra_props
+    (default_width_mm / default_depth_mm / default_height_mm) with
+    shelving-friendly defaults (1000 × 600 × 2000 mm). For
+    PolygonGeometry (closed polyline) the bounding box of the polygon
+    drives width / depth and the box is anchored at (xmin, ymin); the
+    extrusion height still comes from extra_props.
     """
-    if not isinstance(mapped.geometry, BlockInstance):
-        raise TypeError(
-            f"add_furniture expects BlockInstance, got {type(mapped.geometry).__name__}"
+    if isinstance(mapped.geometry, BlockInstance):
+        width = float(mapped.extra_props.get("default_width_mm", 1000.0))
+        depth = float(mapped.extra_props.get("default_depth_mm", 600.0))
+        height = float(mapped.extra_props.get("default_height_mm", 2000.0))
+        box = block_to_furniture_box(
+            mapped.geometry, width_mm=width, depth_mm=depth, height_mm=height
         )
-
-    width = float(mapped.extra_props.get("default_width_mm", 1000.0))
-    depth = float(mapped.extra_props.get("default_depth_mm", 600.0))
-    height = float(mapped.extra_props.get("default_height_mm", 2000.0))
-    box = block_to_furniture_box(mapped.geometry, width_mm=width, depth_mm=depth, height_mm=height)
+    elif isinstance(mapped.geometry, PolygonGeometry):
+        xs = [v.x for v in mapped.geometry.vertices]
+        ys = [v.y for v in mapped.geometry.vertices]
+        zs = [v.z for v in mapped.geometry.vertices]
+        width = max(xs) - min(xs)
+        depth = max(ys) - min(ys)
+        if width < 50.0 or depth < 50.0:
+            raise ValueError(
+                "add_furniture polygon outline is degenerate "
+                f"(width={width:.1f} mm, depth={depth:.1f} mm; min side 50 mm)"
+            )
+        height = float(mapped.extra_props.get("default_height_mm", 2000.0))
+        box = FurnitureBoxExtrusion(
+            anchor=Point3D(min(xs), min(ys), min(zs)),
+            angle_rad=0.0,
+            width_mm=width,
+            depth_mm=depth,
+            height_mm=height,
+        )
+    else:
+        raise TypeError(
+            "add_furniture expects BlockInstance or PolygonGeometry, "
+            f"got {type(mapped.geometry).__name__}"
+        )
 
     furniture = ifcopenshell.api.run(
         "root.create_entity",

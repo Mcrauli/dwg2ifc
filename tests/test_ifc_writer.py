@@ -478,6 +478,56 @@ def test_add_furniture_uses_extra_props_dimensions():
     assert extruded.SweptArea.YDim == 400.0
 
 
+def _polygon_furniture_mapped_entity(
+    *,
+    vertices: tuple[Point3D, ...] = (
+        Point3D(1000, 500, 0),
+        Point3D(2200, 500, 0),
+        Point3D(2200, 1100, 0),
+        Point3D(1000, 1100, 0),
+    ),
+    height_mm: float = 2000.0,
+    layer: str = "KYL-LEVYHYLLY",
+) -> MappedEntity:
+    polygon = PolygonGeometry(vertices=vertices, closed=True)
+    return MappedEntity(
+        layer=layer,
+        dxf_type="LWPOLYLINE",
+        geometry=polygon,
+        ifc_type="IfcFurniture",
+        predefined_type=None,
+        talo2000_code="1331",
+        talo2000_name="Vakiokiintokalusteet",
+        extra_props={"default_height_mm": height_mm},
+    )
+
+
+def test_add_furniture_accepts_polygon_geometry():
+    ifc = build_ifc_project_skeleton(project_name="Furniture Polygon")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    furniture = add_furniture(ifc, _polygon_furniture_mapped_entity(), parent_storey=storey)
+    assert furniture.is_a("IfcFurniture")
+    extruded = furniture.Representation.Representations[0].Items[0]
+    assert extruded.Depth == 2000.0
+    assert extruded.SweptArea.XDim == 1200.0
+    assert extruded.SweptArea.YDim == 600.0
+
+
+def test_add_furniture_polygon_rejects_degenerate_outline():
+    ifc = build_ifc_project_skeleton(project_name="Furniture Degenerate")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    tiny = _polygon_furniture_mapped_entity(
+        vertices=(
+            Point3D(0, 0, 0),
+            Point3D(40, 0, 0),
+            Point3D(40, 40, 0),
+            Point3D(0, 40, 0),
+        )
+    )
+    with pytest.raises(ValueError, match="degenerate"):
+        add_furniture(ifc, tiny, parent_storey=storey)
+
+
 def _cable_mapped_entity(
     *,
     layer: str = "KAAPELIHYLLY",
