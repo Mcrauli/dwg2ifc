@@ -1,1 +1,1 @@
-🟡 dxf2ifc alkoi: Mode A, Plan F Task 1 (validate_ifc wrapper). SHA: b1c129f. Yöruutiini: ei. Seuraavaksi: failing-testi tests/test_quality.py + impl src/dxf2ifc/core/quality.py
+🟡 Siirtyi Plan F → Bugfix kierros 2 (Bugfix 4-6), sitten Plan H Mode B. Plan F valmis 16/16 (165a0db).
