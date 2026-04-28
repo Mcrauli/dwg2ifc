@@ -5,6 +5,7 @@ from __future__ import annotations
 from PySide6 import QtCore, QtWidgets
 from pydantic import ValidationError
 
+from dxf2ifc.profiles.rava.loader import load_rava_codes
 from dxf2ifc.profiles.schema import Rule
 
 _IFC_TYPES = (
@@ -21,6 +22,12 @@ _IFC_TYPES = (
     "IfcCompressor",
 )
 _ENTITY_KINDS = ("LINE", "POLYLINE", "CIRCLE", "INSERT")
+_DOMAINS = ("ARK", "TATE")
+_BLANK = ""
+
+
+def _rava_choices(codeset: str) -> list[str]:
+    return [_BLANK] + sorted(c.code for c in load_rava_codes().values() if c.codeset == codeset)
 
 
 class RuleEditDialog(QtWidgets.QDialog):
@@ -34,6 +41,7 @@ class RuleEditDialog(QtWidgets.QDialog):
         self.setWindowTitle("Edit rule")
 
         layout = QtWidgets.QFormLayout(self)
+        self._layout = layout
         self.layer_pattern_edit = QtWidgets.QLineEdit()
         self.entity_kind_combo = QtWidgets.QComboBox()
         self.entity_kind_combo.addItems(_ENTITY_KINDS)
@@ -41,8 +49,14 @@ class RuleEditDialog(QtWidgets.QDialog):
         self.ifc_type_combo = QtWidgets.QComboBox()
         self.ifc_type_combo.addItems(_IFC_TYPES)
         self.predefined_type_edit = QtWidgets.QLineEdit()
+        self.domain_combo = QtWidgets.QComboBox()
+        self.domain_combo.addItems(_DOMAINS)
         self.talo2000_code_edit = QtWidgets.QLineEdit()
         self.talo2000_name_edit = QtWidgets.QLineEdit()
+        self.lvi_code_combo = QtWidgets.QComboBox()
+        self.lvi_code_combo.addItems(_rava_choices("LVI-TUOTEOSA"))
+        self.talotekniikka_code_combo = QtWidgets.QComboBox()
+        self.talotekniikka_code_combo.addItems(_rava_choices("TALOTEKNIIKKA-TUOTEOSA"))
         self.system_name_edit = QtWidgets.QLineEdit()
 
         layout.addRow("Layer pattern", self.layer_pattern_edit)
@@ -50,8 +64,15 @@ class RuleEditDialog(QtWidgets.QDialog):
         layout.addRow("Block name", self.block_name_edit)
         layout.addRow("IFC type", self.ifc_type_combo)
         layout.addRow("Predefined type", self.predefined_type_edit)
-        layout.addRow("Talo2000 code", self.talo2000_code_edit)
-        layout.addRow("Talo2000 name", self.talo2000_name_edit)
+        layout.addRow("Domain", self.domain_combo)
+        self._talo2000_code_label = QtWidgets.QLabel("Talo2000 code")
+        layout.addRow(self._talo2000_code_label, self.talo2000_code_edit)
+        self._talo2000_name_label = QtWidgets.QLabel("Talo2000 name")
+        layout.addRow(self._talo2000_name_label, self.talo2000_name_edit)
+        self._lvi_code_label = QtWidgets.QLabel("LVI-TUOTEOSA code")
+        layout.addRow(self._lvi_code_label, self.lvi_code_combo)
+        self._talotekniikka_code_label = QtWidgets.QLabel("TALOTEKNIIKKA-TUOTEOSA code")
+        layout.addRow(self._talotekniikka_code_label, self.talotekniikka_code_combo)
         layout.addRow("System name", self.system_name_edit)
 
         self.error_label = QtWidgets.QLabel("")
@@ -76,12 +97,18 @@ class RuleEditDialog(QtWidgets.QDialog):
             self.system_name_edit,
         ):
             widget.textChanged.connect(self._refresh_validation)
-        self.entity_kind_combo.currentTextChanged.connect(self._refresh_validation)
-        self.ifc_type_combo.currentTextChanged.connect(self._refresh_validation)
+        for combo in (
+            self.entity_kind_combo,
+            self.ifc_type_combo,
+            self.lvi_code_combo,
+            self.talotekniikka_code_combo,
+        ):
+            combo.currentTextChanged.connect(self._refresh_validation)
+        self.domain_combo.currentTextChanged.connect(self._on_domain_changed)
 
         if rule is not None:
             self._fill_from_rule(rule)
-        self._refresh_validation()
+        self._on_domain_changed(self.domain_combo.currentText())
 
     def _fill_from_rule(self, rule: Rule) -> None:
         self.layer_pattern_edit.setText(rule.layer_pattern)
@@ -89,19 +116,45 @@ class RuleEditDialog(QtWidgets.QDialog):
         self.block_name_edit.setText(rule.block_name or "")
         self.ifc_type_combo.setCurrentText(rule.ifc_type)
         self.predefined_type_edit.setText(rule.predefined_type or "")
-        self.talo2000_code_edit.setText(rule.talo2000_code)
-        self.talo2000_name_edit.setText(rule.talo2000_name)
+        self.domain_combo.setCurrentText(rule.domain)
+        self.talo2000_code_edit.setText(rule.talo2000_code or "")
+        self.talo2000_name_edit.setText(rule.talo2000_name or "")
+        self.lvi_code_combo.setCurrentText(rule.lvi_code or _BLANK)
+        self.talotekniikka_code_combo.setCurrentText(rule.talotekniikka_code or _BLANK)
         self.system_name_edit.setText(rule.system_name or "")
 
+    def _set_row_visible(self, label: QtWidgets.QWidget, field: QtWidgets.QWidget,
+                          visible: bool) -> None:
+        label.setVisible(visible)
+        field.setVisible(visible)
+
+    @QtCore.Slot(str)
+    def _on_domain_changed(self, domain: str) -> None:
+        is_ark = domain == "ARK"
+        self._set_row_visible(self._talo2000_code_label, self.talo2000_code_edit, is_ark)
+        self._set_row_visible(self._talo2000_name_label, self.talo2000_name_edit, is_ark)
+        self._set_row_visible(self._lvi_code_label, self.lvi_code_combo, not is_ark)
+        self._set_row_visible(
+            self._talotekniikka_code_label, self.talotekniikka_code_combo, not is_ark
+        )
+        self._refresh_validation()
+
     def _candidate_payload(self) -> dict[str, object]:
+        domain = self.domain_combo.currentText()
+        is_ark = domain == "ARK"
         return {
             "layer_pattern": self.layer_pattern_edit.text().strip(),
             "entity_kind": self.entity_kind_combo.currentText(),
             "block_name": self.block_name_edit.text().strip() or None,
             "ifc_type": self.ifc_type_combo.currentText(),
             "predefined_type": self.predefined_type_edit.text().strip() or None,
-            "talo2000_code": self.talo2000_code_edit.text().strip(),
-            "talo2000_name": self.talo2000_name_edit.text().strip(),
+            "domain": domain,
+            "talo2000_code": (self.talo2000_code_edit.text().strip() or None) if is_ark else None,
+            "talo2000_name": (self.talo2000_name_edit.text().strip() or None) if is_ark else None,
+            "lvi_code": (self.lvi_code_combo.currentText().strip() or None) if not is_ark else None,
+            "talotekniikka_code": (
+                self.talotekniikka_code_combo.currentText().strip() or None
+            ) if not is_ark else None,
             "system_name": self.system_name_edit.text().strip() or None,
         }
 
