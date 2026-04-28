@@ -211,14 +211,23 @@ domain = "ARK"
 talo2000_code = "1352"
 talo2000_name = "Kylmähuone-elementit"
 
-# Section 11: Kylmälaitteet (25xx) — placeholder-alakoodit kunnes RT saatavilla
+# Section 11: Kylmälaitteet — RAVA LVI-TUOTEOSA (TATE-domain, Plan H Task 13).
+# Lähteet: koodistot.suomi.fi RYTJ → LVI-TUOTEOSA_Versio_1_0.
+# Lisäkoodit (jäähdytyskoneikot ja säiliöt) ovat tällä hetkellä aspirational —
+# DXF-blokkinimet ja layerit lisätään kun LISP-puolen Putkityökalu tukee niitä.
+#   • jäähdytyskompressorikoneikko  T-LVI-01-01-005
+#   • vedenjäähdytyskone            T-LVI-01-01-003
+#   • kompressorilauhdutin          T-LVI-01-01-019
+#   • välijäähdytin                 T-LVI-01-01-024
+#   • kylmävesiasema                T-LVI-01-01-004
+#   • kylmäainevaraajasäiliö        T-LVI-03-07-012
 [[rules]]
 layer_pattern = "KYL-HOYRYSTIN*"
 entity_kind = "INSERT"
 block_name = "HOYRYSTIN"
 ifc_type = "IfcEvaporator"
-talo2000_code = "2510"
-talo2000_name = "Laiteosat — höyrystin"
+domain = "TATE"
+lvi_code = "T-LVI-01-01-023"
 system_name = "Refrigeration plant"
 
 [[rules]]
@@ -226,8 +235,8 @@ layer_pattern = "KYL-LAUHDUTIN*"
 entity_kind = "INSERT"
 block_name = "LAUHDUTIN"
 ifc_type = "IfcCondenser"
-talo2000_code = "2520"
-talo2000_name = "Laiteosat — lauhdutin"
+domain = "TATE"
+lvi_code = "T-LVI-01-01-018"
 system_name = "Refrigeration plant"
 
 [[rules]]
@@ -235,8 +244,8 @@ layer_pattern = "KYL-KOMPRESSORI*"
 entity_kind = "INSERT"
 block_name = "KOMPRESSORI"
 ifc_type = "IfcCompressor"
-talo2000_code = "2530"
-talo2000_name = "Laiteosat — kompressori"
+domain = "TATE"
+lvi_code = "T-LVI-01-01-017"
 system_name = "Refrigeration plant"
 
 # Bugfix 6 — AutoCAD ARK / K-prefix layers (real-world CAD layer naming)

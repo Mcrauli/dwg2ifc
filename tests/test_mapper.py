@@ -185,9 +185,12 @@ def test_apply_profile_maps_cooling_equipment_blocks_via_default_profile():
     ]
     mapped = apply_profile(entities, profile)
     by_ifc = {m.ifc_type: m for m in mapped}
-    assert by_ifc["IfcEvaporator"].talo2000_code == "2510"
-    assert by_ifc["IfcCondenser"].talo2000_code == "2520"
-    assert by_ifc["IfcCompressor"].talo2000_code == "2530"
+    # Plan H Task 13: cooling equipment is now TATE-domain with RAVA lvi_code.
+    assert by_ifc["IfcEvaporator"].domain == "TATE"
+    assert by_ifc["IfcEvaporator"].lvi_code == "T-LVI-01-01-023"
+    assert by_ifc["IfcEvaporator"].talo2000_code is None
+    assert by_ifc["IfcCondenser"].lvi_code == "T-LVI-01-01-018"
+    assert by_ifc["IfcCompressor"].lvi_code == "T-LVI-01-01-017"
 
 
 def test_apply_profile_default_profile_emits_four_distinct_system_names():

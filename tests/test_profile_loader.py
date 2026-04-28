@@ -192,15 +192,21 @@ def test_load_default_profile_has_cooling_equipment_rules():
     hoyr = by_layer["KYL-HOYRYSTIN*"]
     assert hoyr.ifc_type == "IfcEvaporator"
     assert hoyr.block_name == "HOYRYSTIN"
-    assert hoyr.talo2000_code == "2510"
+    assert hoyr.domain == "TATE"
+    assert hoyr.lvi_code == "T-LVI-01-01-023"
+    assert hoyr.talo2000_code is None
     assert hoyr.system_name == "Refrigeration plant"
     lauh = by_layer["KYL-LAUHDUTIN*"]
     assert lauh.ifc_type == "IfcCondenser"
-    assert lauh.talo2000_code == "2520"
+    assert lauh.domain == "TATE"
+    assert lauh.lvi_code == "T-LVI-01-01-018"
+    assert lauh.talo2000_code is None
     assert lauh.system_name == "Refrigeration plant"
     komp = by_layer["KYL-KOMPRESSORI*"]
     assert komp.ifc_type == "IfcCompressor"
-    assert komp.talo2000_code == "2530"
+    assert komp.domain == "TATE"
+    assert komp.lvi_code == "T-LVI-01-01-017"
+    assert komp.talo2000_code is None
     assert komp.system_name == "Refrigeration plant"
 
 

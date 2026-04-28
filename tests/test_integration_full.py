@@ -19,7 +19,9 @@ EXPECTED_TALO2000_CODES = {
     "1331",  # KYL-LEVYHYLLY → IfcFurniture
     "2380",  # KAAPELIHYLLY → IfcCableCarrierSegment
     "1352",  # KYL-LEVY → IfcBuildingElementProxy
-    "2510",  # KYL-HOYRYSTIN → IfcEvaporator
+    # KYL-HOYRYSTIN/LAUHDUTIN/KOMPRESSORI moved to TATE domain (RAVA LVI-TUOTEOSA)
+    # in Plan H Task 13. Their classification appears under IfcClassification
+    # "RAVA-LVI" rather than "Talo2000" — covered by Plan H integration tests.
 }
 
 

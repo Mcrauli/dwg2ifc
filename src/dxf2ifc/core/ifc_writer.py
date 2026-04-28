@@ -1020,12 +1020,19 @@ def _z_rotation_matrix(x: float, y: float, z: float, angle: float) -> list[list[
     ]
 
 
-def add_talo2000_classification(ifc, product, *, code: str, name: str) -> object:
+def add_talo2000_classification(
+    ifc, product, *, code: str | None, name: str | None
+) -> object | None:
     """Attach a Talo2000 IfcClassificationReference to the given product.
 
     Creates (once per file) an IfcClassification named 'Talo2000', then
     references it from an IfcClassificationReference tied to the product.
+    Returns ``None`` and does nothing for products without a Talo2000 code
+    (e.g. TATE-domain rules whose classification lives under RAVA — handled
+    by the Plan H domain-aware classifier).
     """
+    if not code:
+        return None
     existing = [c for c in ifc.by_type("IfcClassification") if c.Name == "Talo2000"]
     if existing:
         classification = existing[0]
