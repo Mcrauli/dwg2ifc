@@ -23,6 +23,16 @@ TALO2000_REQUIRED_CLASSES: tuple[str, ...] = (
     "IfcWindow",
 )
 
+RAVA_REQUIRED_CLASSES: tuple[str, ...] = (
+    "IfcPipeSegment",
+    "IfcCableCarrierSegment",
+    "IfcEvaporator",
+    "IfcCondenser",
+    "IfcCompressor",
+)
+
+RAVA_SOURCE_NAMES: frozenset[str] = frozenset({"RAVA-LVI", "RAVA-TATE"})
+
 
 @dataclass
 class ValidationReport:
@@ -33,16 +43,19 @@ class ValidationReport:
     summary: str = ""
 
 
-def _talo2000_classified_products(ifc: ifcopenshell.file) -> set[int]:
-    """Return ``id()``-based identifiers of products linked to a Talo2000
-    IfcClassificationReference via IfcRelAssociatesClassification."""
+def _classified_products(
+    ifc: ifcopenshell.file, *, source_names: frozenset[str] | set[str]
+) -> set[int]:
+    """Return ``id()``-based identifiers of products linked to an
+    IfcClassificationReference whose ReferencedSource.Name is in
+    ``source_names``."""
     classified: set[int] = set()
     for rel in ifc.by_type("IfcRelAssociatesClassification"):
         ref = rel.RelatingClassification
         if ref is None or not ref.is_a("IfcClassificationReference"):
             continue
         source = ref.ReferencedSource
-        if source is None or getattr(source, "Name", None) != "Talo2000":
+        if source is None or getattr(source, "Name", None) not in source_names:
             continue
         if not getattr(ref, "Identification", None):
             continue
@@ -53,8 +66,8 @@ def _talo2000_classified_products(ifc: ifcopenshell.file) -> set[int]:
 
 def _check_talo2000_classification(ifc: ifcopenshell.file) -> list[dict[str, Any]]:
     """Emit a warning for every IfcWall/IfcSlab/IfcDoor/IfcWindow whose
-    Talo2000 classification link is missing (YTV 2012 requirement)."""
-    classified = _talo2000_classified_products(ifc)
+    Talo2000 classification link is missing (YTV 2012, ARK-domain)."""
+    classified = _classified_products(ifc, source_names=frozenset({"Talo2000"}))
     warnings: list[dict[str, Any]] = []
     for ifc_class in TALO2000_REQUIRED_CLASSES:
         for product in ifc.by_type(ifc_class):
@@ -69,6 +82,31 @@ def _check_talo2000_classification(ifc: ifcopenshell.file) -> list[dict[str, Any
                     "name": getattr(product, "Name", None),
                     "message": (
                         f"missing Talo2000 classification on {ifc_class} "
+                        f"{getattr(product, 'Name', None)!r}"
+                    ),
+                }
+            )
+    return warnings
+
+
+def _check_rava_classification(ifc: ifcopenshell.file) -> list[dict[str, Any]]:
+    """Emit a warning for every TATE-domain product (pipes, cable carriers,
+    cooling equipment) that lacks a RAVA-LVI / RAVA-TATE classification."""
+    classified = _classified_products(ifc, source_names=RAVA_SOURCE_NAMES)
+    warnings: list[dict[str, Any]] = []
+    for ifc_class in RAVA_REQUIRED_CLASSES:
+        for product in ifc.by_type(ifc_class):
+            if product.id() in classified:
+                continue
+            warnings.append(
+                {
+                    "level": "WARNING",
+                    "type": "rava_classification",
+                    "ifc_class": ifc_class,
+                    "global_id": getattr(product, "GlobalId", None),
+                    "name": getattr(product, "Name", None),
+                    "message": (
+                        f"missing RAVA classification on {ifc_class} "
                         f"{getattr(product, 'Name', None)!r}"
                     ),
                 }
@@ -101,6 +139,7 @@ def validate_ifc(path: str | Path) -> ValidationReport:
             warnings.append(statement)
 
     warnings.extend(_check_talo2000_classification(ifc))
+    warnings.extend(_check_rava_classification(ifc))
 
     summary = f"{ifc.schema}: {len(errors)} errors, {len(warnings)} warnings ({ifc_path.name})"
     return ValidationReport(errors=errors, warnings=warnings, summary=summary)
