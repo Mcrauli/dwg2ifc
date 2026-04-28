@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 17 — validate_ifc Talo2000/RAVA-warning domain-aware.
+**Current task:** Plan H Task 18 — full-fixture- ja integration-testit IFC4X3 + domain.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 17:n osio plan-tiedostosta. Päivitä `dxf2ifc.core.quality.validate_ifc` warning-logiikka: ARK-elementtien on oltava Talo2000-luokiteltu, TATE-elementtien RAVA-luokiteltu. Failing-testi: ARK-elementti ilman Talo2000-classification:ia → warning "missing classification".
+**Seuraavaksi:** Lue Task 18:n osio plan-tiedostosta. Aja test_integration_full + test_integration myös IFC4X3-skeemalla, varmista että RAVA-luokat ja Talo2000 toimivat IFC 4.3:ssa. Failing-testi: schema='IFC4X3' parametrillä full-fixture-pipeline läpäisee IfcRelAssociatesClassification + IfcSystem-tarkistukset.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -210,7 +210,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 ### Section 5: Mapper + ifc_writer domain-luokitus
 - [x] Task 15: add_classification(ifc, product, *, domain, code, name) — Talo2000/RAVA-LVI/RAVA-TATE (`e2bbf8d`)
 - [x] Task 16: convert_dxf-orchestrator domain-tietoinen luokitus, multi-classification kielletty (`6b172e5`)
-- [ ] Task 17: validate_ifc Talo2000/RAVA-warning domain-aware
+- [x] Task 17: validate_ifc Talo2000/RAVA-warning domain-aware (`3c1d514`)
 
 ### Section 6: Integraatio + dokumentointi + plan-loppupiste
 - [ ] Task 18: full-fixture- ja integration-testit IFC4X3 + domain
