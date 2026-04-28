@@ -587,9 +587,32 @@ def add_furniture(
             depth_mm=depth,
             height_mm=height,
         )
+    elif isinstance(mapped.geometry, LineGeometry):
+        # KLHYLLY-TIKAS draws TIKAS shelves as inline LINE rails rather
+        # than as block INSERTs. Treat each LINE as one shelf rail: width
+        # = line length, depth + height come from extra_props with
+        # shelf-friendly defaults (400 mm deep × 60 mm thick).
+        line = mapped.geometry
+        dx = line.end.x - line.start.x
+        dy = line.end.y - line.start.y
+        length = math.hypot(dx, dy)
+        if length < 50.0:
+            raise ValueError(
+                "add_furniture line is degenerate "
+                f"(length={length:.1f} mm; min 50 mm)"
+            )
+        depth = float(mapped.extra_props.get("default_depth_mm", 400.0))
+        height = float(mapped.extra_props.get("default_height_mm", 60.0))
+        box = FurnitureBoxExtrusion(
+            anchor=line.start,
+            angle_rad=math.atan2(dy, dx),
+            width_mm=length,
+            depth_mm=depth,
+            height_mm=height,
+        )
     else:
         raise TypeError(
-            "add_furniture expects BlockInstance or PolygonGeometry, "
+            "add_furniture expects BlockInstance, PolygonGeometry or LineGeometry, "
             f"got {type(mapped.geometry).__name__}"
         )
 
