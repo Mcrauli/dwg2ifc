@@ -32,6 +32,45 @@ host-koneen alustalle.
 Tämän projektin pääjakelu on `dxf2ifc.exe`, joka rakennetaan
 GitHub Actions -workflow:lla (ks. Section 3 + 4).
 
+## CI build
+
+GitHub Actions ajaa `.github/workflows/build.yml`-workflow:n joka triggeröityy:
+
+- `pull_request` (kaikki branchit)
+- `push: branches: [master]`
+
+### Windows-job (`windows-latest`)
+
+1. Checkout + Python 3.12 + uv setup.
+2. Aja `scripts/build_exe.ps1`, joka kutsuu PyInstallerin spec-tiedostolla.
+3. Smoke-step: ajaa `dist/dxf2ifc-*.exe --version`. Vaaditaan exit code 0 ja
+   stdout joka sisältää merkkijonon `dxf2ifc`. Jos smoke epäonnistuu (puuttuva
+   ifcopenshell-skeema, hidden import, jne.), artifactia ei uploadata.
+4. Upload-step julkaisee artifactin nimellä `dxf2ifc-windows`. Sisältää
+   `dist/dxf2ifc-<version>.exe` ja `dist/dxf2ifc-<version>.exe.sha256`.
+
+### Linux-smoke-job (`ubuntu-latest`)
+
+`scripts/build_exe.sh` ajetaan PyInstallerilla samaa spec-tiedostoa vasten.
+Tarkoitus on validoida että `.spec` on cross-platform-validi (datas + hidden
+imports + excludes) ennen kuin Windows-build ajaa pidemmän reitin. Tuloksena
+syntyy ELF-binääri jota _ei_ uploadata — Windows-job omistaa jakelu-output:n.
+
+### Asennetut Qt-runtimet (Linux)
+
+PySide6 vaatii ajonaikaisesti `libegl1`, `libgl1`, `libxkbcommon0` ja
+`libdbus-1-3`-paketit jotta importti toimii. Workflow asentaa ne ennen
+PyInstaller-buildia.
+
+### Mitä CI _ei_ tee
+
+- GUI-smoke (offscreen QPA) ei aja CI:ssä — se vaatii pidemmän setupin ja
+  flaky-rajan, joten manuaaliajo Windows-hostilla on luotettavampi.
+  `docs/packaging-smoke.md` (Plan E Task 20) listaa manuaalisen checklistin.
+- PyInstaller-cache-kansiota (`%LOCALAPPDATA%\pyinstaller`) _ei_ cachetä
+  artifactina — `--clean`-flag tyhjentää sen joka build:ssa, ja stale cache
+  on ollut PyInstallerin tunnettu virhelähde.
+
 ## Icon TODO
 
 `build/dxf2ifc.spec` ei vielä viittaa `.ico`-tiedostoon (`icon=None`). Brand-icon
