@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Mode B B1 — skeleton-kirjoitus.
+**Current task:** Plan H Task 1 — `build_ifc_project_skeleton(schema="IFC4X3")`-parametri + failing-testi.
 
-**Mode:** B (section 1/6).
+**Mode:** A.
 
-**Seuraavaksi:** Plan H skeleton kirjoitettu (`8be315f`, 6 sectionia). Section 1 = IFC4X3-skeema-migraatio. Kirjoita Section 1:lle 3-5 task-riviä: (1) `build_ifc_project_skeleton` `schema="IFC4X3"`-flag + failing-testi joka odottaa `ifc.schema == "IFC4X3"`, (2) regressio: koko full-fixture-pipeline tuottaa IFC4X3:n + ifcopenshell.validate clean, (3) verify_ifc summary näyttää IFC4X3:n, (4) `dxf2ifc convert --schema=ifc4x3` CLI-flag (default: ifc4x3 kun Plan H valmis).
+**Seuraavaksi:** Lue plan-tiedostosta Task 1:n osio (`grep -nA 2 "Task 1:" docs/superpowers/plans/2026-04-28-plan-h-ifc43-rava.md`). TDD: failing-testi `tests/test_ifc_writer.py` joka kutsuu skeleton-funktion schema="IFC4X3" -kwargilla ja odottaa `ifc.schema == "IFC4X3"`. Toteuta parametri + ifcopenshell.api.run("project.create_file", schema=schema).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -168,6 +168,42 @@ Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vai
 - [x] Task 23: pytest-qt config + offscreen QPA + shared QApplication (`cb5e14a`)
 - [x] Task 24: README GUI-osio + docs/screenshots/.gitkeep placeholder (`b4141f9`)
 - [x] Task 25: plan-loppupiste — 200 passed, coverage 89 %, ruff clean, README/CLAUDE.md status (`011bd5e`)
+
+## Plan H status (0/22)
+
+### Section 1: IFC4X3-skeema-migraatio
+- [ ] Task 1: build_ifc_project_skeleton(schema="IFC4X3") + failing-testi
+- [ ] Task 2: convert_dxf-pipeline regressio IFC4X3:lla (full-fixture, 11 IFC-luokkaa, ifcopenshell.validate clean)
+- [ ] Task 3: convert_dxf + CLI `--schema=ifc4x3`-flag
+- [ ] Task 4: validate_ifc.summary näyttää IFC4X3:n
+
+### Section 2: RAVA-koodien lataaminen
+- [ ] Task 5: tools/rava/sync_codes.py 4 codeset → JSON-cache
+- [ ] Task 6: 4 RAVA-codeset-JSON committoitu src/dxf2ifc/profiles/rava/:hen
+- [ ] Task 7: dxf2ifc.profiles.rava.loader.load_rava_codes()
+
+### Section 3: Profile-skeeman domain-laajennus
+- [ ] Task 8: Rule.domain Literal["ARK", "TATE"] + lvi_code/talotekniikka_code + validointi
+- [ ] Task 9: loader.dump_profile + load_profile uudet kentät TOML round-trip
+- [ ] Task 10: MappedEntity.domain + lvi_code + talotekniikka_code + apply_profile välitys
+
+### Section 4: Default-profiilin uudistus
+- [ ] Task 11: git mv default_kylmalaite_talo2000.toml → default_kylmalaite.toml
+- [ ] Task 12: ARK-säännöt domain="ARK"-merkintä
+- [ ] Task 13: TATE-säännöt (kylmälaitteet) domain="TATE" + lvi_code RAVA-koodit
+- [ ] Task 14: Kylmäaineputket + kaapelihylly domain="TATE" + RAVA-LVI-02 / RAVA-TATE
+
+### Section 5: Mapper + ifc_writer domain-luokitus
+- [ ] Task 15: add_classification(ifc, product, *, domain, code, name) — Talo2000/RAVA-LVI/RAVA-TATE
+- [ ] Task 16: convert_dxf-orchestrator domain-tietoinen luokitus, multi-classification kielletty
+- [ ] Task 17: validate_ifc Talo2000/RAVA-warning domain-aware
+
+### Section 6: Integraatio + dokumentointi + plan-loppupiste
+- [ ] Task 18: full-fixture- ja integration-testit IFC4X3 + domain
+- [ ] Task 19: Solibri rule-set: lisää "RAVA classification coverage" + docs/solibri-rules.md
+- [ ] Task 20: rebuild solibri_reference_full.ifc + päivitä snapshot-baseline jos tarvitaan
+- [ ] Task 21: docs/rava-classification.md
+- [ ] Task 22: plan-loppupiste — pytest + coverage + ruff + status-päivitys
 
 ## Plan F status (16/16) ✅
 
