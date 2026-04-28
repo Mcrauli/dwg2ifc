@@ -9,7 +9,16 @@ from dxf2ifc.profiles.schema import Profile, Rule
 
 
 def layer_matches(pattern: str, layer: str) -> bool:
-    """Case-insensitive glob match. '*' and '?' wildcards supported."""
+    """Case-insensitive glob match. ``*`` and ``?`` wildcards supported.
+
+    AutoCAD-exported DXFs frequently carry xref-prefixed layer names of
+    the form ``<xref>|<layer>`` (e.g. ``KCM Kauhajoki|AR1241_US``). When
+    the pattern does not contain a pipe character but the candidate
+    does, the pipe-prefix is stripped before matching so the rule
+    targets the suffix layer name only.
+    """
+    if "|" in layer and "|" not in pattern:
+        layer = layer.rsplit("|", 1)[-1]
     return fnmatch(layer.casefold(), pattern.casefold())
 
 
