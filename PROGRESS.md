@@ -1,12 +1,12 @@
 # PROGRESS
 
-**Current plan:** Plan H valmis ✅ (22/22). Siirrytään Plan G:hen (Coordinate System & georeferenced IFC).
+**Current plan:** Bugfix kierros 3 (3 bugia) — Plan H 22/22 ✅, mutta käyttäjän testissä geometria edelleen rikki (kaikki element-tyypit, ei vain hyllyt). Korjataan ennen Plan G:tä.
 
-**Current task:** Plan G Task 1 (kun plan kirjoitettu).
+**Current task:** Bugfix 7 (KAIKEN element-tyypin geometria oikein + systemaattinen roundtrip-validointi).
 
-**Mode:** B (Plan G kirjoittamatta — seuraava sessio aloittaa MODE B:llä, kirjoita plan-skeleton).
+**Mode:** A (implementointi).
 
-**Seuraavaksi:** Plan G plan-tiedosto on kirjoittamatta. Seuraava sessio aloittaa MODE B:llä: lue Plan H frontmatter, kirjoita `docs/superpowers/plans/2026-04-XX-plan-g-coordinate-system.md` skeleton (YAML frontmatter + intro + section-otsikot, ~30 riviä), sitten section per turn.
+**Seuraavaksi:** Käy läpi `add_*`-funktiot ifc_writer:issa (wall/slab/door/window/furniture/pipe/cable/proxy/evaporator/condenser/compressor) järjestelmällisesti. Aloita yksinkertaisesta: lisää failing-test `tests/test_geometry_dimensions.py::test_add_furniture_polygon_correct_bbox` joka antaa 800×400-polygonin + 60mm extrusion-height ja odottaa IfcFurniture:lle bbox 800×400×60mm. Aja → näe missä menee pieleen → korjaa. Sit toista per element-tyyppi. Kun kaikki tyypit korjattu, lisää roundtrip-testi (`tests/test_geometry_roundtrip.py`) joka pyörittää real-world fixture-DXF:n läpi ja varmistaa per-element-tyyppi mitat ±5%. Kun Bugfix 7 valmis, jatka Bugfix 8 (KYL-TIKASHYLLY puuttuu) ja Bugfix 9 (Profile editor Load broken). Vasta sit siirry Plan G MODE B:hen.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
