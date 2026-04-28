@@ -17,7 +17,7 @@ def test_profile_editor_lists_all_default_rules(qtbot):
     table = dialog.findChild(QtWidgets.QTableView)
     assert table is not None
     assert table.model().rowCount() == len(profile.rules)
-    assert table.model().columnCount() == 6
+    assert table.model().columnCount() == 7
 
 
 def test_profile_editor_remove_drops_selected_rule(qtbot):

@@ -12,7 +12,33 @@ from dxf2ifc.profiles.schema import Profile, Rule
 
 _log = logging.getLogger(__name__)
 
-_HEADERS = ("Layer pattern", "IFC type", "Predefined", "Talo2000 code", "Talo2000 name", "System")
+_HEADERS = (
+    "Layer pattern",
+    "IFC type",
+    "Predefined",
+    "Domain",
+    "Code",
+    "Name",
+    "System",
+)
+
+
+def _row_for(rule: Rule) -> tuple[str, str, str, str, str, str, str]:
+    if rule.domain == "ARK":
+        code = rule.talo2000_code or ""
+        name = rule.talo2000_name or ""
+    else:
+        code = rule.lvi_code or rule.talotekniikka_code or ""
+        name = ""
+    return (
+        rule.layer_pattern,
+        rule.ifc_type,
+        rule.predefined_type or "",
+        rule.domain,
+        code,
+        name,
+        rule.system_name or "",
+    )
 
 
 class _RuleTableModel(QtCore.QAbstractTableModel):
@@ -34,15 +60,7 @@ class _RuleTableModel(QtCore.QAbstractTableModel):
         if not index.isValid() or role != QtCore.Qt.ItemDataRole.DisplayRole:
             return None
         rule = self._rules[index.row()]
-        column_value = (
-            rule.layer_pattern,
-            rule.ifc_type,
-            rule.predefined_type or "",
-            rule.talo2000_code,
-            rule.talo2000_name,
-            rule.system_name or "",
-        )
-        return column_value[index.column()]
+        return _row_for(rule)[index.column()]
 
     def headerData(
         self,
