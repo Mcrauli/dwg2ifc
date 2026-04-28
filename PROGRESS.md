@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 16 — convert_dxf-orchestrator domain-tietoinen luokitus.
+**Current task:** Plan H Task 17 — validate_ifc Talo2000/RAVA-warning domain-aware.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 16:n osio plan-tiedostosta. Päivitä convert_dxf-orchestrator (`src/dxf2ifc/core/ifc_writer.py`) kutsumaan `add_classification` jokaiselle MappedEntity:lle: ARK → talo2000_code; TATE → lvi_code TAI talotekniikka_code. Multi-classification kielletty (tasan yksi per element). Failing-testi: full-fixture-pipeline tuottaa "Talo2000", "RAVA-LVI" ja "RAVA-TATE" classification:t.
+**Seuraavaksi:** Lue Task 17:n osio plan-tiedostosta. Päivitä `dxf2ifc.core.quality.validate_ifc` warning-logiikka: ARK-elementtien on oltava Talo2000-luokiteltu, TATE-elementtien RAVA-luokiteltu. Failing-testi: ARK-elementti ilman Talo2000-classification:ia → warning "missing classification".
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -209,7 +209,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 
 ### Section 5: Mapper + ifc_writer domain-luokitus
 - [x] Task 15: add_classification(ifc, product, *, domain, code, name) — Talo2000/RAVA-LVI/RAVA-TATE (`e2bbf8d`)
-- [ ] Task 16: convert_dxf-orchestrator domain-tietoinen luokitus, multi-classification kielletty
+- [x] Task 16: convert_dxf-orchestrator domain-tietoinen luokitus, multi-classification kielletty (`6b172e5`)
 - [ ] Task 17: validate_ifc Talo2000/RAVA-warning domain-aware
 
 ### Section 6: Integraatio + dokumentointi + plan-loppupiste
