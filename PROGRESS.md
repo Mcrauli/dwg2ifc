@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 18 — full-fixture- ja integration-testit IFC4X3 + domain.
+**Current task:** Plan H Task 19 — Solibri rule-set: lisää "RAVA classification coverage".
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 18:n osio plan-tiedostosta. Aja test_integration_full + test_integration myös IFC4X3-skeemalla, varmista että RAVA-luokat ja Talo2000 toimivat IFC 4.3:ssa. Failing-testi: schema='IFC4X3' parametrillä full-fixture-pipeline läpäisee IfcRelAssociatesClassification + IfcSystem-tarkistukset.
+**Seuraavaksi:** Lue Task 19:n osio plan-tiedostosta. Päivitä `tools/solibri/dxf2ifc.bcfzip` rule-set: lisää sääntö "RAVA classification coverage" joka vaatii TATE-elementeille RAVA-LVI/RAVA-TATE-linkin. Päivitä `docs/solibri-rules.md` ja `tests/test_solibri_bcfzip.py`.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -213,7 +213,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu (Section 5 plan-loppupiste), käy
 - [x] Task 17: validate_ifc Talo2000/RAVA-warning domain-aware (`3c1d514`)
 
 ### Section 6: Integraatio + dokumentointi + plan-loppupiste
-- [ ] Task 18: full-fixture- ja integration-testit IFC4X3 + domain
+- [x] Task 18: full-fixture- ja integration-testit IFC4X3 + domain (`1b771d3`)
 - [ ] Task 19: Solibri rule-set: lisää "RAVA classification coverage" + docs/solibri-rules.md
 - [ ] Task 20: rebuild solibri_reference_full.ifc + päivitä snapshot-baseline jos tarvitaan
 - [ ] Task 21: docs/rava-classification.md
