@@ -26,6 +26,11 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 valmis (master `011bd5
 
 ## Section 1: PyInstaller bootstrap
 
+- [ ] Task 1.1: lisää `pyproject.toml`:n `dev`-extraan `pyinstaller>=6.10` ja aja `uv sync --extra dev --extra gui`. Luo `tests/test_pyinstaller_bootstrap.py` joka tarkistaa että `import PyInstaller` toimii ja että `PyInstaller.__main__` on suoritettavissa moduulina. Smoke ainoastaan, ei .exe-buildia tässä taskissa.
+- [ ] Task 1.2: luo `build/dxf2ifc.spec` PyInstaller .spec -tiedosto, joka käyttää `Analysis(['src/dxf2ifc/gui/__main__.py'], ...)` -entry-pointtia, asettaa `name='dxf2ifc'` ja `windowed=True`. Piiri-spec ainoastaan: bundlatut datat ja hidden imports tulevat section 2:ssa. Lisää `.spec`-tiedosto repoon. Lisää `tests/test_spec_file.py` joka parsii `dxf2ifc.spec` Python-evalilla ja varmistaa että `Analysis`-kutsu sisältää oikean entry-pointin.
+- [ ] Task 1.3: lisää `pyproject.toml` `[tool.dxf2ifc.packaging]`-vapaaehtoiseen sektioon `version_stamp`-helper-vakio (string). Luo `src/dxf2ifc/_version.py` joka exposesi `__version__ = "0.1.0"`-stringin importattavaksi sekä `pyproject.toml`-versiosta. Failing test: `tests/test_version.py` varmistaa että `from dxf2ifc import __version__` ja `metadata.version("dxf2ifc")` palauttavat saman.
+- [ ] Task 1.4: dokumentoi `docs/packaging.md` alkuun (uusi tiedosto): "Local build" -ohje (`uv run pyinstaller build/dxf2ifc.spec --clean`) ja huomautus että Linux-build ei tuota `.exe`-tiedostoa vaan ELF:n; Windows-build vaatii Windows-hostin tai GitHub Actions windows-latest -runnerin.
+
 ## Section 2: .spec-konfiguraatio + asset bundling
 
 ## Section 3: Windows build (paikallinen + CI matrix)
