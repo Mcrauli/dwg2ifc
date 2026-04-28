@@ -2,11 +2,11 @@
 
 **Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan F Task 14 — `build.yml` linux-jobiin `pytest tests/test_quality.py`.
+**Current task:** Plan F Task 15 — `docs/quality-gates.md` two-tier prosessikuvaus.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 14:n osio plan-tiedostosta. Lisää linux-jobin pytest-vaihe joka ajaa quality-testit ifcopenshell.validate-gaten alle. TDD: failing-testi joka tarkistaa workflow-yamlin sisältää `pytest tests/test_quality.py` askeleen.
+**Seuraavaksi:** Lue Task 15:n osio plan-tiedostosta. Kirjoita docs/quality-gates.md joka kuvaa (a) automaattinen ifcopenshell.validate joka ajaa CI:ssä joka push:lla, (b) manuaalinen Solibri-snapshot-verify Lauri-driven ennen tag-releasea. Linkitä packaging-smoke.md:hen.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -194,7 +194,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - [x] Task 13: pytest @solibri-marker + tests/test_solibri_snapshot_chain.py (`cbb3d76`)
 
 ### Section 5: CI-integraatio + dokumentaatio + plan-loppupiste
-- [ ] Task 14: build.yml linux-jobissa pytest tests/test_quality.py
+- [x] Task 14: build.yml linux-jobissa pytest tests/test_quality.py (`d6c78bd`)
 - [ ] Task 15: docs/quality-gates.md (auto + manuaali two-tier prosessi)
 - [ ] Task 16: plan-loppupiste — pytest + coverage + ruff + status-päivitys
 
@@ -396,7 +396,8 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - Plan F Task 11: `tests/snapshots/solibri/full_kylmaelement.json` baseline-snapshot RuleResult-skeemalla; tällä hetkellä `results: []` koska full-fixture passaa cleanisti. 4 uutta testiä (existence + metadata + schema + clean) (`b7de018`).
 - Plan F Task 12: `tools/solibri/diff_snapshot.py` `SnapshotDelta`-dataclass + `diff(baseline, current)` joka käyttää (rule_name, severity, ifc_guid, message)-fingerprintiä järjestys-riippumattomaan vertailuun. 5 uutta testiä (`ae3e411`).
 - Plan F Task 13: `solibri` pytest-marker `pyproject.toml`:ssa + `tests/conftest.py:pytest_collection_modifyitems` skippaa kaikki marker-testit kun `Solibri.exe` ei PATH:ssa. tests/test_solibri_snapshot_chain.py ajaa täysketjun verify→parse→diff vs. baseline (`cbb3d76`). ✅ Section 4 (Tasks 11–13) valmis.
+- Plan F Task 14: `.github/workflows/build.yml` Linux-jobiin uusi "Plan F quality gate"-step joka ajaa `uv sync --all-extras` + `uv run pytest tests/test_quality.py`. 1 uusi workflow-testi (`d6c78bd`).
 
-**Kesken:** Plan F Task 14 — CI-integraatio.
+**Kesken:** Plan F Task 15 — quality-gates.md.
 
 **Blokkerit:** ei.
