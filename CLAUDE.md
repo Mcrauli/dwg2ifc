@@ -18,6 +18,7 @@ DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Mu
 - ✅ **Plan D** 25/25 (`2026-04-27-plan-d-pyside6-gui.md`) — PySide6 GUI + profiili-editori, 200 testiä, coverage 89%
 - 🟡 **Plan E** 10/23 (`2026-04-27-plan-e-pyinstaller.md`) — PyInstaller-paketointi käynnissä, Tasks 11-17 odottaa Workflow-PAT-scopea
 - ⏳ **Plan F** kirjoittamatta — Spec verifiointi Solibrissä
+- ⏳ **Plan G** kirjoittamatta — Coordinate System & Georeferenced IFC (ETRS-TM35FIN/EPSG:3067 default, IfcMapConversion + IfcProjectedCRS, world→local koordinaattimuunnos, full Site→Storey placement hierarchy, storey_z_levels pakollinen profiilissa). Toteutetaan **Plan F:n jälkeen**. TrueNorth skipataan MVP:stä.
 - 🔁 Routine `trig_014mxffDUvDZkafKftutpgwo` 3× päivässä (08/14/20 Helsinki)
 
 ## Päätetyt valinnat
