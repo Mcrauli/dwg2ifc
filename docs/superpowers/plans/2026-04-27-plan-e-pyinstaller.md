@@ -49,4 +49,10 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 valmis (master `011bd5
 
 ## Section 4: GitHub Actions release-workflow
 
+- [ ] Task 4.1: lisää `.github/workflows/release.yml` joka triggeröityy `push: tags: ['v*.*.*']`-eventissä. Workflow sisältää saman build-jobin kuin `build.yml` mutta uploadaa myöhemmin Releaseen sen sijaan että pelkästään artifactiksi. Permissions `contents: write` (Releasen luontiin).
+- [ ] Task 4.2: laajenna release-workflowia stepillä joka generoi `dist/dxf2ifc-${VERSION}.exe.sha256` SHA256-checksumin (PowerShell `Get-FileHash`). Lisää myös `dist/LICENSES.md`-pakkaus jossa fontti-LICENSES + ifcopenshell + PySide6 + Python LICENSEt yhdessä tiedostossa.
+- [ ] Task 4.3: lisää `gh release create $TAG dxf2ifc-*.exe dxf2ifc-*.exe.sha256 LICENSES.md --title $TAG --notes-file CHANGELOG.md --draft` -step joka luo draft-releasen tagista. Käytä `${{ secrets.GITHUB_TOKEN }}`-tokenia. Loppukäyttäjä julkaisee draftin manuaalisesti GitHub-UI:n kautta.
+- [ ] Task 4.4: luo `CHANGELOG.md` ensimmäisellä versiomerkinnällä (`## v0.1.0 — 2026-04-XX`) joka listaa Plan A-D feature-roadmapin tiivistetysti. Release-workflow lukee tämän notes-file:nä.
+- [ ] Task 4.5: dokumentoi `docs/packaging.md`:n "Release-prosessi" -osio: (1) bump `_version.py` ja `pyproject.toml`-version, (2) päivitä `CHANGELOG.md`, (3) commit + tag `git tag vX.Y.Z`, (4) push tag → workflow buildaa ja luo draft-releasen, (5) tarkista ja julkaise GitHub-UI:ssa.
+
 ## Section 5: Smoke + checksum + dokumentointi
