@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from dxf2ifc.profiles.loader import dump_profile, load_default_profile, load_profile
-from dxf2ifc.profiles.schema import Profile
+from dxf2ifc.profiles.schema import CRSConfig, Profile
 
 
 def test_default_profile_resource_uses_new_name():
@@ -396,6 +396,46 @@ def test_dump_profile_writes_valid_utf8_toml(tmp_path: Path):
     dump_profile(profile, out)
     text = out.read_text(encoding="utf-8")
     assert text.startswith("[profile]") or "[[rules]]" in text
+
+
+def test_dump_profile_omits_crs_when_none(tmp_path: Path):
+    profile = Profile(
+        name="bare",
+        ifc_schema="IFC4",
+        rules=[],
+    )
+    out = tmp_path / "no_crs.toml"
+    dump_profile(profile, out)
+    text = out.read_text(encoding="utf-8")
+    assert "[profile.crs]" not in text
+    assert "crs" not in text.split("[[rules]]")[0]
+
+
+def test_load_profile_round_trips_crs_and_storey_levels(tmp_path: Path):
+    crs = CRSConfig(
+        eastings_mm=25496000.0,
+        northings_mm=6672000.0,
+        orthogonal_height_mm=15000.0,
+        scale=0.999,
+    )
+    profile = Profile(
+        name="geo",
+        ifc_schema="IFC4",
+        rules=[],
+        crs=crs,
+        storey_z_levels_mm=[0.0, 3500.0, 7000.0],
+    )
+    out = tmp_path / "geo.toml"
+    dump_profile(profile, out)
+    reloaded = load_profile(out)
+    assert reloaded.crs == crs
+    assert reloaded.storey_z_levels_mm == [0.0, 3500.0, 7000.0]
+
+
+def test_default_profile_storey_levels_default_single_zero():
+    profile = load_default_profile()
+    assert profile.storey_z_levels_mm == [0.0]
+    assert profile.crs is None
 
 
 def test_load_default_tate_only_profile_drops_architecture():
