@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 1 — CRSConfig pydantic-malli `src/dxf2ifc/profiles/schema.py`:hen.
+**Current task:** Plan G Task 2 — Profile.crs + storey_z_levels_mm + strictly-increasing validator.
 
 **Mode:** A (toteutus).
 
-**Seuraavaksi:** Lue plan-tiedostosta Task 1:n osio (`grep -nA 3 "Task 1:" docs/superpowers/plans/2026-04-28-plan-g-georeferenced-ifc.md`). Aloita TDD: failing test `tests/test_profile_schema.py` CRSConfig-default-arvoille + invalid-scale-validointi → minimal impl `src/dxf2ifc/profiles/schema.py`:hen → pytest pass → commit + push.
+**Seuraavaksi:** Failing-testit `tests/test_profile_schema.py`: 1-storey default, 3-storey [0,3500,7000], invalid descending list → impl Profile-malliin (Field default_factory + model_validator). `grep -nA 1 "Task 2:" docs/superpowers/plans/...`
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -496,7 +496,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 ## Plan G status (0/21)
 
 ### Section 1: CRSConfig profile-skeemaan + storey_z_levels
-- [ ] Task 1: CRSConfig pydantic-malli (epsg/name/datum/eastings/northings/orth_height/x_axis/scale)
+- [x] Task 1: CRSConfig pydantic-malli (epsg/name/datum/eastings/northings/orth_height/x_axis/scale) (`4e3a473`)
 - [ ] Task 2: Profile.crs + storey_z_levels_mm + strictly-increasing validator
 - [ ] Task 3: loader load_profile + dump_profile crs round-trip
 - [ ] Task 4: default_kylmalaite.toml kommentoitu [crs]-osio + storey_z_levels_mm
