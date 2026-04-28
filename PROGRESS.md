@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 9 — resolve_storey-helper.
+**Current task:** Plan G Task 10 — IfcSkeleton dataclass + caller updates.
 
-**Mode:** A (toteutus, Section 3 jatkuu). Sections 1+2 ✅ + Task 8 ✅ (8/21).
+**Mode:** A (toteutus, Section 3 jatkuu). Sections 1+2 ✅ + Tasks 8–9 ✅ (9/21).
 
-**Seuraavaksi:** Lue plan-Task 9: `resolve_storey(storeys, z_mm)` palauttaa korkeimman storeyn jonka z_level ≤ z. Edge: z alle ensimmäisen → storeys[0]. Failing-testit: 5 case (alin, ylin, keskellä, alle alimman → fallback, tasan kerros-z:llä).
+**Seuraavaksi:** Plan-Task 10: dataclass `IfcSkeleton(file, project, site, building, storeys, contexts)`, päivitä `build_ifc_project_skeleton` palauttamaan se, ja kutsujat (convert_dxf, testit) käyttämään `skeleton.storeys[0]` tai `skeleton.file`. Kaikki olemassa olevat testit jotka olettavat `ifc.file`-paluuarvoa pitää säilyttää backward-compat:in (ratkaisu: `IfcSkeleton.__getattr__` proxyaa file:n attribuutit).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -518,7 +518,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 
 ### Section 3: Site → Building → Storey -placement-hierarkia
 - [x] Task 8: build_ifc_project_skeleton tuottaa Site → Building → list[Storey] (`8e107ed`)
-- [ ] Task 9: resolve_storey(storeys, z_mm) helper + 5 case-test
+- [x] Task 9: resolve_storey(storeys, z_mm) helper + 5 case-test (`21636bb`)
 - [ ] Task 10: IfcSkeleton dataclass paluuarvo + kutsujien päivitys
 
 ### Section 4: Element-add-funktiot kerros-aware + orchestrator
