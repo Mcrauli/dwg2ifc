@@ -46,11 +46,14 @@ def build_ifc_project_skeleton(
     site_name: str = "Default Site",
     building_name: str = "Default Building",
     storey_name: str = "Ground Floor",
+    schema: str = "IFC4",
 ) -> ifcopenshell.file:
-    """Create a minimal IFC 4 file with IfcProject -> Site -> Building -> Storey,
-    with millimetre length units set via IfcUnitAssignment.
+    """Create a minimal IFC project file with the requested ``schema``
+    (``"IFC4"`` or ``"IFC4X3"``) and the IfcProject → Site → Building →
+    Storey spatial hierarchy. Length units are millimetres via
+    IfcUnitAssignment.
     """
-    ifc = ifcopenshell.api.run("project.create_file", version="IFC4")
+    ifc = ifcopenshell.api.run("project.create_file", version=schema)
 
     project = ifcopenshell.api.run(
         "root.create_entity", ifc, ifc_class="IfcProject", name=project_name
