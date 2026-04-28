@@ -7,9 +7,7 @@ from pathlib import Path
 
 from tools.solibri import parse_report
 
-FIXTURE = (
-    Path(__file__).resolve().parent / "fixtures" / "solibri_report_sample.xml"
-)
+FIXTURE = Path(__file__).resolve().parent / "fixtures" / "solibri_report_sample.xml"
 
 
 def test_parse_report_returns_one_entry_per_result_node():

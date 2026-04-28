@@ -33,13 +33,9 @@ def test_cli_convert_default_profile(fixtures_dir: Path, tmp_path: Path):
     assert len(ifc.by_type("IfcWall")) == 1
 
 
-def test_cli_convert_validate_flag_exit_zero_on_clean_ifc(
-    fixtures_dir: Path, tmp_path: Path
-):
+def test_cli_convert_validate_flag_exit_zero_on_clean_ifc(fixtures_dir: Path, tmp_path: Path):
     out = tmp_path / "out.ifc"
-    r = _run_cli(
-        "convert", str(fixtures_dir / "simple_wall.dxf"), str(out), "--validate"
-    )
+    r = _run_cli("convert", str(fixtures_dir / "simple_wall.dxf"), str(out), "--validate")
     assert r.returncode == 0, r.stderr
     assert out.exists()
     assert "0 errors" in r.stderr

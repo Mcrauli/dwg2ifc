@@ -7,9 +7,7 @@ from pathlib import Path
 
 import ifcopenshell
 
-FIXTURE_PATH = (
-    Path(__file__).resolve().parent / "fixtures" / "solibri_reference_full.ifc"
-)
+FIXTURE_PATH = Path(__file__).resolve().parent / "fixtures" / "solibri_reference_full.ifc"
 
 EXPECTED_TALO2000_CODES = {
     "1241",

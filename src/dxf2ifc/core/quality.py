@@ -102,8 +102,5 @@ def validate_ifc(path: str | Path) -> ValidationReport:
 
     warnings.extend(_check_talo2000_classification(ifc))
 
-    summary = (
-        f"{ifc.schema}: {len(errors)} errors, {len(warnings)} warnings "
-        f"({ifc_path.name})"
-    )
+    summary = f"{ifc.schema}: {len(errors)} errors, {len(warnings)} warnings ({ifc_path.name})"
     return ValidationReport(errors=errors, warnings=warnings, summary=summary)

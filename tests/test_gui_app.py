@@ -205,9 +205,7 @@ def test_main_window_convert_flow_passes_validate_true(qtbot, tmp_path):
     panel.input_edit.setText(str(tmp_path / "in.dxf"))
     panel.output_edit.setText(str(tmp_path / "out.ifc"))
 
-    with patch(
-        "dxf2ifc.gui.convert_worker.convert_dxf", return_value=({}, None)
-    ) as mock_convert:
+    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value=({}, None)) as mock_convert:
         with qtbot.waitSignal(window.convert_finished, timeout=2000):
             panel.convert_button.click()
 

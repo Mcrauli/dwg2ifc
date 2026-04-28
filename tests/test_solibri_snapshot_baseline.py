@@ -6,12 +6,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-SNAPSHOT_PATH = (
-    Path(__file__).resolve().parent
-    / "snapshots"
-    / "solibri"
-    / "full_kylmaelement.json"
-)
+SNAPSHOT_PATH = Path(__file__).resolve().parent / "snapshots" / "solibri" / "full_kylmaelement.json"
 
 
 def test_snapshot_exists():

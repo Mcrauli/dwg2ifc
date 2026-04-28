@@ -70,12 +70,8 @@ def _author_dxf(target: Path) -> Path:
     )
     msp.add_blockref("OVI-ULKO", (1500.0, 0.0), dxfattribs={"layer": "KYL-OVET-ULKO"})
     msp.add_blockref("IKKUNA", (3000.0, 0.0), dxfattribs={"layer": "KYL-IKKUNA-MUOVI"})
-    msp.add_blockref(
-        "KLHYLLY-LEVY", (4500.0, 1500.0), dxfattribs={"layer": "KYL-LEVYHYLLY"}
-    )
-    msp.add_blockref(
-        "HOYRYSTIN", (4500.0, 4500.0), dxfattribs={"layer": "KYL-HOYRYSTIN-CR-30"}
-    )
+    msp.add_blockref("KLHYLLY-LEVY", (4500.0, 1500.0), dxfattribs={"layer": "KYL-LEVYHYLLY"})
+    msp.add_blockref("HOYRYSTIN", (4500.0, 4500.0), dxfattribs={"layer": "KYL-HOYRYSTIN-CR-30"})
     doc.saveas(str(target))
     return target
 

@@ -17,20 +17,22 @@ VSVersionInfo(
         StringFileInfo(
             [
                 StringTable(
-                    '040904B0',
+                    "040904B0",
                     [
-                        StringStruct('CompanyName', 'Radika Oy'),
-                        StringStruct('FileDescription', 'dxf2ifc DXF to IFC 4 converter'),
-                        StringStruct('FileVersion', '0.1.0'),
-                        StringStruct('InternalName', 'dxf2ifc'),
-                        StringStruct('LegalCopyright', '(c) 2026 Lauri Rekola, Radika Oy. MIT licence.'),
-                        StringStruct('OriginalFilename', 'dxf2ifc.exe'),
-                        StringStruct('ProductName', 'dxf2ifc'),
-                        StringStruct('ProductVersion', '0.1.0'),
+                        StringStruct("CompanyName", "Radika Oy"),
+                        StringStruct("FileDescription", "dxf2ifc DXF to IFC 4 converter"),
+                        StringStruct("FileVersion", "0.1.0"),
+                        StringStruct("InternalName", "dxf2ifc"),
+                        StringStruct(
+                            "LegalCopyright", "(c) 2026 Lauri Rekola, Radika Oy. MIT licence."
+                        ),
+                        StringStruct("OriginalFilename", "dxf2ifc.exe"),
+                        StringStruct("ProductName", "dxf2ifc"),
+                        StringStruct("ProductVersion", "0.1.0"),
                     ],
                 )
             ]
         ),
-        VarFileInfo([VarStruct('Translation', [1033, 1200])]),
+        VarFileInfo([VarStruct("Translation", [1033, 1200])]),
     ],
 )

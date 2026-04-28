@@ -106,7 +106,7 @@ def _markup_xml(rule: Rule) -> str:
     return (
         '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n'
         "<Markup>\n"
-        f"  <Topic Guid=\"{rule.guid}\" TopicType=\"Rule\" TopicStatus=\"Active\">\n"
+        f'  <Topic Guid="{rule.guid}" TopicType="Rule" TopicStatus="Active">\n'
         f"    <ReferenceLink>{_esc(rule.reference)}</ReferenceLink>\n"
         f"    <Title>{_esc(rule.title)}</Title>\n"
         f"    <CreationDate>{DETERMINISTIC_DATE}</CreationDate>\n"

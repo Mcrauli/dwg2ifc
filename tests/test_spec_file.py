@@ -69,9 +69,7 @@ def test_spec_lists_runtime_hidden_imports() -> None:
         "PySide6.QtSvgWidgets",
     ]
     for module in expected:
-        assert f"'{module}'" in text or f'"{module}"' in text, (
-            f"hiddenimports missing: {module}"
-        )
+        assert f"'{module}'" in text or f'"{module}"' in text, f"hiddenimports missing: {module}"
 
 
 def test_spec_excludes_dev_only_packages() -> None:
@@ -86,9 +84,7 @@ def test_spec_excludes_dev_only_packages() -> None:
         "pip",
     ]
     for module in expected:
-        assert f"'{module}'" in text or f'"{module}"' in text, (
-            f"excludes missing: {module}"
-        )
+        assert f"'{module}'" in text or f'"{module}"' in text, f"excludes missing: {module}"
 
 
 def test_spec_uses_windows_version_info() -> None:
@@ -97,9 +93,7 @@ def test_spec_uses_windows_version_info() -> None:
     assert "build/version_info.py" in text or "build\\version_info.py" in text
 
 
-VERSION_INFO_PATH = (
-    Path(__file__).resolve().parents[1] / "build" / "version_info.py"
-)
+VERSION_INFO_PATH = Path(__file__).resolve().parents[1] / "build" / "version_info.py"
 
 
 def test_version_info_file_carries_company_and_version() -> None:
@@ -123,6 +117,4 @@ def test_spec_icon_is_ico_or_none() -> None:
         return
     match = re.search(r"icon\s*=\s*['\"]([^'\"]+)['\"]", text)
     assert match, "spec missing an icon= directive (or a placeholder None)"
-    assert match.group(1).endswith(".ico"), (
-        f"icon path must end with .ico, got: {match.group(1)}"
-    )
+    assert match.group(1).endswith(".ico"), f"icon path must end with .ico, got: {match.group(1)}"

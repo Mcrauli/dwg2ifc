@@ -22,9 +22,7 @@ def test_validation_report_is_dataclass_with_errors_and_warnings():
     assert report.summary == "ok"
 
 
-def test_validate_ifc_returns_report_for_full_fixture(
-    full_kylmaelement_dxf: Path, tmp_path: Path
-):
+def test_validate_ifc_returns_report_for_full_fixture(full_kylmaelement_dxf: Path, tmp_path: Path):
     """The Plan B full-fixture IFC must validate cleanly under
     ifcopenshell.validate — Plan F's automatic gate baseline."""
     out = tmp_path / "full_kylmaelement.ifc"
@@ -41,9 +39,7 @@ def test_validate_ifc_returns_report_for_full_fixture(
     assert "IFC4" in report.summary or "0 errors" in report.summary
 
 
-def test_validate_ifc_accepts_string_path(
-    full_kylmaelement_dxf: Path, tmp_path: Path
-):
+def test_validate_ifc_accepts_string_path(full_kylmaelement_dxf: Path, tmp_path: Path):
     out = tmp_path / "full_kylmaelement.ifc"
     convert_dxf(
         dxf_path=full_kylmaelement_dxf,
@@ -81,8 +77,7 @@ def test_validate_ifc_warns_when_wall_lacks_talo2000_classification(tmp_path: Pa
     report = validate_ifc(out)
 
     assert any(
-        "missing Talo2000 classification" in w.get("message", "")
-        for w in report.warnings
+        "missing Talo2000 classification" in w.get("message", "") for w in report.warnings
     ), f"expected Talo2000 warning, got: {report.warnings}"
     assert report.errors == [], f"unexpected errors: {report.errors}"
 
@@ -102,9 +97,7 @@ def test_validate_ifc_full_fixture_has_no_talo2000_warnings(
     report = validate_ifc(out)
 
     talo_warnings = [
-        w
-        for w in report.warnings
-        if "missing Talo2000 classification" in w.get("message", "")
+        w for w in report.warnings if "missing Talo2000 classification" in w.get("message", "")
     ]
     assert talo_warnings == [], f"unexpected Talo2000 warnings: {talo_warnings}"
 

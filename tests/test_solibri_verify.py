@@ -53,9 +53,7 @@ def test_run_solibri_invokes_subprocess_with_command(monkeypatch, tmp_path: Path
     monkeypatch.setattr(verify.subprocess, "run", fake_run)
     monkeypatch.setattr(verify.shutil, "which", lambda name: "C:/Solibri/Solibri.exe")
 
-    out = verify.run_solibri(
-        ifc_path=ifc, ruleset_path=bcfzip, report_path=report
-    )
+    out = verify.run_solibri(ifc_path=ifc, ruleset_path=bcfzip, report_path=report)
 
     assert out == report
     assert seen["cmd"][0] == "C:/Solibri/Solibri.exe"
@@ -72,9 +70,7 @@ def test_run_solibri_raises_when_executable_missing(monkeypatch, tmp_path: Path)
     report = tmp_path / "report.xml"
 
     with pytest.raises(FileNotFoundError, match="Solibri.exe"):
-        verify.run_solibri(
-            ifc_path=ifc, ruleset_path=bcfzip, report_path=report
-        )
+        verify.run_solibri(ifc_path=ifc, ruleset_path=bcfzip, report_path=report)
 
 
 def test_run_solibri_raises_on_nonzero_exit(monkeypatch, tmp_path: Path):
@@ -92,9 +88,7 @@ def test_run_solibri_raises_on_nonzero_exit(monkeypatch, tmp_path: Path):
     monkeypatch.setattr(verify.subprocess, "run", fake_run)
 
     with pytest.raises(RuntimeError, match="boom"):
-        verify.run_solibri(
-            ifc_path=ifc, ruleset_path=bcfzip, report_path=report
-        )
+        verify.run_solibri(ifc_path=ifc, ruleset_path=bcfzip, report_path=report)
 
 
 def test_shutil_which_used_at_module_level():

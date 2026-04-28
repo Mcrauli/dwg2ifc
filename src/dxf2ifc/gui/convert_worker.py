@@ -21,9 +21,7 @@ class ConvertWorker(QtCore.QObject):
         profile: Profile,
         validate: bool = False,
     ) -> None:
-        runnable = _ConvertRunnable(
-            self, dxf=dxf, out=out, profile=profile, validate=validate
-        )
+        runnable = _ConvertRunnable(self, dxf=dxf, out=out, profile=profile, validate=validate)
         QtCore.QThreadPool.globalInstance().start(runnable)
 
 

@@ -351,9 +351,7 @@ def test_convert_dxf_returns_systems_dict_grouped_by_system_name(tmp_path: Path)
     doc.saveas(str(dxf))
     out = tmp_path / "two_systems.ifc"
 
-    systems, report = convert_dxf(
-        dxf_path=dxf, output_path=out, profile=load_default_profile()
-    )
+    systems, report = convert_dxf(dxf_path=dxf, output_path=out, profile=load_default_profile())
 
     assert report is None
     assert isinstance(systems, dict)
