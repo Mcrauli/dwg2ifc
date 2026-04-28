@@ -55,6 +55,45 @@ def test_build_project_default_crs_kwarg_is_none():
     assert ifc.by_type("IfcProjectedCRS") == []
 
 
+def test_build_project_with_crs_emits_projected_crs_and_map_conversion():
+    from dxf2ifc.profiles.schema import CRSConfig
+
+    crs = CRSConfig(eastings_mm=25496000.0, northings_mm=6672000.0)
+    ifc = build_ifc_project_skeleton(project_name="With CRS", crs=crs)
+
+    projected = ifc.by_type("IfcProjectedCRS")
+    assert len(projected) == 1
+    pcrs = projected[0]
+    assert pcrs.Name == "EPSG:3067"
+    assert pcrs.Description == "ETRS-TM35FIN"
+    assert pcrs.GeodeticDatum == "ETRS89"
+
+    conversions = ifc.by_type("IfcMapConversion")
+    assert len(conversions) == 1
+    mc = conversions[0]
+    assert mc.Eastings == 25496000.0
+    assert mc.Northings == 6672000.0
+    assert mc.OrthogonalHeight == 0.0
+    assert mc.Scale == 1.0
+    assert mc.XAxisAbscissa == 1.0
+    assert mc.XAxisOrdinate == 0.0
+    # SourceCRS = the model GeometricRepresentationContext, TargetCRS = projected
+    assert mc.TargetCRS == pcrs
+    assert mc.SourceCRS.is_a("IfcGeometricRepresentationContext")
+
+
+def test_build_project_with_crs_validates_clean(tmp_path: Path):
+    from dxf2ifc.core.quality import validate_ifc
+    from dxf2ifc.profiles.schema import CRSConfig
+
+    crs = CRSConfig(eastings_mm=25496000.0, northings_mm=6672000.0, scale=0.999)
+    ifc = build_ifc_project_skeleton(project_name="Validate", crs=crs)
+    out = tmp_path / "with_crs.ifc"
+    write_ifc(ifc, out)
+    report = validate_ifc(out)
+    assert report.errors == []
+
+
 def test_build_project_uses_millimetres():
     ifc = build_ifc_project_skeleton(project_name="MM Test")
     project = ifc.by_type("IfcProject")[0]

@@ -94,7 +94,49 @@ def build_ifc_project_skeleton(
     ifcopenshell.api.run(
         "aggregate.assign_object", ifc, products=[storey], relating_object=building
     )
+
+    if crs is not None:
+        _attach_projected_crs(ifc, crs)
+
     return ifc
+
+
+def _attach_projected_crs(ifc: ifcopenshell.file, crs: CRSConfig) -> None:
+    """Write IfcProjectedCRS + IfcMapConversion linked to the model context.
+
+    The MapConversion's SourceCRS is the IfcGeometricRepresentationContext for
+    the "Model" (created in ``build_ifc_project_skeleton``). Geometry stays in
+    LOCAL coordinates; the MapConversion expresses how to project those local
+    coordinates into the real-world projected CRS.
+    """
+    model_context = next(
+        (
+            ctx
+            for ctx in ifc.by_type("IfcGeometricRepresentationContext", include_subtypes=False)
+            if ctx.ContextType == "Model"
+        ),
+        None,
+    )
+    if model_context is None:  # pragma: no cover - skeleton always has Model context
+        raise RuntimeError("IfcGeometricRepresentationContext 'Model' missing — cannot attach CRS")
+
+    projected = ifc.create_entity(
+        "IfcProjectedCRS",
+        Name=crs.epsg_code,
+        Description=crs.name,
+        GeodeticDatum=crs.geodetic_datum,
+    )
+    ifc.create_entity(
+        "IfcMapConversion",
+        SourceCRS=model_context,
+        TargetCRS=projected,
+        Eastings=crs.eastings_mm,
+        Northings=crs.northings_mm,
+        OrthogonalHeight=crs.orthogonal_height_mm,
+        XAxisAbscissa=crs.x_axis_abscissa,
+        XAxisOrdinate=crs.x_axis_ordinate,
+        Scale=crs.scale,
+    )
 
 
 def write_ifc(ifc: ifcopenshell.file, output_path: str | Path) -> None:
