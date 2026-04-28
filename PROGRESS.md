@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 11 — `.github/workflows/build.yml` Windows-runner + artifact upload (PAT:lla on nyt Workflow-scope, joten työnkulun voi committia).
+**Current task:** Plan E Task 12 — build.yml ubuntu-matrix smoke-build (`scripts/build_exe.sh`).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Lue `tests/test_workflows.py` jos jäänyt aiemmasta yrityksestä (muuten kirjoita uusiksi). Failing-testi tarkistaa: build.yml on olemassa, sisältää `windows-latest`-runnerin matrixissa, asentaa pythonin, ajaa `scripts/build_exe.ps1`, lataa artifactin nimeltä `dxf2ifc-windows`. Sitten kirjoita workflow-tiedosto. Commit + push.
+**Seuraavaksi:** Lisää failing-testi joka varmistaa että build.yml sisältää myös ubuntu-latest job:n (matrix tai erillinen job) joka ajaa `scripts/build_exe.sh`-skriptin. Toteuta lisäämällä `linux`-job tai matrix-runner build.yml:hen. Commit + push.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -164,7 +164,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 
 ### Section 3: Windows build (paikallinen + CI matrix)
 - [x] Task 10: scripts/build_exe.ps1 + scripts/build_exe.sh (`738caa7`)
-- [ ] Task 11: .github/workflows/build.yml Windows-runner + artifact upload
+- [x] Task 11: .github/workflows/build.yml Windows-runner + artifact upload (`e13b683`)
 - [ ] Task 12: build.yml ubuntu-matrix smoke-build
 - [ ] Task 13: build.yml smoke-step (--version → exit 0)
 - [ ] Task 14: docs/packaging.md "CI build"-osio
