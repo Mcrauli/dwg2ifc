@@ -2,11 +2,11 @@
 
 **Current plan:** Plan G (Coordinate System & Georeferenced IFC) — kirjoitettu, Mode A toteutus alkaa.
 
-**Current task:** Plan G Task 12 — convert_dxf orchestrator resolvoi storey anchor-z:stä.
+**Current task:** Plan G Task 13 — validate_local_extent (geometria-validaattori).
 
-**Mode:** A (toteutus, Section 4 jatkuu). Sections 1–3 ✅ + Task 11 ✅ (11/21).
+**Mode:** A (toteutus, Section 4 lopussa). Sections 1–3 ✅ + Tasks 11–12 ✅ (12/21).
 
-**Seuraavaksi:** Plan-Task 12: convert_dxf käyttää profile.storey_z_levels_mm:ää skeletoniin, ja jokaiselle MappedEntity:lle resolvoi storey via `resolve_storey(skeleton.storeys, anchor_z)`. Anchor-z: LineGeometry → min(start.z, end.z), PolygonGeometry → min(p.z), BlockInstance → insertion_point.z. Failing-testi: 2-storey-skeleton, kerros-2-elementit (z=3500) menevät storeys[1]:een.
+**Seuraavaksi:** Plan-Task 13: `validate_local_extent(skeleton, max_extent_mm: float = 5_000_000)` skannaa kaikki IfcShapeRepresentation-vertex-koordinaatit ja heittää RuntimeError jos local-koordinaatti ylittää max_extent (defensiivinen kaksoismuunnos-tarkistus). Failing-testit: clean-pass + simulated-double-transform → RuntimeError.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -523,7 +523,7 @@ Bugfix kierros 3 ajoitus: kun Plan H valmistuu, käy nämä läpi: Bugfix 7 (geo
 
 ### Section 4: Element-add-funktiot kerros-aware + orchestrator
 - [x] Task 11: add_* ottaa storey-kwarg + RelContainedInSpatialStructure storey:hyn (`5bf557f`, lock-in test)
-- [ ] Task 12: convert_dxf orchestrator resolvoi storey anchor-z:stä
+- [x] Task 12: convert_dxf orchestrator resolvoi storey anchor-z:stä (`1a00798`)
 - [ ] Task 13: validate_local_extent skannaa vertex-koordinaatit max_extent_mm:n suhteen
 
 ### Section 5: CLI + GUI georeferenssi-input + validointi
