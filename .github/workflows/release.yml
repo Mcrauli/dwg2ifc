@@ -39,6 +39,34 @@ jobs:
           if ($output -notmatch "dxf2ifc") { throw "missing version banner: $output" }
           Write-Host "Smoke OK: $output"
 
+      - name: Bundle LICENSES.md
+        shell: pwsh
+        run: |
+          $out = "dist/LICENSES.md"
+          $sections = @(
+            "# Third-party licenses bundled with dxf2ifc.exe",
+            "",
+            "## Fonts (Inter, Space Grotesk, JetBrains Mono — SIL Open Font License)",
+            "",
+            (Get-Content -Raw assets/fonts/LICENSES.md),
+            "",
+            "## ifcopenshell — LGPL-3.0",
+            "",
+            "ifcopenshell is bundled at runtime. Source and full LGPL-3.0 text:",
+            "https://github.com/IfcOpenShell/IfcOpenShell",
+            "",
+            "## PySide6 — LGPL-3.0",
+            "",
+            "PySide6 (Qt for Python) is bundled at runtime. Source and full LGPL-3.0 text:",
+            "https://wiki.qt.io/Qt_for_Python",
+            "",
+            "## Python — PSF License v2",
+            "",
+            "Python interpreter (CPython) is bundled at runtime. Full PSF License v2 text:",
+            "https://docs.python.org/3/license.html"
+          )
+          $sections -join "`n" | Set-Content -Encoding UTF8 -Path $out
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -46,4 +74,5 @@ jobs:
           path: |
             dist/dxf2ifc-*.exe
             dist/dxf2ifc-*.exe.sha256
+            dist/LICENSES.md
           if-no-files-found: error

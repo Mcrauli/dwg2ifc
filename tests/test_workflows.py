@@ -120,6 +120,27 @@ def test_release_workflow_runs_build_exe_script():
     assert "scripts/build_exe.ps1" in text or "scripts\\build_exe.ps1" in text
 
 
+def test_release_workflow_collects_licenses_md_into_dist():
+    data = _load_release_workflow()
+    job = next(iter(data["jobs"].values()))
+    text = RELEASE_PATH.read_text(encoding="utf-8")
+    # Must reference LICENSES.md somewhere as a step instruction.
+    assert "LICENSES.md" in text
+    # Upload step must include LICENSES.md in its path manifest.
+    upload_steps = [s for s in job["steps"] if s.get("uses", "").startswith("actions/upload-artifact")]
+    assert upload_steps, "no upload step in release workflow"
+    paths = [step.get("with", {}).get("path", "") for step in upload_steps]
+    joined = "\n".join(paths)
+    assert "LICENSES.md" in joined
+
+
+def test_release_workflow_writes_sha256_sidecar():
+    text = RELEASE_PATH.read_text(encoding="utf-8")
+    # build_exe.ps1 already produces the .sha256 sidecar; the workflow path
+    # must reference it so the artifact contains the checksum.
+    assert ".exe.sha256" in text
+
+
 def test_build_workflow_runs_version_smoke_before_upload():
     data = _load_workflow()
     windows_job = next(
