@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 19 — docs/packaging.md "Release-prosessi" -osio.
+**Current task:** Plan E Task 20 — docs/packaging-smoke.md manuaalinen Windows-checklist.
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Lisää docs/packaging.md:hen "Release-prosessi" -osio joka kuvaa askeleet: (1) bump `_version.py` ja `pyproject.toml`-version, (2) päivitä `CHANGELOG.md`, (3) commit + tag `git tag vX.Y.Z`, (4) push tag → workflow buildaa ja luo draft-releasen, (5) tarkista ja julkaise GitHub-UI:ssa.
+**Seuraavaksi:** Luo `docs/packaging-smoke.md`. Lista askeleet: (1) lataa .exe artifactina draft-releasesta (2) tarkista SHA256 vastaa .sha256-sidecaria (3) tuplaklikkaa → GUI avautuu (Inter+amber-aksentti) (4) konvertoi `tests/fixtures/simple_wall.dxf` → IFC, varmista validi (5) PowerShellissä `dxf2ifc.exe convert input.dxf output.ifc` ajetaan myös. Loppukäyttäjäohje, ei automaattinen testi.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -174,7 +174,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 - [x] Task 16: release.yml checksum + LICENSES.md pakkaus (`3dfdd91`)
 - [x] Task 17: release.yml gh release create --draft step (`47a7021`)
 - [x] Task 18: CHANGELOG.md ensimmäinen versio (v0.1.0) (`d946ac5`)
-- [ ] Task 19: docs/packaging.md "Release-prosessi"-osio
+- [x] Task 19: docs/packaging.md "Release-prosessi"-osio (`849b104`)
 
 ### Section 5: Smoke + checksum + dokumentointi
 - [ ] Task 20: docs/packaging-smoke.md manuaalinen Windows-checklist
