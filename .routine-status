@@ -1,1 +1,1 @@
-🔴 dxf2ifc blokannut: Plan E Task 11 — PAT puuttuu workflow-scope. Lauri: Settings → Developer settings → Fine-grained PAT → Actions (read+write). Eteneminen tähän asti: Plan D Task 24+25 valmis (200 testiä, 89% coverage), Plan E kirjoitettu (5 sectionia 23 taskia), Task 1-10 valmis (Section 1+2 ✅). Tasks 11-17 lukossa kunnes PAT päivitetty.
+🟡 dxf2ifc alkoi: Mode A, Bugfix 1 (add_furniture polygon-tuki). SHA: 8979e0f. Seuraavaksi: failing testi test_add_furniture_accepts_polygon_geometry.
