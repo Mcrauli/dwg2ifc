@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros (3 GUI-bugia testissä havaittu) ennen Plan E Task 11:n jatkoa.
 
-**Current task:** Plan E Task 22 — docs/packaging.md "Troubleshooting" -osio.
+**Current task:** Plan E Task 23 — plan-loppupiste (pytest + coverage + ruff + status päivitys).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Lisää docs/packaging.md:hen "Troubleshooting" -osio jossa: (a) Windows Defender / SmartScreen, (b) ifcopenshell schema -ladata-virhe → `--add-data`-puuttuminen ratkaisu, (c) PySide6-versio-mismatch, (d) `--onefile` vs `--onedir`-trade-offit.
+**Seuraavaksi:** Aja `pytest -q --tb=short` (kaikki passed), `pytest --cov=dxf2ifc --cov-report=term -q` ≥80%, `ruff check . && ruff format --check .`. Päivitä CLAUDE.md status: "Plan E valmis (<SHA>)". Päivitä README.md status-taulu Plan E ✅. Plan F:lle siirrytään PLAN-TRANSITIONissa.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -179,7 +179,7 @@ Lauri testasi GUI:n paikallisesti ja löysi 3 bugia. Korjataan TDD:llä per task
 ### Section 5: Smoke + checksum + dokumentointi
 - [x] Task 20: docs/packaging-smoke.md manuaalinen Windows-checklist (`8a26b77`)
 - [x] Task 21: README "Lataa .exe"-osio + version-badge (`787b72c`)
-- [ ] Task 22: docs/packaging.md "Troubleshooting"-osio
+- [x] Task 22: docs/packaging.md "Troubleshooting"-osio (`2bb9055`)
 - [ ] Task 23: plan-loppupiste — pytest + coverage + ruff + status-päivitys
 
 ## Plan C status (12/12) ✅
