@@ -2,11 +2,11 @@
 
 **Current plan:** Bugfix kierros 3 (3 bugia) — Plan H 22/22 ✅, mutta käyttäjän testissä geometria edelleen rikki (kaikki element-tyypit, ei vain hyllyt). Korjataan ennen Plan G:tä.
 
-**Current task:** Bugfix 11 (GUI Profile editor RAVA-laajennus — domain-valitsin + lvi_code/talotekniikka_code -kentät).
+**Current task:** Bugfix 12 (default-profiilin TATE-only kavennus).
 
 **Mode:** A (implementointi).
 
-**Seuraavaksi:** Avaa `src/dxf2ifc/gui/rule_dialog.py`. Lisää: a) Domain-pudotusvalikko (ARK / TATE) joka piilottaa/näyttää oikeat code-kentät, b) lvi_code-pudotusvalikko (ehdotukset Plan H:n LVI_TUOTEOSA-konstanteista, src/dxf2ifc/profiles/rava/lvi_tuoteosa.json), c) talotekniikka_code-pudotusvalikko (TALOTEKNIIKKA_TUOTEOSA-konstanteista). Validointi: TATE-domainissa täsmälleen 1 RAVA-koodi täytetty. Vie `src/dxf2ifc/gui/layer_table.py` näkyviin "Domain"-sarake + RAVA-koodi-sarake. Testit: `tests/test_gui_rule_dialog.py::test_domain_switch_shows_rava_fields`, `::test_tate_rule_validates_exactly_one_rava_code`. Bugfix 12:n jälkeen Plan G MODE B.
+**Seuraavaksi:** Riskiarvio: kaikki ARK-säännöt poistetaan default-profiilista mutta lukuisat integraatio- ja yksikkötestit (`tests/test_integration.py::test_simple_wall_roundtrip`, `tests/conftest.py::full_kylmaelement_dxf`, `tests/test_geometry_roundtrip.py`, useat test_ifc_writer-testit) odottavat KYL-ULKOSEINA / KYL-VALISEINA / KYL-ALAPOHJA / KYL-OVET-ULKO / KYL-IKKUNA / KYL-LEVY -mappaukset. Strategia: a) jätä `default_kylmalaite.toml` ARK-osio paikalleen mutta luo uusi `default_kylmalaite_tate_only.toml` joka sisältää vain TATE-rules:t; b) lisää `load_default_tate_only_profile()` loaderiin; c) GUI:ssa anna käyttäjän vaihtaa profiilien välillä Profile-valikosta, default = nykyinen ARK+TATE laaja profiili (säilyttää testikäyttäytymisen); d) jos myöhemmin halutaan oletukseksi TATE-only, vaihto tehdään yhdellä rivillä ilman testimassa-rikkomista. Vasta sit Plan G MODE B (Plan G ei vielä kirjoitettu).
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -54,7 +54,7 @@ Lauri testasi 4001_1krs.dxf:n Bugfix kierros 2:n jälkeen (Plan F + Bugfix 4-6 +
 
 - [x] **Bugfix 10** — KYL-* layer-säännöt domain=TATE: hoidettu Plan H Section 4:ssä (default profile RAVA-päivitys), KYL-LEVYHYLLY/KYL-TIKASHYLLY ovat nyt TATE-domain + LVI-TUOTEOSA-koodit.
 
-- [ ] **Bugfix 11** — **GUI Profile editor RAVA-laajennus** (Plan H jätti tämän tekemättä — section reorganisoitu): Profile editor:in Rule-dialogissa ei ole UI-kenttää RAVA-koodeille (lvi_code / talotekniikka_code) eikä domain-valitsinta. Korjaus: a) Rule-dialog domain-valikko (TATE-only nyt että scope kavennettu, ks. Bugfix 12), b) lvi_code- ja talotekniikka_code -pudotusvalikot (yksi täytetään, ehdotukset Plan H:n LVI_TUOTEOSA/TALOTEKNIIKKA_TUOTEOSA-konstanteista), c) Layer-table-näkymä näyttää käytetty koodisto. Tiedostot: `src/dxf2ifc/gui/rule_dialog.py`, `src/dxf2ifc/gui/profile_editor.py`, `src/dxf2ifc/gui/layer_table.py`, vastaavat testit.
+- [x] **Bugfix 11** — **GUI Profile editor RAVA-laajennus** (3 osaa): a) `rule_dialog.py` saa Domain-pudotusvalikon (ARK/TATE), joka näyttää/piilottaa oikeat code-rivit, sekä lvi_code- ja talotekniikka_code -comboboxit jotka latautuvat `load_rava_codes()`-helperistä. b) `layer_table.py`: "Talo2000" → "Domain" + "Code" -sarakeparit, code valitaan domain:n mukaan. c) `profile_editor.py`-rule-table samalla tavalla. Tämä myös puhdistaa esivirhe-failuren `test_layer_table_columns_and_default_profile_rows`-testissä jonka Plan H jätti taakseen kun LT IMU siirrettiin TATE-puolelle. (`d22d564` part-1 + `035cf49` part-2 + `ac3708b` part-3, kaikki 374 testiä passit)
 
 - [ ] **Bugfix 12** — **Default-profiili pelkästään kylmälaitesuunnitteluun** (Lauri 2026-04-28: "kylmähuoneen rakenteet ei kuulu ku niit ei ees mallineta kylmälaite suunnittelussa"): dxf2ifc:n default-profiili kattaa **vain TATE-domain-elementit jotka kylmälaitesuunnittelija oikeasti mallintaa**. Kaikki ARK-elementit (myös KYL-* arkkitehtuuriset = kylmähuone-rakenteet) poistetaan.
 
