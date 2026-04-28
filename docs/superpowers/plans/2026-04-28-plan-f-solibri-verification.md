@@ -26,6 +26,11 @@ Plan A 21/21 + Plan B 50/50 + Plan C 12/12 + Plan D 25/25 + Plan E 23/23 valmis 
 
 ## Section 1: Automaattinen ifcopenshell.validate -gate
 
+- [ ] Task 1: lisää `src/dxf2ifc/core/quality.py` `validate_ifc(path) -> ValidationReport` -wrapper joka kutsuu `ifcopenshell.validate.validate(file, json=True, return_json=True)` ja palauttaa structured-tuloksen (errors-lista + summary). TDD: failing-testi `tests/test_quality.py` joka antaa Plan B:n full-fixture-IFC:n ja odottaa `len(report.errors) == 0`.
+- [ ] Task 2: laajenna `quality.validate_ifc` raportoimaan myös YTV-spesifit tarkistukset: kaikki IfcWall / IfcSlab / IfcDoor / IfcWindow -entiteetit pitää olla luokiteltu `IfcRelAssociatesClassification` Talo2000-koodilla. Failing-testi: profiili joka tuottaa luokittelemattoman seinän → report.warnings sisältää "missing Talo2000 classification".
+- [ ] Task 3: lisää CLI-flag `dxf2ifc convert --validate` joka kutsuu `validate_ifc` muunnoksen jälkeen ja exit-koodi 1 jos errors > 0. Failing-testi: simple_wall.dxf + custom-profile joka generoi virheellisen IFC:n → CLI palauttaa 1 ja stderr sisältää virheen kuvaus.
+- [ ] Task 4: lisää orchestrator-options `convert_dxf(..., validate: bool = False)` joka palauttaa `(IfcFile, ValidationReport | None)`. Päivitä GUI MainWindow näyttämään report.errors PreviewLogPanelissa convert-vaiheen jälkeen jos validate=True. Failing-testi: GUI-mock convert+validate, error-rivi näkyy preview-lokissa.
+
 ## Section 2: Solibri rule-set ja referenssimallit
 
 ## Section 3: solibri-cli runner + raportin parsija
