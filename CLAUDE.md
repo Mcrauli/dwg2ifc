@@ -18,14 +18,36 @@ DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Mu
 - ✅ **Plan D** 25/25 (`2026-04-27-plan-d-pyside6-gui.md`) — PySide6 GUI + profiili-editori, 200 testiä, coverage 89%
 - ✅ **Plan E** 23/23 (`2026-04-27-plan-e-pyinstaller.md`) — PyInstaller-paketointi + Win/Linux build CI + tag-triggered draft release + CHANGELOG + smoke-checklist + README badge + troubleshooting, 246 testiä, coverage 89 %
 - 🟡 **Plan F** 0/16 (`2026-04-28-plan-f-solibri-verification.md`) — Solibri-spec-verifiointi + IFC quality gates: automaattinen ifcopenshell.validate-gate + Solibri rule-set + snapshot-raportit. Plan kirjoitettu, toteutus alkaa Section 1 Task 1:llä
-- ⏳ **Plan G** kirjoittamatta — Coordinate System & Georeferenced IFC. Toteutetaan **Plan F:n jälkeen**. Avain-päätökset:
+- ⏳ **Plan H** kirjoittamatta — **IFC 4.3 -migraatio + RAVA-luokitus**. Toteutetaan **Plan F:n jälkeen, ennen Plan G:tä** (kriittinen RAVA Pro3 -yhteensopivuudelle). Avain-päätökset:
+  - Vaihe A: IFC4 → IFC4X3 (IFC 4.3) -skeeman vaihto, regressio testit
+  - Vaihe B: Domain-pohjainen luokitus (yksi codeset per element, EI multi-classification):
+    - **ARK** (seinät/laatat/ovet/ikkunat/kylmähuone-paneelit) → vain **Talo2000**
+    - **TATE/kylmälaitteet** → vain **RAVA-koodit** (LVI-TUOTEOSA tai TALOTEKNIIKKA-TUOTEOSA), EI Talo2000:ta
+  - Konkreettiset koodit (vahvistetut viralliset URL:t koodistot.suomi.fi):
+    - Höyrystin: `T-LVI-01-01-023`
+    - Lauhdutin: `T-LVI-01-01-018`
+    - Kompressori: `T-LVI-01-01-017`
+    - Jäähdytyskompressorikoneikko: `T-LVI-01-01-005`
+    - Kompressorilauhdutin: `T-LVI-01-01-019`
+    - Välijäähdytin: `T-LVI-01-01-024`
+    - Vedenjäähdytyskone: `T-LVI-01-01-003`
+    - Kylmävesiasema: `T-LVI-01-01-004`
+    - Kylmäainevaraajasäiliö: `T-LVI-03-07-012`
+    - Viemäriputki (defrost): `T-LVI-04-01-001`
+    - Kaapelihylly: `T-TATE-01-01-001`
+    - Asennuskanavat: `T-TATE-01-02`
+  - Profile schema: Rule:lle uusi `domain: Literal["ARK", "TATE"]` -kenttä + `talo2000_code` / `lvi_code` / `talotekniikka_code` (yksi täytetään domainin mukaan)
+  - Default-profiilin nimi: `default_kylmalaite_talo2000.toml` → `default_kylmalaite.toml`
+  - Kylmäaineputket (LT/MT IMU/NESTE) käyttävät yleistä `T-LVI-02` -kategoriaa + erottelu pset:eillä — erikoistuneita koodeja ei ole virallisessa koodistossa
+  - Koodit ladataan virallisesta JSON-API:sta: `https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/<scheme>_Versio_1_0/codes` (4 codeset: LVI-TUOTEOSA, LVI-JARJESTELMA, TALOTEKNIIKKA-TUOTEOSA, TALOTEKNIIKKA-JARJESTELMA)
+- ⏳ **Plan G** kirjoittamatta — Coordinate System & Georeferenced IFC. Toteutetaan **Plan H:n jälkeen**. Avain-päätökset:
   - Default CRS: ETRS-TM35FIN, IfcProjectedCRS-kentät: `Name="EPSG:3067"`, `Description="ETRS-TM35FIN"`, `GeodeticDatum="ETRS89"` (kaikki kolme kirjoitetaan parhaan interop:in takaamiseksi)
   - IfcMapConversion linkittää LOCAL geometrian WORLD-koordinaateihin (Eastings/Northings profile-tiedostosta)
   - Geometria kirjoitetaan LOCAL-koordinaateissa (NEVER world coords + MapConversion samaan aikaan = double-transform-riski)
   - Full placement hierarchy: Site → Building → Storey → Element, IfcLocalPlacement-ketju
   - `storey_z_levels` pakollinen profiilissa (lista mm-arvoja, esim. `[0, 3500, 7000]`); virhe jos puuttuu
   - Validointi: max_coord-tarkistus, MapConversion-pakollinen-jos-CRS-määritelty, ei kaksoismuunnoksia
-  - TrueNorth-rotaatio skipataan MVP:stä, mahdollinen Plan H:ssa myöhemmin
+  - TrueNorth-rotaatio skipataan MVP:stä, mahdollinen Plan I:ssä myöhemmin
 - 🔁 Routine `trig_014mxffDUvDZkafKftutpgwo` 3× päivässä (08/14/20 Helsinki)
 
 ## Päätetyt valinnat
