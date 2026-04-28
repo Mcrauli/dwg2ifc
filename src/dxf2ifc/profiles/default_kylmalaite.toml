@@ -112,16 +112,16 @@ domain = "ARK"
 talo2000_code = "1242"
 talo2000_name = "Ikkunat"
 
-# Section 6: Kylmäputket (21xx, IfcPipeSegment REFRIGERATION)
-# Talo2000 21xx alakoodit ovat placeholder kunnes RT-tarkennus saatavilla.
-# pset_overrides.Pset_PipeSegmentOccurrence.NominalDiameter = DN (mm) — voi
-# ylikirjoittaa per-LISP-ohjeesta.
+# Section 6: Kylmäainejärjestelmän putket — RAVA LVI-TUOTEOSA (TATE-domain).
+# Virallisessa LVI-TUOTEOSA-koodistossa ei ole erikoistuneita koodeja LT/MT-
+# imu/nesteputkille, joten käytämme yleistä T-LVI-02 -kategoriaa ja erotamme
+# järjestelmät pset_overrides.NominalDiameter:n + system_name:n kautta.
 [[rules]]
 layer_pattern = "LT IMU"
 ifc_type = "IfcPipeSegment"
 predefined_type = "REFRIGERATION"
-talo2000_code = "2151"
-talo2000_name = "Putkiosat — kylmäimu"
+domain = "TATE"
+lvi_code = "T-LVI-02"
 system_name = "Refrigeration LT"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 22.0 } }
 
@@ -129,8 +129,8 @@ pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 22.0 } }
 layer_pattern = "MT IMU"
 ifc_type = "IfcPipeSegment"
 predefined_type = "REFRIGERATION"
-talo2000_code = "2152"
-talo2000_name = "Putkiosat — keski-imu"
+domain = "TATE"
+lvi_code = "T-LVI-02"
 system_name = "Refrigeration MT"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 18.0 } }
 
@@ -138,20 +138,20 @@ pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 18.0 } }
 layer_pattern = "MT NESTE"
 ifc_type = "IfcPipeSegment"
 predefined_type = "REFRIGERATION"
-talo2000_code = "2153"
-talo2000_name = "Putkiosat — nesteputki"
+domain = "TATE"
+lvi_code = "T-LVI-02"
 system_name = "Refrigeration MT"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 12.0 } }
 
-# Section 7: Viemäriputket (21xx DRAINPIPE)
+# Section 7: Viemäriputket (defrost) — RAVA LVI-TUOTEOSA T-LVI-04-01-001.
 # DRAINPIPE ei kuulu IFC4:n IfcPipeSegmentTypeEnumiin, joten add_pipe_segment
 # karttoittaa sen USERDEFINED + ObjectType="DRAINPIPE":ksi.
 [[rules]]
 layer_pattern = "KYL-VIEMARI*"
 ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
-talo2000_code = "2160"
-talo2000_name = "Putkiosat — viemäri"
+domain = "TATE"
+lvi_code = "T-LVI-04-01-001"
 system_name = "Drainage"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 110.0 } }
 
@@ -185,13 +185,13 @@ domain = "ARK"
 talo2000_code = "1331"
 talo2000_name = "Vakiokiintokalusteet"
 
-# Section 9: Kaapelihyllyt (23xx)
+# Section 9: Kaapelihyllyt — RAVA TALOTEKNIIKKA-TUOTEOSA T-TATE-01-01-001.
 [[rules]]
 layer_pattern = "KAAPELIHYLLY*"
 ifc_type = "IfcCableCarrierSegment"
 predefined_type = "CABLETRUNKINGSEGMENT"
-talo2000_code = "2380"
-talo2000_name = "Sähköosat — kaapelihyllyt"
+domain = "TATE"
+talotekniikka_code = "T-TATE-01-01-001"
 system_name = "Cable carriers"
 
 # Section 10: Kylmähuone-elementit (1352, IfcBuildingElementProxy)

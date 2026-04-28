@@ -166,7 +166,7 @@ def test_ikkuna_roundtrip_produces_ifcwindow_with_talo2000_1242(tmp_path: Path):
     assert errors == [], f"IFC validation errors: {errors}"
 
 
-def test_lt_imu_roundtrip_produces_ifcpipesegment_with_talo2000_2151(tmp_path: Path):
+def test_lt_imu_roundtrip_produces_ifcpipesegment(tmp_path: Path):
     dxf = tmp_path / "lt_imu.dxf"
     _write_single_line_dxf(dxf, layer="LT IMU")
     out = tmp_path / "lt_imu.ifc"
@@ -185,10 +185,10 @@ def test_lt_imu_roundtrip_produces_ifcpipesegment_with_talo2000_2151(tmp_path: P
     types = ifc.by_type("IfcPipeSegmentType")
     assert any(t.ElementType == "REFRIGERATION" for t in types)
 
+    # Plan H Task 14: refrigerant pipes are TATE-domain → no Talo2000
+    # classification. RAVA-LVI classification arrives in Plan H Tasks 15-17.
     refs = ifc.by_type("IfcClassificationReference")
-    talo = [r for r in refs if r.Identification == "2151"]
-    assert len(talo) == 1
-    assert talo[0].ReferencedSource.Name == "Talo2000"
+    assert all(r.Identification != "2151" for r in refs)
 
     logger = ifcopenshell.validate.json_logger()
     ifcopenshell.validate.validate(ifc, logger=logger)
@@ -214,10 +214,9 @@ def test_kyl_viemari_lattia_roundtrip_produces_drainpipe(tmp_path: Path):
     drain_types = [t for t in ifc.by_type("IfcPipeSegmentType") if t.ElementType == "DRAINPIPE"]
     assert len(drain_types) == 1
 
+    # Plan H Task 14: drainpipe is TATE-domain → no Talo2000.
     refs = ifc.by_type("IfcClassificationReference")
-    talo = [r for r in refs if r.Identification == "2160"]
-    assert len(talo) == 1
-    assert talo[0].ReferencedSource.Name == "Talo2000"
+    assert all(r.Identification != "2160" for r in refs)
 
     logger = ifcopenshell.validate.json_logger()
     ifcopenshell.validate.validate(ifc, logger=logger)
@@ -270,10 +269,9 @@ def test_kaapelihylly_roundtrip_produces_cable_carrier_segment(tmp_path: Path):
     types = ifc.by_type("IfcCableCarrierSegmentType")
     assert any(t.PredefinedType == "CABLETRUNKINGSEGMENT" for t in types)
 
+    # Plan H Task 14: cable carrier is TATE-domain → no Talo2000.
     refs = ifc.by_type("IfcClassificationReference")
-    talo = [r for r in refs if r.Identification == "2380"]
-    assert len(talo) == 1
-    assert talo[0].ReferencedSource.Name == "Talo2000"
+    assert all(r.Identification != "2380" for r in refs)
 
     logger = ifcopenshell.validate.json_logger()
     ifcopenshell.validate.validate(ifc, logger=logger)
@@ -323,10 +321,9 @@ def test_hoyrystin_roundtrip_produces_ifcevaporator_with_talo2000_2510(tmp_path:
     assert len(evaps) == 1
     assert evaps[0].Name == "KYL-HOYRYSTIN-CR-30"
 
+    # Plan H Task 13: cooling equipment is TATE-domain → no Talo2000.
     refs = ifc.by_type("IfcClassificationReference")
-    talo = [r for r in refs if r.Identification == "2510"]
-    assert len(talo) == 1
-    assert talo[0].ReferencedSource.Name == "Talo2000"
+    assert all(r.Identification != "2510" for r in refs)
 
     logger = ifcopenshell.validate.json_logger()
     ifcopenshell.validate.validate(ifc, logger=logger)

@@ -124,14 +124,18 @@ def test_load_default_profile_has_pipe_segment_rules():
     lt = by_layer["LT IMU"]
     assert lt.ifc_type == "IfcPipeSegment"
     assert lt.predefined_type == "REFRIGERATION"
-    assert lt.talo2000_code == "2151"
+    assert lt.domain == "TATE"
+    assert lt.lvi_code == "T-LVI-02"
+    assert lt.talo2000_code is None
     assert lt.system_name == "Refrigeration LT"
     assert lt.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 22.0
     mt_imu = by_layer["MT IMU"]
-    assert mt_imu.talo2000_code == "2152"
+    assert mt_imu.domain == "TATE"
+    assert mt_imu.lvi_code == "T-LVI-02"
     assert mt_imu.system_name == "Refrigeration MT"
     mt_neste = by_layer["MT NESTE"]
-    assert mt_neste.talo2000_code == "2153"
+    assert mt_neste.domain == "TATE"
+    assert mt_neste.lvi_code == "T-LVI-02"
     assert mt_neste.system_name == "Refrigeration MT"
     assert mt_neste.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 12.0
 
@@ -142,7 +146,9 @@ def test_load_default_profile_has_drainpipe_rule():
     drain = by_layer["KYL-VIEMARI*"]
     assert drain.ifc_type == "IfcPipeSegment"
     assert drain.predefined_type == "DRAINPIPE"
-    assert drain.talo2000_code == "2160"
+    assert drain.domain == "TATE"
+    assert drain.lvi_code == "T-LVI-04-01-001"
+    assert drain.talo2000_code is None
     assert drain.system_name == "Drainage"
     assert drain.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 110.0
 
@@ -169,7 +175,9 @@ def test_load_default_profile_has_cable_carrier_rule():
     cable = by_layer["KAAPELIHYLLY*"]
     assert cable.ifc_type == "IfcCableCarrierSegment"
     assert cable.predefined_type == "CABLETRUNKINGSEGMENT"
-    assert cable.talo2000_code == "2380"
+    assert cable.domain == "TATE"
+    assert cable.talotekniikka_code == "T-TATE-01-01-001"
+    assert cable.talo2000_code is None
     assert cable.system_name == "Cable carriers"
 
 

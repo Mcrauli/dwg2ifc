@@ -14,14 +14,14 @@ EXPECTED_TALO2000_CODES = {
     "1221",  # KYL-ALAPOHJA → IfcSlab (FLOOR)
     "1243",  # KYL-OVET-ULKO → IfcDoor
     "1242",  # KYL-IKKUNA → IfcWindow
-    "2151",  # LT IMU → IfcPipeSegment (refrigeration)
-    "2160",  # KYL-VIEMARI → IfcPipeSegment (drainpipe)
     "1331",  # KYL-LEVYHYLLY → IfcFurniture
-    "2380",  # KAAPELIHYLLY → IfcCableCarrierSegment
     "1352",  # KYL-LEVY → IfcBuildingElementProxy
-    # KYL-HOYRYSTIN/LAUHDUTIN/KOMPRESSORI moved to TATE domain (RAVA LVI-TUOTEOSA)
-    # in Plan H Task 13. Their classification appears under IfcClassification
-    # "RAVA-LVI" rather than "Talo2000" — covered by Plan H integration tests.
+    # Refrigerant pipes (LT/MT IMU, MT NESTE), drainpipe (KYL-VIEMARI),
+    # cable carrier (KAAPELIHYLLY) and cooling equipment (HOYRYSTIN/LAUHDUTIN/
+    # KOMPRESSORI) moved to TATE domain (RAVA classification) in Plan H
+    # Tasks 13-14. Their classification will appear under IfcClassification
+    # "RAVA-LVI" / "RAVA-TATE" once the domain-aware classifier ships in
+    # Plan H Tasks 15-17.
 }
 
 
