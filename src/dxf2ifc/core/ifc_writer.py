@@ -1059,6 +1059,7 @@ def convert_dxf(
     profile: Profile,
     project_name: str | None = None,
     validate: bool = False,
+    schema: str = "IFC4",
 ) -> tuple[dict[str, list], ValidationReport | None]:
     """Orchestrate DXF -> IFC conversion end-to-end.
 
@@ -1066,12 +1067,13 @@ def convert_dxf(
     ``Rule.system_name`` to the IFC products that were grouped under that
     system, and ``report`` is a :class:`ValidationReport` produced by
     :func:`dxf2ifc.core.quality.validate_ifc` when ``validate=True`` (or
-    ``None`` otherwise).
+    ``None`` otherwise). ``schema`` selects between ``"IFC4"`` (default)
+    and ``"IFC4X3"`` (Plan H).
     """
     name = project_name or Path(dxf_path).stem
     entities = read_dxf(dxf_path)
     mapped = apply_profile(entities, profile)
-    ifc = build_ifc_project_skeleton(project_name=name)
+    ifc = build_ifc_project_skeleton(project_name=name, schema=schema)
     storey = ifc.by_type("IfcBuildingStorey")[0]
     systems: dict[str, list] = {}
 
