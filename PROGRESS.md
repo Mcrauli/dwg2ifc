@@ -2,11 +2,11 @@
 
 **Current plan:** Plan H (kirjoittamatta) — IFC 4.3 -migraatio + RAVA-luokitus.
 
-**Current task:** Plan H Task 5 — `tools/rava/sync_codes.py` 4 codeset → JSON-cache.
+**Current task:** Plan H Task 8 — Rule.domain Literal["ARK", "TATE"] + lvi_code/talotekniikka_code + validointi.
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 5:n osio plan-tiedostosta. Lisää tools/rava/__init__.py + tools/rava/sync_codes.py joka lataa neljän codesetin (LVI-TUOTEOSA, LVI-JARJESTELMA, TALOTEKNIIKKA-TUOTEOSA, TALOTEKNIIKKA-JARJESTELMA) JSON:n viralliselta API:lta ja kirjoittaa src/dxf2ifc/profiles/rava/-kansioon. TDD: monkeypatchattu requests.get → 4 JSON kirjoitettu.
+**Seuraavaksi:** Lue Task 8:n osio plan-tiedostosta. Laajenna `Rule`-pydantic-malli kentillä `domain: Literal["ARK", "TATE"]` (pakollinen) ja `lvi_code: str | None`, `talotekniikka_code: str | None`. Lisää model_validator joka tarkistaa: ARK→talo2000_code pakollinen, lvi/talotekniikka tyhjät; TATE→tasan yksi lvi_code TAI talotekniikka_code, talo2000_code tyhjä.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -178,9 +178,9 @@ Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vai
 - [x] Task 4: validate_ifc.summary näyttää IFC4X3:n (`83d6ddc`)
 
 ### Section 2: RAVA-koodien lataaminen
-- [ ] Task 5: tools/rava/sync_codes.py 4 codeset → JSON-cache
-- [ ] Task 6: 4 RAVA-codeset-JSON committoitu src/dxf2ifc/profiles/rava/:hen
-- [ ] Task 7: dxf2ifc.profiles.rava.loader.load_rava_codes()
+- [x] Task 5: tools/rava/sync_codes.py 4 codeset → JSON-cache (`326633e`)
+- [x] Task 6: 4 RAVA-codeset-JSON committoitu src/dxf2ifc/profiles/rava/:hen (`31ecdb8`)
+- [x] Task 7: dxf2ifc.profiles.rava.loader.load_rava_codes() (`fd9e8e5`)
 
 ### Section 3: Profile-skeeman domain-laajennus
 - [ ] Task 8: Rule.domain Literal["ARK", "TATE"] + lvi_code/talotekniikka_code + validointi
@@ -442,7 +442,10 @@ Lauri testasi 4001_1krs.dxf:n GUI:lla ja näki 3 lisäongelmaa: 14 hyllystä vai
 - Plan H Task 2: `convert_dxf` sai `schema`-kwargin joka välittyy skeletoniin. Full-fixture-pipeline tuottaa IFC4X3:n joka validoituu cleanisti + jokainen 11 IFC-luokkaa syntyy. 3 uutta testiä, koko 319 passed (`069f08e`).
 - Plan H Task 3: CLI `dxf2ifc convert --schema=ifc4x3`-flag (choices ifc4/ifc4x3, default ifc4); välittyy convert_dxf:lle .upper()-muodossa. 2 uutta testiä (`c594e9e`).
 - Plan H Task 4: `validate_ifc.summary` jo dynaaminen `ifc.schema`-kentälle; 2 regression-testiä lukitsi IFC4X3:n + IFC4:n näyttäminen summaryssä (`83d6ddc`). ✅ Section 1 (Tasks 1–4) valmis.
+- Plan H Task 5: `tools/rava/sync_codes.py` 4-codeset-sync (urllib stdlib, mock-friendly fetch_json) + cli_main + `python -m tools.rava.sync_codes`. 4 uutta testiä (`326633e`).
+- Plan H Task 6: stub JSON:t neljälle RAVA-codesetille `src/dxf2ifc/profiles/rava/`-kansiossa (LVI-TUOTEOSA: 11 verifioitua koodia, TALOTEKNIIKKA-TUOTEOSA: 2 koodia, kaksi placeholderia). 3 uutta testiä (`31ecdb8`).
+- Plan H Task 7: `dxf2ifc.profiles.rava.loader.load_rava_codes() -> dict[str, RAVACode]` kokoaa kaikki 4 JSON:ää codeValue-keyksiin; RAVACode-dataclass (code/name/codeset). 4 uutta testiä (`fd9e8e5`). ✅ Section 2 (Tasks 5–7) valmis.
 
-**Kesken:** Plan H Task 5 — RAVA codeset sync.
+**Kesken:** Plan H Task 8 — Rule.domain laajennus.
 
 **Blokkerit:** ei.
