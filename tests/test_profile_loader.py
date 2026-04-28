@@ -276,6 +276,57 @@ def test_dump_profile_round_trips_default(tmp_path: Path):
         assert re_rule.system_name == original_rule.system_name
 
 
+def test_load_profile_roundtrips_domain_and_rava_codes(tmp_path: Path):
+    toml_content = """
+[profile]
+name = "Domain"
+ifc_schema = "IFC4"
+
+[[rules]]
+layer_pattern = "AR1241_US*"
+ifc_type = "IfcWall"
+domain = "ARK"
+talo2000_code = "1241"
+talo2000_name = "Ulkoseinät"
+
+[[rules]]
+layer_pattern = "KYL-HOYRYSTIN*"
+entity_kind = "INSERT"
+block_name = "HOYRYSTIN"
+ifc_type = "IfcEvaporator"
+domain = "TATE"
+lvi_code = "T-LVI-01-01-023"
+
+[[rules]]
+layer_pattern = "KAAPELIHYLLY*"
+ifc_type = "IfcCableCarrierSegment"
+domain = "TATE"
+talotekniikka_code = "T-TATE-01-01-001"
+"""
+    profile_file = tmp_path / "domain.toml"
+    profile_file.write_text(toml_content, encoding="utf-8")
+    profile = load_profile(profile_file)
+    ark, hoyr, kaapeli = profile.rules
+    assert ark.domain == "ARK"
+    assert ark.talo2000_code == "1241"
+    assert hoyr.domain == "TATE"
+    assert hoyr.lvi_code == "T-LVI-01-01-023"
+    assert hoyr.talo2000_code is None
+    assert kaapeli.domain == "TATE"
+    assert kaapeli.talotekniikka_code == "T-TATE-01-01-001"
+
+    out = tmp_path / "roundtrip.toml"
+    dump_profile(profile, out)
+    reloaded = load_profile(out)
+    by_pattern = {r.layer_pattern: r for r in reloaded.rules}
+    assert by_pattern["AR1241_US*"].domain == "ARK"
+    assert by_pattern["AR1241_US*"].talo2000_code == "1241"
+    assert by_pattern["KYL-HOYRYSTIN*"].domain == "TATE"
+    assert by_pattern["KYL-HOYRYSTIN*"].lvi_code == "T-LVI-01-01-023"
+    assert by_pattern["KYL-HOYRYSTIN*"].talo2000_code is None
+    assert by_pattern["KAAPELIHYLLY*"].talotekniikka_code == "T-TATE-01-01-001"
+
+
 def test_dump_profile_writes_valid_utf8_toml(tmp_path: Path):
     profile = load_default_profile()
     out = tmp_path / "roundtrip.toml"
