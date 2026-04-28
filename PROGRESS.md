@@ -2,11 +2,11 @@
 
 **Current plan:** Plan F (kirjoittamatta) — Spec verifiointi Solibrissa.
 
-**Current task:** Plan F Task 7 — `docs/solibri-rules.md` rule-set-sääntöjen suomenkielinen kuvaus.
+**Current task:** Plan F Task 8 — `tools/solibri/verify.py` Solibri.exe-CLI-wrapper (subprocess).
 
 **Mode:** A.
 
-**Seuraavaksi:** Lue Task 7:n osio plan-tiedostosta. Kirjoita docs/solibri-rules.md jossa jokainen tools/solibri/dxf2ifc.bcfzip:n 5 sääntöä (units, classification, IfcSystem grouping, kylmähuonepaneeli, kylmälaite-MEP) on dokumentoitu suomeksi. Failing-testi: `docs/solibri-rules.md` exist + sisältää kaikkien 5 säännön otsikot.
+**Seuraavaksi:** Lue Task 8:n osio plan-tiedostosta. Wrappaa Solibri.exe subprocess-puhelu joka ottaa --ifc + --ruleset + --report-out -argumentit ja palauttaa report-polun. TDD: failing-testi joka monkeypatch:aa subprocess.run:n ja varmistaa puhelun argumentit. Solibri.exe ei ole sandboxissa joten testit mokataan.
 
 ## Bugfix kierros (löydetty GUI-testissä 2026-04-28, ennen Plan E jatkoa)
 
@@ -181,7 +181,7 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 ### Section 2: Solibri rule-set ja referenssimallit
 - [x] Task 5: tools/solibri/dxf2ifc.bcfzip BCF 2.1 rule-set (Talo2000 + YTV) (`9ff1347`)
 - [x] Task 6: tests/fixtures/solibri_reference_full.ifc baseline-IFC (`8d2a798`)
-- [ ] Task 7: docs/solibri-rules.md sääntöjen suomenkielinen kuvaus
+- [x] Task 7: docs/solibri-rules.md sääntöjen suomenkielinen kuvaus (`6042595`)
 
 ### Section 3: solibri-cli runner + raportin parsija
 - [ ] Task 8: tools/solibri/verify.py Solibri.exe-CLI-wrapper (subprocess)
@@ -389,7 +389,8 @@ Bugfix kierros 2 ajoitus: kun Plan F valmistuu, ennen Plan H MODE B:tä. Päivit
 - Plan F Task 4: `convert_dxf(..., validate: bool = False)` palauttaa nyt `tuple[dict[str, list], ValidationReport | None]`; ConvertWorker.run sai validate-kwarg + uuden `report_ready(object)`-signaalin; MainWindow kytki signaalin uuteen `_on_report_ready`-slottiin joka logaa summary/warnings/errors PreviewLogPanelissa, ja kutsuu workerin validate=True (GUI ottaa YTV gate käyttöön defaultisti). Päivitti 1 vanhan integraatio-testin (systems-dict-unpack) + 6 uutta testiä. Koko 260 testiä passed (`c5fa6f0`).
 - Plan F Task 5: `tools/solibri/build_bcfzip.py` deterministinen BCF 2.1 -arkistogeneraattori + `tools/solibri/dxf2ifc.bcfzip` (5 Topic-rule:ia: units, classification coverage, IfcSystem grouping, cold-room paneelit, kylmälaitteiden MEP-entiteetit). 3 uutta testiä (existence + version=2.1 + required-rule-titles) (`9ff1347`).
 - Plan F Task 6: `tools/solibri/build_reference_ifc.py` luo `tests/fixtures/solibri_reference_full.ifc`-baselinen ajamalla saman DXF-patternin kuin conftest full_kylmaelement_dxf läpi convert_dxf:n default-profile:lla. 4 uutta testiä (existence + IFC4 + 11 Talo2000-koodia + 9 IFC-luokkaa) (`8d2a798`).
+- Plan F Task 7: `docs/solibri-rules.md` dokumentoi kaikki 5 BCF-sääntöä suomeksi (Mitä validoi / Miksi / Viite / Solibri-säännön tyyppi / dxf2ifc:n vastaava automaattinen tarkistus). 2 uutta testiä (existence + heading-coverage) (`6042595`). ✅ Section 2 (Tasks 5–7) valmis.
 
-**Kesken:** Plan F Task 7 — docs/solibri-rules.md.
+**Kesken:** Plan F Task 8 — Solibri.exe CLI-wrapper.
 
 **Blokkerit:** ei.
