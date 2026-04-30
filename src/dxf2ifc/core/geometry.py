@@ -9,7 +9,13 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from dxf2ifc.core.types import BlockInstance, LineGeometry, Point3D, PolygonGeometry
+from dxf2ifc.core.types import (
+    BlockInstance,
+    LineGeometry,
+    MeshGeometry,
+    Point3D,
+    PolygonGeometry,
+)
 
 
 @dataclass(frozen=True)
@@ -223,3 +229,103 @@ def line_to_pipe_segment(line: LineGeometry, *, diameter_mm: float) -> PipeSegme
         length_mm=length,
         diameter_mm=diameter_mm,
     )
+
+
+@dataclass(frozen=True)
+class GeometryExtents:
+    """World-space bounding-box derivatives consumed by Finnish PSet writers.
+
+    All values are in millimetres. ``top_z`` / ``bottom_z`` / ``install_z``
+    feed the ``FI_Asennus`` elevation properties; ``korkeus`` / ``leveys``
+    / ``syvyys`` feed ``FI_Geometria`` dimension properties (``None``
+    means "unknown — skip the property line").
+    """
+
+    top_z: float
+    bottom_z: float
+    install_z: float
+    korkeus: float | None = None
+    leveys: float | None = None
+    syvyys: float | None = None
+
+
+def extents_from_geometry(
+    geometry,
+    *,
+    height_mm: float | None = None,
+    thickness_mm: float | None = None,
+    width_mm: float | None = None,
+    depth_mm: float | None = None,
+) -> GeometryExtents:
+    """Compute world-space extents for any of the supported geometry kinds.
+
+    The caller passes the IFC builder's chosen extrusion dimensions
+    (height, thickness, width, depth) so the result reflects the
+    placed product, not just the raw 2D source. For mesh geometry the
+    bbox is read directly from the vertex pool; profile defaults are
+    used as fallbacks for the convention "the layer rule says this
+    layer's products are 2.7 m tall" etc.
+    """
+    if isinstance(geometry, LineGeometry):
+        bottom = min(geometry.start.z, geometry.end.z)
+        top = bottom + (height_mm or 0.0)
+        length = math.hypot(
+            geometry.end.x - geometry.start.x, geometry.end.y - geometry.start.y
+        )
+        return GeometryExtents(
+            top_z=top,
+            bottom_z=bottom,
+            install_z=bottom,
+            korkeus=height_mm,
+            leveys=thickness_mm if thickness_mm is not None else width_mm,
+            syvyys=length if length > 0 else None,
+        )
+
+    if isinstance(geometry, PolygonGeometry):
+        zs = [v.z for v in geometry.vertices]
+        xs = [v.x for v in geometry.vertices]
+        ys = [v.y for v in geometry.vertices]
+        if not zs:
+            return GeometryExtents(top_z=0.0, bottom_z=0.0, install_z=0.0)
+        # Slabs are placed at the polygon's elevation as the TOP face,
+        # extruded downward by thickness_mm.
+        top = max(zs)
+        bottom = top - (thickness_mm or 0.0)
+        return GeometryExtents(
+            top_z=top,
+            bottom_z=bottom,
+            install_z=top,
+            korkeus=thickness_mm,
+            leveys=(max(xs) - min(xs)) if xs else None,
+            syvyys=(max(ys) - min(ys)) if ys else None,
+        )
+
+    if isinstance(geometry, BlockInstance):
+        bottom = geometry.insertion_point.z
+        top = bottom + (height_mm or 0.0)
+        return GeometryExtents(
+            top_z=top,
+            bottom_z=bottom,
+            install_z=bottom,
+            korkeus=height_mm,
+            leveys=(width_mm * geometry.scale_x) if width_mm is not None else None,
+            syvyys=(depth_mm * geometry.scale_y) if depth_mm is not None else None,
+        )
+
+    if isinstance(geometry, MeshGeometry):
+        if not geometry.vertices:
+            return GeometryExtents(top_z=0.0, bottom_z=0.0, install_z=0.0)
+        xs = [v.x for v in geometry.vertices]
+        ys = [v.y for v in geometry.vertices]
+        zs = [v.z for v in geometry.vertices]
+        return GeometryExtents(
+            top_z=max(zs),
+            bottom_z=min(zs),
+            install_z=min(zs),
+            korkeus=max(zs) - min(zs),
+            leveys=max(xs) - min(xs),
+            syvyys=max(ys) - min(ys),
+        )
+
+    # Unknown geometry — skip elevation/dimensions, never crash.
+    return GeometryExtents(top_z=0.0, bottom_z=0.0, install_z=0.0)

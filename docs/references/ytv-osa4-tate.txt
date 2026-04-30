@@ -1,0 +1,2301 @@
+YTV
+versio 1.0
+             Yleiset tietomallivaatimukset
+             2012
+
+
+
+
+                               Osa 4.
+                 Talotekninen suunnittelu
+Alkusanat
+
+Julkaisusarja ”Yleiset Tietomallivaatimukset 2012” on laajapohjaisen kehittämishank-
+keen, COBIM, tulos. Tarve vaatimuksille juontaa rakennusalalla nopeasti kasvavasta tie-
+tomallintamisen käytöstä. Rakennushankkeen kaikissa vaiheissa osapuolilla on tarve
+määritellä entistä täsmällisemmin mitä ja miten mallinnetaan. ”Yleiset Tietomallivaati-
+musten 2012” lähtökohtana ovat olleet tilaaja-organisaatioiden aikaisemmat ohjeet ja
+niistä saadut käyttökokemukset sekä ohjeitten kirjoittajien seikkaperäinen kokemus mal-
+lipohjaisesta toiminnasta.
+
+
+Hankkeen osapuolet: Rahoittajat: Aitta Oy, Arkkitehtitoimisto Larkas & Laine Oy,
+buildingSMART Finland, Espoon kaupunki Tekninen palvelukeskus, Future CAD Oy,
+Helsingin kaupunki Asuntotuotantotoimisto, Helsingin kaupunki Tilakeskus, Helsingin
+yliopisto, Helsingin Yliopistokiinteistöt Oy, HUS-Kiinteistöt Oy, HUS-Tilakeskus, ISS
+Palvelut Oy, Kuopion kaupunki Tilakeskus, Lemminkäinen Talo Oy, M.A.D. Oy, NCC
+Rakennus Oy, Sebicon Oy, Senaatti-kiinteistöt, Skanska Oy, SRV Rakennus Oy,
+SWECO PM OY, Tampereen kaupunki, Vantaan kaupunki Tilakeskus, ympäristöminis-
+teriö. Kirjoittajat: Finnmap Consulting Oy, Gravicon Oy, Insinööritoimisto Olof Gran-
+lund Oy, Lemminkäinen Talo Oy, NCC Rakennus Oy, Pöyry CM Oy, Skanska
+Oyj/VTT, Solibri Oy, SRV Rakennus Oy, Tietoa Finland Oy. Johto: Rakennustietosää-
+tiö RTS.
+
+
+Vaatimukset on hyväksynyt Rakennustietosäätiön toimikuntana TK 320 toiminut hank-
+keen osapuolista koostuva johtoryhmä, joka on myös itse aktiivisesti osallistunut vaati-
+musten sisällön kehittämiseen sekä lausuttamiseen niin omassa kuin sidosryhmiensä
+keskuudessa.
+
+
+         © COBIM - hankkeen osapuolet
+
+
+
+
+         Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+          Osan 4 laatija Insinööritoimisto Olof Granlund Oy
+          Tero Järvinen, Tuomas Laine, Kari Kaleva, Kimmo Heljomaa
+
+
+
+
+Sisällysluettelo
+1 Tietomallivaatimusten päätavoitteet                                            5
+2 Johdanto                                                                       7
+  2.1 TATE-suunnitteluvaiheet                                                    7
+  2.2 Tietomalliselostus                                                         8
+  2.3 Objektit ja tiedonsiirto                                                   8
+  2.4 Nimeämiskäytännöt                                                          9
+        2.4.1 IFC-mallit                                                         9
+        2.4.2 Osajärjestelmät                                                   10
+        2.4.3 Komponentit ja laitteet                                           11
+3 TATE-vaatimusmalli                                                            12
+4 Tilavarausmallit                                                              15
+  4.1 Tilavaraukset, tilat                                                      15
+  4.2 Vaakasuuntaiset kerrosverkostot                                           16
+  4.3 Mallihuoneet ja -alueet                                                   17
+  4.4 Palvelualuekaaviot                                                        18
+5 LVI-suunnittelun järjestelmämallit                                            21
+  5.1 Mallinnusperiaatteet toteutussuunnitteluvaiheessa                         21
+        5.1.1 Virtausteknisesti toimivat järjestelmät                           21
+        5.1.2 Järjestelmien jako osajärjestelmiin                               22
+        5.1.3 Mallinnus todellisuutta vastaavasti                               22
+        5.1.4 Eristeiden mallinnus                                              22
+  5.2 Vesi- ja viemärijärjestelmät                                              23
+  5.3 Ilmastointijärjestelmät                                                   24
+  5.4 Lämmitys- ja jäähdytysjärjestelmät                                        24
+  5.5 Palonsammutusjärjestelmät                                                 24
+  5.6 Erikoisjärjestelmät                                                       25
+  5.7 Säätöpiirustukset                                                         26
+6 Sähkö- ja telesuunnittelun järjestelmämallit                                  28
+  6.1 Yleiset mallinnusperiaatteet toteutussuunnitteluvaiheessa                 28
+  6.2 Sähkönjakelu                                                              28
+  6.3 Keskukset                                                                 29
+  6.4 Johtotiet                                                                 29
+  6.5 Valaisimet                                                                29
+  6.6 Asennuskalusteet                                                          29
+  6.7 Turvajärjestelmät                                                         30
+  6.8 Rakennusurakan hankinnat                                                  30
+7 Rakennusautomaatiosuunnittelun järjestelmämallit                              31
+8 Mallien yhdistäminen                                                          32
+  8.1 Verkostomallinnuksen geometrian tarkkuustaso ja tietosisältö              32
+        8.1.1 Geometrian tarkkuustaso                                           32
+        8.1.2 Tietosisältö                                                      35
+
+
+
+                   Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+           Osan 4 laatija Insinööritoimisto Olof Granlund Oy
+           Tero Järvinen, Tuomas Laine, Kari Kaleva, Kimmo Heljomaa
+
+
+  8.2 Yhteensovitus yhdistelmämallin avulla                                         36
+  8.3 Reikä- ja varaussuunnittelu                                                   36
+       8.3.1 Reikäpiirustusten tekoprosessi                                         37
+  8.4 TATE-malleista tuotettavat määräluettelot                                     39
+  8.5 TATE -esivalmisteet                                                           39
+9 Toteumamalli                                                                      40
+  9.1 Verkostojen tietosisällön päivitys urakoitsijatiedoilla                       40
+  9.2 Verkostojen geometrian päivitys urakoitsijatiedoilla                          41
+
+
+
+    LIITE 1 Taloteknisen tietomallin mallinnettavat komponentit, tietosisältö ja geometrian
+            tarkkuustaso suunnitteluvaiheittain 9s.
+    LIITE 2 TATE-verkostojen värit 2s.
+    LIITE 3 Tietomalliselostus 1s.
+    LIITE 4 Tietomallin tarkastusraportti 2s.
+
+
+
+
+                    Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                              Sivu 5 / 41
+
+
+
+
+1 Tietomallivaatimusten päätavoitteet
+      Kiinteistöjen ja rakennusten mallinnuksen tavoite on suunnittelun ja rakentamisen
+      laadun, tehokkuuden, turvallisuuden ja kestävän kehityksen mukaisen hanke- ja
+      elinkaariprosessin tukeminen. Tietomalleja hyödynnetään koko rakennuksen elin-
+      kaaren ajan, lähtien suunnittelun alusta ja jatkuen vielä rakennusprojektin jälkeen-
+      kin käytön ja ylläpidon aikana.
+      Tietomallit mahdollistavat mm:
+       o   investointipäätöksien tuen vertailemalla ratkaisujen toimivuutta, laajuutta ja kustannuksia
+       o   energia-, ympäristö- ja elinkaarianalyysit ratkaisujen vertailua, suunnittelua ja ylläpidon ta-
+           voiteseurantaa varten
+       o   suunnitelmien havainnollistamisen ja rakennettavuuden analysoimisen
+       o   laadunvarmistuksen, tiedonsiirron parantamisen ja suunnitteluprosessin tehostamisen
+       o   rakennushankkeiden tietojen hyödyntämisen käytön ja ylläpidon aikaisissa toiminnoissa
+
+
+      Mallinnuksen onnistumiseksi on malleille ja mallien hyödyntämiselle asetettava
+      hankekohtaiset painopistealueet ja tavoitteet. Tavoitteiden ja tämän julkaisusarjan
+      yleisvaatimusten pohjalta määritetään ja dokumentoidaan projektikohtaiset vaati-
+      mukset.
+      Yleisiä mallinnukselle asetettuja tavoitteita ovat esimerkiksi:
+       o   tukea hankkeen päätöksentekoprosesseja
+
+       o   sitouttaa osapuolet hankkeen tavoitteisiin mallin avulla
+       o   havainnollistaa suunnitteluratkaisuja
+       o   auttaa suunnittelua ja suunnitelmien yhteensovittamista
+       o   nostaa ja varmistaa rakennusprosessin ja lopputuotteen laatua
+       o   tehostaa rakentamisaikaisia prosesseja
+       o   parantaa turvallisuutta rakentamisen aikana ja elinkaarella
+       o   tukea hankkeen kustannus ja elinkaarianalyysejä
+       o   tukea hankkeen tietojen siirtämistä käytönaikaiseen tiedonhallintaan
+
+      ”Yleiset Tietomallivaatimukset 2012” kattavat uudis- ja korjausrakentamiskohteet
+      sekä rakennusten käytön ja ylläpidon. Mallinnusvaatimuksissa esitetään vähim-
+      mäisvaatimukset mallinnukselle ja mallien tietosisällölle. Vähimmäisvaatimukset
+      on tarkoitettu noudatettavaksi kaikissa rakennushankkeissa, joissa näitä vaatimuk-
+      sia halutaan käyttää. Vähimmäisvaatimusten lisäksi voidaan esittää lisävaatimuk-
+      sia tapauskohtaisesti. Mallinnusvaatimukset ja – sisältö on esitettävä kaikissa
+      suunnittelusopimuksissa sitovasti ja yhdenmukaisesti.
+
+
+
+
+                Versio 1.0               27.03.2012 © COBIM - hankkeen osapuolet
+                                                                           Sivu 6 / 41
+
+
+
+Julkaisusarja ”Yleiset Tietomallivaatimukset 2012” koostuu seuraavista dokumen-
+teista:
+1.    Yleinen osuus
+2.    Lähtötilanteen mallinnus
+3.    Arkkitehtisuunnittelu
+4.    Talotekninen suunnittelu
+5.    Rakennesuunnittelu
+6.    Laadunvarmistus
+7.    Määrälaskenta
+8.    Mallien käyttö havainnollistamisessa
+9.    Mallien käyttö talotekniikan analyyseissä
+10.   Energia-analyysit
+11.   Tietomallipohjaisen projektin johtaminen
+12.   Tietomallien hyödyntäminen rakennuksen käytön ja ylläpidon aikana
+13.   Tietomallien hyödyntäminen rakentamisessa
+14.   Tietomallien hyödyntäminen rakennusvalvonnassa
+
+Jokaisen tietomallihankkeen osapuolen on tutustuttava oman alansa vaatimusten
+lisäksi ainakin yleiseen osuuteen (osa 1) sekä laadunvarmistuksen periaatteisiin
+(osa 6). Projektia tai projektin tiedonhallintaa johtavan henkilön on hallittava tie-
+tomallivaatimusten periaatteet kokonaisuutena.
+
+
+
+
+           Versio 1.0            27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                  Sivu 7 / 41
+
+
+
+2 Johdanto
+        Tässä dokumentissa käsitellään talotekniikan (TATE) mallintamista ja talo-
+        tekniikasta tuotettavien tietomallien vaadittua tietosisältöä. Vaatimuksissa ei oteta
+        kantaa käytettäviin työkaluihin tai toimintatapoihin, joilla mallinnus suoritetaan.
+        Rakennuksen tietomallien käytöllä pyritään hallittuun päätöksentekoon ja kom-
+        munikaation tukemiseen suunnitteluryhmän sisällä sekä suunnittelijoiden ja tilaa-
+        jan välillä.
+        Julkaistaessa TATE-malleja ei niihin saa sisällyttää muiden suunnittelijoiden mal-
+        leja, vaikka niitä olisikin käytetty referenssimalleina. TATE-mallit saavat sisältää
+        siis ainoastaan TATE-suunnitelmiin kuuluvia objekteja.
+        Suunnittelija on vastuussa oman työnsä vaatimusten- ja sopimuksenmukaisuuden
+        tarkastamisesta. Tietomallit voidaan tarkistaa prosessin aikana myös kolmannen
+        osapuolen toimesta Yleiset tietomallivaatimukset 2012 –julkaisusarjan osassa 6.
+        Laadunvarmistus esitetyllä tavalla.
+        Yleiset tietomallivaatimukset 2012, osassa 4. Talotekninen suunnittelu, on esitetty
+        tietomallipohjaisia toimintatapoja erilaisiin käyttötarkoituksiin. Osio sisältää myös
+        viitteet ”TATE-suunnittelun tehtäväluettelo 2012” –suunnittelun tehtäväluetteloon
+        ja viitteet kappalekohtaisesi ko. julkaisuun.
+        On siis huomioitava, että tässä julkaisussa kuvattuja tietomallinnuksen vaatimuk-
+        sia voidaan vaatia suoritettavaksi, kun ko. toimeksianto on suunnittelijalta tilattu
+        joko TATE-suunnittelun tehtäväluetteloon tai erillisen, tehtäväkohtaisesti yksilöi-
+        tyjen suunnittelun tarjouspyyntöasiakirjojen mukaisesti.
+
+
+2.1 TATE-suunnitteluvaiheet
+        Suunnitteluvaiheiden TATE-tietomallinnus jakautuu kahteen eri osa-alueeseen:
+
+
+        1. Ehdotus- ja yleissuunnittelu
+
+
+                             Ehdotus- ja yleissuunnitteluvaihe on muita suunnitteluosa-
+                             puolia tukevaa suunnittelu, jossa tavoitteena on tuottaa riittä-
+                             vät tiedot ARK- ja RAK-mallin tekemiseksi. Näiden tietojen
+                             saamiseksi tehdään esim. energia- ja olosuhdesimulointeja
+                            sekä muita matemaattisia laskentoja joita on esitetty julkaisu-
+                          sarjan osissa 9 ja 10.
+        TATE-suunnittelu ei tuota ehdotus- ja yleissuunnitteluvaiheessa koko rakennuk-
+        sen kattavaa järjestelmämallia, vaan keskittyy järjestelmävalintoihin, palvelu-
+        aluekaavioihin sekä TATE-tilavarauksiin.
+
+        Ehdotussuunnitteluvaiheessa tehdään vaihtoehtoisia ratkaisuja TATE-suunnittelun
+        tehtäväluettelon mukaisesti. Kaikkiin ehdotussuunnitteluvaiheen tehtäviin ei ole
+        välttämättä tarvetta käyttää tietomallinnusta. Tietomallinnuksen laajuus sovitaan
+        projektissa tai suunnittelutarjouspyynnössä tarkoituksenmukaiseksi.
+
+
+
+
+                 Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                     Sivu 8 / 41
+
+
+
+         2. Toteutussuunnittelu
+
+                                Toteutussuunnitteluvaiheessa tehdään koko rakennuksen kat-
+                                tavat järjestelmämallit.
+
+
+
+
+           Viite ”TATE-Suunnittelun Tehtäväluettelo 2012” hanketietokorttiin:
+               · Kohta 2.2, Suunnitteluohjelmistojen vaatimustaso
+                      Yleisiä tietomallivaatimuksia noudatetaan, jos valittuna Taso 3
+                      ”Suunnittelu tehdään CAD-ohjelmistoilla tietomallipohjaisesti”
+
+
+2.2 Tietomalliselostus
+         Vaatimus
+         Mallinnuksen yhteydessä, yleis- ja toteutussuunnitteluvaiheessa sekä rakennusai-
+         kana ylläpidetään dokumenttipohjaista tietomalliselostusta. Tietomalliselostukses-
+         sa kerrotaan, mitä objekteja ollaan mallinnettu, millä geometriatarkkuudella sekä
+         tietosisällöllä.
+         Tietomalliselostuksessa kerrotaan ohjelmistot ja niiden versiot, joilla tietomallit
+         on tehty.
+
+
+            Ohje
+            Tietomalliselostuksessa kerrotaan myös ne aiheet, joita ei ole mallinnettu
+            (esim. IV-koneiden lämmityspatterien sekoitusryhmät, lämmönjakokeskuksen
+            sisäiset varusteet, kytkimet, pistorasiat, jakorasiat jne.).
+            Ehdotus tietomalliselostuksen sisällöstä on liitteessä 3.
+
+
+2.3 Objektit ja tiedonsiirto
+         Vaatimus
+         Käytettävien ohjelmistojen tulee olla IFC-yhteensopivia. Tietomallien tiedonsiirto
+         eri sovellusten välillä tapahtuu IFC-tiedostojen kautta.
+         Jos mallinnuksessa käytetyn ohjelmiston omassa tiedostomuodossa (natiivimalli)
+         on viittauksia mallin ulkopuolella sijaitseviin objekteihin tai tietoihin, tulee kaikki
+         tarvittava viitetieto toimittaa alkuperäismallin mukana mallin julkaisun yhtey-
+         dessä. Viittauksien käytöstä on lisättävä tieto tietomalliselostukseen.
+
+
+            Ohje
+            Kaikki tuoteobjektit eivät siirry IFC-tiedonsiirron yhteydessä. IFC-tiedoston
+            tuottamista varten oleelliset komponentit kuvataan ensisijaisesti mallinnustyö-
+            kalun laitekirjastojen tarjoamilla objekteilla tai toissijaisesti geometrialtaan
+            komponentin ulkomittoja vastaavina yksinkertaisina 3D-objekteina (laatikko,
+            lieriö jne.)
+
+                   Versio 1.0           27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                  Sivu 9 / 41
+
+
+
+            Tällaisia komponentteja voivat olla esimerkiksi IV-koneet, lauhduttimet ja
+            lämmönjakokeskukset. Näin käsiteltävien objektien lista täytyy sopia projekti-
+            ja vaihekohtaisesti muiden osapuolten kanssa ennen IFC-tiedonsiirron aloit-
+            tamista.
+            3D-objektien nimestä tai attribuuttitiedoista tulee käydä ilmi, mitä laitetta ob-
+            jekti esittää. Käytettävät nimet ja attribuutit sekä niiden todellinen merkitys
+            dokumentoidaan tietomalliselostukseen.
+
+
+2.4 Nimeämiskäytännöt
+2.4.1 IFC-mallit
+         Vaatimus
+         Pääjärjestelmät (kohdat 5.2 – 5.5) tallennetaan IFC-tiedostoihin projektissa sovit-
+         tavan tavan mukaisesti ja se kirjataan tietomalliselostukseen.
+         IFC-tiedostojen korkeusasemana käytetään absoluuttisia korkeusasemia, seuraten
+         arkkitehdin tietomallin kerroskohtaisia korkeusasemia.
+
+
+            Ohje
+            Tiedostojen nimeämisessä noudatetaan tilaajan ohjeistusta, jos sellainen on
+            saatavilla.
+            IFC tiedostojen tekotapojen vaihtoehtoja ovat esim. seuraavat:
+            1. Pääjärjestelmät mallinnetaan omina malleina kerroksittain.
+            2. Pääjärjestelmät yhdistetään yhdeksi kerroskohtaiseksi malliksi.
+            3. Pääjärjestelmistä tehdään omat, erilliset koko kiinteistön kattavat mallit.
+            4. Pääjärjestelmät yhdistetään yhdeksi, koko kiinteistön kattavaksi malliksi.
+            Vaihtoehto 1 on suunnittelun ja työmaatoiminnan aikana havaittu toimivim-
+            maksi tavaksi, sillä se mahdollistaa muutosten päivittämisen yksinkertaisesti.
+            Kaikissa IFC-tiedostojen tekovaihtoehdoissa on objektien noudatettava IFC-
+            hierarkiaa, eli objekteilla on oltava tieto siitä, mihin rakennukseen, kerrokseen
+            ja osajärjestelmään ne kuuluvat.
+
+
+
+
+                   Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                            Sivu 10 / 41
+
+
+
+
+            Kuva 2.1: Esimerkki kerroskohtaisesta ilmanvaihtomallista, jossa komponenttien sijainti on 4.
+            kerroksessa ja ne on jaettu omiin järjestelmiin (Järjestelmä –puun alaiset tasot).
+
+
+            Tiedostojen nimistä tulee selkeästi ilmetä, minkä järjestelmän mallista ja mistä
+            rakennuksen kerroksesta on kyse. Tiedostonimissä ei saa käyttää välilyöntejä,
+            erikoismerkkejä tai ääkkösiä.
+            IFC-tiedostojen nimiä ei saa muuttaa kesken projektin eikä tiedostonimiin lisä-
+            tä päivämääriä.
+            On suositeltavaa, että IFC-tiedostojen nimien ensimmäiset merkit kuvaavat
+            suunnittelualaa.. Lisäksi tiedostonimessä suositellaan kerrottavan, minkä ker-
+            roksen järjestelmämallin se sisältää.
+            On suositeltavaa käyttää sovellusohjelmistojen muokkaustoimintoja objektien
+            ominaisuuksien muuttamiseen verrattuna objektin poistamiseen ja lisäämiseen.
+            Muokattaessa objektia sen sisäinen tunniste (GUID) todennäköisesti säilyy ja
+            näin voidaan jälkikäteen todentaa, mitä objekteja on muutettu tai mitkä objektit
+            on lisätty uutena järjestelmämalliin.
+
+2.4.2 Osajärjestelmät
+         Vaatimus
+         Osajärjestelmien nimeämisessä käytetään sähköjärjestelmien, ilmastointikoneiden,
+         puhaltimien ja verkostojen laitetunnuksia
+
+
+            Ohje
+            Osajärjestelmän nimen tulee sisältää selkeä kuvaus, mistä osajärjestelmästä on
+            kyse, esim. ”301TK01 Tuloilma, toimistot osa A” tai ”401JP01, Jäähdytys-
+            palkkiverkosto”.
+            Käytetystä ohjelmistosta riippuen tulee kiinnittää huomiota siihen, että nimi
+            siirtyy myös IFC-tiedostoon.
+            Korjaus- ja laajennuskohteissa on huolehdittava, ettei uusien järjestelmien
+            osille tule päällekkäisiä nimiä olemassa olevien säilytettävien järjestelmien
+            kanssa.
+
+
+                   Versio 1.0             27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                   Sivu 11 / 41
+
+
+
+2.4.3 Komponentit ja laitteet
+         Vaatimus
+         Laitteiden nimeämisessä noudatetaan tilaajan nimeämiskäytäntöä ja -ohjeistusta.
+         Jollei tilaajalla ole ohjeistusta, tekee suunnittelija siitä ehdotuksen, joka hyväksy-
+         tetään tilaajalla.
+         Sellaisille komponenteille ja laitteille, joille annetaan yksilöllinen tunnus, tulee
+         ko. tunnus kirjoittaa attribuuttitiedoksi.
+
+
+            Ohje
+            Komponentin tekee yksilölliseksi esimerkiksi se, että siihen pitää kohdistaa ra-
+            kennusautomaatiojärjestelmästä tulevia ohjauksia tai tiedonkeruuta. Tyypilli-
+            siä yksilöllisiä komponentteja ovat moottoriventtiilit, ilmavirtasäätimet, moot-
+            toroidut palopellit ja paloilmaisimet.
+
+
+
+
+                   Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                               Sivu 12 / 41
+
+
+
+3 TATE-vaatimusmalli
+     Vaatimus
+     Suunnittelutarjouspyynnön mukaisessa laajuudessa TATE -suunnittelijalta edelly-
+     tetään vaatimusten määrittelyä ja ylläpitoa.
+     TATE -vaatimusmallia ylläpidetään läpi suunnitteluprosessin. Suunnitteluvaihei-
+     den lopussa arvioidaan, täyttävätkö suunnitelmat tiloille asetetut tavoitearvot.
+     Yleisten Tietomallivaatimusten mukainen minimivaatimus:
+     Taso 1, Dokumenttipohjainen vaatimusmalli
+
+
+       Ohje
+       Talotekniikan suunnitteluun liittyy runsaasti esim. tilojen sisäilmaolosuhteisiin,
+       sähkötekniikan varmennus- ja varustetasoon sekä valaistusolosuhteisiin liitty-
+       viä yksityiskohtaisia vaatimuksia. Ne voidaan esittää yleisessä vaatimusmallis-
+       sa tai niiden lopullinen määrittely voidaan liittää osaksi TATE -suunnittelijan
+       tehtäviä.
+       Sopivalla ohjelmistolla TATE -suunnittelija voi liittää nämä vaatimukset osaksi
+       arkkitehdin tuottamaa tilamallia ja hyödyntää näin syntynyttä mallia vaatimus-
+       tenmukaisuuden vertailussa ja vaatimustenhallinnassa. Tämä parantaa suunni-
+       telman toimivuuden havainnollistamista tilaajalle, tilojen käyttäjille ja muille
+       suunnittelijoille suunnittelun eri vaiheissa sekä helpottaa vaatimuksenmukai-
+       suuden toteamista.
+       Suunnitteluvaiheiden lopulla voidaan tehdä myös mahdollinen tavoitearvojen
+       muuttaminen, mikäli simulointien tai muun päätöksentekoprosessin lopputulok-
+       sena (esim. kustannustasoanalyysi) voidaan osoittaa muutokset perustelluiksi.
+       TATE -vaatimusmalli voidaan toteuttaa joko tietomallipohjaisena tai doku-
+       menttipohjaisena. Dokumenttipohjaisenakin se voidaan myöhemmin hyödyntää
+       monien tietomallipohjaisten analysointien lähtötietona, mutta vaatimustiedon
+       siirtäminen on tässä tapauksessa aina manuaalista. Kun toteutustavaksi vali-
+       taan tietomallipohjainen TATE -vaatimusmalli, siirtyy vaatimustieto eteenpäin
+       tietomallin avulla ja samalla on mahdollista toteuttaa tavoitteenmukaisuuden
+       jatkuvaa seurantaa.
+       TATE -vaatimusmallin toteutustapa voidaan valita seuraavista kahdesta eri ta-
+       soisesta vaihtoehdosta:
+
+       Taso 1, Dokumenttipohjainen TATE-vaatimusmalli
+          ·   Valittuun dokumenttiin (esim. taulukkolaskentaohjelma) kirjataan ylös ti-
+              latyypit sekä niille kohdistettavat vaatimukset.
+
+       Taso 2, Tietomallipohjainen TATE-vaatimusmalli
+          ·   TATE-vaatimukset liitetään osaksi huoneobjektia, tähän tarkoitukseen
+              sovittuina ominaisuusjoukkoina (IfcPropertySets) tai tilaan muulla ta-
+              voin linkitetyllä tiedolla.
+          ·   Tietomallipohjainen vaatimusmalli julkaistaan omana, erillisen ifc-
+              mallina, sisältäen tilaobjektit ja niihin linkitetyt palvelualueet (IfcZone).
+
+              Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                    Sivu 13 / 41
+
+
+
+   Yleisimmin käytettyjä LVI-vaatimuksia tilatyypeille ovat mm:
+      ·    ilmavirta neliömetriä kohden
+      ·    tilatyypin tavoitelämpötila kesällä ja talvella
+      ·    suhteellinen kosteus
+      ·    tilatyypin maksimi äänitaso
+      ·    tilatyypin puhtausluokka
+      ·    tilatyypin ali-/ylipaineisuus.
+   Yleisimmin käytettyjä SÄH-vaatimuksia tilatyypeille ovat:
+      ·    valaistustaso työalueella/lähiympäristössä
+      ·    valaistustapa (suora, epäsuora)
+      ·    valaistuksen ohjaustavat
+      ·    sähkötekniset suojausluokat
+      ·    varmennustasovaatimukset (UPS-jakelu, varavoimajakelu, jne.)
+      ·    varustustasovaatimukset (sähkö-, tele-, turva-, AV-, jne. varusteet).
+   Kiinteistölle asetettavia vaatimuksia voivat olla mm:
+      ·    energiankulutus, kWh/m2
+      ·    ympäristöluokitustaso (LEED/BREEAM).
+
+
+
+
+Kuva 3.1: Esimerkki 1 tietomallipohjaisesta vaatimusmallista; vasemmanpuoleisessa näkymässä
+tilojen tavoitelämpötilat kesäaikana, oikeanpuoleisessa näkymässä simuloinnin kautta tulleet läm-
+pötilat. Ohjelmiston automaattinen tavoitteiden/simulointien vertailu värjää tilan punaisella, jos
+simuloitu lämpötila ylittyy yli 5 % tavoitteesta.
+
+
+           Versio 1.0             27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                    Sivu 14 / 41
+
+
+
+
+Kuva 3.2: Esimerkki 2 tietomallipohjaisesta vaatimusmallista; tilojen vaatimukset ja simulointien
+tulokset on siirretty IFC-tilaobjektiin ominaisuusjoukkoina (Propertyset –tietoina)
+
+
+
+
+Kuva 3.3: Esimerkki 3 dokumenttipohjaisesta LVI-vaatimusmallista
+   On huomioitava, että vaatimusmalli –käsitteeseen voidaan liittää myös perin-
+   teisten huonekorttiajatusten mukaisia vaatimuksia esim. tilojen varustuksesta.
+   Näitä asioita voidaan myös tarvittaessa liittää vaatimusmalliin.
+  Kappaleen 3 viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+  B Hankesuunnittelu, harkinnanvaraiset asiantuntijatehtävät:
+  Kohta B 3.1, Toiminnan asettamat talotekniset suunnittelutavoitteet
+  D 0 Ehdotussuunnittelu, perustehtävät:
+  Kohta D 2.7, Suunnittelutavoitteet
+  E 0 Yleissuunnittelu, perustehtävät:
+  E 5.1 Yleissuunnitelman tavoitteidenmukaisuus, tavoitteiden toteutuminen
+
+  G 0 Toteutussuunnittelu, perustehtävät:
+  G 5.1 Tavoitteidenmukaisuus ja laadunvarmistus
+  Hanketietokortti:
+  Kohta C 1.11, Hankkeen tavoitteet
+
+
+           Versio 1.0             27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                   Sivu 15 / 41
+
+
+
+4 Tilavarausmallit
+         Ehdotus- ja yleissuunnitteluvaiheessa TATE suunnittelija varaa tekniikalle riit-
+         tävät tilantarpeet sekä tarvittavat tekniset tilat huomioiden asennusten ja laitteiden
+         vaatimat huoltoalueet ja -tilantarpeet.
+         Tietomallintamisen näkökulmasta TATE- tilavaraukset jaetaan kahteen ryhmään:
+         1. Tilavaraukset, tilat
+         2. Vaakasuuntaiset kerrosverkostot
+
+
+4.1 Tilavaraukset, tilat
+         Vaatimus
+         Yleissuunnitteluvaiheessa ja tarvittavin osin ehdotussuunnitteluvaiheessa TATE -
+         tilavaraukset käydään läpi yhdessä arkkitehdin kanssa normaalein suunnittelume-
+         todein. TATE -suunnittelija ilmoittaa arvionsa tarvittavasta tilantarpeesta sekä ar-
+         vionsa tilojen sijoitusalueesta.
+
+
+            Ohje
+            Arkkitehti mallintaa tarvittavat tilat omaan mallinsa normaaleina teknisinä ti-
+            loina, käyttäen tilaobjekteja.
+            Varattavia tiloja ovat mm. kuilut, hormit, konehuoneet, muuntamot, keskustilat
+            jne. tiloiksi luokiteltavat alueet, jotka on varattu lattiasta kattoon TATE -
+            teknisille järjestelmille.
+
+
+
+
+                   Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                          Sivu 16 / 41
+
+
+
+        Kuva 4.1: Tilavarausmalli, jossa TATE-tilat värjättynä.
+
+4.2 Vaakasuuntaiset kerrosverkostot
+        Vaatimus
+        Yleissuunnitteluvaiheessa vaakasuuntaiset kerrosverkostot mallintaa TATE-
+        suunnittelija. Mallinnuksen tarkoitus on esittää geometrian avulla pääreittien si-
+        jainti – tietosisällölle ei aseteta vaatimuksia.
+        Vaakasuuntaisten runkoverkostojen tarkkuusvaatimus on esitetty liitteessä 1. Nii-
+        den täytyy sijaita rakennuksessa siten, että voidaan selvästi havaita TATE-
+        tekniikan tarvitsema pääreitti.
+        Tarkemmat verkostojen sijainnit selviävät perinteisen suunnittelumetodiikan kaut-
+        ta syntyvien 2D-yhteisleikkausten avulla (käytävät, kuilujen ulostulot, haasteelli-
+        set asennuspaikat jne.).
+        2D-leikkauksissa esitetään verkostojen kannakointi sekä varmistutaan siitä, että
+        verkostot ovat asennettavissa ja huollettavissa.
+
+
+           Ohje
+           Vaakasuuntaisten tilavarausten pääreitit mallinnetaan käyttäen normaaleita
+           TATE-mallinnustyökaluja; putkia, kanavia, kaapelihyllyjä ja johtokouruja.
+           Mallinnuksen tarkoitus on esittää verkostojen pääreitit. Kanavistojen tai put-
+           kistojen dimensio valitaan tarkoitukseen sopivimpana.
+
+
+
+
+        Kuva 4.2: Esimerkki: Kuvat vaakasuuntaisista runkoverkoista ja rakennemallista yleissuunnittelu-
+        vaiheessa.
+
+
+
+
+                   Versio 1.0             27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                           Sivu 17 / 41
+
+
+
+
+         Kuva 4.3: Esimerkki perinteisestä 2D-leikkauksesta, jonka perusteella tehdään alueen 3D-
+         mallinnus.
+
+
+         Kappaleen 4.1 ja 4.2 viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+         D 0 Ehdotussuunnittelu, perustehtävät:
+         Kohta D.3.9, Alustavat teknisten tilojen tarpeet
+
+         E 0 Yleissuunnittelu, perustehtävät:
+         Kohta E 3.2 Reititystarpeet, tyyppitilojen ratkaisuvaihtoehdot ja järjestelmäinte-
+         graatio
+         Kohta E 4.1 Yleissuunnitelma-asiakirjat
+         Kohta E 4.2, Eri suunnittelualojen yleissuunnitelmien yhteensovitus ja laadun-
+         varmistus
+
+
+4.3 Mallihuoneet ja -alueet
+         Vaatimus
+         Yleissuunnitteluvaiheessa valitaan kohteesta mallihuone tai –alue, josta tehdään
+         tietomallinnus. TATE -mallinnuksen tarkkuustaso on sellainen, että sen avulla
+         voidaan varmistua komponenttien mahtumisesta ko. alueeseen.
+         Jotta TATE -tekniikka voidaan mallintaa tarkasti, pitää alueesta olla käytettävissä
+         riittävän tarkka ARK ja RAK tietomalli.
+
+
+                   Versio 1.0             27.03.2012 © COBIM - hankkeen osapuolet
+                                                                              Sivu 18 / 41
+
+
+
+           Ohje
+           Mallin perusteella kohteesta voidaan tehdä visualisoinnit asennustekniikan ha-
+           vainnollistamiseksi erillisen visualisointiohjeen mukaisesti.
+           Mallihuoneet tai -alueet valitaan kohdekohtaisesti tarkoituksenmukaisesti.
+           Toistuvat tilatyypit on syytä mallintaa tarkasti yleissuunnitteluvaiheessa.
+
+
+
+
+        Kuva 4.4: Esimerkki mallialueen TATE –asennuksista.
+
+
+           Mallihuoneeseen tai –alueeseen mallinnetaan kaikki TATE -tekniikka, joilla on
+           tilavaraus tai toiminnallinen merkitys. Mallihuoneessa ovat pistorasiat, kytki-
+           met, päätelaitteet, johtokourut jne. komponentit mallinnettuna.
+
+
+4.4 Palvelualuekaaviot
+        Vaatimus
+        Yleissuunnitteluvaiheessa ilmanvaihtokoneiden palvelualueista luodaan palvelu-
+        aluekaaviot.
+        Yleisten Tietomallivaatimusten mukainen minimivaatimus:
+        Taso 1, Palvelualuekaaviodokumentit
+
+
+           Ohje
+           Palvelualuekaavioiden laadinnassa voidaan käyttää hyväksi arkkitehdin tieto-
+           mallin tilaobjekteja ja ne voidaan tehdä perinteisesti värjäämällä ARK-
+           pohjasta alueita esim. rasteroimalla niitä.
+
+                  Versio 1.0           27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                 Sivu 19 / 41
+
+
+
+ Palvelualuekaavioiden laadinnassa voidaan valita tietomallintamisen taso
+seuraavista vaihtoehdoista:
+Taso 1, Palvelualuekaaviodokumentit
+Palvelualuekaaviot laaditaan dokumenteiksi perinteisin menetelmin, esim. ras-
+terointien (hatch) avulla CAD-sovelluksessa.
+Taso 2, Tietomallipohjaiset palvelualuekaaviot
+Arkkitehdin tietomallin tilaobjektit ryhmitellään TATE-palvelualueiksi ja nämä
+kirjoitetaan takaisin sovellusohjelmaan luettuun tietomalliin (IfcZone), mikä
+mahdollistaa palvelualuetiedon hyödyntämisen muissa sovelluksissa, esim.
+energia-analyyseissa tai siirtämisen ylläpidon tietojärjestelmiin.
+TATE-palvelualuekaaviot luodaan vähintään ilmanvaihtokoneista. Niitä suosi-
+tellaan laadittavaksi myös mm. seuraavista järjestelmistä:
+   ·   erillisjäähdytyksen piirissä olevat alueet/huoneet
+   ·   tietoverkon palvelualueet
+   ·   sähkökeskusten palvelualueet
+   ·   energiamittausten palvelualueet.
+
+
+
+
+Kuva 4.5: Esimerkki selausohjelman näkymästä, jossa IFC-tiedostoon siirretyt IV-koneiden
+palvelualueet väreillä havainnollistettuina. Yksi väri edustaa yhden IV-koneen palvelualuetta.
+Palvelualue (IfcZone) on muodostettu tilaobjekteista (IfcSpace).
+
+
+
+
+       Versio 1.0              27.03.2012 © COBIM - hankkeen osapuolet
+                                                                               Sivu 20 / 41
+
+
+
+
+ Kuva 4.6: Esimerkki saman kohteen kerroskohtaisesta IV-palvelualuekaaviosta, jossa esitysta-
+ pana on 2D.
+
+
+Kappaleen 4.4 viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+E0 Yleissuunnittelu, perustehtävät:
+Kohta E 4.1 Yleissuunnitelma-asiakirjat
+
+
+
+
+        Versio 1.0             27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                   Sivu 21 / 41
+
+
+
+5 LVI-suunnittelun järjestelmämallit
+5.1 Mallinnusperiaatteet toteutussuunnitteluvaiheessa
+           Kohdan 5.1 – 5.6 Viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+           G 0 Toteutussuunnittelu, perustehtävät:
+           G 3.1 TATE-reititystarpeet
+           G 3.2 Päätelaitteiden, pisteiden ja kenttälaitteiden sijoituksen varmennus
+           G 4.1 Hankintoja palvelevat suunnitelmat, Liite 2 (LVI) mukaisesti
+           G 4.18 Toteutusta palvelevat suunnitelmat, Liite 2 (LVI) mukaisesti
+
+
+5.1.1 Virtausteknisesti toimivat järjestelmät
+          Vaatimus
+          Kukin pääjärjestelmä (kohdat 5.2 – 5.5 ) mallinnetaan omaksi mallikseen.
+          Järjestelmät mallinnetaan toimivina eli niin, että suunnitteluohjelmiston mahdol-
+          listamia laskenta- ja analyysitoimintoja on mahdollista käyttää. Kaikki toimivan
+          kokonaisuuden kannalta oleelliset komponentit mallinnetaan.
+          Verkostojen eri kerroksissa sijaitsevat osat on kytkettävä yhteen niin, että muo-
+          dostuu virtausteknisesti ehjiä järjestelmiä.
+
+
+             Ohje
+             Konehuoneessa ei tarvitse esittää kaikkia yksittäisten laitteiden, kuten IV-
+             koneiden, lämmönsiirtimien, -pattereiden tai muita vastaavia omia laiteryhmiä,
+             vaan ne voidaan esittää tarkemmin kyseisen järjestelmän toimintakaavioissa.
+             Suunnitteluohjelmiston laskenta- ja analyysitoimintoja kuten virtaama-, tasa-
+             painotus- ja äänilaskelmia tulee käyttää niille järjestelmille, joille ne ovat
+             mahdollisia. Laskenta tuottaa alkuperäismalliin oleellista tietosisältöä ja toi-
+             mii osana suunnittelun laadunvarmistusta. Laskenta- ja analyysitoimintoja
+             voidaan täydentää tarvittaessa erillisohjelmistojen avulla.
+             Korjaus- ja laajennuskohteissa muutettujen järjestelmien haarat mallinnetaan
+             keskuslaitteelle asti, jos halutaan, että järjestelmän toiminnallisuus voidaan
+             verifioida simuloimalla huomioiden koko järjestelmä (uusi ja vanha osa).
+             Mahdollinen olemassa olevien järjestelmien osittainenkin mallintaminen tulee
+             määritellä suunnittelusopimuksissa.
+             Olemassa olevien verkostojen mallinnuksessa on suositeltavaa käyttää ”sta-
+             tus” tai vastaavaa määrettä. Näin jokainen verkoston komponentti saa lisä-
+             määreen, jolla kerrotaan sen kuuluvan esim. ”vanhaan verkostoon”. Sovellus-
+             ohjelmasta riippuen statusmääreellä voidaan osoittaa myös purettavat verkos-
+             tot, lohkot tai erilliset hankintapaketit. Kun käytetään statusta, niin tieto ver-
+             koston merkityksestä saadaan siirtymään IFC-tiedoston kautta myös muille
+             osapuolille ja ne voidaan erotella esim. massalistoissa.
+             On huomioitava, että kaikki sovellusohjelmistot eivät tue ”status”-tiedon tal-
+             lentamista järjestelmämalleihin.
+
+
+
+
+                    Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                    Sivu 22 / 41
+
+
+
+5.1.2 Järjestelmien jako osajärjestelmiin
+          Vaatimus
+          Pääjärjestelmät jaetaan osajärjestelmiin (tarkemmin kohdissa 5.2 – 5.5) niin, että
+          suunnitteluohjelman laskentatyökaluja voidaan käyttää kullekin osajärjestelmälle
+          erikseen muista riippumatta.
+
+
+             Ohje
+             Kaikista osajärjestelmän komponenteista tulee olla nähtävissä, mihin osajär-
+             jestelmään ne kuuluvat. Tämän tiedon tulee siirtyä myös IFC-malliin.
+             Havainnollisuuden lisäämiseksi pääjärjestelmät tulee esittää mallissa eri vä-
+             reillä, jos se on mallinnustyökalussa mahdollista.
+             Sanastoa:
+             Pääjärjestelmä = Lämmitysjärjestelmä, Jäähdytysjärjestelmä, Viemärijärjes-
+             telmä, Ilmanvaihtojärjestelmä…
+
+             Osajärjestelmä = Lämmityspatteriverkosto, IV-koneiden lämmityspatteriver-
+             kosto, Jäähdytyspalkkiverkosto, Sadevesiviemäriverkosto, IV-koneen tuloilma-
+             verkosto, IV-koneen poistoilmaverkosto…
+
+
+5.1.3 Mallinnus todellisuutta vastaavasti
+          Vaatimus
+          Komponentit mallinnetaan todellista vastaavilla objekteilla (muoviputki muovi-
+          putkiobjektilla, kupariputki kupariputkiobjektilla jne). Kaupallisia tuotekirjastoja
+          käytetään mallinnusohjelmistojen kattamassa laajuudessa.
+          Kiinnitystarvikkeita ei vaadita mallinnettavaksi.
+
+
+             Ohje
+             Mallinnuksessa pyritään käyttämään mahdollisuuksien mukaan standardiosia
+             eli 90 asteen putkikulmia, 90 tai 45 asteen IV-käyriä jne.
+
+
+5.1.4 Eristeiden mallinnus
+          Vaatimus
+          Putkistojen ja kanavien eristeet mallinnetaan sovellusohjelmien mukaisin mene-
+          telmin, jotta malli on hyödyllinen törmäystarkastelujen ja materiaalilistojen kan-
+          nalta.
+          Eristeet koodataan siten, että niistä käy ilmi eristeen käyttötarkoitus (äänieristys,
+          lämpöeristys, paloeristys jne.) sekä eristeen paksuus ja materiaali.
+          Eristeiden pinnoitteet lisätään eristekoodiin, jos pinnoitteena on pelti tai muu sel-
+          västi kustannuksiin vaikuttava materiaali. Alumiinilaminaattia tai muovipinnoitet-
+          ta ei vaadita koodattavan eristyksen attribuuttitietoihin.
+
+
+                    Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                            Sivu 23 / 41
+
+
+
+
+            Ohje
+            Eristeet mallinnetaan tarkoituksenmukaisella tarkkuustasolla. Jos esimerkiksi
+            huoneen alakaton sisällä olevat putket on määrätty eristettäväksi, mutta sei-
+            nällä näkyvillä olevaa putkea ei, niin on sallittua, että seinälle alaspäin lähtevä
+            alakaton sisällä oleva putkenosa on myös eristämättä.
+
+
+
+
+            Kuva 5.1: Esimerkki putkista, jotka kulkevat alakatossa eristettynä vaakaosuudeltansa, mutta
+            eristämättöminä alaspäin (alakaton sisällä).
+
+
+
+5.2 Vesi- ja viemärijärjestelmät
+         Vaatimus
+         Keskuslaitteet, putkistot, putkistovarusteet, lattiakaivot ja käyttövesikalusteet
+         mallinnetaan huomioiden kohdan 5.1 ja liitteen 1 ohjeistus. Kattokaivojen mallin-
+         nus kuuluu LVI-suunnittelijan tehtäviin.
+         Eri verkostot (esim. sadevesi, jätevesi) mallinnetaan omiksi erillisiksi osajärjes-
+         telmikseen.
+         Viemärien kaadot tulee esittää tietomallissa todellisina, paitsi:
+         - paikalliset, kerroksissa olevat hajoitukset, esim. WC-tilaryhmät
+         - piha-alueella, asemapiirustuksen alueeseen kuuluvat viemäriverkostot.
+
+
+            Ohje
+            Kaatojen mallinnus koskee esim. maassa, perusmuurin sisällä olevia pohja-
+            viemäreitä sekä muita, kerroksiin mallinnettuja runkoviemäriverkostoja.
+            Piha-alueella, perusmuurin ulkopuolella olevia viemärikaatoja ei vaadita mal-
+            linnettavaksi, joskin niiden mallintaminen on erittäin suositeltavaa.
+            Piha-alueen kaivojen 3D-mallinnus, kts . liite 1
+
+
+                   Versio 1.0             27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                Sivu 24 / 41
+
+
+
+            LVI-suunnittelija on vastuussa siitä, että myös lyhyempien putkiosuuksien kaa-
+            dot otetaan huomioon törmäystarkasteluissa ja varaussuunnittelussa, vaikka
+            kaatoja ei mallinnettaisikaan.
+            Normaalista verkostopaineesta eroavat verkostot (esim. paineenkorotuksella
+            varustettu verkosto) mallinnetaan käytetyn sovellusohjelman ominaisuuksilla
+            siten, että painelaskelmat ovat mahdollista suorittaa.
+
+
+5.3 Ilmastointijärjestelmät
+         Vaatimus
+         Keskuslaitteet, kanavistot, kanavistovarusteet ja päätelaitteet mallinnetaan huo-
+         mioiden kohdan 5.1 ja liitteen 1 ohjeistus.
+         Jokainen ilmastointikone ja -puhallin verkostoineen mallinnetaan omiksi osajär-
+         jestelmikseen.
+
+
+            Ohje
+            Koteloitujen IV-koneiden raitis- tai jäteilmakammiot voidaan mallintaa yhteen
+            tai tarkoituksenmukaisesti useampaan osajärjestelmään. Näille verkostoille ei
+            ole tarvetta luoda omia konekohtaisia osajärjestelmiä.
+
+
+5.4 Lämmitys- ja jäähdytysjärjestelmät
+         Vaatimus
+         Keskuslaitteet, putkistot, putkistovarusteet ja päätelaitteet mallinnetaan huomioi-
+         den kohdan 5.1 ja liitteen 1 ohjeistus.
+         Lämmitys- ja jäähdytysjärjestelmät mallinnetaan omiksi osajärjestelmikseen.
+
+
+            Ohje
+            Erottelevana osajärjestelmätekijänä voidaan pitää esim. pumppua tai lämmön-
+            siirrintä.
+            Jos taloon tulee suora sähkölämmitys, lämmitysjärjestelmän mallintaminen
+            kuuluu sähkösuunnittelijalle.
+            Lattialämmitysputkistoja ei vaadita mallinnettavan suunnittelijan toimesta ko-
+            konaisuudessaan lattiaan, mutta riittävä tietosisältö on käytävä ilmi mallista
+            (lattialämmityspiirin teho, -virtaus, -säätöarvo, -palvelualue, asennusväli).
+            On huomioitavaa, että lattialämmitysputkiston mallintaminen ei ole kuitenkaan
+            kiellettyä, vaan suositeltavaa , varsinkin jos pystytään siirtämään lattialämmi-
+            tysputkistotoimittajan todellinen putkitusreittitieto suunnitelmiin.
+
+
+5.5 Palonsammutusjärjestelmät
+         Vaatimus
+         Sprinklerilaitteisto (laitteisto kokonaisuudessaan, joka muodostaa kohteen sprink-
+         lerisuojauksen, käsittäen yhden tai useamman sprinkleriasennuksen, putkistoi-
+
+                   Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                  Sivu 25 / 41
+
+
+
+         neen, vesilähteineen ja muine laitteineen) mallinnetaan huomioiden kohdan 5.1 ja
+         liitteen 1 ohjeistus sillä lievennyksellä, että sprinklerisuunnittelija voi käyttää
+         myös erillistä ohjelmistoa paine- ja virtauslaskentojen suorittamiseksi.
+         Sprinkleriasennukset (osa sprinklerilaitteistoa, johon sisältyy yksi asennusventtiili
+         sekä siihen liitetyt putkistot, sprinklerit ja muut laitteet) mallinnetaan omiksi osa-
+         järjestelmikseen.
+         Myös muut palonsammutusjärjestelmät tulee mallintaa (esimerkiksi kaasusammu-
+         tuslaitteistot, matala- ja korkeapainelaitteistot).
+
+
+            Ohje
+            Muiden kuin sprinklerilaitteiston painehäviölaskentaa ei vaadita tietomallin tai
+            erillisen laskentaohjelmiston kautta. Tällaisia sammutuslaitteistoja ovat esi-
+            merkiksi kaasusammutuslaitteistot sekä matala- ja korkeapainelaitteistot.
+
+
+5.6 Erikoisjärjestelmät
+         Erikoisjärjestelmiä ovat esimerkiksi:
+             o kaasuputkistot (esim. sairaalat, laboratoriot, teollisuuslaitokset…)
+             o paineilmaverkostot
+             o höyryputkistot
+             o savunpoistojärjestelmät
+             o purunpoistojärjestelmät
+             o uimahallilaitteet
+             o keskuspölynimurijärjestelmät
+
+         Vaatimus
+         Tilantarve- ja törmäystarkastelujen takia on oleellista mallintaa myös kaikki mer-
+         kittävästi tilaa vaativat erikoisjärjestelmät. Tähän tarkoitukseen tarkoitettuja ob-
+         jekteja saattaa puuttua ohjelmistoista, joten erikoisjärjestelmät mallinnetaan mui-
+         den järjestelmien mallinnusohjeita soveltaen.
+         Erikoisjärjestelmien mallintamisesta sovitaan suunnittelusopimuksissa erikseen.
+         Jos TATE-tehtäväluettelossa on määritelty jokin erikoisjärjestelmä suunnittelun
+         piiriin, tulee ko. järjestelmän verkostot suunnitella mallintaen.
+
+
+            Ohje
+            Mallinnukseen voidaan tarvittaessa käyttää putkistojen ja kanavistojen osalta
+            muita soveltuvia komponentteja ja keskuslaitteet voidaan kuvata itse tehdyillä
+            3D-objekteilla.
+            Osat, jotka ovat ”mahdottomia” mallintaa, tulee mallintaa yksinkertaistettuna
+            tai käyttää lähintä vastaavaa komponenttia suunnitteluohjelmistojen kirjastois-
+            ta. Tämänkaltaiset muutokset kirjataan tietomalliselostukseen.
+            Laskentatyökalujen käyttöä ei vaadita. Täydentävät tiedot dokumentoidaan
+            mallin ulkopuolella. Erikoismallinnusratkaisut ja mallin ulkopuoliset tiedot do-
+            kumentoidaan tietomalliselostuksessa. Mahdolliset eristeet ja kaadot mallinne-
+            taan kuten muiden järjestelmien kohdalla on esitetty.
+
+
+                   Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                   Sivu 26 / 41
+
+
+
+5.7 Säätöpiirustukset
+        Säätöpiirustusten laadinta on erillinen toimeksianto, joka tilataan LVI-
+        suunnittelijalta tapauskohtaisesti.
+
+
+           Ohje
+           Kun LVI-tekniseen tietomalliin on päivitetty todelliset, urakoitsijan valitsemat
+           tuotteet ja reittimuutokset (kts. kappaleet 9.1 ja 9.2), voidaan kohteesta tehdä
+           normaalia tarkemmat, osajärjestelmäkohtaiset säätöpiirustukset.
+           Tässä kappaleessa kuvatut säätöpiirustusten tietosisällöt vaihtelevat eri sovel-
+           lusohjelmistojen välillä. Kaikissa sovellusohjelmissa säätötekniset tiedot eivät
+           siirry esim. IFC-malliin tai kaikkien komponenttien kohdalta ei ole mahdollista
+           saada säätöön liittyviä tietoja.
+           Säätöpiirustukset laaditaan siten, että säätäville komponenteille ilmoitetaan
+           mittaviivalla vähintään esisäätöarvo, painehäviö sekä tilavuusvirta. IV-
+           koneiden painekammioon ja verkostossa olevien paineanturien kohdalle merki-
+           tään kanaviston staattinen painetaso.
+           Verkoston paineteknisesti vaikeimman reitin päätelaite/venttiili merkitään esi-
+           merkiksi mittaviivalla säätöpiirustuksiin.
+           Säätöpiirustukset laaditaan tasopiirustusmaisesti, jotta säätöurakoitsijalla on
+           käytettävissä koko verkoston kattavat suunnitelmat ja johon urakoitsija voi
+           merkata omat, mitatut verkostojen säätöön vaikuttavat arvot (painetasot- ja
+           erot, ilmamäärät…). Kuvat voidaan laatia järjestelmäkohtaisesti, jolloin säätö-
+           työn tekeminen on havainnollisempaa.
+           Säätöpiirustusten tueksi voidaan laatia erillisiä säätötaulukoita, esim. linjasää-
+           tö- ja patteriventtiilien arvoista.
+           Yhdistelmämallin käyttö säätöpiirustusten apuna on suositeltavaa. LVI-
+           sovelluksen laskemat tasapainotustiedot voidaan siirtää komponenteille, jolloin
+           yhdistelmämallista voidaan tarkastella esim. verkoston painetasoja sekä kom-
+           ponenttien säätöarvoja.
+
+
+
+
+                  Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                   Sivu 27 / 41
+
+
+
+
+Kuva 5.2: Esimerkki mallinnussovelluksen laskemista säätöpellin mitoitusarvoista, jotka on tal-
+lennetut IFC-tiedostoon.
+
+
+   Jos kohteesta on tilattu säätöpiirustukset sekä toteumamalli (kts. kappale 9),
+   voidaan säätöurakoitsijan todentamat, säädetyt ja mitatut arvot esisäätötietoi-
+   neen kirjoittaa tietomallinnettuun säätöventtiiliin tai -peltiin attribuuttitiedoksi.
+
+
+  Kappaleen 5.7 viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+  I Rakentaminen, harkinnanvaraiset tehtävät:
+  I 4.17, LVI-järjestelmämallin säätöpiirustukset
+
+
+
+
+           Versio 1.0             27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                   Sivu 28 / 41
+
+
+
+6 Sähkö- ja telesuunnittelun järjestelmämallit
+
+6.1 Yleiset mallinnusperiaatteet toteutussuunnitteluvaiheessa
+          Kohdan 6.1 –6.8 Viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+          G 0 Toteutussuunnittelu, perustehtävät:
+          G 3.1 TATE-reititystarpeet
+          G 3.2 Päätelaitteiden, pisteiden ja kenttälaitteiden sijoituksen varmennus
+          G 4.1 Hankintoja palvelevat suunnitelmat, Liite 2 (SÄH, TEL, TUR, RAU) mu-
+          kaisesti
+          G 4.18 Toteutusta palvelevat suunnitelmat, Liite 2 (SÄH, TEL, TUR, RAU) mu-
+          kaisesti
+
+        Vaatimus
+        Järjestelmien tilaa vievien osien 3D-geometria mallinnetaan Liitteen 1 mukaisesti.
+        Kohdissa 6.2 – 6.8 on esitetty mallinnusperiaatteet järjestelmäosittain.
+
+
+           Ohje
+           Automaatiojärjestelmän oleellisia komponentteja voidaan mallintaa myös säh-
+           köjärjestelmämalliin. Tällaisia komponentteja ovat esim. valvomoalakeskukset,
+           joiden olemassaolo ja sijainti ovat kiinteistönhallinnan kannalta oleellista tie-
+           toa. Alakeskusten mitoitus ja sijainnin määritys on tehtäväluettelon mukaisesti
+           RAU-suunnittelijan toimenkuvassa. RAU-suunnittelija toimittaa omat mallinne-
+           tut komponentit joko omana erillisenä osamallina tai keskustelee sähkösuunnit-
+           telijan kanssa siitä, mallinnetaanko ne osakokonaisuutena sähkösuunnittelijan
+           malliin.
+           Mallinnuksessa hyödynnetään tuotekirjastoja mallinnusohjelmiston kattamassa
+           laajuudessa. Jos mallissa on viittauksia mallin ulkopuolella sijaitseviin objek-
+           teihin tai tietoihin, tulee kaikki tarvittava viitetieto toimittaa mallin mukana
+           mallin julkaisun yhteydessä. Viittauksien käytöstä on lisättävä tieto tietomalli-
+           selostukseen.
+
+
+6.2 Sähkönjakelu
+        Vaatimus
+        Muuntajat, kytkinlaitokset, pääkeskukset, virtakiskostot ja näihin verrattavat lait-
+        teistot mallinnetaan vähintään laitteistojen oikeita tai tarvittaessa suunnittelijan
+        arvioimia mittoja vastaavilla yksinkertaisilla 3D-objekteilla.
+
+
+           Ohje
+           Mikäli käytettävissä on laitteistovalmistajan toimittamat tuotetta vastaavat 3D-
+           objektit, käytetään niitä suunnitteluohjelmiston sallimissa puitteissa.
+
+
+
+
+                  Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                 Sivu 29 / 41
+
+
+
+6.3 Keskukset
+         Vaatimus
+         Jako- ja ryhmäkeskukset, ristikytkentäkaapit ja näihin verrattavat laitteistot mal-
+         linnetaan vähintään laitteistojen oikeita tai tarvittaessa suunnittelijan arvioimia
+         mittoja vastaavilla yksinkertaisilla 3D-objekteilla.
+
+
+6.4 Johtotiet
+         Vaatimus
+         Kaapelihyllyt, ripustuskiskot, johtokourut ja lattiakanavat mallinnetaan niiden to-
+         dellista kokoa vastaavien mittojen mukaisilla objekteilla.
+
+
+            Ohje
+            Kannakkeita ei vaadita mallinnettaviksi. Mikäli erikoistapauksissa tätä vaadi-
+            taan, asiasta täytyy sopia erikseen.
+
+
+6.5 Valaisimet
+         Vaatimus
+         Valaisimet mallinnetaan ensisijaisesti käyttäen sovellusohjelman tarjoamaa val-
+         mistajan objektikirjastoa. Jos haluttua tuotetta ei löydy, käytetään valaisintyyppiä
+         vastaavien mittojen mukaista valaisintyyppiä tai 3D-objektia.
+
+
+            Ohje
+            Mikäli suunnitteluohjelmistossa on käytettävissä riittävän kattavia valaisin-
+            valmistajien objektikirjastoja, käytetään valitun valaisimen oikean näköistä
+            3D-objektia.
+
+
+6.6 Asennuskalusteet
+         Vaatimus
+         Kytkimien, pistorasioiden, ilmaisimien ja muiden vähän tilaa vaativien kompo-
+         nenttien 3D-geometriaa ei vaadita mallinnettavaksi muuta kuin erikseen sovituissa
+         mallihuoneissa sekä liitteen 1 mukaisesti esim. alakattoasennuksissa.
+         Asennuskaapeleiden ja -putkituksien 3D-geometriaa ei vaadita mallinnettavaksi
+         edes mallihuoneissa.
+         Asennuskalusteita ei huomioida törmäystarkasteluissa.
+
+
+            Ohje
+            Tästä voidaan kuitenkin erikseen sovittaessa projektikohtaisesti poiketa (esim.
+            elementtirakennuskohteissa). Tällöin on suunnittelusopimuksessa selvästi il-
+            maistava tarve asennuskalusteiden 3D-mallinnuksesta koko rakennuksen alu-
+            eella.
+
+                   Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                  Sivu 30 / 41
+
+
+
+           Jos asennuskaapelit ja –putkitukset halutaan mallinnettavan 3D-
+           geometrialtaan koko rakennuksen alueella, tulee siitäkin olla erillinen, projek-
+           tikohtainen toimeksianto.
+
+
+6.7 Turvajärjestelmät
+        Vaatimus
+        Mikäli projektissa päätetään mallintaa turva- ja valvontajärjestelmiä, ne mallinne-
+        taan omaan malliinsa. Myös turva- ja valvontajärjestelmien IFC-tiedostot pidetään
+        muista järjestelmistä erillään. Kaikesta turvajärjestelmiä koskevien tietojen ja tie-
+        dostojen suojaamisesta ja julkaisemisesta päättää tilaaja.
+
+
+           Ohje
+           Pääsääntöisesti näihin tietoihin on pääsy ainoastaan erikseen nimetyillä henki-
+           löillä, eikä mitään turva- ja valvontajärjestelmiin liittyviä tietoja saa edes siir-
+           tää suojaamattomia yhteyksiä käyttäen.
+           Tilaajan tulee toimittaa hankekohtainen turvallisuusliite, jossa selvennetään
+           turvallisuusluokiteltujen projektien tietomallien käsittelyä.
+
+
+6.8 Rakennusurakan hankinnat
+        Vaatimus
+        Savunpoistoluukkujen ohjauskeskukset, oviohjauskeskukset sekä muut sähkö-
+        urakkaan kuulumattomat laitteistot mallinnetaan yksinkertaisilla 3D-objekteilla
+        suunnittelijan senhetkisen tiedon tai arvion mukaisilla mitoilla.
+        Mikäli nämä laitteet vaaditaan mallinnettavaksi todellisten asennettavien laitteis-
+        tojen mukaisilla mitoilla ja/tai 3D-objekteilla, siitä täytyy sopia erikseen.
+
+
+
+
+                  Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                              Sivu 31 / 41
+
+
+
+
+7 Rakennusautomaatiosuunnittelun järjestelmämal-
+  lit
+      Rakennusautomaatiosuunnittelijan tietomallinnustehtäviä ovat tilantarpeiden va-
+      raus, palvelualuekaavioiden teko sekä kenttälaitteiden sijoitus.
+      Rakennusautomaatiomallin geometria- ja tietosisältö esitetty liitteessä 1.
+
+
+      Vaatimus
+      Rakennusautomaatiosuunnittelija on velvollinen varaamaan tarvittavat tilantar-
+      peet, esim. kiinteistövalvomohuoneen, kun kohteen aikataulussa on TATE-
+      tilavarausten tekoaika.
+      Rakennusautomaatiosuunnittelijan ja sähkösuunnittelijan yhteistyö mallintamises-
+      sa sovitaan projektikohtaisesti.
+      Rakennusautomaatiosuunnittelija on velvollinen mallintamaan esim. rakennusau-
+      tomaatiojärjestelmän alakeskukset, mallihuoneiden ja –alueiden anturit, säätölai-
+      tekotelot, väylälaitekotelot sekä mahdolliset muut järjestelmään liittyvät laitekote-
+      lot.
+
+
+         Ohje
+         Yleensä projekteissa on kuitenkin toimivana käytäntönä, että sähkösuunnittelija
+         mallintaa ko. komponentit osana omaa sähkömallia. Kun näin toimitaan, on
+         rakennusautomaatiosuunnittelija velvollinen antamaan sähkösuunnittelijalle
+         tarkat ohjeet komponenttien sijoituksesta, tunnuksista ja ulkomitoista, jotta
+         sähkösuunnittelijalla on mahdollisuus sijoittaa komponentit kertasuorituksena
+         oikeaan paikkaan.
+         Rakennusautomaatiosuunnittelijan vastuulla on komponenttien oikea sijoitus,
+         olkoonkin se osana sähkömallia tai omana, erillisenä RAU-osamallina.
+
+
+
+
+                Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                               Sivu 32 / 41
+
+
+
+8 Mallien yhdistäminen
+         Tarvittaessa projektissa tehdään suunnittelijoiden malleista yhdistelmämalli, jolla
+         voidaan havainnollistaa suunnitelmia ja tarkastella suunnitelmien yhteen-
+         sopivuutta. Esimerkkikohteita ovat tilavarausten tarkastelu ja varattujen tilojen
+         riittävyyden verifiointi, talotekniikan päätelaitteiden tutkiminen osana rakennuk-
+         sen arkkitehtuuria, TATE-järjestelmien törmäystarkastelut ja reikä- ja varaus-
+         suunnittelu.
+8.1 Verkostomallinnuksen geometrian tarkkuustaso ja tietosisältö
+8.1.1 Geometrian tarkkuustaso
+         Vaatimus
+         Geometrian tarkkuustasovaateet on esitetty komponenttikohtaisesti liitteessä 1
+         Verkostojen geometrian tarkkuustason on oltava sellainen, että kohteen TATE-
+         asennukset on asennettavissa tietomallin perusteella. Geometriamallinnuksen ta-
+         voitteena on risteilyvapaa tietomalli, jonka tekemisessä yhdistelmämalli on apuna.
+         Yhdistelmämalleissa objektien tulee sijaita absoluuttisessa korkeusasemassa.
+
+
+            Ohje
+            Projektikohtaisesti voidaan sopia tarkempi mallinnusmenettely kuin näissä
+            vaatimuksissa esitetty. Kun näin toimitaan, tulee projektikohtaiset vaatimukset
+            toimittaa kirjallisesti TATE-suunnittelijoille tarjouspyynnön liitteenä.
+            Järjestelmät mallinnetaan 3D-muodossa siten, että kanavat ja putkistot väistä-
+            vät toisiaan. Kytkentäjohtojen kohdalla sallitaan DN10-25 putkistojen keski-
+            näiset risteilyt. Esimerkiksi pattereihin, jäähdytyspalkkeihin, vesikalusteille jne.
+            menevät kytkentäjohdot ovat tällaisia kohteita.
+
+
+
+
+            Kuva 8.1: Esimerkki pattereiden kytkentäjohdoista, jotka lävistävät toisensa sallitusti.
+
+                   Versio 1.0              27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                  Sivu 33 / 41
+
+
+
+
+Jako- ja runkojohtojen osalta mallinnuksen tulee olla tarkempaa. Pienempidi-
+mensioisten runkoputkistojen (kts. Liite 1) risteilyt ovat sallittuja, mutta eivät
+toivottuja. Putkistojen lähdöt runkojohdoista on tehtävä todellisuutta vastaa-
+vasti (T-haara ylös- tai alaspäin).
+
+
+
+
+Kuva 8.2:.Esimerkki putkimatosta, jossa jakojohdot lähtevät oikeaoppisesti rungosta, ohittaen
+muut putket.
+Verkostojen geometriamallinnuksen tarkkuustasossa sallitaan objektien pienet
+viistämiset toisiinsa nähden, kunhan verkostot ovat asennettavissa työmaa-
+olosuhteissa ilman vaikutusta kustannuksiin ja aikatauluun. On myös huomioi-
+tava, että verkostot mallinnetaan eristettyinä.
+
+
+
+
+Kuva 8.3: Esimerkki sallitusta, mutta ei toivottavasta viistämisestä. Verkostot ovat asennetta-
+vissa siirrettäessä putkistoja hieman alemmaksi.
+
+       Versio 1.0              27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                 Sivu 34 / 41
+
+
+
+Geometriamallinnuksessa ei sallita verkostojen päällekkäisyyksiä tai törmäily-
+jä,jotka johtuvat törmäystarkastuksen laiminlyömisestä.
+Jokaisen suunnittelualan edustajan on tehtävä malleille omatarkastuksia ja ra-
+portoitava ne ennen verkostojen toimitusta toiselle osapuolelle törmäilytarkas-
+tuksen suorittamiseksi.
+On huomioitava, että ennen kuin talotekniset verkostot voidaan mallintaa vaa-
+ditulla tarkkuustasolla, niin TATE –suunnittelijalla on oltava käytössään koh-
+teen päägeometrialtaan todellinen rakennemalli (laattapaksuudet ja palkkiko-
+rot) sekä päätelaitteiden ja valaisinten asennusta varten kohteen alakattomalli
+sekä alakaton ruutujako (esim. 2D-alakattopiirustus).
+
+
+
+
+Kuva 8.4: Esimerkki ei sallitusta risteilystä. Mallista voidaan todeta, että IV-kytkentäkanavaa
+laskemalla on edelleen epävarmuus siitä, mahtuuko kanava kulkemaan putkien alapuolelta.
+
+
+
+
+Kuva 8.5: Esimerkki ei-sallitusta mallinnuksesta. Joko IV-kanavia on nostettava ylöspäin tai
+alakattoa laskettava alaspäin
+
+
+       Versio 1.0              27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                              Sivu 35 / 41
+
+
+
+
+8.1.2 Tietosisältö
+          Vaatimus
+          Tietosisältövaade on esitetty komponenttikohtaisesti liitteessä 1
+          Järjestelmämallien tietosisältöön on voitava luottaa. Laitteiden koodauksissa on
+          käytettävä tunnuksia, jotka ovat vastaavia myös muissa suunnitteludokumenteissa.
+          Kun koodataan esimerkiksi ilmanvaihdon päätelaite ”T1”, on tuotetiedon oltava
+          tietomallissa (ohjelmiston laitetietokantojen rajoissa) vastaava kuin muissa suun-
+          nitteludokumenteissa.
+
+
+             Ohje
+             Jos haluttua tuotetta ei löydy ohjelmiston laitetietokannasta, käytetään lähintä
+             vastaavaa. Tällöin halutun tuotteen tiedot kirjoitetaan laitteen vapaaseen tie-
+             tokenttään (attribuuttitieto, propertytieto tms.), jotta halutun tuotteen malli ja
+             merkki saadaan tarvittaessa tietoon.
+             Ym. menettelytavan periaate pätee lisäksi esimerkiksi valaisimiin, vesikalustei-
+             siin, putkisto- ja kanavistovarusteisiin ym.. yhteistunnisteen sisältäviin kom-
+             ponentteihin.
+             Kun käytetään yksilöllisesti koodattavia komponentteja (esim. moottoroitu pa-
+             lopelti, ilmavirtasäädin, yleiskaapelointipisteet, paloilmaisimet jne.) tulee yksi-
+             löllinen tunniste kirjoittaa objektin sellaiseen kenttään, että se saadaan näky-
+             ville tietomallista ulos otettaviin listauksiin. Tällaisia listauksia voivat olla
+             esimerkiksi moottoroitujen palopeltien luettelot, ATK-pisteluettelo ja erilaiset
+             tarkastuslistat vastaanottovaiheessa jne.
+             Komponenttien tietosisällön tekeminen ja täyttäminen on riippuvainen käyte-
+             tystä sovellusohjelmasta. Mm. yksilöllisiä tunnisteita ei voida kaikissa ohjel-
+             mistoissa kirjoittaa kaikille halutuille komponenteille.
+
+
+
+
+             Kuva 8.6: Esimerkki tietomallista otetusta huonekohtaisesta IV-päätelaitelistasta sekä tasapai-
+             notustiedoista
+
+
+
+
+             Kuva 8.7: Esimerkki tietomallista otetusta lämmityspatterien huonekohtaisesta tasapainotuslis-
+             tasta:
+
+
+
+
+                     Versio 1.0             27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                Sivu 36 / 41
+
+
+
+8.2 Yhteensovitus yhdistelmämallin avulla
+        Vaatimus
+        TATE-suunnittelijoiden on tehtävä teknisistä järjestelmistä yhteensovitustarkaste-
+        lut kaikkien TATE-järjestelmämallien kesken. Sen jälkeen niitä tarkastellaan ra-
+        kenne- ja arkkitehtimalleja vastaan.
+
+
+           Ohje
+           Virallinen tarkastus tehdään suunnittelijoiden yhteistyönä tai kolmannen osa-
+           puolen tekemänä. Työnjaosta on sovittava projektin alussa erikseen. TATE-
+           suunnittelija on velvollinen toimittamaan törmäystarkasteluihin vaadittavat
+           IFC-tiedostot tarkastuksen suorittavalle osapuolille vähintään jokaisen suun-
+           nitteluvaiheen lopussa.
+           Huomaa sähkö- ja telejärjestelmien vähän tilaa vievien komponenttien kohtelu
+           törmäystarkastelussa (kohta 6.6).
+           Jokainen suunnittelija on lisäksi velvollinen tekemään omatarkastuksia oman
+           alueen mallinnustarkkuudesta suunnittelutyön edetessä.
+
+
+          Kappaleen 8.2 viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+          G 0 Toteutussuunnittelu, perustehtävät:
+          G 4.5 Eri suunnittelualojen suunnitelmien yhteensovitus
+          G 5.4 Yhteensovitus yhdistelmämallin avulla
+
+8.3 Reikä- ja varaussuunnittelu
+        Vaatimus
+        Tietomallipohjaisen reikä- ja varaussuunnittelun käyttö, sekä tietomallista tehtävi-
+        en reikäpiirustuksien teko ja vastuut pitää sopia aina projektikohtaisesti
+
+
+           Ohje
+           Yhdistämällä TATE-järjestelmämallit ja rakennesuunnittelijan malli sekä tar-
+           vittaessa myös arkkitehdin rakennusosamalli, voidaan tietomallipohjaisen
+           törmäystarkastelumenettelyn avulla helpottaa läpivientien paikantamista ja
+           suunnittelua.
+           On huomioitava, että automaattisesti luodut reikävarausobjektit eivät aina tuo-
+           ta haluttua lopputulosta – TATE-reikävarausten luomisessa suositellaan ma-
+           nuaalista menettelyä.
+           Tietomallipohjaisessa varaussuunnittelussa rakennesuunnittelija tuottaa mallin
+           sovitussa formaatissa TATE-suunnittelijalle varaussuunnittelua varten. Mallin
+           tulee olla kerroskohtainen, sisältäen yläpuolisen laataston ja siihen liittyvät
+           kantavat seinät.
+           TATE-suunnittelija tekee IFC-pohjaisen varausmallin, joka sisältää vain va-
+           rausobjektit. Tämä varaus IFC-malli toimitetaan rakennesuunnittelijalle ker-
+           roskohtaisena
+
+
+                  Versio 1.0         27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                 Sivu 37 / 41
+
+
+
+            Jokaisesta varausobjektista tulee ilmetä, kenen varaama se on. Varauksien ko-
+            ko ja tunnisteet liitetään attribuuttitietoina varausobjektiin. Varaukset mallin-
+            netaan varausmalliin siten, että ne ovat kooltaan ja sijainniltaan oikeassa pai-
+            kassa.
+            Korkeusasemana käytetään absoluuttista korkeusasemaa.
+            Visuaalisen tarkastelun ja rakennesuunnittelijan varauksen teon helpottami-
+            seksi tulee varausobjektit mallintaa paksumpina kuin läpäistävät rakenteet.
+            Reikävarausobjektien tietoja käyttäen rakennesuunnittelija tekee rakenteisiin
+            rei’itykset ja muut varaukset, jos se on rakenteellisesti mahdollista. Jos reiän
+            teko on rakenteellisesti mahdoton, rakennesuunnittelijan tulee informoida siitä
+            TATE-suunnittelijaa, joka tekee rakennesuunnittelijan ehdotusten perusteella
+            uuden version reikävarausobjekteista ja lähettää ne rakennesuunnittelijalle.
+            Teknisesti on suositeltavaa, että tehtyjen reikävarausobjektien muuttamisessa
+            ei varausobjektia poisteta ja lisätä uutta tilalle, vaan mallinnettua objektia
+            muutetaan (esim. kokoa tai sijaintia). Syynä on se, että näin ohjelmistot tunnis-
+            tavat reikävarausobjektin muuttuneeksi reikävaraukseksi, eivätkä uudeksi.
+            Tietomallipohjaista reikävaraussuunnittelua ei vaadita elementtien varauspii-
+            rustuksia tehtäessä sähkötekniikan putkitusten, rasioiden kolousten tms. ele-
+            mentissä kulkevien reittien osalta (TATE-sovellusohjelmien tuen puute ele-
+            menttikolousten käsittelyssä). Elementin kokonaan lävistävät varaukset tulee
+            kuitenkin toimittaa reikävarausobjekteina. TATE-suunnittelija esittää koloukset
+            tms. varaukset rakennesuunnittelijalle perinteisin suunnittelumenetelmin.
+
+
+           Kappaleen 8.3 viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+           G 0 Toteutussuunnittelu, perustehtävät:
+           G 4.4 Kantavien rakenteiden varaustiedot
+           G Toteutussuunnittelu, harkinnanvaraiset tehtävät
+           G 4.17 Kantavien rakenteiden varaustietojen tarkennus
+
+
+
+8.3.1 Reikäpiirustusten tekoprosessi
+         Vaatimus
+         Käytettäessä tietomallipohjaista reikä- ja varaussuunnittelua, tulee reikäpiirustuk-
+         sien teko, vastuualueet ja toimintatavat RAK- ja TATE-suunnittelun välillä sopia
+         projektikohtaisesti. 2D-reikäpiirustusdokumenttien laatija tulisi olla selvitettynä
+         tilaajan puolelta jo suunnittelusopimusten teon yhteydessä.
+         Projektikohtaisesti on varmistettava myös käytössä olevien sovellusohjelmistojen
+         yhteensopivuus RAK- ja TATE suunnittelijoiden välillä.
+
+
+         Ohje
+            Tietomallipohjaista reikä- ja varaussuunnittelua voidaan hyödyntää erilaisin
+            tavoin 2D-reikäpiirustuksien teossa.
+
+
+
+                  Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                      Sivu 38 / 41
+
+
+
+  Näitä toimintatapoja tai niiden variaatiota voidaan harkita käytettäväksi kun
+  kohteessa tarvitaan 2D-reikäpiirustuksia. Kaikissa toimintatavoissa lähtökoh-
+  tana on kohdan 8.3 mukainen toiminta.
+
+
+Vaihtoehto 1:
+   ·   Rakennesuunnittelija toimittaa TATE:lle 2D ja 3D-reikäpiirustuspohjat.
+   ·   TATE käyttää tekemiään reikävarausobjekteja hyödyksi ja tekee niiden pe-
+       rusteella 2D-reikäpiirustuksen, sisältäen mittaviivat.
+   ·   Reikävaraukset mitoitetaan ensisijaisesti moduliverkkoon tai toisena vaih-
+       toehtona saneerauskohteissa olemassaoleviin rakenteisiin.
+   ·   2D-reikävaraustiedostot toimitetaan rakennesuunnittelijalle.
+   ·   Rakennesuunnittelija tekee tulosteet ja toimittaa reikäkuvat jakeluun.
+
+Vaihtoehto 2
+   ·   Rakennesuunnittelija toimittaa TATE:lle 3D-reikäpiirustuspohjat, kerros-
+       kohtaisena, absoluutisessa korossa.
+   ·   TATE tekee reikävarausobjektit toimitetun mallin korkeusasemaan sekä
+       toimittaa tekemänsä reikävarausobjektit rakennesuunnittelijalle IFC-
+       formaattisena.
+   ·   Rakennesuunnittelija tekee TATE:n toimittamien reikävarausobjektien pe-
+       rusteella 2D-reikäpiirustukset mittaviivoilla ja mitoituksilla varustettuna
+       sekä tulostaa ja toimittaa ne jakeluun.
+
+
+Vaihtoehto 3
+   ·   Rakennesuunnittelija toimittaa TATE:lle 3D-reikäpiirustuspohjat, kerros-
+       kohtaisena, absoluutisessa korkeusasemassa.
+   ·   TATE tekee reikävarausobjektit toimitetun mallin korkeusasemaan sekä
+       toimittaa tekemänsä reikävarausobjektit rakennesuunnittelijalle IFC-
+       formaattisena.
+   ·   Rakennesuunnittelija tekee 2D-reikäkuvapohjat, joissa näkyvät TATE:n
+       toimittamat reikävaraukset.
+   ·   Rakennesuunnittelija laittaa kuviin reikävarausten tietojen mittaviivan
+       (esim. ”IU, 300x200, KP=+25.3”). Tämä tieto on otettu TATE:n toimit-
+       tamista reikävarausobjekteista.
+   ·   Rakennesuunnittelija tekee tähän 2D –kuvaan mitoitusviivatason eri suun-
+       nittelualoille sillä värillä, jolla he haluavat mitoitusviivat tulostuvan
+       (=viivan paksuus mustavalkotulosteeessa).
+   ·   Rakennesuunnittelija toimittaa 2D–reikäkuvapohjat TATE:lle.
+   ·   TATE tekee mitoitusviivat rakennesuunnittelijan tekemälle tasolle käyttäen
+       CAD-ohjelmiston normaaleja mittaviivatyökaluja.
+   ·   Reikävaraukset mitoitetaan ensisijaisesti moduliverkkoon tai toisena vaih-
+       toehtona saneerauskohteissa olemassa oleviin rakenteisiin.
+        Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                   Sivu 39 / 41
+
+
+
+            ·   Mittaviivoilla varustetut 2D-reikävaraustiedostot toimitetaan rakenne-
+                suunnittelijalle.
+            ·   Rakennesuunnittelija tekee tulosteet ja toimittaa reikäkuvat jakeluun.
+
+
+
+
+8.4 TATE-malleista tuotettavat määräluettelot
+        Vaatimus
+        TATE-järjestelmämalleja käytetään määrätiedon tuottamiseen, kun tehtävä on ti-
+        lattu suunnittelijalta.
+        Määräluettelon rakenne sovitaan projektikohtaisesti tilaajan kanssa. Suunnittelija
+        tekee ehdotuksen määräluettelon rakenteesta (esim. taulukkolaskentaohjelmiston
+        formaatti) ja hyväksyttää sen tilaajalla / tekee mahdolliset muutokset ja lisäykset.
+        Mallista ja muilla tavoin tuotetun määrätiedon rajauksesta ja sisältölaajuudesta on
+        sovittava erikseen.
+
+
+           Ohje
+           Esimerkiksi toimitettaessa hormielementtejä, on hyväksi havaittu tapa toimia
+           siten, että lisätään elementin sisäisille verkostoille erillisellä ”status” –
+           attribuutilla tietosisältöä, jotta ne erottuvat materiaalilistauksista omiksi, eril-
+           lisiksi hankinnoiksi.
+           Projektissa oleva urakkarajaliite määrää hankinnat ja työsuoritukset eri ura-
+           koitsijoille. Tietomallissa oleva informaatio on urakkarajaliitettä tukevaa.
+           Erikseen mallinnettavia, komponenttikohtaisia urakkamerkintöjä ei vaadita
+           tehtäväksi suunnittelijan toimesta.
+           Komponentti- tai aluekohtaisia merkintöjä voidaan toteuttaa erikseen niin so-
+           vittaessa, esim. erottelemaan teknisiä tiloja, kuiluja, käytäväalueita, asennus-
+           aikataulutusta jne.
+           Määrätiedot voidaan lukea myös suoraan IFC-tiedostoista tätä tarkoitusta var-
+           ten tehdyillä sovelluksilla.
+           Määräluettelon mukana on oltava kohdan 2.2 mukainen tietomalliselostus.
+
+          Kappaleen 8.4 viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+          G Toteutusuunnittelu, harkinnanvaraiset tehtävät:
+          G 4.11 Määräluettelot
+
+
+8.5 TATE -esivalmisteet
+        TATE -suunnittelijan tekemää tietomallia ei voida käyttää suoraan esivalmisteosi-
+        en tekemiseen.
+        Kun jostain osa-alueesta halutaan tehdä esivalmisteita (esim. käytäväalueet, hor-
+        mistot, kuilut, teknisten tilojen putkistot, suorakaidekanavistot jne.), tulee mallin-
+        nustarkkuus, menetelmät ja ohjelmistot olla soveltuvia halutun osa-alueen esival-
+        mistemallien tekemiselle.
+
+                  Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                  Sivu 40 / 41
+
+
+
+         Esivalmisteosien suunnittelu ei kuulu normaaliin TATE-suunnittelijan toimek-
+         siantoon, mutta erikseen sopimalla voidaan suunnittelijan tietomallia käyttää hyö-
+         dyksi esivalmisteosien mallintamiselle.
+
+9 Toteumamalli
+         Vaatimus
+         TATE-suunnittelijalta voidaan tarjouspyynnössä pyytää järjestelmämallin päivit-
+         tämistä rakennettua tilannetta vastaavaksi, jolloin tietomallista puhutaan to-
+         teumamallina.
+
+
+            Ohje
+            Toteumamalli on päivitetty versio järjestelmämallista. Sen tietosisältövaati-
+            mukset vastaavat järjestelmämallia.
+            Toteumamallin tulee sisältää urakoitsijoiden valitsemat tuotetiedot tuotetiedol-
+            la varustettujen komponenttien osalta TATE -suunnitteluohjelmiston tuotetieto-
+            kannan sisällön rajoissa.
+
+
+           ”TATE-Suunnittelun Tehtäväluettelo 2012”, Hanketietokortti:
+           Kohta 2.3 Ylläpidon tiedonhallinnan vaatimustaso, taso 3
+
+
+9.1 Verkostojen tietosisällön päivitys urakoitsijatiedoilla
+         Vaatimus
+         Kun suunnittelusopimuksessa on tilattu verkostojen suunnittelunaikaisten kompo-
+         nenttien päivitys vastaamaan urakoitsijan valitsemia komponentteja, tulee suunnit-
+         telijan vaihtaa todelliset, urakoitsijan valitsemat tuotteet järjestelmämalliin.
+
+
+            Ohje
+            Jos oikeaa tuotetta ei löydy sovellusohjelman tietokannasta, suunnittelija valit-
+            see lähimmän vastaavan. Kun toimitaan näin, kirjoittaa suunnittelija valitun
+            tuotteen attribuuttitiedoksi todellisen tuotteen tyypin ja tarvittavat muut tiedot.
+            Tietomallin käyttötarkoitus tulee selvittää ennen komponenttien vaihtoa. Jos
+            komponenttien vaihdon aiheuttamalle hyödylle ei ole selvää käyttötarkoitusta,
+            on tämän työn merkitys kyseenalainen.
+            Jos tietomallia tullaan käyttämään ylläpidossa, tulee tehdä hankekohtainen lu-
+            ettelo päivitettävistä komponenteista (mm. sulkuventtiilit, valaisimet).
+            Kun kohteeseen tehdään myös erilliset LVI-verkostojen säätöpiirustukset (koh-
+            ta 5.7), niin päivityksen tulee koskea vähintään kaikkia säätöön vaikuttavia
+            komponentteja, esim:
+            Ilmanvaihto:
+            IV-päätelaitteet, säätöpellit (myös ilmavirtasäätimet ja vakiovirtaussäätimet
+            jne.), äänenvaimentimet ja palopellit
+
+
+                   Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                    Sivu 41 / 41
+
+
+
+            Putkistot:
+            Linjasäätöventtiilit, esisäädettävät säätökäyrälliset venttiilit, käyttövesipisteet.
+
+
+          Kappaleen 9.1 viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+          I Rakentaminen, harkinnanvaraiset tehtävät:
+          I 4.14, Järjestelmämallin ylläpito laitehyväksyntävaiheessa
+          I 4.15 Järjestelmämallin ylläpito lopullisilla tiedoilla
+
+
+9.2 Verkostojen geometrian päivitys urakoitsijatiedoilla
+         Vaatimus
+         Kun suunnittelusopimukseen kuuluu ns. ”punakynäpiirustusten” teko, jonka ta-
+         voitteena on saada As Built –tasoiset geometriamallit (=toteumamalli), tulee TA-
+         TE-urakoitsijoiden yhdessä toimittaa suunnittelijalle tiedot muutetuista verkosto-
+         reiteistä.
+         TATE-suunnittelija mallintaa näiden tietojen perusteella mallin geometrian.
+
+
+            Ohje
+            Urakoitsijoilla on velvollisuus keskenään tarkastaa toistensa piirustuksista tai
+            malleista, että verkostojen muutokset tulevat kaikkien urakoitsijoiden puna-
+            kynäkuviin.
+            Esimerkiksi IV:n reittimuutos voi tarkoittaa sitä, että putki- ja sähköurakoitsi-
+            jan kuviin on tultava myös muutos. Nämä muutokset on esitettävä suunnitteli-
+            jalle jokaisen urakoitsijan piirustuksissa 3D-mallin päivittämisen mahdollis-
+            tamiseksi.
+            Vaihtoehtoisesti muuttunut kohta voidaan valokuvata urakoitsijoiden toimesta,
+            josta voidaan selvittää muutosperiaatteet.
+
+
+          Kappaleen 9.2 viitteet ”TATE-Suunnittelun Tehtäväluettelo 2012”:
+          I Rakentaminen, harkinnanvaraiset tehtävät:
+          I 4.15, Yhdistelmämallin ylläpito lopullisilla tiedoilla
+
+          J Käyttöönotto, harkinnanvaraiset tehtävät
+          J 4.3 Luovutuspiirustukset
+
+
+
+
+                   Versio 1.0          27.03.2012 © COBIM - hankkeen osapuolet
+Yleiset Tietomallivaatimukset 2012, Osa 4 "Talotekninen suunnittelu"                                                                                                                                                              Liite 1. Sivu 1/9
+
+
+
+
+         Taloteknisen tietomallin mallinnettavat komponentit, tietosisältö ja geometrian tarkkuustaso suunnitteluvaiheittain
+
+           2D: esitetään tasokuvassa ja/tai kaaviossa                                          Vaikka jotain komponenttia ei ole vaadittu mallinnettavaksi, ei niiden mallinnus ole silti kiellettyä.
+           BIM: mallinnetaan suunnittelunaikaisella geometriatiedolla                          Kts. taulukon loppuosan selvennys tietosisällöstä
+           Tyhjä kenttä = ei mallinnus- tai tietosisältövaadetta                               Kaikilla komponenteilla oltava verkosto-/ järjestelmätunnus
+                                                                                               Tietosisältövaatimusten laajuus on riippuvainen käytetystä sovellusohjelmistosta
+
+           Edellytykset verkostogeometrian tarkkuustason saavuttamiselle: RAK ja ARK 3D-malli käytettävissä ennen TATE-malinnuksen aloittamista.
+
+            Komponentti /
+                                                   Yleissuunnittelu                                                    Toteutussuunnittelu
+           tehtävä
+                                                                Geometrian                                                                                                        Tietosisältö pääverkostojen ja
+                                                   2D BIM                                      Tietosisältö            2D BIM   Geometrian tarkkuustaso
+                                                               tarkkuustaso                                                                                                       -järjestelmien osalta
+         TATE
+                                                               kts. Tekstiosuuden kapppale     kts. Tekstiosuuden
+           TATE-vaatimusmalli                                                                                                   kts. Tekstiosuuden kapppale 3                      kts. Tekstiosuuden kapppale 3
+                                                               3                               kapppale 3
+
+                                                               Putkistojen, kanavien,          Leikkaukset tehdään
+                                                               kaapelihyllyjen, valaisinten    vähintään                                                                           Leikkaukset tehdään vähintään peruskäytävistä,
+                                                                                                                                Putkistojen, kanavien, kaapelihyllyjen,
+                                                               jne. komponenttien              peruskäytävistä. LVI-                                                               ikkunapenkeistä, kuilujen ulostuloista, TATE-
+           2D-leikkaukset                           x                                                                  x        valaisinten jne. komponenttien toleranssi 1cm.
+                                                               toleranssi 1cm. Kannakointi     suunnittelija                                                                       tekniikkakerroksista (kellarit, putkitunnelit jne.).
+                                                                                                                                Kannakointi esitettävä. Eristyspasuus mukana.
+                                                               esitettävä. Eristyspaksuus      koordinoi TATE-                                                                     LVI-suunnittelija koordinoi TATE-leikkaukset
+                                                               mukana.                         leikkaukset
+
+
+           Reikävarausobjektit                                                                                         x   x    Oikea sijainti, toleranssi 0cm                     Mitat, urakoitsijatieto, abs.korkoasema
+
+
+                                                                                                                                Arkkitehdin alakattokuvan mukaisessa paikassa.     kts. Taulukon muut kohdat. Onnistuneeseen
+                                                                                                                                Mallinnetaan kaikki alakattopintaan                mallinnukseen tarvitaan arkkitehdin alakatto
+           Näkyvät alakattoasennukset                                                                                  x   x
+                                                                                                                                asennattevat komponentit (ilmaisimet,              mallinnettuna sekä alakattoruutujako ja
+                                                                                                                                valaisimet, kaiuttimet, päätelaitteet jne.).       laitesijoitus 2D-alakattopiirustuksessa
+
+
+                                                                                                                                                                                   kts. Taulukon muut kohdat. Onnistuneeseen
+                                                               kts. Tekstin kappale 4.3,       kts. Tekstin kappale
+           Mallihuoneet ja -alueet                        x                                                                x    Toleranssi 5cm.                                    mallinnukseen tarvitaan arkkitehdin sekä
+                                                               toleranssi 5cm                  4.3
+                                                                                                                                                                                   rakennesuunnittelijan malli
+
+
+                                                               Tilojen mukaisesti. Jos         Palvelualueiden
+                                                               tilaobjekti pitää jakaa         tunniste
+                                                                                                                                Tilojen mukaisesti. Jos tilaobjekti pitää jakaa
+                                                               useampaan                       tilaryhmäkohtaisesti                                                                Palvelualueiden tunniste tilakohtaisesti (esim.
+           Palvelualuekaaviot                       x                                                                  x        useampaan palvelualueeseen, tekee TATE-
+                                                               palvelualueeseen, tekee TATE-   (esim. "IV-kone                                                                     "IV-kone 301TK01, Toimistot 1-3. krs")
+                                                                                                                                suunnittelija sen omana työnä
+                                                               suunnittelija sen omana         301TK01, Toimistot 1-
+                                                               työnä                           3. krs")
+Yleiset Tietomallivaatimukset 2012, Osa 4 "Talotekninen suunnittelu"                                                                                                                        Liite 1. Sivu 2/9
+
+
+            Komponentti /
+                                                    Yleissuunnittelu                               Toteutussuunnittelu
+           tehtävä
+                                                                Geometrian                                                                                Tietosisältö pääverkostojen ja
+                                                    2D BIM                    Tietosisältö         2D BIM   Geometrian tarkkuustaso
+                                                               tarkkuustaso                                                                               -järjestelmien osalta
+                                                                              kts. Tekstiosuuden
+           Tietomalliselostus                                                                                                                              kts. Tekstiosuuden kappale 2.2
+                                                                              kappale 2.2
+
+                                                                                                            Viitteellinen sijainti. Todellinen sijoitus
+                                                                                                            työmaalla ARK-piirustusten mukaisesti
+           Huoltoluukut rakenteissa (Alakatto,
+                                                                                                   x        huomioiden työmaa-aikaiset muutokset
+           seinät, laatat jne.)
+                                                                                                            (luukusta päästävä käsiksi huolto- /
+                                                                                                            tarkistuskohteeseen)
+
+                                                                              kts. Tekstiosuuden
+           Tuotannon esivalmisteet                                                                                                                         kts. Tekstiosuuden kappale 8.5
+                                                                              kappale 8.5
+
+           Sovellusohjelmistojen ulkopuoliset ns.
+                                                                                                   x   x    Ulkomitat suunnittelijan arvion mukaisesti     Tunnus, järjestelmätieto
+           "itsemallinnetut 3D-objektit"
+Yleiset Tietomallivaatimukset 2012, Osa 4 "Talotekninen suunnittelu"                                                                                                                                                           Liite 1. Sivu 3/9
+
+
+            Komponentti /
+                                                   Yleissuunnittelu                                              Toteutussuunnittelu
+           tehtävä
+                                                                Geometrian                                                                                                       Tietosisältö pääverkostojen ja
+                                                   2D BIM                                         Tietosisältö   2D BIM   Geometrian tarkkuustaso
+                                                               tarkkuustaso                                                                                                      -järjestelmien osalta
+         Putkistot
+                                                               Laattaobjektin alapuolella
+           Runkoputkistot                                      (esim. katto), ilmaisemassa                                2D-leikkausten mukaisessa paikassa. Oltava
+           DN20 - DN32                              x     x    reittiä. Ei käytettävissä reikä-                  x   x    asennettavissa kohteeseen                               Materiaali, DN-koko, tilavuusvirtaus, painetaso.
+           Cu18 - Cu35                                         tai asennussuunnitelmassa                                  yhdistelmämallitarkastelun perusteella
+                                                               eikä materiaalilistauksissa.
+                                                               Laattaobjektin alapuolella
+           Runkoputkistot                                      (esim. katto), ilmaisemassa                                2D-leikkausten mukaisessa paikassa. Oltava              Materiaali, DN-koko, tilavuusvirtaus, painetaso.
+           DN40 ->                                  x     x    reittiä. Ei käytettävissä reikä-                  x   x    asennettavissa kohteeseen                               2D-kuvissa absoluuttinen korkoasema
+           Cu42 ->                                             tai asennussuunnitelmassa                                  yhdistelmämallitarkastelun perusteella                  (keskilinja) mittaviivassa
+                                                               eikä materiaalilistauksissa.
+
+                                                                                                                          Oltava asennettavissa kohteeseen
+           Kytkentäjohdot                                                                                        x   x    yhdistelmämallitarkastelun perusteella. DN10-           Materiaali, DN-koko, tilavuusvirta, painetaso
+                                                                                                                          25 putkistojen risteilyt sallitaan
+                                                                                                                          Ei vaadetta erillliselle eristysobjektille putkessa.    Eristyksen tyyppi ja paksuus. Metalliset / selvästi
+           Putkistoeristeet                                                                                          x    Putken ulkomitassa oltava eristyspaksuus                kustannuksiin vaikuttavat pinnoitteet kerrottava
+                                                                                                                          mukana                                                  mittaviivassa ja tietosisällössä.
+           Sulkuventtiilit                                                                                       x   x    Ulkomitat valitun komponentin mukaiset                  Malli, DN-koko, painehäviö
+                                                                                                                                                                                  Malli, DN-koko, tilavuusvirta, painehäviö,
+           Esisäädettävät venttiilit                                                                             x   x    Ulkomitat valitun komponentin mukaiset
+                                                                                                                                                                                  esisäätö, tunnus
+           Moottoriventtiilit                                                                                    x   x    Ulkomitat valitun komponentin mukaiset                  DN-koko, tilavuusvirta, painehäviö, tunnus
+           Muut venttiilit                                                                                       x   x    Ulkomitat valitun komponentin mukaiset                  DN-koko, painehäviö
+           Ilmanpoistimet                                                                                        x   x    Ulkomitat valitun komponentin mukaiset                  DN-koko, tunnus (esim. IP1)
+           Suodattimet                                                                                           x   x    Ulkomitat valitun komponentin mukaiset                  DN-koko, tunnus (esim SU1)
+           Joustavat liittimet                                                                                   x                                                                DN-koko
+           Varoventtiilit                                                                                        x                                                                DN-koko, tunnus (esim. VV1)
+           Paisunta-astiat                                                                                       x   x    Yli 100 dm3 säiliöt mallinnetaan                        Tilavuus
+           Lämmönsiirtimet                                                                                       x   x                                                            Teho tai tilavuusvirta, painehäviö
+                                                                                                                                                                                  Liittyvien verkostojen teho, tai tilavuusvirtaus ja
+           Lämmönjakokeskus                         x     x    Esitetään arvioitu tilavaraus                     x   x    Ulkomitat valitun komponentin mukaiset
+                                                                                                                                                                                  painehäviö
+                                                                                                                                                                                  Liittyvien verkostojen teho, tai tilavuusvirtaus ja
+           Vedenjäähdytyskone                       x     x    Esitetään arvioitu tilavaraus                     x   x    Ulkomitat valitun laitteen mukaiset
+                                                                                                                                                                                  painehäviö
+           Vesikatolle tai julkisivuun tulevat                                                                            Ulkomitat valitun laitteen tai komponentin
+                                                    x     x    Esitetään arvioitu tilavaraus                     x   x                                                            Tunnus
+           laitteet ja komponentit                                                                                        mukaiset
+           Muut pääkoneikot                         x     x    Esitetään arvioitu tilavaraus                     x   x                                                            Tunnus
+           Nestetankit                                                                                           x   x    Yli 100dm3 tankit mallinnetaan                          Tilavuus
+           Jakotukit                                                                                             x   x                                                            Tunnus
+                                                                                                                                                                                  Materiaali, DN-koko, tilavuusvirtaus, painetaso.
+           Lattialämmitysputkistot                                                                               x        kts. Kappale 5.4
+                                                                                                                                                                                  Kts. Kappale 5.4
+
+           Radiaattorit ja konvektorit                                                                           x   x    Ulkomitat valitun laitteen mukaiset                     Malli, Teho (kts. myös "Esisäädettävät venttiilit")
+Yleiset Tietomallivaatimukset 2012, Osa 4 "Talotekninen suunnittelu"                                                                                                                                                Liite 1. Sivu 4/9
+
+
+            Komponentti /
+                                                       Yleissuunnittelu                                        Toteutussuunnittelu
+           tehtävä
+                                                                 Geometrian                                                                                            Tietosisältö pääverkostojen ja
+                                                       2D BIM                                   Tietosisältö   2D BIM   Geometrian tarkkuustaso
+                                                                tarkkuustaso                                                                                           -järjestelmien osalta
+           Kiertoilmakoneet (puhallinkonvektorit,
+                                                                                                                                                                        Tehon- tai tilavuusvirtauksen tarve, painehäviö,
+           vakioilmastointikoneet,                                                                             x   x    Ulkomitat valitun laitteen mukaiset
+                                                                                                                                                                        tunnus (esim. 401PKN01)
+           tuulikaappikoneet jne.)
+                                                                                                                                                                        Tehon- tai tilavuusvirtauksen tarve, painehäviö,
+           IV-kanavistopatterit                                                                                x   x
+                                                                                                                                                                        tunnus
+                                                                                                                                                                        Malli, normivirtaus, painehäviö, tunnus (esim
+                                                                                                                                                                        PA1, WC1). Käyttövesikalusteen tunnuksen
+           Käyttövesikalusteet                                                                                 x   x    ARK-kuvan osoittamassa paikassa                 perusteella kerrotaan erillisessä dokumentissa
+                                                                                                                                                                        muut hankintatiedot (WC-istuin-,
+                                                                                                                                                                        pesuallastyyppi jne.)
+                                                                                                                                                                        Ei esitystapavaadetta, ARK-suunnitelmien
+           Pesualtaat, WC-istuimet yms. kalusteet                                                                       ARK-kuvan osoittamassa paikassa
+                                                                                                                                                                        mukaisesti
+                                                                                                                        ARK-kuvan osoittamassa paikassa, Ulkomitat      Malli, mitoitusvirtaus, painehäviö, tunnus (esim.
+           Pikapalopostit                                                                                      x   x
+                                                                                                                        valitun tuotteen mukaiset                       PPP1)
+                                                                Ilmaisemassa reittiä. Ei
+                                                                käytettävissä reikä- tai
+           Runkoviemärit ilman kaatoa                  x   x                                                   x   x                                                    Materiaali, DN-koko
+                                                                asennussuunnitelmassa eikä
+                                                                materiaalilistauksissa.
+                                                                                                                        2D-leikkausten mukaisessa paikassa. Oltava
+                                                                                                                        asennettavissa kohteeseen
+           Viemärit kappaleen 5.2 mukaisesti                                                                   x   x                                                    Materiaali, DN-koko
+                                                                                                                        yhdistelmämallitarkastelun perusteella. Kts.
+                                                                                                                        Kohta 5.1.3
+           Palomansetit                                                                                        x   x                                                    DN-koko, tunnus (esim PM1)
+           Putkistojen tarkastus-/puhdistusluukut                                                              x   x                                                    DN-koko, tunnus (esim. PL1)
+           Lattiakaivot                                                                                        x   x    ARK-kuvan osoittamassa paikassa                 Malli, DN-koko, normivirta, tunnus (esim. LK1)
+           Kattokaivot                                                                                         x   x    Vesikattokuvan osoittamassa paikassa            DN-koko, tunnus (esim. SVKK1)
+
+           Piha-alueen sade- ja jätevesikaivot                                                                 x        Sijainti pihasuunnitelman mukaisesti            Minimissään 2D-viiteviivalla tunnus (esim. SVK1)
+
+           Piha-alueen erotuskaivot (HEK, REK jne)     x        Esitetään arvioitu tilavaraus                  x   x    Sijainti pihasuunnitelman mukaisestii           Minimissään 2D-viiteviivalla tunnus (esim. HEK1)
+
+           Piha-alueen tarkastusputket ja -kaivot                                                              x        Sijainti pihasuunnitelman mukaisesti            Minimissään 2D-viiteviivalla tunnus (esim. TP1)
+           Perusmuurin sisäiset sade- ja
+                                                                                                               x   x                                                    Minimissään 2D-viiteviivalla tunnus (esim. JVP1)
+           jätevesikaivot / -pumppaamot
+
+           Perusmuurin sisäiset erotuskaivot           x        Esitetään arvioitu tilavaraus                  x   x                                                    Minimissään 2D-viiteviivalla tunnus (esim. HEK1)
+
+           Perusmuurin sisäiset tarkastusputket ja -
+                                                                                                               x   x                                                    Minimissään 2D-viiteviivalla tunnus (esim. TP1)
+           kaivot
+           Verkostojen tyhjennykset                                                                                     Esitetään minimissään kaavioissa
+
+           Anturit (TI, PI, TE, PE, PDE jne.)                                                                           Esitetään minimissään kaavioissa
+           Anturitaskut                                                                                                 Ei esitystapaa
+           Putkistokannakkeet                                                                                           Esitetään 2D-leikkauksissa
+           Sprinklerisuuttimet                                                                                 x   x    Sijoitus alakattopiirustuksen mukaisesti        K-arvo, DN-koko, tunnus (esim. SPR1)
+Yleiset Tietomallivaatimukset 2012, Osa 4 "Talotekninen suunnittelu"                                                                                                                                           Liite 1. Sivu 5/9
+
+
+            Komponentti /
+                                                       Yleissuunnittelu                                 Toteutussuunnittelu
+           tehtävä
+                                                                 Geometrian                                                                                       Tietosisältö pääverkostojen ja
+                                                       2D BIM                            Tietosisältö   2D BIM   Geometrian tarkkuustaso
+                                                                tarkkuustaso                                                                                      -järjestelmien osalta
+           Putkistojen liitostavat (kierteet, laipat                                                             Ei esitystapavaadetta, esitetään muissa
+           jne.)                                                                                                 dokumenteissa
+           Lämmönjakohuoneen putkistot                                                                  x   x    Mallinnetaan minimissään runkoputkistot           Materiaali, DN-koko, tilavuusvirtaus, painetaso
+           VJK-huoneen putkistot                                                                        x   x    Mallinnetaan minimissään runkoputkistot           Materiaali, DN-koko, tilavuusvirtaus, painetaso
+           VJK-huoneen pumput                                                                           x   x    Mallinnetaan viitteellinen sijoituspaikka         Tunnus
+           VJK-huoneen sekoitusryhmät ja
+                                                                                                        x        Esitetään kaaviossa
+           komponentit
+                                                                                                                 2D-leikkausten mukaisessa paikassa. Oltava
+           IV-konehuoneen runkoputkistot                                                                    x    asennettavissa kohteeseen                         Materiaali, DN-koko, tilavuusvirtaus, painetaso
+                                                                                                                 yhdistelmämallitarkastelun perusteella
+                                                                                                                 2D-leikkausten mukaisessa paikassa. Oltava
+           IV-konehuoneen kytkentäputkistot                                                                 x    asennettavissa kohteeseen                         Materiaali, DN-koko, tilavuusvirtaus, painetaso
+                                                                                                                 yhdistelmämallitarkastelun perusteella
+
+                                                                                                                 Sisältö esitetään kaaviossa. Arvioitu sijoitus    Laitetunnukset tasokuvissa mittaviivalla (esim.
+           IV-koneiden pumput ja sekoitusryhmät                                                         x
+                                                                                                                 esitetään mallinnettuna esim. laatikko-objekti    301P04, 301FV04)
+
+           Muut tekniset tilat                                                                          x   x    Mallinnetaan minimissään runkoputkistot           Materiaali, DN-koko, tilavuusvirtaus, painetaso
+
+           Muun teknisen tilan sekoitusryhmät ja                                                                 Sisältö esitetään kaaviossa. Arvioitu sijoitus
+                                                                                                        x
+           komponentit                                                                                           esitetään mallinnettuna esim. laatikko-objekti
+
+                                                                                                                 Putkistot mallinnetaan kuiluun eristeineen.
+                                                                kts. Tekstin kohta 4.1
+           Kuilut ja hormit                                                                             x   x    Oltava asennettavissa kohteeseen                  Kuten runkoputkistot.
+                                                                Tilavaraukset, tilat
+                                                                                                                 yhdistelmämallitarkastelun perusteella
+Yleiset Tietomallivaatimukset 2012, Osa 4 "Talotekninen suunnittelu"                                                                                                                                                              Liite 1. Sivu 6/9
+
+
+            Komponentti /
+                                                   Yleissuunnittelu                                              Toteutussuunnittelu
+           tehtävä
+                                                                Geometrian                                                                                                        Tietosisältö pääverkostojen ja
+                                                   2D BIM                                         Tietosisältö   2D BIM   Geometrian tarkkuustaso
+                                                               tarkkuustaso                                                                                                       -järjestelmien osalta
+         Ilmanvaihto
+                                                               Laattaobjektin alapuolella
+                                                               (esim. katto), ilmaisemassa                                2D-leikkausten mukaisessa paikassa. Oltava               Materiaali, koko, tilavuusvirtaus, painetaso. 2D-
+           Runkokanavistot                          x     x    reittiä. Ei käytettävissä reikä-                  x   x    asennettavissa kohteeseen                                kuvissa absoluuttinen korkoasema (keskilinja)
+                                                               tai asennussuunnitelmassa                                  yhdistelmämallitarkastelun perusteella                   mittaviivassa)
+                                                               eikä materiaalilistauksissa.
+                                                                                                                          2D-leikkausten mukaisessa paikassa. Oltava
+           Kytkentäkanavistot                                                                                    x   x    asennettavissa kohteeseen                                Materiaali, koko, tilavuusvirtaus, painetaso
+                                                                                                                          yhdistelmämallitarkastelun perusteella
+                                                                                                                          Ei vaadetta erillliselle eristysobjektille kanavassa.    Eristyksen tyyppi ja paksuus. Metalliset / selvästi
+           Kanavistoeristeet                                                                                     x   x    Kanavan ulkomitassa oltava eristyspaksuus                kustannuksiin vaikuttavat pinnoitteet kerrottava
+                                                                                                                          mukana                                                   mittaviivassa / tietosisällössä.
+                                                                                                                          Suunnittelija mitoittaa koneen laitevalmistajan
+           Koteloidut IV-koneet                     x     x    Arvioitu sijainti ja ulkomitat                    x   x    ohjelmistolla ja käyttää ensisijaisesti ohjelmiston      Tunnus, esim. 301TK01
+                                                                                                                          tuottamaa koneobjektia
+                                                                                                                          Julkisivukuvan ja vesikattokuvan mukaisessa
+           Huippuimurit                             x     x    Arvioitu sijainti ja ulkomitat                    x   x                                                             Tunnus, esim 301PK02, koko
+                                                                                                                          paikassa, ulkomitat valitun tuotteen mukaiset
+           Kanavapuhaltimet                         x                                                            x   x                                                             Tunnus, esim. 301PK02, koko
+                                                                                                                          Julkisivukuvan ja vesikattokuvan mukaisessa
+           Ulospuhallushajoittajat                  x     x    Arvioitu sijainti ja ulkomitat                    x   x                                                             Tunnus, esim. UPH1, koko
+                                                                                                                          paikassa, ulkomitat valitun tuotteen mukaiset
+                                                                                                                          Julkisivukuvan mukaisessa paikassa, ulkomitat
+           Ulkosäleiköt                             x     x    Arvioitu sijainti ja ulkomitat                    x   x                                                             Tunnus, esim. US1, koko
+                                                                                                                          valitun tuotteen mukaiset
+                                                                                                                          Alakattokuvan mukaisessa paikassa, ulkomitat             Malli, koko, tunnus (esim. T1), ilmavirta,
+           Päätelaitteet                                                                                         x   x
+                                                                                                                          valitun tuotteen mukaiset                                painehäviö, äänitaso, esisäätöarvo
+           Siirtoilmasäleiköt                                                                                    x   x    Ulkomitat valitun tuotteen mukaiset                      Malli, koko, tunnus (esim. S1)
+                                                                                                                                                                                   Malli, koko, tunnus (esim SP1), ilmavirta,
+           Säätöpellit                                                                                           x   x    Ulkomitat valitun tuotteen mukaiset
+                                                                                                                                                                                   painehäviö, esisäätö
+                                                                                                                                                                                   Malli, koko, ilmavirta, painehäviö, yksilöity
+           Ilma- / vakiovirtasäädin                                                                              x   x    Ulkomitat valitun tuotteen mukaiset                      tunnus (esim. 301IMS1000.1 (järjestelmä-IMS-
+                                                                                                                                                                                   sijainti-juokseva nro.)
+           Palopelti                                                                                             x   x    Ulkomitat valitun tuotteen mukaiset                      Malli, koko, painehäviö, tunnus (esim. PP1)
+                                                                                                                                                                                   Malli, koko, painehäviö, yksilöity tunnus (esim.
+           Moottoroitu palopelti                                                                                 x   x    Ulkomitat valitun tuotteen mukaiset                      301PP1000.1 (järjestelmä-PP-sijainti-juokseva
+                                                                                                                                                                                   nro.)
+                                                                                                                                                                                   Malli, koko, ilmavirta, painehäviö, tunnus (esim.
+           Kanaviston äänenvaimentimet                                                                           x   x    Ulkomitat valitun tuotteen mukaiset
+                                                                                                                                                                                   ÄV1)
+           Puhdistusluukut                                                                                       x   x                                                             Tunnus (esim.PL1)
+                                                                                                                          Ulkomitat valitun komponentin mukaiset,
+           IV-kanavistopatterit                     x                                                            x   x                                                             Koko, tunnus (esim. 301JLP1)
+                                                                                                                          vaaditun otsapintanopeuden perusteella
+           Ilman laatuun vaikuttavat
+                                                                                                                          Ulkomitat valitun komponentin mukaiset,
+           kanavistokomponentit (suodatus,          x                                                            x   x                                                             Koko, tunnus (esim. SU1)
+                                                                                                                          vaaditun otsapintanopeuden perusteella
+           kostutus jne.)
+Yleiset Tietomallivaatimukset 2012, Osa 4 "Talotekninen suunnittelu"                                                                                                                                           Liite 1. Sivu 7/9
+
+
+            Komponentti /
+                                                         Yleissuunnittelu                                 Toteutussuunnittelu
+           tehtävä
+                                                                   Geometrian                                                                                    Tietosisältö pääverkostojen ja
+                                                         2D BIM                            Tietosisältö   2D BIM   Geometrian tarkkuustaso
+                                                                  tarkkuustaso                                                                                   -järjestelmien osalta
+           Joustavat liittimet                                                                            x                                                       Tunnus (esim. JL1)
+           Kannakkeet                                                                                              Esitetään 2D-leikkauksissa                     LVI-suunnittelija koordinoi TATE-leikkaukset
+           Anturit                                                                                                 Esitetään minimissään RAU-kaavioissa
+                                                                                                                   Ei esitystapavaadetta, esitetään muissa
+           Kanavistojen liitostavat (listaliitos jne.)
+                                                                                                                   dokumenteissa
+                                                                  kts. Tekstin kohta 4.1                           Kanavat ja komponentit mallinnetaan kuiluun    Komponenttien ja kanavistojen tietosisältö
+           Kuilut ja hormit                                                                               x   x
+                                                                  Tilavaraukset, tilat                             eristeineen.                                   kuten tässä taulukossa mainittu
+Yleiset Tietomallivaatimukset 2012, Osa 4 "Talotekninen suunnittelu"                                                                                                                             Liite 1. Sivu 8/9
+
+
+            Komponentti /
+                                                   Yleissuunnittelu                                     Toteutussuunnittelu
+           tehtävä
+                                                                Geometrian                                                                         Tietosisältö pääverkostojen ja
+                                                   2D BIM                                Tietosisältö   2D BIM   Geometrian tarkkuustaso
+                                                               tarkkuustaso                                                                        -järjestelmien osalta
+         Sähkötekniikka
+           Muuntajat                                x     x                                             x   x                                       Tunnus, esim. T1
+           Kojeistot                                x     x                                             x   x                                       Tunnus, esim. SJK1
+           Pääkeskukset                             x     x                                             x   x                                       Tunnus, esim. PK1
+           Virtakiskostot                                                                               x   x                                       Koko
+           Kompensointiparistot                     x     x                                             x   x                                       Tunnus, esim. Q1
+           Akustot                                  x     x                                             x   x                                       Tunnus, esim. AK
+           Jakokeskukset                            x     x    Pääjakelun osalta                        x   x                                       Tunnus, esim. JK1
+           Ristikytkentätelineet                    x     x                                             x   x                                       Tunnus, esim. RKT1
+           Telejärjestelmien keskuslaitteet         x     x                                             x   x                                       Tunnus, esim. KJ
+           Turvajärjestelmien keskuslaitteet        x     x                                             x   x                                       Tunnus, esim. PIK
+                                                                                                                                                    Koko, tyyppi (tikas-/levyhylly). 2D-piirustuksissa
+           Kaapelihyllyt ja ripustuskiskot          x     x    Pääreittien osalta                       x   x                                       absoluuttinen korkoasema mittaviivassa
+                                                                                                                                                    (alareuna)
+           Johtokourut                              x     x    Pääreittien osalta                       x   x                                       Koko
+           Lattiakanavat ja -rasiat                 x     x    Pääreittien osalta                       x   x                                       Koko
+                                                               kts. Tekstin kohta 4,
+           Pystynousut                                                                                  x   x                                       Koko
+                                                               tilavaraukset
+           Kannatukset ja ripustukset                                                                            Esitetään 2D-leikkauksissa         LVI-suunnittelija koordinoi TATE-leikkaukset
+           Valaisimet                               x          Mallihuoneissa BIM                       x   x                                       Positio
+           Poistumisvalaisimet                                                                          x   x                                       Positio
+           Vara- ja turvavalaisimet                                                                     x   x                                       Positio
+
+           Kytkimet                                            Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Laitetyyppi, esim. 6-kytkin
+           Pistorasiat                                         Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Laitetyyppi, esim. Maadoitettu pistorasia 2-os.
+           Liike- ja läsnäolotunnistimet                       Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Tunnus, esim. PIR
+           Turvakytkimet                                       Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Laitetyyppi, esim. Turvakytkin
+           Jako- ja kytkentärasiat                                                                      x
+           Kaiuttimet                                          Mallihuoneissa BIM                       x   x                                       Laitetyyppi
+           Kamerat                                             Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Laitetyyppi
+           Paloilmaisimet                                      Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Laitetyyppi, osoite
+           Palopainikkeet                                      Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Laitetyyppi, osoite
+           Merkinantokojeet                                    Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Laitetyyppi
+           Muut telejärjestelmien anturit ja
+                                                               Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Laitetyyppi
+           käyttölaitteet
+           Muut turvajärjetelmien anturit ja
+                                                               Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Laitetyyppi
+           käyttölaitteet
+           Telepistorasiat                                     Mallihuoneissa BIM                       x        Mallihuoneissa BIM                 Laitetyyppi, tunnus/osoite
+                                                               Pääjakelun osalta,
+           Nousujohdot                                                                                           Esitetään minimissään kaaviossa
+                                                               kaavioesitys
+           Telerunkojohdot                                     Pääreitit, kaavioesitys                           Esitetään minimissään kaaviossa
+           Sähköpisteiden kaapelointi                                                                   x
+Yleiset Tietomallivaatimukset 2012, Osa 4 "Talotekninen suunnittelu"                                                                                                                         Liite 1. Sivu 9/9
+
+
+            Komponentti /
+                                                     Yleissuunnittelu                        Toteutussuunnittelu
+           tehtävä
+                                                                Geometrian                                                                                  Tietosisältö pääverkostojen ja
+                                                     2D BIM                   Tietosisältö   2D BIM    Geometrian tarkkuustaso
+                                                               tarkkuustaso                                                                                 -järjestelmien osalta
+           Telepisteiden kaapelointi                                                         x         Tähtimäiset verkot kaaviossa
+
+           Turvajärjestelmien kaapelointi                                                    x         Tähtimäiset verkot kaaviossa
+
+           Käyttäjän aktiivilaitteet                                                                   Ei suunnittelun piirissä, huomioidaan liitynnöissä
+
+           Sähköurakan ulkopuoliset laitteet,
+                                                                                             x   x                                                           Laitetyyppi
+           kuten esim. oviohjauskeskukset
+         Rakennusautomaatio
+           RAU-keskukset                             x    x                                  x   x                                                           Tunnus, esim. VAK1
+           Anturit tiloissa näkyvillä                                                        x         Mallihuoneissa BIM                                    Tunnus, esim. TE1
+           Anturit TATE-verkostoissa, ei näkyvillä                                           x                                                               Tunnus, esim. TE1
+           Säätölaite- ja muut kotelot                                                       x         Mallihuoneissa BIM                                    Tunnus, esim. TC1
+           Toimilaitteet                                                                     x                                                               Tunnus, esim. FG1
+
+
+
+                    Taulukon"2D" merkitsee seuraavaa:                                                 Taulukon"BIM" merkitsee seuraavaa:
+                    - kaavioissa esitetään periaatteet halutuille                                     - käytetään ensisijaisesti sovellusohjelmakirjaston 3D-komponentteja, IFC-
+                    toiminnallisuuksille                                                              yhteensopivina
+                    - tasokuvissa esitetään komponentin sijoitus                                      - IFC-mallien tietosisältö minimissään taulukon mukainen
+                    - symbolitasoinen esitys on hyväksytty
+YLEISET TIETOMALLIVAATIMUKSET 2012, OSA 4 TALOTEKNIIKKASUUNNITTELU                    LIITE 2 Sivu 1/2
+LVI-VERKOSTOJEN VÄRIT
+                                                                     ACAD
+       1D        2D          3D           SYSTEEMI                   VÄRI   KYNÄ mm
+    LÄMMITYS
+                                          MENO, PATTERIVERKOSTO      200      0.5
+                                          PALUU, PATTERIVERKOSTO     140      0.5
+                                          MENO, ILMANVAIHTO          220      0.5
+                                          PALUU, ILMANVAIHTO         140      0.5
+                                          MENO, KAUKOLÄMPÖ           242      1.0
+                                          PALUU, KAUKOLÄMPÖ          242      1.0
+    JÄÄHDYTYS
+                                          MENO, VERKOSTO 1           190      0.5
+                                          PALUU, VERKOSTO 1          122      0.5
+                                          MENO, VERKOSTO 2           142      0.5
+                                          PALUU, VERKOSTO 2          122      0.5
+                                          MENO, ILMANVAIHTO          190      0.5
+                                          PALUU, ILMANVAIHTO         122      0.5
+    GLYKOLI
+                                          MENO, LTO                  192      0.5
+                                          PALUU, LTO                 222      0.5
+                                          MENO, NESTEJÄÄHDYTIN       202      0.5
+                                          PALUU, NESTEJÄÄHDYTIN      222      0.5
+    VANHAT VERKOSTOT
+
+                                          MENO, VANHA                7        0.18
+                                          PALUU, VANHA               7        0.18
+
+    VESIJOHDOT
+                                          KYLMÄVESI                  130      0.7
+                                          LÄMMINVESI                 20       0.5
+                                          KIERTOVESI                 212      0.35
+
+    VIEMÄRIT
+                                          JÄTEVESIVIEMÄRI            54       1.0
+                                          SADEVESIVIEMÄRI            144      1.0
+                                          RASVAVIEMÄRI               72       1.0
+
+
+    PALONSAMMUTUS
+
+                                          RUNKOJOHDOT > 50           62       1.0
+                                          HAARAJOHDOT < 50           232      0.5
+                                          SUUTIN, VENTTIILI YMS.     90       0.35
+YLEISET TIETOMALLIVAATIMUKSET 2012, OSA 4 TALOTEKNIIKKASUUNNITTELU          LIITE 2 Sivu 2/2
+SÄH-VERKOSTOJEN VÄRIT
+                                                                     ACAD
+                           3D          SYSTEEMI                      VÄRI
+
+
+
+                                       JOHTOTIET, SÄHKÖ              123
+
+
+
+
+                                       JOHTOTIET, TELE               181
+
+
+
+
+                                       JOHTOTIET, TURVA              31
+
+
+
+                                       LATTIAKANAVAT, SÄHKÖ          65
+
+
+                                       LATTIAKANAVAT, TELE           225
+
+
+                                       JAKELUKISKOT, SÄHKÖ           241
+Yleiset Tietomallivaatimukset 2012                  Osa 4, Talotekniikka                                           Liite 3
+
+    Tietomalliselostus
+                                       TATE
+    Havainnollistuskuva kohteesta
+
+
+
+
+    Suunnittelukohde
+    Suunnitteluvaihe
+    Tietomalliselostuksen päiväys
+    Muutospäiväys
+    Yritys
+    Tietomalliyhteyshenkilö
+    Yhteyshenkilön sähköpostiosoite
+    Yhteyshenkilön puhelinnumero
+    Kohteen vastuullinen
+    suunnittelija
+    Kohteen projektipäällikkö
+
+    Käytettävät ohjelmistot
+    Lisätietoja, huomioita yms.
+
+
+
+
+    Yleiskuvaus mallinnusperiaatteista
+         Nimikkeistöt/käytettävät      Tarvittaessa erillisen, projektikohtaisen liitteen mukaisesti
+         kuvatasot
+         Mallinnuksen mittayksikkö     mm
+         Origo (x,y,z)                 ARK-mallin mukainen
+
+         Kerrosten lattian             1. kerros        + 10.00
+         absoluuttinen                 2. kerros        +14.00
+         korkoasema                    3. kerros        +18.00
+                                       ..               ..
+
+         IFC-tiedostojen tekotapa      Yleisten Tietomallivaatimusten kappaleen 2.4.1, vaihtoehto 1:n mukaisesti
+         Mallin tarkkuus               Yleisten Tietomallivaatimukset, Osan 4, Liitteen 1 mukainen
+         Poikkeukset                       1.
+         tarkkuustasosta:
+         Mallin tietosisältö           Yleisten Tietomallivaatimukset Osan 4, Liitteen 1 mukainen
+         Poikkeukset tietosisällöstä       1.
+
+         Alueet, jotka eivät ole
+         törmäystarkastuskelpoisia
+         Muuta huomioitavaa
+Yleiset Tietomallivatimukset 2012                                                                                         Liite 4, Sivu1/2
+Osa 4, Talotekninen suunnittelu
+LVI-tekniikka
+                                      Tietomallin tarkastusraportti
+Paikka:
+Aika:
+Tarkastaja:
+Kohde:
+Versiot:
+Versioiden päiväykset:
+
+
+
+
+                                                                                              Ei relevantti
+                                                                       Kunnossa
+                                                                                  Puutteita
+LVI-mallin tarkastuslomake                                                                                    Kommentit
+
+
+
+Tietomalliselostus
+
+Mallit käytössä sovittuina tiedostoformaatteina (IFC ja muut sovitut
+tiedostot)
+
+Kerrokset on määritetty
+
+Komponentit on määritelty kerroksittain
+
+Sovitut / vaatimusten mukaiset komponentit on mallinnettu
+
+Komponentit on mallinnettu oikeilla työkaluilla
+
+Komponenteille on määritelty järjestelmät
+
+Järjestelmien nimet ovat sovitunmukaiset
+
+Järjestelmien värit ovat sovitunmukaiset
+
+Mallissa ei ole ylimääräisiä komponentteja
+
+Mallissa ei ole sisäkkäisiä tai tuplakomponentteja
+
+Mallissa ei ole merkittäviä komponenttien välisiä leikkauksia
+
+IV-koneet on mallinnettu
+
+Komponentit eivät leikkaa merkittävästi sähkömallin komponenttien
+kanssa
+Komponenteilla on vain sovitunlaisia törmäyksiä
+arkkitehtirakenneosien kanssa
+Järjestelmissä on laskentatietoa (vähintäään tilavuusvirta ja
+painetasotieto)
+
+Komponenteilla on tunnustiedot liite 1:n mukaisesti
+
+
+
+
+Allekirjoitus:
+Yleiset Tietomallivatimukset 2012                                                                                      Liite 4, Sivu2/2
+Osa 4, Talotekninen suunnittelu
+Sähkötekniikka
+                                    Tietomallin tarkastusraportti
+Paikka:
+Aika:
+Tarkastaja:
+Kohde:
+Versio:
+Versioiden päiväykset:
+
+
+
+
+                                                                                           Ei relevantti
+                                                                    Kunnossa
+
+                                                                               Puutteita
+Sähkömallin tarkastuslomake                                                                                Kommentit
+
+
+
+
+Tietomalliselostus
+
+Mallit sovittuina tiedostoformaatteina (IFC ja muut sovitut
+tiedostot)
+
+Kerrokset on määritetty
+
+Komponentit on määritelty kerroksittain
+
+Sovitut / vaatimusten mukaiset komponentit on mallinnettu
+
+Komponentit on mallinnettu oikeilla työkaluilla
+
+Mallissa ei ole ylimääräisiä komponentteja
+
+Mallissa ei ole sisäkkäisiä tai tuplakomponentteja
+
+Mallissa ei ole merkittäviä komponenttien välisiä leikkauksia
+
+Komponentit eivät leikkaa merkittävästi LVI-mallin komponenttien
+kanssa
+
+Komponentit eivät törmää merkittävästi rakenteiden kanssa
+
+Komponenteilla on vain sovitunlaisia törmäyksiä
+arkkitehtirakenneosien kanssa
+
+Komponenteilla on positio- ja tunnustiedot liite 1:n mukaisesti
+
+Komponentit eivät leikkaa merkittävästi sähkömallin
+komponenttien kanssa
+Komponenteilla on vain sovitunlaisia törmäyksiä
+arkkitehtirakenneosien kanssa
+Järjestelmissä on laskentatietoa (vähintäään tilavuusvirta ja
+painetasotieto)
+
+
+
+
+Allekirjoitus:
+

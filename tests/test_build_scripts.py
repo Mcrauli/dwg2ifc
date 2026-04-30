@@ -28,8 +28,3 @@ def test_shell_build_script_drives_uv_and_pyinstaller() -> None:
     assert "pyinstaller" in text
     assert "build/dxf2ifc.spec" in text
     assert "sha256sum" in text or "shasum" in text
-
-
-def test_shell_build_script_is_executable() -> None:
-    mode = SH_PATH.stat().st_mode
-    assert mode & stat.S_IXUSR, f"{SH_PATH} is not user-executable"

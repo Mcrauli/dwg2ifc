@@ -7,7 +7,13 @@ import ezdxf
 import pytest
 
 from dxf2ifc.core.dxf_reader import list_layers, read_dxf
-from dxf2ifc.core.types import BlockInstance, LineGeometry, PolygonGeometry, Point3D
+from dxf2ifc.core.types import (
+    BlockInstance,
+    LineGeometry,
+    MeshGeometry,
+    Point3D,
+    PolygonGeometry,
+)
 
 
 def test_read_simple_wall_returns_one_entity(fixtures_dir: Path):
@@ -115,3 +121,96 @@ def test_list_layers_returns_unique_sorted_names_from_modelspace(tmp_path: Path)
 def test_list_layers_on_simple_wall_fixture(fixtures_dir: Path):
     layers = list_layers(fixtures_dir / "simple_wall.dxf")
     assert "KYL-ULKOSEINA" in layers
+
+
+def _write_tetrahedron_mesh_dxf(path: Path, layer: str) -> None:
+    """Write a synthetic DXF containing a single tetrahedron MESH entity.
+
+    Simulates the output of accoreconsole.exe -MESHSMOOTH on a 3DSOLID:
+    4 unique vertices and 4 triangular faces.
+    """
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name=layer)
+    msp = doc.modelspace()
+    mesh = msp.add_mesh(dxfattribs={"layer": layer})
+    with mesh.edit_data() as data:
+        data.vertices = [
+            (0.0, 0.0, 0.0),
+            (1000.0, 0.0, 0.0),
+            (500.0, 1000.0, 0.0),
+            (500.0, 500.0, 1000.0),
+        ]
+        data.faces = [
+            (0, 1, 2),
+            (0, 1, 3),
+            (1, 2, 3),
+            (0, 2, 3),
+        ]
+    doc.saveas(str(path))
+
+
+def test_read_dxf_picks_up_mesh_entity(tmp_path: Path):
+    dxf = tmp_path / "tetra.dxf"
+    _write_tetrahedron_mesh_dxf(dxf, "KYL-LEVY")
+
+    records = read_dxf(dxf)
+    meshes = [r for r in records if r.dxf_type == "MESH"]
+    assert len(meshes) == 1
+    rec = meshes[0]
+    assert isinstance(rec.geometry, MeshGeometry)
+    assert len(rec.geometry.vertices) == 4
+    assert len(rec.geometry.faces) == 4
+    # Every face is a triangle (3 indices).
+    assert all(len(f) == 3 for f in rec.geometry.faces)
+    # Indices reference valid vertices.
+    n = len(rec.geometry.vertices)
+    assert all(0 <= i < n for f in rec.geometry.faces for i in f)
+
+
+def test_read_dxf_skips_degenerate_mesh(tmp_path: Path):
+    dxf = tmp_path / "empty_mesh.dxf"
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name="KYL-LEVY")
+    msp = doc.modelspace()
+    msp.add_mesh(dxfattribs={"layer": "KYL-LEVY"})  # no vertices, no faces
+    doc.saveas(str(dxf))
+
+    records = read_dxf(dxf)
+    assert [r for r in records if r.dxf_type == "MESH"] == []
+
+
+def test_mesh_geometry_preserves_layer(tmp_path: Path):
+    dxf = tmp_path / "tetra_layer.dxf"
+    _write_tetrahedron_mesh_dxf(dxf, "KYL-HOYRYSTIN-CR-30")
+
+    records = read_dxf(dxf)
+    meshes = [r for r in records if r.dxf_type == "MESH"]
+    assert len(meshes) == 1
+    assert meshes[0].layer == "KYL-HOYRYSTIN-CR-30"
+
+
+def test_mesh_geometry_handles_quad_faces(tmp_path: Path):
+    """DXF MESH supports n-gon faces; verify a quad round-trips with 4 indices."""
+    dxf = tmp_path / "quad_mesh.dxf"
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name="KYL-LEVY")
+    msp = doc.modelspace()
+    mesh = msp.add_mesh(dxfattribs={"layer": "KYL-LEVY"})
+    with mesh.edit_data() as data:
+        data.vertices = [
+            (0.0, 0.0, 0.0),
+            (1000.0, 0.0, 0.0),
+            (1000.0, 1000.0, 0.0),
+            (0.0, 1000.0, 0.0),
+        ]
+        data.faces = [(0, 1, 2, 3)]
+    doc.saveas(str(dxf))
+
+    records = read_dxf(dxf)
+    meshes = [r for r in records if r.dxf_type == "MESH"]
+    assert len(meshes) == 1
+    geom = meshes[0].geometry
+    assert isinstance(geom, MeshGeometry)
+    assert len(geom.faces) == 1
+    assert len(geom.faces[0]) == 4
+    assert geom.faces[0] == (0, 1, 2, 3)

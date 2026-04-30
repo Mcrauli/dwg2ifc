@@ -1,19 +1,40 @@
-# Default "Kylmälaite Talo2000" profile.
-# Plan A ships only the exterior wall rule. Plan B adds all other entity types.
-# Talo2000 codes verified against Solibri Talo2000.classification and
-# RT 10-10962 Talo 2000 Hankenimikkeistö (see design spec § "YTV 2012 sources reviewed").
+# Default "Kylmälaite" profile — refrigeration design only.
+#
+# Scope: only entities a Finnish refrigeration designer (kylmälaitesuunnittelija)
+# actually models. Architectural elements (walls, slabs, doors, windows, cold-room
+# panels) are out of scope and intentionally NOT mapped — the architect handles
+# those.
+#
+# Domain rule (Plan H):
+# - Cold-storage shelving + refrigeration equipment + pipes → TATE domain with
+#   RAVA-LVI / RAVA-TATE classification codes.
+# - No ARK/Talo2000 mappings ship by default.
+#
+# RAVA codes verified against koodistot.suomi.fi (LVI-TUOTEOSA Versio 1.0,
+# TALOTEKNIIKKA-TUOTEOSA Versio 1.0). The shelving codes mirror the Granlund/
+# Sweco refrigeration reference model (KSM_Jeppis_Pietarsaari_KYL.ifc) which
+# classifies KYL-LEVYHYLLY / KYL-TIKASHYLLY as IfcCableCarrierSegment with
+# CABLETRAYSEGMENT / CABLELADDERSEGMENT predefined types.
 
 [profile]
-name = "Kylmälaite Talo2000 v1"
+name = "Kylmälaite RAVA v1"
 ifc_schema = "IFC4"
-# storey_z_levels_mm: list of base elevations (mm) for IfcBuildingStorey,
-# strictly increasing. Default = single ground-floor storey at z=0.
-# Multi-storey example: storey_z_levels_mm = [0.0, 3500.0, 7000.0]
 storey_z_levels_mm = [0.0]
 
+# POSITIO numbering-block linkage. KYL-laitteiden vieressä on Lauri'n
+# LISP-työkalulla piirretty positiov2-INSERT joka kantaa
+#   NUMERO  → yksilöllinen positionumero
+#   TEKSTI  → koneikko-tunnus (esim. "JK1")
+# Lähin POSITIO 3 m säteellä linkitetään höyrystimeen / lauhduttimeen /
+# kompressoriin → täyttää FI_Komponentti:n Laitetunnus + Laitetunnus,
+# yksilöllinen kentät. Hyllyt ja putket pysyvät tunnuksettomina.
+[profile.positio]
+block_pattern = "positiov2*"
+max_distance_mm = 3000.0
+apply_to = ["IfcEvaporator", "IfcCondenser", "IfcCompressor"]
+
 # Optional projected CRS + IfcMapConversion (Plan G).
-# Uncomment and adjust eastings_mm / northings_mm to your site location
-# (Helsinki Mannerheimintie 1 sample below in ETRS-TM35FIN / EPSG:3067).
+# Uncomment + adjust when site coordinates are known.
 #
 # [profile.crs]
 # epsg_code = "EPSG:3067"
@@ -26,115 +47,11 @@ storey_z_levels_mm = [0.0]
 # x_axis_ordinate = 0.0
 # scale = 1.0
 
-[[rules]]
-layer_pattern = "KYL-ULKOSEINA*"
-ifc_type = "IfcWall"
-predefined_type = "STANDARD"
-domain = "ARK"
-talo2000_code = "1241"
-talo2000_name = "Ulkoseinät"
-default_height_mm = 3000
-default_thickness_mm = 200
-
 # -----------------------------------------------------------------------------
-# Plan B placeholder rules — uncomment + complete when each section is built.
-# Each block lists the target Talo2000 code and the section that activates it.
+# Section 1: Refrigerant pipes — RAVA LVI-TUOTEOSA T-LVI-02 (general).
+# LT = low temperature (frozen), MT = medium temperature (chilled).
 # -----------------------------------------------------------------------------
 
-# Section 2: VS / lasiväliseinät (1311 / 1312)
-[[rules]]
-layer_pattern = "KYL-VALISEINA*"
-ifc_type = "IfcWall"
-predefined_type = "PARTITIONING"
-domain = "ARK"
-talo2000_code = "1311"
-talo2000_name = "Väliseinät"
-default_height_mm = 3000
-default_thickness_mm = 100
-
-[[rules]]
-layer_pattern = "KYL-LASIVALISEINA*"
-ifc_type = "IfcWall"
-predefined_type = "PARTITIONING"
-domain = "ARK"
-talo2000_code = "1312"
-talo2000_name = "Lasiväliseinät"
-default_height_mm = 3000
-default_thickness_mm = 50
-
-# Section 3: Laatat AP / VP / YP (1221 / 1235 / 1236)
-[[rules]]
-layer_pattern = "KYL-ALAPOHJA*"
-entity_kind = "POLYLINE"
-ifc_type = "IfcSlab"
-predefined_type = "FLOOR"
-domain = "ARK"
-talo2000_code = "1221"
-talo2000_name = "Alapohjalaatat"
-default_thickness_mm = 200
-
-[[rules]]
-layer_pattern = "KYL-VALIPOHJA*"
-entity_kind = "POLYLINE"
-ifc_type = "IfcSlab"
-predefined_type = "FLOOR"
-domain = "ARK"
-talo2000_code = "1235"
-talo2000_name = "Välipohjat"
-default_thickness_mm = 250
-
-[[rules]]
-layer_pattern = "KYL-YLAPOHJA*"
-entity_kind = "POLYLINE"
-ifc_type = "IfcSlab"
-predefined_type = "ROOF"
-domain = "ARK"
-talo2000_code = "1236"
-talo2000_name = "Yläpohjat"
-default_thickness_mm = 300
-
-# Section 4: Ovet — ulko-, väli-, erityisovet (1243 / 1315 / 1316)
-[[rules]]
-layer_pattern = "KYL-OVET-ULKO*"
-entity_kind = "INSERT"
-block_name = "OVI-ULKO"
-ifc_type = "IfcDoor"
-domain = "ARK"
-talo2000_code = "1243"
-talo2000_name = "Ulko-ovet"
-
-[[rules]]
-layer_pattern = "KYL-OVET-VALI*"
-entity_kind = "INSERT"
-block_name = "OVI-VALI"
-ifc_type = "IfcDoor"
-domain = "ARK"
-talo2000_code = "1315"
-talo2000_name = "Väliovet"
-
-[[rules]]
-layer_pattern = "KYL-OVET-ERITYIS*"
-entity_kind = "INSERT"
-block_name = "OVI-ERITYIS"
-ifc_type = "IfcDoor"
-domain = "ARK"
-talo2000_code = "1316"
-talo2000_name = "Erityisovet"
-
-# Section 5: Ikkunat (1242)
-[[rules]]
-layer_pattern = "KYL-IKKUNA*"
-entity_kind = "INSERT"
-block_name = "IKKUNA"
-ifc_type = "IfcWindow"
-domain = "ARK"
-talo2000_code = "1242"
-talo2000_name = "Ikkunat"
-
-# Section 6: Kylmäainejärjestelmän putket — RAVA LVI-TUOTEOSA (TATE-domain).
-# Virallisessa LVI-TUOTEOSA-koodistossa ei ole erikoistuneita koodeja LT/MT-
-# imu/nesteputkille, joten käytämme yleistä T-LVI-02 -kategoriaa ja erotamme
-# järjestelmät pset_overrides.NominalDiameter:n + system_name:n kautta.
 [[rules]]
 layer_pattern = "LT IMU"
 ifc_type = "IfcPipeSegment"
@@ -143,6 +60,7 @@ domain = "TATE"
 lvi_code = "T-LVI-02"
 system_name = "Refrigeration LT"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 22.0 } }
+fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "KYLMÄAINEPUTKISTOT", yleisnimi = "Kylmäaineputki", yleistunnus = "KP" }
 
 [[rules]]
 layer_pattern = "MT IMU"
@@ -152,6 +70,7 @@ domain = "TATE"
 lvi_code = "T-LVI-02"
 system_name = "Refrigeration MT"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 18.0 } }
+fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "KYLMÄAINEPUTKISTOT", yleisnimi = "Kylmäaineputki", yleistunnus = "KP" }
 
 [[rules]]
 layer_pattern = "MT NESTE"
@@ -161,10 +80,14 @@ domain = "TATE"
 lvi_code = "T-LVI-02"
 system_name = "Refrigeration MT"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 12.0 } }
+fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "KYLMÄAINEPUTKISTOT", yleisnimi = "Kylmäaineputki", yleistunnus = "KP" }
 
-# Section 7: Viemäriputket (defrost) — RAVA LVI-TUOTEOSA T-LVI-04-01-001.
-# DRAINPIPE ei kuulu IFC4:n IfcPipeSegmentTypeEnumiin, joten add_pipe_segment
-# karttoittaa sen USERDEFINED + ObjectType="DRAINPIPE":ksi.
+# -----------------------------------------------------------------------------
+# Section 2: Drain pipes (defrost) — RAVA LVI-TUOTEOSA T-LVI-04-01-001.
+# DRAINPIPE is not in IFC4's IfcPipeSegmentTypeEnum, so add_pipe_segment maps
+# it to USERDEFINED + ObjectType="DRAINPIPE".
+# -----------------------------------------------------------------------------
+
 [[rules]]
 layer_pattern = "KYL-VIEMARI*"
 ifc_type = "IfcPipeSegment"
@@ -173,44 +96,52 @@ domain = "TATE"
 lvi_code = "T-LVI-04-01-001"
 system_name = "Drainage"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 110.0 } }
+fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Sulanapitoviemäri", yleistunnus = "SV" }
 
-# Section 8: Varastointihyllyt (1331, IfcFurniture)
-# Vertikaalinen tikashylly (KYL-TIKASHYLLY-V*) on listattu ennen KYL-TIKASHYLLY*
-# että first-match resolvoi sen oikein.
+# -----------------------------------------------------------------------------
+# Section 3: Cold-storage shelving — IfcCableCarrierSegment per Granlund
+# convention. Tikashylly = ladder rails (CABLELADDERSEGMENT), levyhylly =
+# sheet-metal tray shelf (CABLETRAYSEGMENT). RAVA TALOTEKNIIKKA-TUOTEOSA
+# T-TATE-01-01-001 "Asennushylly" is the closest official code.
+#
+# Layer-pattern order matters: KYL-TIKASHYLLY-V* listed before KYL-TIKASHYLLY*
+# so the vertical variant resolves first under first-match-wins semantics.
+# -----------------------------------------------------------------------------
+
 [[rules]]
 layer_pattern = "KYL-TIKASHYLLY-V*"
-entity_kind = "INSERT"
-block_name = "KLHYLLYV"
-ifc_type = "IfcFurniture"
-domain = "ARK"
-talo2000_code = "1331"
-talo2000_name = "Vakiokiintokalusteet"
-# Vertical ladder shelf — tall narrow cabinet.
-default_height_mm = 2000
+ifc_type = "IfcCableCarrierSegment"
+predefined_type = "CABLELADDERSEGMENT"
+domain = "TATE"
+talotekniikka_code = "T-TATE-01-01-001"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Tikashylly (pystysuora)", yleistunnus = "AHJ.LVI" }
+fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjestelmien_tunnukset = "AHJ.LVI" }
 
 [[rules]]
 layer_pattern = "KYL-TIKASHYLLY*"
-entity_kind = "INSERT"
-block_name = "KLHYLLY-TIKAS"
-ifc_type = "IfcFurniture"
-domain = "ARK"
-talo2000_code = "1331"
-talo2000_name = "Vakiokiintokalusteet"
-# Horizontal ladder shelf — single shelf board (~30 mm slats), render as 60 mm.
-default_height_mm = 60
+ifc_type = "IfcCableCarrierSegment"
+predefined_type = "CABLELADDERSEGMENT"
+domain = "TATE"
+talotekniikka_code = "T-TATE-01-01-001"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Tikashylly", yleistunnus = "AHJ.LVI" }
+fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjestelmien_tunnukset = "AHJ.LVI" }
 
 [[rules]]
 layer_pattern = "KYL-LEVYHYLLY*"
-entity_kind = "INSERT"
-block_name = "KLHYLLY-LEVY"
-ifc_type = "IfcFurniture"
-domain = "ARK"
-talo2000_code = "1331"
-talo2000_name = "Vakiokiintokalusteet"
-# LEVY shelf — single sheet-metal shelf board ~60 mm thick.
-default_height_mm = 60
+ifc_type = "IfcCableCarrierSegment"
+predefined_type = "CABLETRAYSEGMENT"
+domain = "TATE"
+talotekniikka_code = "T-TATE-01-01-001"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Levyhylly", yleistunnus = "AHJ.LVI" }
+fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjestelmien_tunnukset = "AHJ.LVI" }
 
-# Section 9: Kaapelihyllyt — RAVA TALOTEKNIIKKA-TUOTEOSA T-TATE-01-01-001.
+# -----------------------------------------------------------------------------
+# Section 4: Cable carriers (electrical) — RAVA T-TATE-01-01-001.
+# -----------------------------------------------------------------------------
+
 [[rules]]
 layer_pattern = "KAAPELIHYLLY*"
 ifc_type = "IfcCableCarrierSegment"
@@ -218,165 +149,50 @@ predefined_type = "CABLETRUNKINGSEGMENT"
 domain = "TATE"
 talotekniikka_code = "T-TATE-01-01-001"
 system_name = "Cable carriers"
+fi_komponentti = { paaryhma = "LAITTEISTOT - SÄHKÖ", alaryhma = "KAAPELOINTIJÄRJESTELMÄT", yleisnimi = "Kaapelihylly", yleistunnus = "KH" }
 
-# Section 10: Kylmähuone-elementit (1352, IfcBuildingElementProxy)
-[[rules]]
-layer_pattern = "KYL-LEVY*"
-entity_kind = "POLYLINE"
-ifc_type = "IfcBuildingElementProxy"
-domain = "ARK"
-talo2000_code = "1352"
-talo2000_name = "Kylmähuone-elementit"
-
-[[rules]]
-layer_pattern = "KYL-NURKKA*"
-entity_kind = "POLYLINE"
-ifc_type = "IfcBuildingElementProxy"
-domain = "ARK"
-talo2000_code = "1352"
-talo2000_name = "Kylmähuone-elementit"
-
-# Section 11: Kylmälaitteet — RAVA LVI-TUOTEOSA (TATE-domain, Plan H Task 13).
-# Lähteet: koodistot.suomi.fi RYTJ → LVI-TUOTEOSA_Versio_1_0.
-# Lisäkoodit (jäähdytyskoneikot ja säiliöt) ovat tällä hetkellä aspirational —
-# DXF-blokkinimet ja layerit lisätään kun LISP-puolen Putkityökalu tukee niitä.
+# -----------------------------------------------------------------------------
+# Section 5: Refrigeration equipment — RAVA LVI-TUOTEOSA (TATE-domain).
+# Patterns use the Ö-spelling AutoCAD layers actually use plus an ASCII
+# fallback (str.casefold does NOT fold Ö→o). Stems "HÖYRYSTI"/"LAUHDUTI"
+# match both singular ("HÖYRYSTIN") and plural ("HÖYRYSTIMET") forms.
+# Aspirational codes (not yet drawn by LISP toolset) are commented:
 #   • jäähdytyskompressorikoneikko  T-LVI-01-01-005
 #   • vedenjäähdytyskone            T-LVI-01-01-003
 #   • kompressorilauhdutin          T-LVI-01-01-019
 #   • välijäähdytin                 T-LVI-01-01-024
 #   • kylmävesiasema                T-LVI-01-01-004
 #   • kylmäainevaraajasäiliö        T-LVI-03-07-012
+# -----------------------------------------------------------------------------
+
 [[rules]]
-layer_pattern = "KYL-HOYRYSTIN*"
-entity_kind = "INSERT"
-block_name = "HOYRYSTIN"
+layer_pattern = "KYL-HÖYRYSTI*"
 ifc_type = "IfcEvaporator"
 domain = "TATE"
 lvi_code = "T-LVI-01-01-023"
 system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Höyrystin", yleistunnus = "HÖY" }
 
 [[rules]]
-layer_pattern = "KYL-LAUHDUTIN*"
-entity_kind = "INSERT"
-block_name = "LAUHDUTIN"
+layer_pattern = "KYL-HOYRYSTI*"
+ifc_type = "IfcEvaporator"
+domain = "TATE"
+lvi_code = "T-LVI-01-01-023"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Höyrystin", yleistunnus = "HÖY" }
+
+[[rules]]
+layer_pattern = "KYL-LAUHDUTI*"
 ifc_type = "IfcCondenser"
 domain = "TATE"
 lvi_code = "T-LVI-01-01-018"
 system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Lauhdutin", yleistunnus = "LAU" }
 
 [[rules]]
-layer_pattern = "KYL-KOMPRESSORI*"
-entity_kind = "INSERT"
-block_name = "KOMPRESSORI"
+layer_pattern = "KYL-KOMPRESSO*"
 ifc_type = "IfcCompressor"
 domain = "TATE"
 lvi_code = "T-LVI-01-01-017"
 system_name = "Refrigeration plant"
-
-# Bugfix 6 — AutoCAD ARK / K-prefix layers (real-world CAD layer naming)
-# These rules cover layers that already encode their Talo2000 code in the
-# layer name (AR<koodi>_<lyhenne>) plus generic K-prefix architect layers.
-
-# AR12xx — runko / vaippa
-[[rules]]
-layer_pattern = "AR1241_US"
-ifc_type = "IfcWall"
-predefined_type = "STANDARD"
-domain = "ARK"
-talo2000_code = "1241"
-talo2000_name = "Ulkoseinät"
-
-[[rules]]
-layer_pattern = "AR1242_IKKUNA"
-ifc_type = "IfcWindow"
-domain = "ARK"
-talo2000_code = "1242"
-talo2000_name = "Ikkunat"
-
-[[rules]]
-layer_pattern = "AR1245_LASIUS"
-ifc_type = "IfcWall"
-predefined_type = "STANDARD"
-domain = "ARK"
-talo2000_code = "1241"
-talo2000_name = "Ulkoseinät — lasi"
-
-[[rules]]
-layer_pattern = "AR1311_VS"
-ifc_type = "IfcWall"
-predefined_type = "PARTITIONING"
-domain = "ARK"
-talo2000_code = "1311"
-talo2000_name = "Väliseinät"
-
-[[rules]]
-layer_pattern = "AR1233_PILARI"
-ifc_type = "IfcColumn"
-domain = "ARK"
-talo2000_code = "1233"
-talo2000_name = "Pilarit"
-
-[[rules]]
-layer_pattern = "AR1314_KAIDE"
-ifc_type = "IfcRailing"
-domain = "ARK"
-talo2000_code = "1314"
-talo2000_name = "Kaiteet"
-
-[[rules]]
-layer_pattern = "AR1317_TILAPORTAAT"
-ifc_type = "IfcStair"
-domain = "ARK"
-talo2000_code = "1317"
-talo2000_name = "Tilaportaat"
-
-[[rules]]
-layer_pattern = "AR1331_KIINTO"
-ifc_type = "IfcFurniture"
-domain = "ARK"
-talo2000_code = "1331"
-talo2000_name = "Vakiokiintokalusteet"
-
-# K-prefix — Granlund/Sweco-tyyliset arkkitehtilayerit
-[[rules]]
-layer_pattern = "K-OVET"
-ifc_type = "IfcDoor"
-domain = "ARK"
-talo2000_code = "1315"
-talo2000_name = "Väliovet"
-
-[[rules]]
-layer_pattern = "K-SEINÄT_VÄLISEINÄT"
-ifc_type = "IfcWall"
-predefined_type = "PARTITIONING"
-domain = "ARK"
-talo2000_code = "1311"
-talo2000_name = "Väliseinät"
-
-[[rules]]
-layer_pattern = "K-KALUSTEET"
-ifc_type = "IfcFurniture"
-domain = "ARK"
-talo2000_code = "1331"
-talo2000_name = "Vakiokiintokalusteet"
-
-[[rules]]
-layer_pattern = "K-KIINTOKALUSTEET"
-ifc_type = "IfcFurniture"
-domain = "ARK"
-talo2000_code = "1331"
-talo2000_name = "Vakiokiintokalusteet"
-
-[[rules]]
-layer_pattern = "K-RST-KALUSTEET"
-ifc_type = "IfcFurniture"
-domain = "ARK"
-talo2000_code = "1331"
-talo2000_name = "RST-kiintokalusteet"
-
-[[rules]]
-layer_pattern = "K-VALAISTUS"
-ifc_type = "IfcLightFixture"
-domain = "ARK"
-talo2000_code = "2511"
-talo2000_name = "Valaistus"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kompressori", yleistunnus = "KOMP" }

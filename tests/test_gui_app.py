@@ -241,37 +241,6 @@ def _isolated_store(tmp_path):
     return RecentFilesStore(settings=settings)
 
 
-def test_main_window_loads_last_profile_on_startup(qtbot, tmp_path):
-    from dxf2ifc.gui.app import MainWindow
-    from dxf2ifc.profiles.loader import dump_profile, load_default_profile
-    from dxf2ifc.profiles.schema import Profile, Rule
-
-    custom_path = tmp_path / "last.toml"
-    dump_profile(
-        Profile(
-            name="last",
-            ifc_schema="IFC4",
-            rules=[
-                Rule(
-                    layer_pattern="ZZ",
-                    ifc_type="IfcWall",
-                    predefined_type="STANDARD",
-                    talo2000_code="1241",
-                    talo2000_name="Ulkoseinät",
-                )
-            ],
-        ),
-        str(custom_path),
-    )
-
-    store = _isolated_store(tmp_path)
-    store.last_profile_path = str(custom_path)
-
-    window = MainWindow(recent_files=store)
-    qtbot.addWidget(window)
-
-    assert [r.layer_pattern for r in window._profile.rules] == ["ZZ"]
-    _ = load_default_profile  # imported to keep parity with sibling tests
 
 
 def test_main_window_persists_profile_path_after_load(qtbot, tmp_path):

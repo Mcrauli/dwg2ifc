@@ -58,6 +58,7 @@ pythonpath = ["src"]
 qt_api = "pyside6"
 markers = [
     "solibri: Plan F integration tests that require Solibri Anywhere on PATH; skipped automatically when Solibri.exe is not found.",
+    "accoreconsole: tests that shell out to AutoCAD's headless accoreconsole.exe; skipped when not found under %ProgramFiles%\\Autodesk\\AutoCAD *.",
 ]
 
 [tool.ruff]

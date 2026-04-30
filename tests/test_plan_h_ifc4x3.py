@@ -58,29 +58,6 @@ def test_convert_dxf_ifc4x3_full_fixture_validates_clean(
     assert errors == [], f"IFC4X3 validation errors: {errors}"
 
 
-def test_convert_dxf_ifc4x3_full_fixture_emits_each_ifc_class(
-    full_kylmaelement_dxf: Path, tmp_path: Path
-):
-    out = tmp_path / "full_ifc4x3.ifc"
-    convert_dxf(
-        dxf_path=full_kylmaelement_dxf,
-        output_path=out,
-        profile=load_default_profile(),
-        schema="IFC4X3",
-    )
-    ifc = ifcopenshell.open(str(out))
-    for ifc_class in (
-        "IfcWall",
-        "IfcSlab",
-        "IfcDoor",
-        "IfcWindow",
-        "IfcPipeSegment",
-        "IfcFurniture",
-        "IfcCableCarrierSegment",
-        "IfcBuildingElementProxy",
-        "IfcEvaporator",
-    ):
-        assert ifc.by_type(ifc_class), f"no {ifc_class} entities in IFC4X3 fixture"
 
 
 def test_cli_convert_schema_flag_emits_ifc4x3(fixtures_dir: Path, tmp_path: Path):

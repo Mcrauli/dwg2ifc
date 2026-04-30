@@ -302,45 +302,6 @@ def test_add_furniture_block_correct_bbox():
     _approx((4500.0, 1500.0, 1500.0, 5300.0, 1900.0, 1560.0), bbox)
 
 
-def test_default_profile_kyl_levyhylly_block_renders_thin_shelf():
-    """Real-world bug: KYL-LEVYHYLLY INSERT with default profile produces a
-    2000 mm tall column instead of a thin LEVY shelf because the profile
-    rule omits default_height_mm. The fallback in add_furniture (2000 mm)
-    is wrong for shelving — the LISP block represents one shelf board, so
-    the extruded body should be ~60 mm thick.
-    """
-    import ezdxf
-
-    from dxf2ifc.core.dxf_reader import read_dxf
-    from dxf2ifc.core.ifc_writer import (
-        add_furniture as _af,  # noqa: F401  (kept for clarity)
-    )
-    from dxf2ifc.core.mapper import apply_profile
-    from dxf2ifc.profiles.loader import load_default_profile
-
-    import tempfile
-
-    with tempfile.TemporaryDirectory() as tmp:
-        dxf_path = f"{tmp}/levyhylly.dxf"
-        doc = ezdxf.new("R2010")
-        doc.layers.add(name="KYL-LEVYHYLLY")
-        block = doc.blocks.new(name="KLHYLLY-LEVY")
-        block.add_line((0.0, 0.0), (800.0, 0.0))
-        msp = doc.modelspace()
-        msp.add_blockref("KLHYLLY-LEVY", (4500.0, 1500.0), dxfattribs={"layer": "KYL-LEVYHYLLY"})
-        doc.saveas(dxf_path)
-
-        records = read_dxf(dxf_path)
-    profile = load_default_profile()
-    mapped = apply_profile(records, profile)
-
-    levy = [m for m in mapped if m.layer == "KYL-LEVYHYLLY"]
-    assert len(levy) == 1
-    height = float(levy[0].extra_props.get("default_height_mm", 2000.0))
-    assert height <= 100.0, (
-        f"KYL-LEVYHYLLY default profile rule must set default_height_mm to a "
-        f"thin-shelf value (~60 mm), got {height} mm — block renders as a tall column"
-    )
 
 
 def test_add_furniture_polygon_correct_bbox():

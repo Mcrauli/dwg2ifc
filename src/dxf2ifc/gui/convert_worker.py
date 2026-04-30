@@ -12,6 +12,10 @@ class ConvertWorker(QtCore.QObject):
     finished = QtCore.Signal(str)
     failed = QtCore.Signal(str)
     report_ready = QtCore.Signal(object)
+    # Streaming status updates from convert_dxf — e.g. "Triangulating ACIS
+    # bodies via accoreconsole…" / "ACIS extraction produced N meshes" — so
+    # the GUI status bar stays informative during the headless preprocess.
+    progress = QtCore.Signal(str)
 
     def run(
         self,
@@ -20,8 +24,16 @@ class ConvertWorker(QtCore.QObject):
         out: str,
         profile: Profile,
         validate: bool = False,
+        preprocess_acis: bool = True,
     ) -> None:
-        runnable = _ConvertRunnable(self, dxf=dxf, out=out, profile=profile, validate=validate)
+        runnable = _ConvertRunnable(
+            self,
+            dxf=dxf,
+            out=out,
+            profile=profile,
+            validate=validate,
+            preprocess_acis=preprocess_acis,
+        )
         QtCore.QThreadPool.globalInstance().start(runnable)
 
 
@@ -34,6 +46,7 @@ class _ConvertRunnable(QtCore.QRunnable):
         out: str,
         profile: Profile,
         validate: bool,
+        preprocess_acis: bool,
     ) -> None:
         super().__init__()
         self._worker = worker
@@ -41,6 +54,7 @@ class _ConvertRunnable(QtCore.QRunnable):
         self._out = out
         self._profile = profile
         self._validate = validate
+        self._preprocess_acis = preprocess_acis
 
     def run(self) -> None:  # type: ignore[override]
         try:
@@ -49,6 +63,8 @@ class _ConvertRunnable(QtCore.QRunnable):
                 output_path=self._out,
                 profile=self._profile,
                 validate=self._validate,
+                preprocess_acis=self._preprocess_acis,
+                progress=self._worker.progress.emit,
             )
         except Exception as exc:  # noqa: BLE001 — surface every failure to the GUI
             self._worker.failed.emit(f"{type(exc).__name__}: {exc}")

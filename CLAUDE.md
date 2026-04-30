@@ -1,135 +1,110 @@
-# dxf2ifc — projektimuistio Claudelle
+# dxf2ifc — ohjeet Claudelle
 
-Lue tämä aina kun jatkat tätä projektia. Volatile state ja per-task SHA-historia: **`PROGRESS.md`**.
+DXF→IFC4-konvertteri suomalaisille kylmälaite-/LVI-suunnittelijoille
+(Talo2000 + RAVA-luokitukset, Solibri-yhteensopiva). Volatile state +
+build-historia: **`PROGRESS.md`**.
 
-## Mikä tämä on
+## Projektin rakenne
 
-DXF → IFC -konvertteri suomalaisille kylmälaite- ja LVI-suunnittelijoille. Muuntaa AutoCAD-pohjassa piirretyn DXF:n IFC 4 -tiedostoksi, jossa on **Talo2000-luokittelu** (pakollinen YTV 2012:n mukaan). Desktop-appi GUI:lla + CLI.
+```
+src/dxf2ifc/
+  cli.py              komentorivisyöte
+  __main__.py         python -m dxf2ifc … entrypoint
+  core/
+    dxf_reader.py     DXF luku (ezdxf) + 3DSOLID handler acis_meshes-väylällä
+    geometry.py       Extrusion-dataclassit + extents_from_geometry
+    ifc_writer.py     convert_dxf orchestrator + add_* tuoteputket  (ISO!)
+    finnish_psets.py  FI_Asennus / Geometria / Komponentti / Tuote /
+                      Tekninen / Sijainti
+    positio.py        positiov2-blokin luku → Koneikko/Laitetunnus
+    preprocessing.py  accoreconsole + STLOUT 3DSOLID-bodyille
+    mapper.py         Layer-pattern → IFC-tyyppi (apply_profile)
+    quality.py        ifcopenshell.validate + Talo2000/RAVA-säännöt
+    types.py          Point3D, MeshGeometry, MappedEntity, …
+  gui/                PySide6 (main_window, profile_editor, theme, …)
+  profiles/
+    default_kylmalaite.toml  oletusprofiili
+    schema.py                pydantic-mallit + RAVA/Talo2000-validointi
+    rava/                    koodisto-cache (JSON)
+tests/                pytest, n. 460 testiä
+tools/
+  rava/               koodiston synkronointi
+  solibri/            Solibri BCF-rule-export + verifiointi
+build/dxf2ifc.spec    PyInstaller-spec
+```
 
-- **Tekijä:** Lauri Rekola (Radika Oy, kylmälaitesuunnittelija)
-- **Kohderyhmä:** muut kylmä-/LVI-suunnittelijat jotka piirtävät AutoCADilla mutta tarvitsevat IFC-luovutuksen Talo2000-koodeilla
-- **Repo:** `https://github.com/Mcrauli/dxf2ifc` (PUBLIC, default branch `master`)
+## Ydinriippuvuudet
 
-## Status
+- **ezdxf 1.4.3** — DXF + ACIS (SAT/SAB) parsinta
+- **ifcopenshell 0.8** — IFC4 kirjoitus, pset-API
+- **pydantic 2** — profiili-skeema + validointi
+- **PySide6** — GUI (`gui`-extra)
+- **pyinstaller** — bundlaus (`dev`-extra)
 
-- ✅ **Plan A** 21/21 (`2026-04-24-plan-a-core-cli-wall-pipeline.md`) — CLI-core
-- ✅ **Plan B** 50/50 (`2026-04-27-plan-b-full-element-set.md`) — kaikki 11 Talo2000-elementtityyppiä, 143 testiä
-- ✅ **Plan C** 12/12 (`2026-04-27-plan-c-ifcsystem-grouping.md`) — IfcSystem-ryhmittely 4 järjestelmälle, 151 testiä
-- ✅ **Plan D** 25/25 (`2026-04-27-plan-d-pyside6-gui.md`) — PySide6 GUI + profiili-editori, 200 testiä, coverage 89%
-- ✅ **Plan E** 23/23 (`2026-04-27-plan-e-pyinstaller.md`) — PyInstaller-paketointi + Win/Linux build CI + tag-triggered draft release + CHANGELOG + smoke-checklist + README badge + troubleshooting, 246 testiä, coverage 89 %
-- ✅ **Plan F** 16/16 (`2026-04-28-plan-f-solibri-verification.md`) — Solibri-spec-verifiointi + IFC quality gates: `dxf2ifc.core.quality.validate_ifc` (ifcopenshell.validate + YTV Talo2000 warning), CLI `--validate`, GUI PreviewLogPanel-report, `tools/solibri/dxf2ifc.bcfzip` 5-rule BCF 2.1 ruleset, `tests/fixtures/solibri_reference_full.ifc` baseline, `tools/solibri/{verify,parse_report,diff_snapshot,cli}.py` + `python -m tools.solibri verify`-CLI, `@pytest.mark.solibri`-marker (auto-skip jos Solibri.exe puuttuu), CI Linux quality-gate-step, `docs/quality-gates.md` + `docs/solibri-rules.md`, 294 testiä, coverage 91 %
-- ✅ **Plan H** 22/22 (`2026-04-28-plan-h-ifc43-rava.md`) — **IFC 4.3 -migraatio + RAVA-luokitus**. Vaihe A: `build_ifc_project_skeleton(schema="IFC4X3")` + `convert_dxf` + CLI `--schema=ifc4x3`-flag + RAVA-codeset-cache (`src/dxf2ifc/profiles/rava/*.json` + `loader.load_rava_codes()`). Vaihe B: Domain-pohjainen luokitus — `Rule.domain: Literal["ARK", "TATE"]`, ARK → `Talo2000`-codeset (Talo 2000), TATE → `RAVA-LVI` (LVI-TUOTEOSA T-LVI-…) tai `RAVA-TATE` (TALOTEKNIIKKA-TUOTEOSA T-TATE-…). Default-profiili nimetty `default_kylmalaite.toml`, kylmälaitteet/putket/viemäri/kaapelihylly siirretty TATE-domainiin (HOYRYSTIN T-LVI-01-01-023, LAUHDUTIN T-LVI-01-01-018, KOMPRESSORI T-LVI-01-01-017, refrigeration pipes T-LVI-02, viemäri T-LVI-04-01-001, KAAPELIHYLLY T-TATE-01-01-001). `add_classification(ifc, product, *, domain, code, name)` + orchestrator domain-aware. `validate_ifc` warning-säännöt: ARK → Talo2000-puuttuu, TATE → RAVA-puuttuu. Solibri rule-set:iin lisätty "RAVA classification coverage". `docs/rava-classification.md` dokumentoi domainit + codeset:t + JSON-API:n. 302 ei-GUI-testiä passed (ml. uudet IFC4X3 + RAVA-integraatiotestit), ruff format clean.
-- ✅ **Plan G** 21/21 (`2026-04-28-plan-g-georeferenced-ifc.md`) — **Coordinate System & Georeferenced IFC**. `CRSConfig`-pydantic + `Profile.crs` + `Profile.storey_z_levels_mm`, `build_ifc_project_skeleton` palauttaa `IfcSkeleton`-dataclassin (file/project/site/building/storeys/contexts) ja kirjoittaa Site→Building→list[Storey]-IfcLocalPlacement-ketjun (`Kerros 1..N`) + IfcProjectedCRS (`Name="EPSG:3067"`/`Description="ETRS-TM35FIN"`/`GeodeticDatum="ETRS89"`) + IfcMapConversion. `resolve_storey(storeys, z_mm)` + orchestrator dispatchaa elementin per anchor-Z (LineGeometry → min(start.z,end.z), PolygonGeometry → min(p.z), BlockInstance → insertion_point.z). `validate_local_extent(skeleton, max_extent_mm=5_000_000)` RuntimeError + `validate_ifc(expect_crs=True)`-warningit (`crs_orphan_map_conversion`, `crs_missing_map_conversion`, `crs_possible_double_transform`). CLI `--eastings/--northings/--orthogonal-height`-overridet (Eastings+Northings parittain pakolliset). GUI `gui/crs_dialog.py` `CRSDialog` (Profile → Set CRS…). Solibri rule #7 "CRS coverage" (`tools/solibri/dxf2ifc.bcfzip` 7 sääntöä) + `docs/solibri-rules.md` osio 7 + `tests/fixtures/solibri_reference_full.ifc` rebuild Helsinki-CRS:llä. Dokumentaatio: `docs/coordinate-system.md` (ETRS-TM35FIN-konventio, MML/NLS-haku, double-transform-välttely) + `docs/quality-gates.md`-päivitys. Geometria pysyy LOCAL — TrueNorth deferred Plan I:hin. 375 ei-GUI-testiä passed, ruff format clean.
-- 🔁 Routine `trig_014mxffDUvDZkafKftutpgwo` 3× päivässä (08/14/20 Helsinki)
+ACIS-bodyjen ulkoinen riippuvuus: `accoreconsole.exe` AutoCAD 2018+
+asennuksesta (POSITIO-blokit + STLOUT-tessellaatio).
 
-## Päätetyt valinnat
+## IFC-skeema
 
-| Päätös | Valinta |
-|---|---|
-| Scope | Kylmäsäilytystila + LVI/putket: seinät, laatat, ovet, hyllyt, putket, kaapelihyllyt, kylmälaitteet |
-| Jakelumuoto | Desktop-appi GUI:lla (+ CLI rinnalla) |
-| Tech stack | Python 3.12 + PySide6 + ezdxf + ifcopenshell + pydantic |
-| IFC-skeema | **IFC 4 ainoa tavoite** — moderni skeema, oikeat MEP-entiteetit (`IfcEvaporator` / `IfcCondenser` / `IfcCompressor`) |
-| Layer-mappaus | Hybridi: sisäänrakennettu "Kylmälaite Talo2000" -oletusprofiili + käyttäjän TOML-ylikirjoitukset (UI:sta editoitavissa) |
-| Geometria | Hybridi: 3D-solidit suoraan, 2D-viivat ekstrudoidaan layer-default-korkeuksiin |
+**IFC4 default**, `--schema=ifc4x3` Plan H -valittavissa. Yksiköt mm.
 
-## Verifioidut Talo2000-koodit
+## Komennot
 
-Lähteet: Solibri `Talo2000.classification` + RT 10-10962 + YTV 2012 osat 1, 3, 4.
+```bash
+# Testit
+.venv/Scripts/python -m pytest -q
 
-| Talo2000 | Nimi | Lyhenne | IFC |
-|---|---|---|---|
-| 1221 | Alapohjalaatat | AP | `IfcSlab` FLOOR |
-| 1232 | Kantavat seinät | VK | `IfcWall` STANDARD |
-| 1235 | Välipohjat | VP | `IfcSlab` FLOOR |
-| 1236 | Yläpohjat | YP | `IfcSlab` ROOF |
-| 1241 | Ulkoseinät | US | `IfcWall` STANDARD |
-| 1242 | Ikkunat | — | `IfcWindow` |
-| 1243 | Ulko-ovet | — | `IfcDoor` |
-| 1311 | Väliseinät | VS | `IfcWall` PARTITIONING |
-| 1312 | Lasiväliseinät | — | `IfcWall` PARTITIONING |
-| 1315 | Väliovet | VO | `IfcDoor` |
-| 1316 | Erityisovet | — | `IfcDoor` |
-| 1331 | Vakiokiintokalusteet (hyllyt) | — | `IfcFurniture` |
-| 1352 | Kylmähuone-elementit | — | `IfcBuildingElementProxy` |
-| 21xx | Putkiosat (alakoodit TBD) | — | `IfcPipeSegment` |
-| 23xx | Sähköosat → kaapelihyllyt | — | `IfcFlowSegment` + `IfcCableCarrierSegmentType` CABLETRUNKINGSEGMENT |
-| 25xx | Laiteosat (alakoodit TBD) | — | tyyppikohtaisesti `IfcEvaporator` / `IfcCondenser` / `IfcCompressor` |
+# CLI
+.venv/Scripts/python -m dxf2ifc convert input.dxf output.ifc
 
-## YTV 2012 -keskeisiä havaintoja
+# GUI
+.venv/Scripts/python -m dxf2ifc.gui
 
-- **Yksiköt:** millimetri pakollinen
-- **Talo2000-luokittelu:** pakollinen rakennusosille
-- **IFC-skeema:** YTV-minimi IFC 2x3, me tuotamme IFC 4 (täyttää minimin + tuo MEP-entiteetit kylmälaitteille)
-- **Kerrosmallinnus:** per-kerros-eristetty
-- **Seinätyypit:** US, VK, VS / horizontal: AP, VP, YP
+# Build (Windows)
+.venv/Scripts/python -m PyInstaller build/dxf2ifc.spec --noconfirm
+Copy-Item dist/dxf2ifc.exe dist/dxf2ifc-0.1.0.exe -Force
+```
 
-## Visuaalinen design (Plan D GUI)
+## Latest delivery
 
-GUI seuraa **autocad-lisp-ohjeet-sivuston design-kieltä** (`https://github.com/Mcrauli/autocad-lisp-ohjeet`). PySide6 + QSS.
+**Build #28** (2026-04-30) ships:
+- AutoCAD COM removed → accoreconsole+STLOUT
+- 6 FI_*-PSetit per IFC-tuote
+- POSITIO → Koneikko/Laitetunnus -linkitys
+- Suunnittelualat-luokittelu (TATE/ARK)
+- FI_Geometria Pituus hyllyille/putkille
 
-### Värit (älä keksi uusia)
+## Token-säästöt Claudelle
 
-| Rooli | Hex |
-|---|---|
-| Tausta gradient | `#0f172a` → `#020617` (slate radial) |
-| Aksentti primääri (amber) | `#f59e0b` — napit, focus, brand-icon |
-| Aksentti sekundääri (blue) | `#60a5fa` — info, badge, version |
-| Brand white | `#f8fafc` |
-| Body text | `#e2e8f0` / `#cbd5f5` |
-| Heikko teksti | `#94a3b8` / `#64748b` |
-| Border subtle | `rgba(255,255,255,0.05)` |
-| Code text | `#f1f5f9` |
+Älä liitä:
+- `.venv/`, `__pycache__/`, `build/`, `dist/`, `.git/`
+- Koko `tests/` tai `src/`-puuta — yksi tiedosto kerrallaan riittää
 
-### Fontit
+Liitä:
+- Yksi tiedosto + lyhyt kuvaus mitä haluat tehdä
+- Pitkien tiedostojen kohdalle voi merkitä `# TÄMÄ MUUTETAAN` -kommentilla
 
-- **Inter** 400/500/600/700 — leipäteksti, napit
-- **Space Grotesk** 500/600/700 — otsikot, brand
-- **JetBrains Mono** 500 — koodi, versiot, labels
+## Visuaalinen design (GUI)
 
-### Patternit
-
-- Tumma slate-gradient main-windowin taustana
-- Amber-painikkeet primääritoimille (Convert), sininen sekundääreille (Browse)
-- Hover: amber-tinted (`rgba(245,158,11,0.12)`)
-- Border-left 3px amber toast-viesteille
-- Mahdollisuus: blueprint-grid 40×40 4% opacity, corner-crosshairit (harkinnanvaraisesti)
-
-### Mitä EI saa muuttaa
-
-- Värit + fontit eivät saa lisääntyä
-- Cyan (`#22d3ee`) ja deep-blue (`#3b82f6`) varattu vain LISP-sivuston putki-animaatioihin
-- Ei tracking-scriptejä / analytics
-
-## Avoimet kysymykset
-
-1. **MEP Talo2000 -alakoodit** (21xx putket, 25xx laitteet) — RT-kortisto tai NotebookLM-kysely YTV:stä
-2. **YTV-pakolliset PropertySetit** per IFC-entiteetti — YTV osa 5 RAK + TATE
-3. **Varastointihyllyt** (KLHYLLY LEVY/TIKAS) IFC-tyyppi — Lauri tarkistaa Solibri-referenssistä
-4. **Kylmälaitteet** (höyrystin / lauhdutin / kompressori) — Granlund ei sisällyttänyt referenssimalliinsa, profiili aspirational kunnes referenssi löytyy
+Slate-gradient, amber/blue aksentit; fontit Inter / Space Grotesk /
+JetBrains Mono. Värit ja fontit on lukittuja — älä lisää uusia.
+Värilista + tyylit: katso aiempi CLAUDE.md tai `gui/style.qss`.
 
 ## Työtavat
 
-- **Superpowers-skillit**: brainstorming, writing-plans, subagent-driven-development
-- **TDD-kuri**: failing-test → minimal-impl → pass → commit
-- **Auto mode**: Lauri preferoi "execute > plan"
-- **Kieli**: suomi chatissa, englanti commit-viesteissä ja koodikommenteissa, englanti spec/plan-dokumenteissa
-- **Git**: suora push mainiin, commit-viestissä `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>` trailer
-
-## Työkalut
-
-- **Claude Code** (päätyökalu)
-- **Codex CLI** — toinen näkökulma koodiin
-- **ChatGPT Go + NotebookLM** (YTV 2012 sisällä) — suomalaisten standardien haku
-- **Solibri** (BIM validointi) — Talo2000.classification + Granlund/Sweco-referenssit
-- **AutoCAD** — DXF-tuotanto
-- **GitHub CLI** `C:\Program Files\GitHub CLI\`, tili **Mcrauli**
-- **Poppler** PDF-extraktioon
+- Suomi chatissa, englanti commit-viesteissä ja koodikommenteissa
+- Auto mode default — Lauri preferoi "execute > plan"
+- Commit-trailer: `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>`
+- Suora push masteriin sallittu
 
 ## Yhteydet muihin projekteihin
 
-- **`~/work/autocad-lisp-ohjeet`** (LISP-työkalusivusto) — sieltä layer/block-nimet:
-  - `LT IMU`, `MT IMU`, `MT NESTE` (Putkityökalu 3PTK)
-  - `KYL-LEVYHYLLY`, `KYL-TIKASHYLLY` (KLHYLLY-blokit → IfcFurniture / Talo2000 1331)
-  - `POSITIO`-blokki (numerointi)
-- **Tuleva viemäri-LISP** — `KYL-VIEMARI*`, profiili mappaa `IfcPipeSegment` DRAINPIPE
+- `~/work/autocad-lisp-ohjeet` — KYL-* layer/blokki-nimet, POSITIO-blokin
+  rakenne (NUMERO + TEKSTI attribuutit)
+- `~/Downloads/RAVA3Pro - LVI - Pilottimalli - Kerrostalo - 2023-11-30.ifc`
+  — FI_*-PSet-skeeman referenssi
+- <https://talotekniikka-sovellus.tietomallintaja.fi/> — RAVA-koodisto
+
+## Avoimet todoit
+
+Nähtävillä `~/.claude/projects/.../memory/project_dxf2ifc.md`.

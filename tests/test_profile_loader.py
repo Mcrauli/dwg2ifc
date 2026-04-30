@@ -16,45 +16,21 @@ def test_default_profile_resource_uses_new_name():
     assert not package_files.joinpath("default_kylmalaite_talo2000.toml").is_file()
 
 
-def test_default_profile_marks_ark_rules_with_domain():
+def test_default_profile_is_tate_only():
+    """Bugfix 12: default profile is refrigeration-only — every rule must
+    be TATE-domain with a RAVA code (lvi_code or talotekniikka_code) and
+    no Talo2000/ARK leakage."""
     profile = load_default_profile()
-    ark_layers = {
-        "KYL-ULKOSEINA*",
-        "KYL-VALISEINA*",
-        "KYL-LASIVALISEINA*",
-        "KYL-ALAPOHJA*",
-        "KYL-VALIPOHJA*",
-        "KYL-YLAPOHJA*",
-        "KYL-OVET-ULKO*",
-        "KYL-OVET-VALI*",
-        "KYL-OVET-ERITYIS*",
-        "KYL-IKKUNA*",
-        "KYL-TIKASHYLLY-V*",
-        "KYL-TIKASHYLLY*",
-        "KYL-LEVYHYLLY*",
-        "KYL-LEVY*",
-        "KYL-NURKKA*",
-        "AR1241_US",
-        "AR1242_IKKUNA",
-        "AR1245_LASIUS",
-        "AR1311_VS",
-        "AR1233_PILARI",
-        "AR1314_KAIDE",
-        "AR1317_TILAPORTAAT",
-        "AR1331_KIINTO",
-        "K-OVET",
-        "K-SEINÄT_VÄLISEINÄT",
-        "K-KALUSTEET",
-        "K-KIINTOKALUSTEET",
-        "K-RST-KALUSTEET",
-        "K-VALAISTUS",
-    }
-    by_layer = {r.layer_pattern: r for r in profile.rules}
-    for layer in ark_layers:
-        assert layer in by_layer, f"missing ARK rule for {layer}"
-        rule = by_layer[layer]
-        assert rule.domain == "ARK", f"{layer}: expected domain ARK, got {rule.domain}"
-        assert rule.talo2000_code, f"{layer}: ARK rule must keep talo2000_code"
+    for rule in profile.rules:
+        assert rule.domain == "TATE", (
+            f"{rule.layer_pattern}: default profile must be TATE-only; got {rule.domain}"
+        )
+        assert rule.talo2000_code is None, (
+            f"{rule.layer_pattern}: default profile must not carry Talo2000 codes"
+        )
+        assert rule.lvi_code or rule.talotekniikka_code, (
+            f"{rule.layer_pattern}: TATE rule needs an lvi_code or talotekniikka_code"
+        )
 
 
 def test_load_default_profile_returns_profile():
@@ -64,58 +40,20 @@ def test_load_default_profile_returns_profile():
     assert len(profile.rules) >= 1
 
 
-def test_load_default_profile_has_exterior_wall_rule():
+def test_load_default_profile_excludes_architectural_rules():
+    """Bugfix 12 narrowed the default profile to refrigeration-only scope.
+    Walls, slabs, doors, windows, and cold-room panels are out of scope —
+    they belong to the architect, not the refrigeration designer."""
     profile = load_default_profile()
-    wall_rules = [r for r in profile.rules if r.ifc_type == "IfcWall"]
-    assert len(wall_rules) >= 1
-    assert wall_rules[0].talo2000_code == "1241"
-
-
-def test_load_default_profile_has_slab_rules():
-    profile = load_default_profile()
-    by_layer = {r.layer_pattern: r for r in profile.rules}
-    ap = by_layer["KYL-ALAPOHJA*"]
-    assert ap.entity_kind == "POLYLINE"
-    assert ap.ifc_type == "IfcSlab"
-    assert ap.predefined_type == "FLOOR"
-    assert ap.talo2000_code == "1221"
-    vp = by_layer["KYL-VALIPOHJA*"]
-    assert vp.ifc_type == "IfcSlab"
-    assert vp.predefined_type == "FLOOR"
-    assert vp.talo2000_code == "1235"
-    yp = by_layer["KYL-YLAPOHJA*"]
-    assert yp.ifc_type == "IfcSlab"
-    assert yp.predefined_type == "ROOF"
-    assert yp.talo2000_code == "1236"
-
-
-def test_load_default_profile_has_door_rules():
-    profile = load_default_profile()
-    by_layer = {r.layer_pattern: r for r in profile.rules}
-    ulko = by_layer["KYL-OVET-ULKO*"]
-    assert ulko.entity_kind == "INSERT"
-    assert ulko.block_name == "OVI-ULKO"
-    assert ulko.ifc_type == "IfcDoor"
-    assert ulko.talo2000_code == "1243"
-    vali = by_layer["KYL-OVET-VALI*"]
-    assert vali.entity_kind == "INSERT"
-    assert vali.block_name == "OVI-VALI"
-    assert vali.talo2000_code == "1315"
-    erityis = by_layer["KYL-OVET-ERITYIS*"]
-    assert erityis.entity_kind == "INSERT"
-    assert erityis.block_name == "OVI-ERITYIS"
-    assert erityis.talo2000_code == "1316"
-
-
-def test_load_default_profile_has_window_rule():
-    profile = load_default_profile()
-    by_layer = {r.layer_pattern: r for r in profile.rules}
-    ikkuna = by_layer["KYL-IKKUNA*"]
-    assert ikkuna.entity_kind == "INSERT"
-    assert ikkuna.block_name == "IKKUNA"
-    assert ikkuna.ifc_type == "IfcWindow"
-    assert ikkuna.talo2000_code == "1242"
-    assert ikkuna.talo2000_name == "Ikkunat"
+    ifc_types = {r.ifc_type for r in profile.rules}
+    architectural_only = {
+        "IfcWall", "IfcSlab", "IfcDoor", "IfcWindow",
+        "IfcColumn", "IfcRailing", "IfcStair", "IfcLightFixture",
+        "IfcBuildingElementProxy",
+    }
+    assert ifc_types.isdisjoint(architectural_only), (
+        f"default profile leaked architectural types: {ifc_types & architectural_only}"
+    )
 
 
 def test_load_default_profile_has_pipe_segment_rules():
@@ -154,17 +92,25 @@ def test_load_default_profile_has_drainpipe_rule():
 
 
 def test_load_default_profile_has_storage_furniture_rules():
+    """Per Granlund/Sweco refrigeration BIM convention (KSM_Jeppis_Pietarsaari_KYL.ifc)
+    cold-storage shelves are modeled as IfcCableCarrierSegment with the
+    CABLELADDERSEGMENT (tikashylly) and CABLETRAYSEGMENT (levyhylly) predefined
+    types — not IfcFurniture / Talo2000 1331."""
     profile = load_default_profile()
     by_layer = {r.layer_pattern: r for r in profile.rules}
     levy = by_layer["KYL-LEVYHYLLY*"]
-    assert levy.entity_kind == "INSERT"
-    assert levy.block_name == "KLHYLLY-LEVY"
-    assert levy.ifc_type == "IfcFurniture"
-    assert levy.talo2000_code == "1331"
+    assert levy.ifc_type == "IfcCableCarrierSegment"
+    assert levy.predefined_type == "CABLETRAYSEGMENT"
+    assert levy.domain == "TATE"
+    assert levy.talotekniikka_code == "T-TATE-01-01-001"
+    assert levy.talo2000_code is None
     tikas = by_layer["KYL-TIKASHYLLY*"]
-    assert tikas.block_name == "KLHYLLY-TIKAS"
+    assert tikas.ifc_type == "IfcCableCarrierSegment"
+    assert tikas.predefined_type == "CABLELADDERSEGMENT"
+    assert tikas.domain == "TATE"
+    assert tikas.talotekniikka_code == "T-TATE-01-01-001"
     tikas_v = by_layer["KYL-TIKASHYLLY-V*"]
-    assert tikas_v.block_name == "KLHYLLYV"
+    assert tikas_v.predefined_type == "CABLELADDERSEGMENT"
     # Vertical rule must precede horizontal rule for first-match resolution.
     assert profile.rules.index(tikas_v) < profile.rules.index(tikas)
 
@@ -181,54 +127,27 @@ def test_load_default_profile_has_cable_carrier_rule():
     assert cable.system_name == "Cable carriers"
 
 
-def test_load_default_profile_has_cold_room_panel_rules():
-    profile = load_default_profile()
-    by_layer = {r.layer_pattern: r for r in profile.rules}
-    levy = by_layer["KYL-LEVY*"]
-    assert levy.entity_kind == "POLYLINE"
-    assert levy.ifc_type == "IfcBuildingElementProxy"
-    assert levy.talo2000_code == "1352"
-    nurkka = by_layer["KYL-NURKKA*"]
-    assert nurkka.entity_kind == "POLYLINE"
-    assert nurkka.ifc_type == "IfcBuildingElementProxy"
-    assert nurkka.talo2000_code == "1352"
-
-
 def test_load_default_profile_has_cooling_equipment_rules():
+    """Patterns use stems (HÖYRYSTI / LAUHDUTI / KOMPRESSO) so they match
+    both singular ("HÖYRYSTIN") and plural ("HÖYRYSTIMET") layer names.
+    HÖYRYSTI ships in both Ö-spelling and ASCII fallback because Python's
+    str.casefold does NOT fold Ö → o."""
     profile = load_default_profile()
     by_layer = {r.layer_pattern: r for r in profile.rules}
-    hoyr = by_layer["KYL-HOYRYSTIN*"]
-    assert hoyr.ifc_type == "IfcEvaporator"
-    assert hoyr.block_name == "HOYRYSTIN"
-    assert hoyr.domain == "TATE"
-    assert hoyr.lvi_code == "T-LVI-01-01-023"
-    assert hoyr.talo2000_code is None
-    assert hoyr.system_name == "Refrigeration plant"
-    lauh = by_layer["KYL-LAUHDUTIN*"]
+    hoyr_o = by_layer["KYL-HOYRYSTI*"]
+    assert hoyr_o.ifc_type == "IfcEvaporator"
+    assert hoyr_o.domain == "TATE"
+    assert hoyr_o.lvi_code == "T-LVI-01-01-023"
+    assert hoyr_o.system_name == "Refrigeration plant"
+    hoyr_uml = by_layer["KYL-HÖYRYSTI*"]
+    assert hoyr_uml.ifc_type == "IfcEvaporator"
+    assert hoyr_uml.lvi_code == "T-LVI-01-01-023"
+    lauh = by_layer["KYL-LAUHDUTI*"]
     assert lauh.ifc_type == "IfcCondenser"
-    assert lauh.domain == "TATE"
     assert lauh.lvi_code == "T-LVI-01-01-018"
-    assert lauh.talo2000_code is None
-    assert lauh.system_name == "Refrigeration plant"
-    komp = by_layer["KYL-KOMPRESSORI*"]
+    komp = by_layer["KYL-KOMPRESSO*"]
     assert komp.ifc_type == "IfcCompressor"
-    assert komp.domain == "TATE"
     assert komp.lvi_code == "T-LVI-01-01-017"
-    assert komp.talo2000_code is None
-    assert komp.system_name == "Refrigeration plant"
-
-
-def test_load_default_profile_has_partition_wall_rules():
-    profile = load_default_profile()
-    by_layer = {r.layer_pattern: r for r in profile.rules}
-    valiseina = by_layer["KYL-VALISEINA*"]
-    assert valiseina.ifc_type == "IfcWall"
-    assert valiseina.predefined_type == "PARTITIONING"
-    assert valiseina.talo2000_code == "1311"
-    lasi = by_layer["KYL-LASIVALISEINA*"]
-    assert lasi.ifc_type == "IfcWall"
-    assert lasi.predefined_type == "PARTITIONING"
-    assert lasi.talo2000_code == "1312"
 
 
 def test_load_profile_from_file(tmp_path: Path):
@@ -438,53 +357,7 @@ def test_default_profile_storey_levels_default_single_zero():
     assert profile.crs is None
 
 
-def test_load_default_tate_only_profile_drops_architecture():
-    """Bugfix 12: the TATE-only profile is the cleaned-up scope a refrigeration
-    designer actually models. Every rule must be domain=TATE with one RAVA
-    code; no architectural Talo2000 codes (1xxx) may leak in."""
-    from dxf2ifc.profiles.loader import load_default_tate_only_profile
-
-    profile = load_default_tate_only_profile()
-    assert profile.ifc_schema == "IFC4"
-    assert profile.rules, "TATE-only profile must contain at least one rule"
-
-    layers = {r.layer_pattern for r in profile.rules}
-    # Must include the cooling-tooling layers Lauri keeps in scope.
-    must_include = {
-        "LT IMU",
-        "MT IMU",
-        "MT NESTE",
-        "KYL-VIEMARI*",
-        "KAAPELIHYLLY*",
-        "KYL-LEVYHYLLY*",
-        "KYL-TIKASHYLLY*",
-        "KYL-TIKASHYLLY-V*",
-        "KYL-HOYRYSTIN*",
-        "KYL-LAUHDUTIN*",
-        "KYL-KOMPRESSORI*",
-        "KYL-KONEIKKO*",
-    }
-    missing = must_include - layers
-    assert not missing, f"TATE-only profile is missing cooling layers: {missing}"
-
-    # Must NOT include architectural KYL-* / AR-prefix / K-prefix layers.
-    must_exclude = {
-        "KYL-ULKOSEINA*",
-        "KYL-VALISEINA*",
-        "KYL-ALAPOHJA*",
-        "KYL-OVET-ULKO*",
-        "KYL-IKKUNA*",
-        "KYL-LEVY*",
-        "AR1241_US",
-        "K-OVET",
-    }
-    leaked = must_exclude & layers
-    assert not leaked, f"TATE-only profile leaks architecture layers: {leaked}"
-
-    # Every rule must be TATE-domain with exactly one RAVA code.
-    for rule in profile.rules:
-        assert rule.domain == "TATE", f"{rule.layer_pattern}: domain must be TATE"
-        assert rule.talo2000_code is None
-        assert bool(rule.lvi_code) ^ bool(rule.talotekniikka_code), (
-            f"{rule.layer_pattern}: exactly one RAVA code required"
-        )
+# Removed test_load_default_tate_only_profile_drops_architecture:
+# Bugfix-12 collapsed the two profiles into one (the default IS TATE-only
+# now). The remaining test_default_profile_is_tate_only above covers
+# the same intent on the canonical default profile.

@@ -6,7 +6,9 @@ import ifcopenshell
 import pytest
 
 from dxf2ifc.core.ifc_writer import (
+    _mesh_to_brep,
     add_building_element_proxy,
+    add_cable_carrier,
     add_cable_carrier_segment,
     add_classification,
     add_cooling_equipment,
@@ -27,6 +29,7 @@ from dxf2ifc.core.types import (
     BlockInstance,
     LineGeometry,
     MappedEntity,
+    MeshGeometry,
     Point3D,
     PolygonGeometry,
 )
@@ -934,16 +937,225 @@ def test_add_classification_reuses_existing_classification():
     assert len(rava_lvi) == 1
 
 
-def test_convert_dxf_produces_ifc_with_wall(fixtures_dir: Path, tmp_path: Path):
-    output = tmp_path / "out.ifc"
-    convert_dxf(
-        dxf_path=fixtures_dir / "simple_wall.dxf",
-        output_path=output,
-        profile=load_default_profile(),
+
+
+def _tetrahedron_mesh(
+    *, offset: tuple[float, float, float] = (0.0, 0.0, 0.0)
+) -> MeshGeometry:
+    """Return a tetrahedron with 4 vertices and 4 triangular faces."""
+    ox, oy, oz = offset
+    return MeshGeometry(
+        vertices=(
+            Point3D(0.0 + ox, 0.0 + oy, 0.0 + oz),
+            Point3D(1000.0 + ox, 0.0 + oy, 0.0 + oz),
+            Point3D(500.0 + ox, 1000.0 + oy, 0.0 + oz),
+            Point3D(500.0 + ox, 500.0 + oy, 1000.0 + oz),
+        ),
+        faces=(
+            (0, 1, 2),
+            (0, 1, 3),
+            (1, 2, 3),
+            (2, 0, 3),
+        ),
     )
-    assert output.exists()
-    reloaded = ifcopenshell.open(str(output))
-    walls = reloaded.by_type("IfcWall")
-    assert len(walls) == 1
-    refs = reloaded.by_type("IfcClassificationReference")
-    assert any(r.Identification == "1241" for r in refs)
+
+
+def _mesh_furniture_mapped(
+    *, mesh: MeshGeometry | None = None, layer: str = "KYL-LEVYHYLLY"
+) -> MappedEntity:
+    return MappedEntity(
+        layer=layer,
+        dxf_type="MESH",
+        geometry=mesh or _tetrahedron_mesh(),
+        ifc_type="IfcFurniture",
+        predefined_type=None,
+        talo2000_code="1331",
+        talo2000_name="Vakiokiintokalusteet",
+        extra_props={},
+    )
+
+
+def test_add_furniture_with_mesh_geometry_emits_brep():
+    ifc = build_ifc_project_skeleton(project_name="Furniture Mesh")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    furniture = add_furniture(ifc, _mesh_furniture_mapped(), parent_storey=storey)
+    assert furniture.is_a("IfcFurniture")
+    assert furniture.Representation is not None
+    shapes = furniture.Representation.Representations
+    assert len(shapes) == 1
+    assert shapes[0].RepresentationType == "Brep"
+    breps = ifc.by_type("IfcFacetedBrep")
+    assert len(breps) == 1
+    assert len(breps[0].Outer.CfsFaces) == 4
+
+
+def test_add_cable_carrier_cabletray_emits_correct_predefined_type():
+    ifc = build_ifc_project_skeleton(project_name="Cable Tray")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = MappedEntity(
+        layer="KAAPELIHYLLY-LEVY",
+        dxf_type="MESH",
+        geometry=_tetrahedron_mesh(),
+        ifc_type="IfcCableCarrierSegment",
+        predefined_type="CABLETRAYSEGMENT",
+        domain="TATE",
+        talotekniikka_code="T-TATE-01-01-001",
+    )
+    seg = add_cable_carrier(
+        ifc, mapped, parent_storey=storey, predefined_type="CABLETRAYSEGMENT"
+    )
+    assert seg.is_a("IfcCableCarrierSegment")
+    assert seg.PredefinedType == "CABLETRAYSEGMENT"
+    types = ifc.by_type("IfcCableCarrierSegmentType")
+    assert any(t.PredefinedType == "CABLETRAYSEGMENT" for t in types)
+
+
+def test_add_cable_carrier_cableladder_emits_correct_predefined_type():
+    ifc = build_ifc_project_skeleton(project_name="Cable Ladder")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = MappedEntity(
+        layer="KAAPELIHYLLY-TIKAS",
+        dxf_type="MESH",
+        geometry=_tetrahedron_mesh(),
+        ifc_type="IfcCableCarrierSegment",
+        predefined_type="CABLELADDERSEGMENT",
+        domain="TATE",
+        talotekniikka_code="T-TATE-01-01-001",
+    )
+    seg = add_cable_carrier(
+        ifc, mapped, parent_storey=storey, predefined_type="CABLELADDERSEGMENT"
+    )
+    assert seg.PredefinedType == "CABLELADDERSEGMENT"
+    types = ifc.by_type("IfcCableCarrierSegmentType")
+    assert any(t.PredefinedType == "CABLELADDERSEGMENT" for t in types)
+
+
+def test_add_cable_carrier_attaches_rava_classification():
+    ifc = build_ifc_project_skeleton(project_name="Cable RAVA")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = MappedEntity(
+        layer="KAAPELIHYLLY-TIKAS",
+        dxf_type="MESH",
+        geometry=_tetrahedron_mesh(),
+        ifc_type="IfcCableCarrierSegment",
+        predefined_type="CABLELADDERSEGMENT",
+        domain="TATE",
+        talotekniikka_code="T-TATE-01-01-001",
+    )
+    seg = add_cable_carrier(
+        ifc, mapped, parent_storey=storey, predefined_type="CABLELADDERSEGMENT"
+    )
+    add_classification(
+        ifc,
+        seg,
+        domain="TATE",
+        code=mapped.talotekniikka_code,
+        name=None,
+    )
+    classifications = {c.Name for c in ifc.by_type("IfcClassification")}
+    assert "RAVA-TATE" in classifications
+    refs = ifc.by_type("IfcClassificationReference")
+    assert any(r.Identification == "T-TATE-01-01-001" for r in refs)
+
+
+def test_add_cable_carrier_assigns_to_system():
+    ifc = build_ifc_project_skeleton(project_name="Cable System")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = MappedEntity(
+        layer="KAAPELIHYLLY-LEVY",
+        dxf_type="MESH",
+        geometry=_tetrahedron_mesh(),
+        ifc_type="IfcCableCarrierSegment",
+        predefined_type="CABLETRAYSEGMENT",
+        domain="TATE",
+        talotekniikka_code="T-TATE-01-01-001",
+    )
+    seg = add_cable_carrier(
+        ifc, mapped, parent_storey=storey, predefined_type="CABLETRAYSEGMENT"
+    )
+    system = add_system(ifc, name="Cable Trays")
+    assign_to_system(ifc, products=[seg], system=system)
+    rels = [r for r in ifc.by_type("IfcRelAssignsToGroup") if r.RelatingGroup == system]
+    assert any(seg in r.RelatedObjects for r in rels)
+
+
+def test_add_evaporator_with_mesh_geometry_emits_brep():
+    ifc = build_ifc_project_skeleton(project_name="Evap Mesh")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    mapped = MappedEntity(
+        layer="KYL-HOYRYSTIN",
+        dxf_type="MESH",
+        geometry=_tetrahedron_mesh(),
+        ifc_type="IfcEvaporator",
+        predefined_type=None,
+        domain="TATE",
+        lvi_code="T-LVI-01-01-023",
+    )
+    ev = add_cooling_equipment(ifc, mapped, parent_storey=storey)
+    assert ev.is_a("IfcEvaporator")
+    assert ev.Representation is not None
+    assert ev.Representation.Representations[0].RepresentationType == "Brep"
+    breps = ifc.by_type("IfcFacetedBrep")
+    assert len(breps) == 1
+
+
+def test_mesh_to_brep_handles_quad_faces():
+    """N-gon faces should produce one IfcFace each, not be triangulated."""
+    ifc = build_ifc_project_skeleton(project_name="Quad Mesh")
+    # A simple cube: 8 vertices, 6 quad faces.
+    cube = MeshGeometry(
+        vertices=(
+            Point3D(0, 0, 0),
+            Point3D(1000, 0, 0),
+            Point3D(1000, 1000, 0),
+            Point3D(0, 1000, 0),
+            Point3D(0, 0, 1000),
+            Point3D(1000, 0, 1000),
+            Point3D(1000, 1000, 1000),
+            Point3D(0, 1000, 1000),
+        ),
+        faces=(
+            (0, 3, 2, 1),  # bottom
+            (4, 5, 6, 7),  # top
+            (0, 1, 5, 4),  # front
+            (1, 2, 6, 5),  # right
+            (2, 3, 7, 6),  # back
+            (3, 0, 4, 7),  # left
+        ),
+    )
+    brep = _mesh_to_brep(ifc, cube)
+    assert brep.is_a("IfcFacetedBrep")
+    faces = brep.Outer.CfsFaces
+    assert len(faces) == 6
+    # Each face must be a quad: one IfcFaceOuterBound with 4 polyloop points.
+    for face in faces:
+        bounds = face.Bounds
+        assert len(bounds) == 1
+        assert len(bounds[0].Bound.Polygon) == 4
+
+
+def test_mesh_to_brep_dedupes_vertices():
+    """Repeated vertices in MeshGeometry should map to one IfcCartesianPoint."""
+    ifc = build_ifc_project_skeleton(project_name="Dedup Mesh")
+    # Two physically identical vertices at index 0 and index 4.
+    mesh = MeshGeometry(
+        vertices=(
+            Point3D(0, 0, 0),
+            Point3D(1000, 0, 0),
+            Point3D(500, 1000, 0),
+            Point3D(500, 500, 1000),
+            Point3D(0, 0, 0),  # duplicate of index 0
+        ),
+        faces=(
+            (0, 1, 2),
+            (0, 1, 3),
+            (1, 2, 3),
+            (4, 2, 3),  # uses the duplicate vertex
+        ),
+    )
+    points_before = len(ifc.by_type("IfcCartesianPoint"))
+    brep = _mesh_to_brep(ifc, mesh)
+    assert brep.is_a("IfcFacetedBrep")
+    points_after = len(ifc.by_type("IfcCartesianPoint"))
+    # 5 input vertices but 4 unique -> 4 new IfcCartesianPoints.
+    assert points_after - points_before == 4

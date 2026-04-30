@@ -1,0 +1,1084 @@
+YTV
+versio 1.0
+             Yleiset tietomallivaatimukset
+             2012
+
+
+
+
+                               Osa 1.
+                            Yleinen osuus
+Alkusanat
+
+
+Julkaisusarja ”Yleiset Tietomallivaatimukset 2012” on laajapohjaisen kehittämishankkeen, COBIM,
+tulos. Tarve vaatimuksille juontaa rakennusalalla nopeasti kasvavasta tietomallintamisen käytöstä.
+Rakennushankkeen kaikissa vaiheissa osapuolilla on tarve määritellä entistä täsmällisemmin mitä ja
+miten mallinnetaan. ”Yleiset Tietomallivaatimusten 2012” lähtökohtana ovat olleet tilaaja-
+organisaatioiden aikaisemmat ohjeet ja niistä saadut käyttökokemukset sekä ohjeitten kirjoittajien
+seikkaperäinen kokemus mallipohjaisesta toiminnasta.
+
+
+Hankkeen osapuolet: Rahoittajat: Aitta Oy, Arkkitehtitoimisto Larkas & Laine Oy, buildingSMART
+Finland, Espoon kaupunki Tekninen palvelukeskus, Future CAD Oy, Helsingin kaupunki
+Asuntotuotantotoimisto, Helsingin kaupunki Tilakeskus, Helsingin yliopisto, Helsingin
+Yliopistokiinteistöt Oy, HUS-Kiinteistöt Oy, HUS-Tilakeskus, ISS Palvelut Oy, Kuopion kaupunki
+Tilakeskus, Lemminkäinen Talo Oy, M.A.D. Oy, NCC Rakennus Oy, Sebicon Oy, Senaatti-kiinteistöt,
+Skanska Oy, SRV Rakennus Oy, SWECO PM OY, Tampereen kaupunki, Vantaan kaupunki
+Tilakeskus, ympäristöministeriö. Kirjoittajat: Finnmap Consulting Oy, Gravicon Oy, Insinööritoimisto
+Olof Granlund Oy, Lemminkäinen Talo Oy, NCC Rakennus Oy, Pöyry CM Oy, Skanska Oyj/VTT,
+Solibri Oy, SRV Rakennus Oy, Tietoa Finland Oy. Johto: Rakennustietosäätiö RTS.
+
+
+Vaatimukset on hyväksynyt Rakennustietosäätiön toimikuntana TK 320 toiminut hankkeen osapuolista
+koostuva johtoryhmä, joka on myös itse aktiivisesti osallistunut vaatimusten sisällön kehittämiseen sekä
+lausuttamiseen niin omassa kuin sidosryhmiensä keskuudessa.
+
+
+     © COBIM - hankkeen osapuolet
+
+
+
+
+                    Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                  Osan 1 laatija Gravicon Oy Tomi Henttinen
+
+Sisällysluettelo
+1     Tietomallinnuksen päätavoitteet                                            5
+2     Johdanto                                                                   6
+3     Yleiset mallitekniset vaatimukset                                          6
+    3.1 Käytettävät ohjelmistot                                                   6
+    3.2 Mallien luovuttaminen tilaajalle ja projektin muille osapuolille          6
+    3.3 Mittayksikkö ja koordinaatisto                                            7
+    3.4 Mallien mittatarkkuus                                                     7
+    3.5 Mallinnuksessa käytettävät työkalut                                       8
+    3.6 Rakennukset, kerrokset ja lohkot                                          9
+    3.7 Mallien nimeäminen ja arkistointi                                         9
+    3.8 Tietomalliselostus                                                        9
+    3.9 Tietomallikoordinaattori                                                 10
+    3.10 Mallien julkaisu                                                        10
+    3.11 Työmallit                                                               10
+    3.12 Tietomallien laadunvalvonta                                             11
+4      Mallien tuottaminen ja hyödyntäminen projektin eri vaiheissa              11
+    4.1   Rakennushankkeen käynnistys                                            11
+          4.1.1 Laajuustiedot, käyttötarkoitus, vaatimukset rakennuspaikalle     11
+          4.1.2 Tilaohjelma, tavoitebudjetti, rakennuspaikka                     12
+          4.1.3 Vaatimusmalli                                                    12
+          4.1.1 Tilojen tunnisteet ja nimeäminen                                 12
+          4.1.2 Viranomaisvaatimukset                                            13
+          4.1.3 Tietomallikoordinaattorin tehtävät                               13
+    4.2   Ehdotussuunnittelu                                                     13
+          4.2.1 Mallinnuksen yhteys prosessiin ja päätöksiin                     13
+          4.2.2 Rakennuspaikan malli ja inventointimalli                         14
+          4.2.3 Vaihtoehtoiset tilamallit ja suunnitteluratkaisut                14
+          4.2.4 Rakenne                                                          14
+          4.2.5 LVI- ja sähkösuunnittelu                                         14
+          4.2.6 Pinta-aloihin ja tilavuuksiin perustuva kustannusarvio           14
+          4.2.7 Energiankulutusanalyysit ja elinkaarikustannusten laskenta       14
+          4.2.8 Suunnitelman havainnollistaminen                                 15
+          4.2.9 Vertailu ja päätöksenteko                                        15
+          4.2.10 Tietomallikoordinaattorin tehtävät                              15
+    4.3   Yleissuunnittelu                                                       15
+          4.3.1 Arkkitehtisuunnitelmat                                           15
+          4.3.2 Rakennesuunnitelmat                                              16
+          4.3.3 LVI-suunnitelmat                                                 16
+          4.3.4 Sähkösuunnitelmat                                                16
+          4.3.5 Suunnitelmien havainnollistaminen                                16
+          4.3.6 Mallien yhdistäminen ja tarkastaminen                            16
+          4.3.7 Yleissuunnitteluvaiheen kustannusarvio                           16
+          4.3.8 Energiankulutusanalyysit ja elinkaarikustannusten laskenta       16
+          4.3.9 Tietomallikoordinaattorin tehtävät                               17
+    4.4   Toteutussuunnittelu                                                    17
+          4.4.1 Mallinnuksen yhteys prosessiin ja päätöksiin                     17
+          4.4.2 Arkkitehtisuunnitelmat                                           17
+          4.4.3 Rakennesuunnitelmat                                              17
+          4.4.4 LVI-suunnitelmat                                                 17
+
+
+                            Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                            Osan 1 laatija Gravicon Oy Tomi Henttinen
+      4.4.5 Sähkösuunnitelmat                                               17
+      4.4.6 Suunnitelmien havainnollistaminen                               18
+      4.4.7 Mallien yhdistäminen ja tarkastaminen                           18
+      4.4.8 Kustannusarvio ja määräluettelot                                18
+      4.4.9 Energiankulutusanalyysit ja elinkaarikustannusten laskenta      18
+      4.4.10 Tietomallikoordinaattorin tehtävät                             18
+4.5   Hankintoja palveleva suunnittelu                                      19
+      4.5.1 Kohteen analysoiminen ja työn suunnittelu                       19
+4.6   Toteutus                                                              19
+      4.6.1 Tietomallien hyödyntäminen työmaalla                            19
+4.7   Vastaanotto                                                           20
+      4.7.1 Tietomallien hyödyntäminen käytön ja ylläpidon aikana           20
+      4.7.2 Toteumamallit                                                   20
+
+
+
+
+                       Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                   Sivu 5 / 21
+
+
+
+1   Tietomallinnuksen päätavoitteet
+    Kiinteistöjen ja rakennuksien mallinnuksen tavoite on suunnittelun ja rakentamisen laadun,
+    tehokkuuden, turvallisuuden ja kestävän kehityksen mukaisen hanke- ja elinkaariprosessin tukeminen.
+    Tietomalleja hyödynnetään koko rakennuksen elinkaaren ajan, lähtien suunnittelun alusta ja jatkuen
+    vielä rakennusprojektin jälkeenkin käytön ja ylläpidon aikana.
+    Tietomallit mahdollistavat mm:
+        Investointipäätöksien tuki vertailemalla ratkaisujen toimivuutta, laajuutta ja kustannuksia
+        Energia-, ympäristö- ja elinkaarianalyysit ratkaisujen vertailua, suunnittelua ja ylläpidon
+         tavoiteseurantaa varten
+        Suunnitelmien havainnollistamisen ja rakennettavuuden analysoimisen
+        Laadunvarmistuksen, tiedonsiirron parantamisen ja suunnitteluprosessin tehostamisen
+        Rakennushankkeiden tietojen hyödyntämisen käytön ja ylläpidon aikaisissa toiminnoissa
+    Mallinnuksen onnistumiseksi on malleille ja mallien hyödyntämiselle asetettava hankekohtaiset
+    painopistealueet ja tavoitteet. Tavoitteiden ja tämän julkaisusarjan yleisvaatimusten pohjalta
+    määritetään ja dokumentoidaan projektikohtaiset vaatimukset.
+    Yleisiä mallinnukselle asetettuja tavoitteita ovat esimerkiksi:
+        Tukea hankkeen päätöksentekoprosesseja
+        Sitouttaa osapuolet hankkeen tavoitteisiin mallin avulla
+        Havainnollistaa suunnitteluratkaisuja
+        Auttaa suunnittelua ja suunnitelmien yhteensovittamista
+        Nostaa ja varmistaa rakennusprosessin ja lopputuotteen laatua
+        Tehostaa rakentamisaikaisia prosesseja
+        Parantaa turvallisuutta rakentamisen aikana ja elinkaarella
+        Tukea hankkeen kustannus ja elinkaarianalyysejä
+        Tukea hankkeen tietojen siirtämistä käytönaikaiseen tiedonhallintaan
+    ’Tietomallivaatimukset 2012’ kattavat uudis- ja korjausrakentamiskohteet, sekä rakennusten käytön ja
+    ylläpidon. Mallinnusvaatimuksissa esitetään vähimmäisvaatimukset mallinnukselle ja mallien
+    tietosisällölle. Vähimmäisvaatimukset on tarkoitettu noudatettavaksi kaikissa rakennushankkeissa,
+    joissa näitä vaatimuksia halutaan käyttää. Vähimmäisvaatimusten lisäksi voidaan esittää lisävaatimuksia
+    tapauskohtaisesti. Mallinnusvaatimukset ja – sisältö on esitettävä kaikissa suunnittelusopimuksissa
+    sitovasti ja yhdenmukaisesti.
+    Julkaisusarja ’Tietomallivaatimukset 2012’ koostuu seuraavista dokumenteista:
+    1.  Yleinen osuus
+    2.  Lähtötilanteen mallinnus
+    3.  Arkkitehtisuunnittelu
+    4.  Talotekninen suunnittelu
+    5.  Rakennesuunnittelu
+    6.  Laadunvarmistus
+    7.  Määrälaskenta
+    8.  Mallien käyttö havainnollistamisessa
+    9.  Mallien käyttö talotekniikan analyyseissä
+    10. Energia-analyysit
+    11. Tietomallipohjaisen projektin johtaminen
+    12. Tietomallien hyödyntäminen rakennuksen käytön ja ylläpidon aikana
+    13. Tietomallien hyödyntäminen rakentamisessa
+    14. Tietomallien hyödyntäminen rakennusvalvonnassa
+    Jokaisen tietomallihankkeen osapuolen on tutustuttava oman alansa vaatimusten lisäksi ainakin yleiseen
+    osuuteen (osa 1) sekä laadunvarmistuksen periaatteisiin (osa 6). Projektia tai projektin tiedonhallintaa
+    johtavan henkilön on hallittava tietomallivaatimusten periaatteet kokonaisuutena.
+
+
+
+
+                        Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                      Sivu 6 / 21
+
+
+
+2     Johdanto
+      Tässä dokumentissa kuvataan projekteissa noudatettavaa tietomallinnusta koskevat perusasiat,
+      vaatimukset ja -käsitteet. Mallinnus kattaa vain osan kohteiden suunnittelutyöstä, sen rinnalla tuotetaan
+      yhä myös perinteisiä dokumentteja, joita nämä tietomallivaatimukset eivät käsittele. Kaikkien muiden
+      luovutettavien dokumenttien osalta on noudatettava tilaajan tai hankkeen tiedonsiirto-ohjetta.
+      Kuvatasojen osalta annettuja ohjeita noudatetaan soveltuvin osin myös mallinnuksessa.
+      Mallinnusohjelmat käsittelevät tarkkuustasoja, projektioita, dokumentteja jne. kuitenkin usein
+      perinteisestä cad -tasoajattelusta poiketen, joten kuvataso-ohjeita pitää soveltaa ohjelmistokohtaisesti
+      esimerkiksi loppudokumentteja laadittaessa.
+      Tarjouspyynnössä määritellään mallien käytön laajuus, eri osapuolille kuuluvat tehtävät ja käytettävät
+      tarkistusmenetelmät kyseisessä projektissa, lisätietoa löytyy osasta 11. Tietomallipohjaisen projektin
+      johtaminen. Mallien geometria- ja tietosisällön kannalta on olennaista, että hankkeen tietomallintamisen
+      tavoitteet olisivat pääosin tiedossa jo ennen suunnittelijavalintaa. Muussa tapauksessa
+      suunnitteluryhmän kokoonpanolla sekä yritysten tiedonhallinnan ja mallintamisen osaamistasolla voi
+      olla liiankin suuri rooli siinä, miten ja minkä tasoisia malleja rakennusprosessin aikana on mahdollista
+      luoda ja miten tehokkaasti niitä voidaan hyödyntää. Mallien yleistä sisältöä ja käyttötarkoitusta on
+      esitelty liitteessä 1. Tarkempaa tietoa löytyy julkaisusarjan muista osista.
+      Tämä ohje käsittelee paljolti samoja asioita, kuin toimialakohtaiset dokumentit, mutta huomattavasti
+      yleisemmällä tasolla. Tulkintaeroissa toimialakohtaisilla vaatimuksilla on aina suurempi painoarvo.
+
+
+3     Yleiset mallitekniset vaatimukset
+3.1   Käytettävät ohjelmistot
+      Julkisissa hankkeissa kaikkien vähintään IFC 2x3 sertifioitujen mallinnusohjelmien käyttö on sallittua,
+      mutta hankekohtaisesti tähän voidaan asettaa erityisvaatimuksia esimerkiksi käytettävän IFC version tai
+      erityisominaisuuksien suhteen. Suunnittelijoiden on tarjouksissaan mainittava käyttämänsä
+      mallinnusohjelma, sen versio sekä sen tukeman IFC -muotoisen tiedoston versio.
+      Osapuolien on yhdessä sovittava ohjelmistojen ja niiden versioiden vaihtaminen projektin aikana.
+      Uusien versioiden käyttöönottovaiheessa on suoritettava tiedonsiirron testaus aina ennen lopullista
+      käyttöönottopäätöstä. Muiden kuin IFC -sertifioitujen ohjelmistojen käyttö muille osapuolille
+      luovutettavien mallien tekemisessä on sallittua vain tilaajan suostumuksella. Sisäisessä työskentelyssä ja
+      dokumenttien tuottamisessa ei ohjelmistorajoituksia ole.
+           Ohje
+           Joissakin tapauksissa tilaaja voi määritellä projektissa käytettävät ohjelmistot. Esimerkiksi
+           rakennusliikkeet kehittävät omia tietomalliprosessejaan tiettyjen ohjelmistojen ympärille, jolloin
+           niiden käyttöä voidaan edellyttää myös suunnittelijoilta. Määrättyjen ohjelmistojen käyttöä
+           voidaan edellyttää myös, mikäli hankkeeseen liittyy tavanomaisesta poikkeavia
+           mallinnusvaatimuksia ja esimerkiksi prosessien kehittämistä.
+
+3.2   Mallien luovuttaminen tilaajalle ja projektin muille osapuolille
+      Kaikki mallit luovutetaan työn aikana työn vaatimassa laajuudessa sekä IFC -muodossa että
+      mallinnuksessa käytetyn ohjelmiston omassa tiedostomuodossa (natiivimalli). Työnaikaisesta mallien
+      jakelutavasta sovitaan projektikohtaisesti. Projektin päättyessä kaikki mallit ja sähköiset dokumentit
+      luovutetaan sopimuksen mukaisesti tilaajalle, jolla on oikeus käyttää malleja vastaavin ehdoin kuin
+      projektien perinteisiä dokumentteja.
+      Malleista on ennen niiden luovuttamista ja jakamista muille osapuolille poistettava varsinaiseen
+      suunnitelmaan kuulumattomat tasot ja mallinnuskomponentit tietomallivaatimusten
+      laadunvarmistusosan mukaisesti.
+      Jaettaessa suunnittelualakohtaisia tietomalleja ei niihin saa sisällyttää muiden suunnittelijoiden malleja,
+      vaikka niitä olisikin käytetty referenssimalleina. Kukin malli saa sisältää ainoastaan sen julkaisevan
+      suunnittelijan omia mallinnusosia. Tämä ei kuitenkaan koske inventointimallia, jota tulee
+      korjausrakentamiskohteissa käyttää arkkitehdin suunnittelumallien pohjana. Alkuperäinen
+      inventointimalli tulee kuitenkin arkistoida erillisenä mahdollisia tarkistuksia varten.
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                        Sivu 7 / 21
+
+      Jos mallinnusohjelmisto käyttää ulkopuolisia viittauksia esimerkiksi kirjastoihin, on alkuperäisen mallin
+      mukana luovutettava kaikki siinä käytetyt kirjastot niin, että kaikki oleellinen suunnittelutieto säilyy.
+      Mikäli kirjastojen luovuttamiseen liittyy tekijänoikeudellisia, suunnittelijan kilpailuetuun liittyviä tai
+      muita vastaavia juridisia ongelmia, on sopimusvaiheessa määriteltävä, miten nämä ratkaistaan niin, että
+      tilaajalle luovutetaan rakennuksen käyttöä, ylläpitoa ja korjauksia ajatellen käyttökelpoinen malli.
+           Ohje
+           Lähetettäessä tietomalleja IFC -muodossa projektipankkiin on tiedostot aina vähintään pakattava
+           (.zip). Tällä toimenpiteellä tiedosto saadaan pienenemään jopa 80 %. Vieläkin pienempään
+           tiedostokokoon voidaan päästä käyttämällä erillistä IFC -tiedostojen optimointiohjelmaa ja
+           tiedostonpakkausta, mikä on suositeltavaa etenkin suurissa projekteissa. Myös ns. natiivimallien
+           tiedostokokoa saadaan pienennettyä pakkaamalla, mutta useimmiten vaikutus on vähäisempi.
+
+3.3   Mittayksikkö ja koordinaatisto
+      Projektille määritellään projektikoordinaatisto siten, että koko rakennusalue on positiivisessa
+      koordinaatistossa ja origo sijaitsee lähellä rakennusta.
+           Ohje
+           Suunnittelua kunnan koordinaatistoon ei suositella, koska tietomallin sijaitseminen kaukana
+           koordinaatiston origosta aiheuttaa ongelmia useimmille suunnitteluohjelmistoille.
+           Negatiiviset koordinaattiluvut eivät ole enää nykyisin suuri ongelma. Inhimillisten erehdysten
+           välttämiseksi on syytä välttää paikallisen origopisteen määrittelyä siten, että rakennusalue
+           jakaantuu koordinaattiakseleiden eri puolille.
+      Projektikoordinaatiston sijainti suhteessa kunnan koordinaatistoon dokumentoidaan vähintään kahden
+      vastinpisteen avulla. Vastinpisteille ilmoitetaan x- ja y-koordinaatit projektikoordinaatistossa ja kunnan
+      koordinaatistossa. Vaihtoehtoinen tapa on ilmoittaa yksi piste ja kiertokulma. Tällöin on kuitenkin
+      huomioitava, että varsinkin pidemmillä etäisyyksillä kiertokulma johtaa aina epätarkkuuksiin joilla voi
+      olla huomattava merkitys rakentamisvaiheessa.
+           Ohje
+           Projektikoordinaatiston muunnos kunnan koordinaatistoon tehdään näiden vastinpisteiden avulla
+           käyttäen Helmert- eli yhdenmuotoisuusmuunnosta.
+      Korkeussuunnassa tietomallit mallinnetaan todelliseen korkeusasemaan kunnan korkeusjärjestelmässä.
+      Rakennusten tietomallien mittayksikkönä käytetään millimetriä. Kiertokulmat ilmoitetaan aina
+      vähintään kahden desimaalin tarkkuudella.
+           Ohje
+           Kukin tontilla oleva rakennus mallinnetaan samaan, suunnittelutyöskentelyn kannalta
+           tarkoituksenmukaiseen X,Y -koordinaatistoon. Rakennusten korkeusasemat määritetään
+           absoluuttisina korkeusasemina paikallisessa koordinaattijärjestelmässä, mutta hankekohtaisesti
+           on mahdollista sopia myös muunlaisesta korkeusasemasta. Rakennusten mallinnuksessa
+           käytettävästä koordinaatistosta sovitaan viimeistään tilamallinnusta aloitettaessa, sen suhde
+           kaupungin koordinaatistoon dokumentoidaan, eikä sovittua koordinaatistoa saa muuttaa hankkeen
+           aikana ilman painavia syitä. Mahdolliset muutokset tulee hyväksyttää kaikilla
+           suunnitteluosapuolilla sekä projektipäälliköllä ja ne tulee dokumentoida suunnittelukokouksessa.
+           Tontin malli tehdään samaan koordinaatistoon kuin rakennuksetkin. Tontin malli tarkoittaa
+           rakennuspaikan ympäristöä eli pihaa, kasvillisuutta, liikenne- ja aluerakenteita. Tästä
+           vaatimuksesta voidaan kuitenkin poiketa hankkeissa, joihin liittyy erityisen laajoja infra-
+           rakenteita.
+      Kun käytettävästä suunnittelukoordinaatistosta sovitaan, on inventointimalli(t) liiteaineistoineen
+      (esimerkiksi lasermittauksen pisteet) muutettava kyseiseen koordinaatistoon kunkin suunniteltavan
+      rakennuksen osalta. Luonnollisesti voidaan myös sopia, että suunnittelussa käytetään inventointimallin
+      koordinaatistoa.
+
+3.4   Mallien mittatarkkuus
+      Mallinnuksessa saa varsinaiseen rakennusosamallivaiheeseen asti käyttää liittymämittoja, eikä
+      arkkitehdin mallissa tarvitse tehdä ikkuna- ja oviaukoille todellisia sovitusvaroja, vaan nimellismittaa
+      saa käyttää sekä aukon että ikkunan tai oven mittana (10M = 1000 mm). Liittymämittojen tulee
+
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                        Sivu 8 / 21
+
+      kuitenkin olla johdonmukaisesti aina tarkalleen normin mukaisia. Rakennusosamallissa tulee mallintaa
+      todelliset sovitusvarat eli nimellismittojen käyttö ei siinä vaiheessa ole sallittua, vaan kaikkien mallin
+      osien tulee olla mallinnettuja todellisilla mitoilla.
+      Tontin malli, inventointi-, alustava rakennusosa-, rakennusosa-, rakenne- ja järjestelmämallit tehdään
+      mahdollisimman tarkkoina. Näissäkin malleissa noudatetaan kuitenkin tarkoituksenmukaisuuden
+      periaatetta. Esimerkiksi inventointimalleissa absoluuttinen tarkkuus tekee malleista vaikeasti käytettäviä
+      (esimerkiksi seinien pienet vinoudet, kaltevuudet ja paksuuden muutokset) ja siksi rakennustyön
+      kannalta hyväksyttävät toleranssit sallitaan mallissa.
+           Ohje
+           Mallien tarkkuudessa noudatetaan tarkoituksenmukaisuuden periaatetta. Tilamalleissa
+           mittatarkkuus voi olla perinteisten luonnosten luokkaa, esimerkiksi 100-200 mm:n
+           suunnittelurasterin käyttö on sallittua, koska rakennuksen todellinen mitoitus ei ole tiedossa ja
+           poikkeamat suhteessa lopulliseen mitoitukseen on siksi pakko joka tapauksessa hyväksyä. Valittua
+           mittajärjestelmää on kuitenkin käytettävä johdonmukaisesti. On myös syytä huomata, että mitä
+           tarkempi alkuperäinen malli on, sitä helpompaa on jatkaa työtä sen pohjalta.
+           Useilla rakennusosilla on myös mallien käyttötarkoituksiin liittyviä mittatarkkuuksia, esimerkiksi
+           arkkitehtimallin seinien tulee liittyä toisiinsa nurkissa, koska pienikin rako voi häiritä oleellisesti
+           termisiä analyysejä. Eri osapuolien käyttämistä mallinnustarkkuuksista on syytä sopia projektin
+           aloituskokouksessa ja kaikkien osapuolien pitää noudattaa sovittua käytäntöä, ellei sitä yhteisellä
+           päätöksellä ja tilaajan suostumuksella muuteta.
+
+3.5   Mallinnuksessa käytettävät työkalut
+      Mallinnuksessa on käytettävä ohjelmistojen mallikomponentteja ja työkaluja niiden varsinaiseen käyttö-
+      tarkoitukseen, siis seinät on mallinnettava seinätyökaluilla, laatat laattatyökalulla jne. Rakennusosat ja
+      komponentit, joille ei ole omaa työkalua, mallinnetaan soveltaen, jolloin käytetty mallinnustapa tulee
+      dokumentoida tietomalliselostukseen. Tarkempia ohjeita on esitetty suunnittelualakohtaisissa
+      tietomallivaatimuksissa.
+      Jos käytettävän ohjelmiston ominaisuuksissa on sellaisia rajoituksia, jotka estävät rakennusosan
+      mukaisen työkalun käytön erikoistapauksissa (esim. kalteva seinä), on kaikki poikkeamat
+      dokumentoitava tietomalliselostuksessa.
+
+
+
+
+      Esimerkki ajorampista jossa monimuotoinen kaartuva ajoramppi on mallinnettu suunnitteluohjelman työkaluja
+      soveltaen.
+      Micromedicum / Senaatti-kiinteistöt, Arkkitehtuuritoimisto Heikkinen-Komonen Oy.
+
+
+
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                          Sivu 9 / 21
+
+
+3.6   Rakennukset, kerrokset ja lohkot
+      Yleisvaatimuksena on, että kaikki suunnittelualat mallintavat rakennukset kerroksittain, vaikka
+      mallinnusohjelmat tukisivatkin muuntyyppistä mallinnustapaa. Tämä johtuu siitä, että malleista
+      laadittavat analyysit tehdään usein kerroksittain, käyttäjä ja tilaaja käsittelevät tulevia tiloja kerroksittain
+      ja muut osapuolet työmaata myöten käsittelevät suunnitelmia pääosin kerroksittain. Hankekohtaisesti on
+      mahdollista tehdä poikkeuksia vaatimukseen kerroksittaisesta mallinnustavasta, jos se on
+      rakenneratkaisun tai rakennuksen muun ominaisuuden kannalta järkevää.
+      Jokainen erillinen rakennus on luovutettava itsenäisenä mallina. Tarvittaessa rakennus voidaan jakaa
+      useampiin lohkoihin, mahdollisesta lohkojaosta on sovittava projektiryhmän kesken. Jokainen rakennus
+      on luovutettava yhtenä kokonaisuutena IFC- ja ohjelmiston omassa tiedostomuodossa (ns.
+      natiivimuoto), taloteknisten järjestelmien osalta kuitenkin järjestelmäkohtaisesti kerroksiin jaettuina
+      malleina.
+      Mikäli koko rakennus mallinnetaan yhtenä kokonaisuutena, on siinä kuitenkin oltava tietorakenne, joka
+      tukee kerroskohtaista tarkastelua. Ellei näin ole, tai käytettävä ohjelmisto asettaa muita rajoituksia
+      mallinnukselle, voidaan kerrokset joutua jakamaan alkuperäismuodossa erillisiksi tiedostoiksi. Jos näin
+      joudutaan menettelemään, noudatetaan seuraavaa käytäntöä:
+          Rakennesuunnittelijan mallissa kunkin kerroksen malliin kuuluu kerroksen yläpuoliset
+           vaakarakenteet eli ne rakenteet joita ko. kerroksen pystyrakenteet kannattelevat. Alapohja kuuluu
+           perustuksien kanssa omaan kerrokseensa, ja ylimmässä kerroksessa malliin kuuluvat myös
+           vesikattorakenteet. Rakennemallissa esitetään myös sellaiset pintarakenteet, jotka liittyvät
+           rakenteiden kantavuuteen, kuten mahdolliset paloeristykset.
+          Arkkitehdin mallissa kunkin kerroksen malliin kuuluu kyseisen kerroksen lattiatason muodostava
+           laatta pintarakenteineen (kerroksesta riippuen ala- tai välipohja) sekä alaslasketut sisäkatot ja
+           yläpuoliseen laattaan liittyvät tilaa vievät akustoivat rakenteet. Arkkitehdin ei tarvitse mallintaa
+           perustuksia, mutta sokkelirakenteet on mallinnettava ainakin maanpäällisiltä osiltaan. Yläpohja ja
+           vesikattorakenteet mallinnetaan arkkitehtimallissa omana kerroksenaan. Vesikaton laitteita ja
+           varusteita ei mallinneta, ellei siitä erikseen sovita.
+
+
+
+
+      Vasemmalla on havainnollistettu arkkitehtimallin ja oikealla rakennemallin kerrosjakoa.
+
+
+3.7   Mallien nimeäminen ja arkistointi
+      Mallien nimeämisessä noudatetaan soveltuvin osin tilaajan CAD-ohjetta. Kaikki julkaistut malliversiot
+      on arkistoitava projektissa sovitulla tavalla.
+
+3.8   Tietomalliselostus
+      Tietomalliselostus on kunkin suunnittelualan ylläpitämä kuvaus mallin sisällöstä, käytetyistä
+      mallinnustavoista ja mahdollisista poikkeamista yleisiin vaatimuksiin tai mallinnustapoihin nähden. Se
+      kertoo, mihin tarkoitukseen malli on julkaistu ja mikä on sen tarkkuusaste. Selosteen avulla muut
+      osapuolet voivat tulkita mallin valmiusastetta, järjestelmien ja rakennusosin nimeämiskäytäntöjä ja
+      mallin yleistä rakennetta. Tietomalliselostus päivitetään aina kun malli julkaistaan muiden osapuolten
+      käyttöön, olipa sitten kyseessä työmalli tai tietomalli urakkalaskentaa varten.
+           Ohje
+           Kaikki muutokset tulee dokumentoida malleissa tai tietomalliselostuksissa niin, että eri osapuolet
+           voivat löytää ne. Hankkeen virallisessa tarkastelupisteessä julkaistun mallin puutteellisesta tai
+
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                       Sivu 10 / 21
+
+           virheellisestä muutosten dokumentoinnista johtuvista seurauksista vastaa virheen tekijä
+           suunnittelusopimusten ja yleisten sopimusehtojen määrittelemässä laajuudessa. Työmallien
+           kohdalla selosteen tarkoitus on olla sisältöä ja tehtyjä muutoksia selventävä, ja siten kirjaukset
+           voivat olla luonteeltaan muistiinpanomaisempia.
+           Tietomalliselosteen nimeäminen tulee tehdä niin, että tiedostonimestä käy selville mihin
+           tietomalliin se liittyy.
+
+3.9   Tietomallikoordinaattori
+      Hankkeessa tulee nimetä tietomallikoordinaattori, joka voi olla joko pääsuunnittelija tai joku muu
+      pääsuunnittelijan tai hankejohdon valitsema taho. Tietomallikoordinaattorin tehtävät ovat osin
+      pääsuunnittelijan tehtävien kanssa päällekkäisiä, mutta luonteeltaan usein teknisiä. Koordinaattorin
+      tehtäviä on kuvattu tämän ohjeen vaihekohtaisissa osioissa sekä osassa 11. Tietomallipohjaisen
+      projektin johtaminen.
+      Yhdistelmämallien kasaamisesta huolehtii tietomallikoordinaattori, joka raportoi havaitsemansa virheet
+      pääsuunnittelijalle ja muille suunnittelijoille. Eri suunnittelualojen mallien päivittämisestä ja
+      suunnitelmien yhteensovittamisesta huolehtiminen ja muutostilanteiden valvonta on tehtäväluettelon
+      mukaisesti pääsuunnittelijan vastuulla.
+
+3.10 Mallien julkaisu
+      Hankkeen virallisissa julkaisupisteissä, kuten rakennuslupa tai urakkalaskenta, tietomallit ja niistä
+      tuotetut dokumentit toimivat päätöksenteon välineinä. Puhtaassa tietomallipohjaisessa
+      suunnitteluprosessissa ei voida erottaa suunnitelmia ja tietomalleja, joten niiden tulisi olla
+      julkaisukelpoisia samanaikaisesti.
+           Ohje
+           Dokumenttien tulee ensisijaisesti pohjautua tietomalliin. Malli julkaistaan samanaikaisesti
+           dokumenttien kanssa tai ennen niitä. Suunnittelun aikana dokumentteja julkaistaan huomattavasti
+           harvemmin kuin tietomalleja. Tämä mahdollistaa mallin hyödyntämisen suunnitelman
+           kehittämiseen eikä pelkästään dokumentoidun suunnitelman ominaisuuksien selvittämiseen.
+           Tämä on huomioitava projektin aikataulussa. Jos aikataulussa määritellään perinteiseen tapaan
+           vain dokumenttien julkaisuajankohta, käy helposti niin, etteivät mallin tarkastaminen ja
+           analysointi voi vaikuttaa parhaalla mahdollisella tavalla suunnitelmaan ja suuri osa
+           mallintamisen hyödyistä valuu hukkaan.
+      Mallin julkaisun kannalta on olennaista, että se suoritetaan hallitusti ja siihen sisältyvät seuraavat
+      askeleet:
+          Malli julkaistaan tiettyyn tarkoitukseen ja julkaisemispäätöksen laukaisee yleensä projektin
+           suunnitteluaikataulu.
+          Julkaisupäätöstä seuraa julkaistavan materiaalin julkaisukuntoon saattaminen. Tämä sisältää
+           ainakin mallin, tietomalliselostuksen, usein rakennusselostuksen ja lisäksi mahdollisesti muun
+           materiaalin luomista/päivittämistä.
+          Ennen julkaisua suoritetaan mallin tarkistus tietomallivaatimusten laadunvarmistusosan mukaisesti
+           (osa 6.). Julkaisun kannalta on tärkeää, että eri asiakirjat ja mallit ovat keskenään yhdenmukaisia.
+          Lopuksi julkaisupaketti julkaistaan esim. laittamalla se projektipankkiin tarkastettujen mallien
+           kansioon. Julkaisujärjestelmässä on huomioitava, että analyysit ja muu materiaali pitää voida
+           myöhemmin liittää/linkittää selkeästi siihen julkaisupakettiin, jonka pohjalta ne on tehty.
+      Projektissa tulee sopia kaikkien esitettyjen julkaisuvaiheiden aikataulu sekä varata mallien
+      tarkastamiseen ja analysointiin jokaisen julkaisun yhteydessä riittävästi aikaa.
+
+3.11 Työmallit
+      Varsinaiseen julkaisu- ja laadunvarmistusprosessin mukaiseen tarkistukseen tietomallit toimitetaan
+      projektiaikataulun mukaisesti ainoastaan tietyistä suunnitteluvaiheista.
+      Projektin aikana on tarkoituksenmukaista jakaa suunnitteluosapuolien välillä tietoa tietomallimuodossa.
+      Tiedon ei tarvitse aina kulkea edellä kuvatun julkaisuprosessin kautta, kunhan toimintatapa ja siitä
+      mahdollisesti aiheutuvat rajoitukset ovat tietoa hyödyntävän osapuolen tiedossa. Työmallit ovat osa
+
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                      Sivu 11 / 21
+
+       joustavaa ja nopeaa tiedonvaihtoa ja ne kuvaavat aiottua suunnitteluratkaisua, tilavarauksia, tietyn
+       yksityiskohdan havainnollistamista jne.
+            Ohje
+            Työmalleja voidaan lähettää osapuolille aina tilanteen mukaan niin sovittaessa. Hyvin
+            organisoidussa tietomallihankkeessa työmallit tallennetaan esimerkiksi projektipankkiin
+            säännöllisesti. Päivitysten sykli määräytyy hankkeen ja suunnitteluvaiheen mukaan, tyypillisesti
+            vaihteluväli on yhdestä neljään viikkoon. Näiden mallien ei tarvitse olla kaikilta osin tarkastettuja,
+            eivätkä ne siksi sovellu käytettäviksi kaikkiin tehtäviin vaan ainoastaan sovittuun tarkoitukseen.
+            Mallin lähettäjän tulee tehdä selväksi kaikille osapuolille, että kyseessä on työmalli. Siksi myös
+            työmallien jakamiseen kuuluu oleellisena osana tietomalliselostus, jossa on kuvattu mallin sisältö
+            ja käyttötarkoitus.
+
+3.12 Tietomallien laadunvalvonta
+       Suunnittelun aikaisten työmallien laadunvarmistuksesta vastaavat suunnittelijat ja sitä valvoo
+       tietomallikoordinaattori. Työmallit ovat aina enemmän tai vähemmän kesken, joten erilaiset törmäykset
+       ja virheet kuuluvat kuvaan. Suunnittelijoiden on kuitenkin valvottava oman mallinsa teknistä laatua ja
+       varmistettava, etteivät ne sisällä muita kuin normaaliin suunnittelun keskeneräisyyteen liittyviä virheitä.
+       Tilaajan määrittelemissä vaiheissa tietomallit tarkistetaan tietomallivaatimusten osa 6. Laadunvarmistus
+       ja tietomallien yhdistäminen mukaisesti. Näiden tarkistuspisteiden laatuvaatimukset ovat huomattavasti
+       työmallien julkaisuprosessin laatuvaatimuksia korkeammat, ja jokainen suunnitteluosapuoli vastaa
+       oman suunnittelutietomallinsa tarkistamisesta ennen virallista laadunvalvontaa. Virallisesta
+       laadunvalvonnasta vastaa hankkeen tietomallikoordinaattori tai muu tilaajan määrittelemä taho.
+
+
+4      Mallien tuottaminen ja hyödyntäminen projektin eri
+       vaiheissa
+       Tässä luvussa mallien käyttöä on käsitelty rakentamisprosessin eri vaiheissa. Vaihejako ja erilaiset
+       tehtävät on esitetty vain tietomallinnuksen näkökulmasta. Varsinaiset mallien sisällölle asetettavat
+       vaatimukset on kuvattu yksityiskohtaisesti suunnittelualakohtaisissa tietomallivaatimuksissa.
+
+4.1    Rakennushankkeen käynnistys
+       Tarveselvitysvaiheessa kartoitetaan kiinteistön omistajan sekä tulevan käyttäjän tarpeet ja tavoitteet.
+       Selvitysten perusteella arvioidaan vaihtoehdot ja tehdään päätökset toimintamallista tavoitteiden
+       saavuttamiseksi, esimerkiksi uudisrakennus vai peruskorjaus.
+       Tarveselvitysvaiheessa tietomallilla on harvoin geometrista muotoa. Vaatimusmalli, jossa ainakin
+       keskeisimmät tilavaatimukset on kirjattu sähköiseen muotoon, on kuitenkin osa tietomalliprosessia ja
+       oikein laadittuna sitä voidaan käyttää läpi hankeprosessin tilavaatimusten tarkistamiseen. Sen pohjalta
+       on mahdollista myös automatisoida vähintään suunnitelmien pinta-alojen tarkistaminen ja jopa tilojen
+       generointi suunnitteluohjelmistoissa, joskin tuon kaltaiset sovellukset eivät ole kovin yleisiä eikä
+       tilamallin tekotavalla ole vaikutusta lopputulokseen. Keskeisten tiloille asetettavien vaatimusten
+       liittäminen sähköiseen tilaohjelmaan helpottaa kuitenkin merkittävästi niiden hallintaa
+       suunnitteluprosessin aikana.
+
+4.1.1 Laajuustiedot, käyttötarkoitus, vaatimukset rakennuspaikalle
+       Hankkeen kannalta tärkeimmät päätökset liittyvät useimmiten juuri rakennushankkeen alkuun. Tarve- ja
+       hankesuunnitteluvaiheet tuottavat lähtötiedot suunnitteluprosessille: hankkeen budjetti- ja aikataulu-
+       tavoitteet sekä laajuuden kokonaistavoitteet; bruttoala, tilavuus ja erilaisten toimintojen kokonaisalat.
+       Lisäksi tulevat tonttiin ja käyttöön liittyvät vaatimukset, joiden pohjalta tehdään tontin tai korjattavan
+       kohteen valinta. Koska varsinaisia suunnitelmia ei tuolloin usein vielä ole, saadaan päätöksenteon
+       keskeisimmät tiedot laajuustietojen ja tiloille asettavat vaatimuksien kautta. Tietomallintamisessa tätä
+       kutsutaan vaatimusmalliksi.
+
+
+
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                        Sivu 12 / 21
+
+
+4.1.2 Tilaohjelma, tavoitebudjetti, rakennuspaikka
+       Tarveselvitysten pohjalta työstetään projektin vaatimukset suunnittelun aloittamista varten. Määritellyt
+       tilavaatimukset tulee mahdollisimman kattavasti kirjata sähköiseen muotoon niin, että niitä on helppo
+       ylläpitää ja käyttää vertailussa, kun verrataan suunnitelmaa vaatimuksiin.
+            Ohje
+            Hankkeisiin liittyy myös runsaasti tavoitteita, joiden suora kytkentä mallipohjaiseen työhön ei ole
+            toistaiseksi mahdollista tai järkevää. Esimerkiksi budjetti- ja aikataulutavoitteet ovat asioita,
+            joiden osalta erillisten dokumenttien käyttö on useimmiten ainoa mahdollisuus. Dokumentteja
+            koskevien viittausten sisällyttäminen vaatimustiedostoon tai -tietokantaan helpottaa niiden
+            hallintaa, mutta valmiita tähän soveltuvia työkaluja ei juuri ole saatavilla. Ratkaisut ovatkin
+            käytännössä organisaatiokohtaisia ja kullekin toimijalle räätälöityjä.
+            Dokumentointitavasta riippumatta projektivaatimusten päivittäminen tavoitteiden ja suunnittelun
+            kehittymisen myötä on tärkeä osa prosessia. Kaikki päätöksenteon kannalta keskeiset versiot
+            vaatimuksista tulee säilyttää, jotta muutoshistoriaa voidaan tarvittaessa tarkastella.
+
+4.1.3 Vaatimusmalli
+       Vaatimusmallin minimivaatimus on taulukkomuodossa oleva tilaohjelma, jota voidaan käyttää
+       ohjelman ja suunnitelmaratkaisujen vertailussa. Tilaohjelman tulee sisältää tila- tai tilaryhmäkohtaiset
+       pinta-ala- ja mahdolliset erityisvaatimukset. Taulukkomaista tilaohjelmaa voidaan täydentää käyttäjän
+       ja/tai tilaajan tiloille asettamilla vaatimuksilla. Vaatimusmallissa tulee voida esittää myös koko
+       rakennusta tai sen osia koskevia tavoitteita, kuten kokonaisenergiankulutusta, jäähdytystarvetta jne.
+       Niin tilaohjelmaa kuin tiloille asetettuja vaatimuksiakin tulee ylläpitää sähköisessä muodossa siten, että
+       niiden avulla voidaan jatkossa verrata suunnitelmaa vaatimuksiin.
+       Yksittäisille tiloille asetettavia vaatimuksia voidaan esittää laatutasovaatimuksina myös tilaryhmän tai
+       tilatyypin vaatimuksiin viittaamalla.
+       Tilaohjelmassa esitettäviä vaatimuksia ovat esimerkiksi:
+           Tilan nettoalatarve ja tarvittaessa mittoihin ja muotoihin liittyviä vaatimuksia
+           Tilan käyttö ja käyttäjät, keskeiset yhteydet ja vaikutukset muihin tiloihin.
+           Sisäilman olosuhteet, ääneneritys, valaistus, kuormitus, kestävyys, turvallisuus ja laatutaso.
+           LVI-järjestelmät, sähköjärjestelmät, kalusteet, varusteet, laitteet, tilan jako-osat, sisäpuoliset
+            pintarakenteet.
+       On tavallista, että alkuperäisiä vaatimuksia muutetaan suunnittelun edetessä. Vaatimuksiin tehdyt
+       muutokset tulee kirjata vaatimusdokumentaatioon niin, että projektilla on jatkuvasti käytettävissä
+       tehtyjen päätösten mukaiset, ajan tasalla olevat vaatimukset. Vaatimusmuutosten kirjaamisesta vastaa
+       tilaajan nimeämä vastuuhenkilö.
+       Vaatimusdokumentaation eri versiot arkistoidaan samalla tavalla kuin suunnitelmamallit.
+
+4.1.1 Tilojen tunnisteet ja nimeäminen
+       Tila on suunnittelun perusyksikkö ja monet rakennusosat ovat tavalla tai toisella linkitetty tilaan ja sen
+       tunnistetietoihin. On siis tärkeää, että tilat ovat tunnistettavissa läpi hankeprosessin ja että niihin
+       tallennetut tiedot ovat systemaattisia. Tilojen pinta-ala voidaan laskea geometriasta, joten sen
+       siirtäminen ominaisuustietona ei ole välttämätöntä. Tilojen tärkeimmät tiedot ovat:
+           Tilan tunniste; kullekin tilalle yksilöllinen numeroista ja mahdollisesti kirjaimista koostuva
+            tunniste
+           Tilan käyttötarkoitus; tilan toiminnallinen määritys esim. Talo 2000 -nimikkeistön mukaan
+           Tilan nimi; tilan kuvaava nimitys
+       Lisäksi tiloihin voidaan merkitä
+           Tilatyyppi; tyypillisesti talotekninen määritys, jota käytetään tilassa referenssinä
+           Tilan sijaintitunniste; ovinumero tai muu vastaava tunniste, joka kertoo jotain tilan sijainnista
+            Ohje
+            Tilaohjelma- ja vaatimustilojen linkittämistä ja vertailua suunnitelmamalleihin helpottaa looginen
+            tilanumerojen käyttö. Tilan tunnistetietojen (numero, käyttötarkoitus ja nimi) huolellinen ja
+
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                        Sivu 13 / 21
+
+            johdonmukainen käyttö on ensiarvoisen tärkeää, koska niitä tarvitaan tietomallipohjaisessa
+            prosessissa myös useisiin tietoteknisiin tarkoituksiin; esimerkiksi tilapohjaiseen kustannuslasken-
+            taan, suunnitelmien vertaamiseen tilaohjelmaan, energia-analyyseihin ja kiinteistön-
+            hallintaohjelmistoihin.
+       Nämä käsitteet on selitetty laajemmin osassa 3. Arkkitehtisuunnittelu.
+
+4.1.2 Viranomaisvaatimukset
+       Suunnitelmien kannalta keskeisten kohteeseen liittyvien lakien, määräysten ja muiden
+       viranomaisohjeiden tuottaminen sähköisessä muodossa ja linkittäminen tietomalleihin olisi
+       suunnitelmien tarkistamisen kannalta erittäin hyödyllistä. Se ei kuitenkaan ole Suomessa vielä
+       mahdollista, vaan vaatii laajamittaista kehitystyötä yhdessä eri viranomaistahojen kanssa. Tämä osa-
+       alue on kuitenkin haluttu sisällyttää prosessikaavioihin jatkokehittämistä ajatellen.
+       Toistaiseksi menettelytavat säilyvät samana kuin perinteisessä dokumenttipohjaisessa prosessissa.
+
+4.1.3 Tietomallikoordinaattorin tehtävät
+       Hankkeen alkuvaiheessa tietomallikoordinaattorin tehtävänä on laatia hankkeen tietomallintamisen
+       tavoitteet ja koordinoida tietomallintamisen lähtötietojen saatavuus. Koordinaattorin ohella tai
+       puuttuessa näitä tehtäviä voi tehdä myös pääsuunnittelija tai hankesuunnitelman laatija:
+           Tarkistetaan tietomallitavoitteet ja varmistetaan, että aikataulussa on varattu tietomallintamiselle
+            riittävästi aikaa. Täsmennetään kohteen erityisvaatimukset.
+           Tarkistetaan, että kaikilla suunnittelijoilla on käytettävissä tarvittavat lähtötiedot (esimerkiksi
+            mahdollinen inventointitietomalli).
+
+4.2    Ehdotussuunnittelu
+       Ehdotussuunnitteluvaiheessa haetaan sopivinta perusratkaisua karkealla tasolla olevilla vaihtoehtoisilla
+       suunnitelmilla. Kunkin suunnittelualan ajantasaiset mallit tulisi olla aina muiden saatavilla, mikä
+       varmistetaan sopimalla riittävän tiheä tietomallien tallennus esimerkiksi projektipankkiin. Sopiva
+       tallennusväli ehdotussuunnitteluvaiheessa on esimerkiksi suunnittelukokousten väli.
+
+
+
+
+       Arkkitehdin tietomallista tehty visualisointi suunnittelijan ja asiakkaan väliseen kommunikaatioon.
+       Alberga Business Park / NCC Property Development Oy, Arkkitehtoimisto Brunow & Maunula Oy, kuva: Tietoa
+       Visualisointi.
+
+4.2.1 Mallinnuksen yhteys prosessiin ja päätöksiin
+       Tilaajan tehtäviä tässä vaiheessa ovat suunnittelun ohjaus, vaihtoehtojen vertailu ja parhaan
+       vaihtoehdon valinta seuraavaa vaihetta varten yhteistyössä rakennuksen tulevan käyttäjän kanssa.
+            Ohje
+            Kolmiulotteinen mallinnus ja visualisointi nopeuttavat eri ratkaisujen vertailua ja tuovat
+            suunnitelmat konkreettiselle tasolle. Investointikustannusten lisäksi tarkasteluun tulisi sisällyttää
+            elinkaarikustannukset ja ympäristövaikutukset. Näiden vertailu simulointeja hyödyntäen on yksi
+            keskeisistä integroitujen mallien hyödyistä. Kattavat vertailut aikaisessa vaiheessa ovat tärkeitä,
+            koska käsiteltäessä hankkeen suuria linjoja voidaan radikaalejakin muutoksia tehdä vielä helposti.
+            Mitä myöhemmin prosessissa mahdolliset ongelmat tulevat esiin, sitä vaikeampi niitä on enää
+            ratkaista ilman merkittäviä kustannus- ja laatuvaikutuksia.
+
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                         Sivu 14 / 21
+
+
+4.2.2 Rakennuspaikan malli ja inventointimalli
+       Uudiskohteissa rakennuspaikan ja korjausrakentamishankkeissa lisäksi inventointimalli eli olemassa
+       olevien rakennusten mallinnus sisältyy tietomallivaatimuksiin, koska olemassa olevan tilanteen
+       mallintaminen on perusedellytys suunnittelulle ja kaikelle muulle mallintamiselle.
+            Ohje
+            Rakennuspaikasta riippuen tontin malli voidaan saada joko kunnan perusrekistereistä tai sen
+            mallinnus voidaan teettää. Korjausrakentamishankkeissa olemassa olevien rakennusten mallinnus
+            voidaan kohteessa tarvittavasta tarkkuustasosta riippuen tehdä joko vanhojen dokumenttien
+            pohjalta tai sähköisten mittausten perusteella. Sekä tontin että olemassa olevan rakennuksen malli
+            voidaan teettää erillisenä toimeksiantona joko mittauspalveluyrityksessä tai arkkitehtitoimistossa.
+       Vaatimukset rakennuspaikan ja olemassa olevien rakennusten mallille on esitetty tietomallivaatimusten
+       osassa 2. Lähtötilanteen mallinnus.
+
+4.2.3 Vaihtoehtoiset tilamallit ja suunnitteluratkaisut
+       Ehdotussuunnitteluvaiheessa käydään läpi erilaisia vaihtoehtoisia ratkaisuja. Arkkitehti mallintaa
+       kohteen tilat sekä rakennuksen massoittelun ja ulkovaipan päätöksenteon kannalta riittävällä
+       tarkkuudella.
+       Arkkitehdin tilamallin tulee olla tehty niin, että siitä saadaan automaattisesti tilojen käyttötarkoitukset ja
+       pinta-alat sekä rakennuksen kokonaistilavuus. Tilamallien vaatimukset on kuvattu tarkemmin
+       tietomallivaatimusten osassa 3. Arkkitehtisuunnittelu.
+       Integroitujen mallien käyttö tarjoaa uudenlaisia mahdollisuuksia eritasoisten vaihtoehtojen tutkimiseen.
+       Kun vaihtoehtojen tutkiminen kuuluu laajempaan kokonaisuuteen, on tärkeää koordinoida tutkitut
+       vaihtoehdot eri alojen välillä. Esimerkiksi eri julkisivuratkaisujen investointikustannuksia voidaan
+       tutkia määrälaskennan kautta, vaikutusta rakennuksen energiankulutukseen energia-analyysin avulla ja
+       vaikutusta rakennuksen ulkonäköön fotorealistisella visualisoinnilla.
+
+4.2.4 Rakenne
+       Rakennesuunnittelija laatii ehdotussuunnitteluvaiheessa alustavan rakennusosamallin arkkitehtimallin
+       perusteella koko rakennuksen laajuudelta ja rakennusosamallitasoiset tutkielmat tyyppirakenteista.
+
+4.2.5 LVI- ja sähkösuunnittelu
+       Talotekniset suunnittelijat laativat ehdotussuunnitteluvaiheessa alustavat järjestelmämallit, joissa
+       kuvataan järjestelmien pääreitit, tilaavievät kanavat ja johtoreitit. Muita ehdotussuunnitteluvaiheen
+       talotekniikan tietomallitehtäviä ovat mm. palvelualuekaaviot, 3D-mallihuoneet, 2D-leikkaukset ja
+       tilavaraukset.
+       Mallien vaatimukset on kuvattu tarkemmin tietomallivaatimusten osassa 4. Talotekninen suunnittelu.
+
+4.2.6 Pinta-aloihin ja tilavuuksiin perustuva kustannusarvio
+       Pinta-alojen ja tilan käyttötarkoituksien (toimistotila, opetustila, wc-tila, jne.) perusteella arkkitehdin
+       vaihtoehtoisista malleista tehdään tilapohjaiset kustannusarviot, joiden perusteella vaihtoehtojen
+       investointikustannuksia voidaan vertailla.
+       Tilapohjainen kustannuslaskenta kuuluu mallipohjaisen prosessin pakollisiin tehtäviin. Sitä käsitellään
+       tietomallivaatimusten osassa 7. Määrälaskenta. Määrä- ja kustannuslaskenta voidaan tehdä tilaajan tai
+       rakennuttajan omana työnä, sisällyttää projektikonsultin tehtäviin tai teettää erillisenä konsultointina.
+       Tekijästä sovitaan projektikohtaisesti.
+
+4.2.7 Energiankulutusanalyysit ja elinkaarikustannusten laskenta
+       Pinta-alojen ja tilaluokkien perusteella arkkitehdin vaihtoehtoisista malleista voidaan tehdä myös
+       alustavia energia-analyysejä ja elinkaarikustannusarvioita, joiden perusteella vaihtoehtoja voidaan
+       vertailla.
+       Energia-analyysit ja elinkaarikustannusten laskenta kuuluvat mallipohjaisen prosessin pakollisiin
+       tehtäviin. Ne voidaan sisällyttää LVI-suunnittelijan tehtäviin tai teettää erillisenä konsultointina.
+       Energia-analyysejä ja elinkaarikustannusten laskentaa käsitellään tietomallivaatimusten osassa 9.
+       Mallien käyttö talotekniikan analyyseissa.
+
+
+                            Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                     Sivu 15 / 21
+
+
+4.2.8 Suunnitelman havainnollistaminen
+       Malleja tulee hyödyntää havainnollistamiseen, koska sen avulla projektin osapuolille muodostuu
+       yhtenäinen käsitys suunnitelmavaihtoehdoista. Vaadittu havainnollistamisen määrä ja laatu määritellään
+       tarjouspyynnössä ja suunnittelusopimuksissa projektikohtaisesti. On kuitenkin huomioitava, että vaikka
+       tietomallit sisältävätkin suuren osan havainnollistamisessa tarvittavista lähtötiedoista, eivät ne
+       kuitenkaan aina mahdollista halutun lopputuloksen saavuttamista ilman lisätyötä. Siksi havainnollis-
+       tamisessa vaadittua mallin tietosisältöä ei aina voida määritellä ennakkoon, vaan siitä on ainakin osin
+       päätettävä projektin edetessä niin, että havainnollistaminen tarjoaa päätöksenteossa tarvittavan
+       informaation.
+       Ehdotussuunnittelussa riittää tavanomaisissa projekteissa karkeiden massamallien käyttö. Havainnollis-
+       tamista käsitellään tarkemmin tietomallivaatimusten osassa 8. Mallien käyttö havainnollistamisessa.
+
+4.2.9 Vertailu ja päätöksenteko
+       Mallien tarjoamaa informaatiota eri vaihtoehdoista käytetään päätöksentekoprosessissa perinteisten
+       menettelyjen rinnalla tilaajan harkinnan mukaan. Suunnitelmaratkaisut vaikuttavat usein myös
+       alkuperäisiin vaatimuksiin. Vaatimusmuutokset tulee kirjata vaatimusdokumentaatioon niin, että
+       seuraavan vaiheen käytettävissä on tehtyjen päätösten mukaiset, ajan tasalla olevat vaatimukset.
+
+4.2.10 Tietomallikoordinaattorin tehtävät
+       Suunnittelun alussa tietomallikoordinaattorin tulee järjestää mallien yhteensovittamistesti, jolla
+       varmistetaan eri suunnittelualojen koordinaatistojen ja korkojen yhteensopivuus. Käytännössä tämä
+       tehdään siten, että arkkitehti mallintaa muutaman rakennusosan (esim. alapohja, välipohja, seinä,
+       ikkuna, kaluste) tulevan rakennuksen paikalle sen hetkisen suunnitelman mukaisesti ja lähettää IFC -
+       mallin muille suunnittelijoille. Kukin suunnittelija lisää malliin vastaavasti oman suunnittelualansa
+       työkaluilla muutaman rakennusosan siten, että kun IFC -mallit yhdistetään, voidaan aukottomasti
+       todentaa, että kaikilla on käytössään sama koordinaatisto ja korkoasemat.
+       Muita tietomallikoordinaattorin tehtäviä ehdotussuunnitteluvaiheessa ovat:
+           Selvittää, mitä malleja hankkeen eri vaiheissa tarvitaan ja mitä malleja eri suunnittelijoiden
+            vastuulla on.
+           Päivittää tietomallintamisen aikataulu ja tavoitteet yleistilanteen mukaisesti.
+           Tarkistaa, että tarvittavat tietomallit on tehty.
+           Tarkistaa tietomallien yhteensopivuus ja ristiriidattomuus suunnittelutilanteen mukaisesti.
+
+4.3    Yleissuunnittelu
+       Luonnossuunnitteluvaiheessa lähdetään kehittämään ehdotusvaiheessa valittua perusratkaisua, joka on
+       olemassa arkkitehdin tietomallina. Tilaajan vaatimukset on päivitetty edellisessä vaiheessa tehtyjen
+       päätösten mukaiseksi. Tilaajan tehtävänä yleissuunnitteluvaiheessa on suunnittelun ohjaus ja
+       suunnitelman hyväksyminen toteutussuunnitteluvaihetta varten. Tietomallien mahdollistama nopea,
+       havainnollinen ja interaktiivinen visualisointi ja analyysit (esimerkiksi energia- ja olosuhdeanalyysit,
+       kustannustieto) tukevat kommunikointia ja päätöksentekoa.
+       Kunkin suunnittelualan ajantasaiset mallit tulisi olla aina muiden saatavilla, mikä varmistetaan
+       sopimalla riittävän tiheä tietomallien tallennus esimerkiksi projektipankkiin. Sopiva tallennusväli
+       yleissuunnitteluvaiheessa on esimerkiksi suunnittelijapalavereiden väli.
+       Eri suunnittelijoiden työn tulee edistyä loogisesti rinnakkain ja yhteistyössä. Tähän kuuluu myös
+       varautuminen siihen, että suunnittelussa voidaan tässä vaiheessa tehdä merkittäviäkin muutoksia.
+
+4.3.1 Arkkitehtisuunnitelmat
+       Arkkitehti kehittää valittua suunnitelmavaihtoehtoa alustavaksi rakennusosamalliksi. Mallin on
+       luonnosvaiheen päättyessä sisällettävä tilojen lisäksi vähintään:
+           Kantavat rakenteet: Pilarit, palkit, laatat ja seinät
+           Seinät luokiteltuina päätyypeittäin (ulkoseinä, kevyt väliseinä jne.)
+           Ikkunat ja ovet ilman tyyppitietoja
+
+
+
+                            Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                      Sivu 16 / 21
+
+       Mallin tarkkuuden tulee riittää rakennusluvan hakemiseen tarvittavien piirustusten generointiin.
+       Tarvittava sisältö on määritelty tarkemmin tietomallivaatimusten osassa 3. Arkkitehtisuunnittelu.
+
+4.3.2 Rakennesuunnitelmat
+       Rakennesuunnittelijan tulee tässä vaiheessa varmistaa tietomallin avulla rakennejärjestelmän mitoitus,
+       vaatimukset ja vaikutukset muiden suunnittelijoiden työhön. Rakennemallin tulee täyttää tietomalli-
+       vaatimusten osassa 5. Rakennesuunnittelu määritellyt vaatimukset. Mallia tulee voida käyttää
+       suunnitelmien yhteensovittamisessa.
+
+4.3.3 LVI-suunnitelmat
+       LVI-suunnittelijan tulee tässä vaiheessa varmistaa tietomallin avulla järjestelmien tilantarpeet ja
+       vaikutukset muiden suunnittelijoiden työhön. Mallin tulee sisältää pääkanavistojen ja konehuoneiden
+       tilantarpeet siinä laajuudessa, että tarvittavat tilavaraukset ja vaikutukset muuhun suunnitteluun voidaan
+       arvioida. Tilavarausmallin vaatimukset on määritelty tarkemmin tietomallivaatimusten osassa
+       4. Talotekninen suunnittelu. Mallia tulee voida käyttää suunnitelmien yhteensovittamisessa.
+
+4.3.4 Sähkösuunnitelmat
+       Sähkösuunnittelijan tulee määritellä tietomallin avulla tiloihin vaikuttaville sähkö-, puhelin- ja tieto-
+       liikennejärjestelmien osille ja komponenteille tilavaraukset. Tilavarausmallin vaatimukset on määritelty
+       tarkemmin tietomallivaatimusten osassa 4. Talotekninen suunnittelu. Mallia tulee voida käyttää
+       suunnitelmien yhteensovittamisessa.
+
+4.3.5 Suunnitelmien havainnollistaminen
+       Havainnollistamisen mahdollisuudet ja mallien tarkkuus kasvavat luonnollisesti prosessin edetessä.
+       Luonnosvaiheen havainnollistamista koskevat luvussa 4.2.8 esitetyt vaatimukset. Tarvittaessa voidaan
+       päätöksenteon kannalta tärkeiksi koetuista asioista vaatia myös tarkempia havainnollistuksia.
+
+4.3.6 Mallien yhdistäminen ja tarkastaminen
+       Eri suunnittelijoiden mallien yhteistarkastelu tulee aloittaa jo yleissuunnitteluvaiheessa. Mallien
+       yhdistäminen on tavallisesti joko pääsuunnittelijan tai tietomallikoordinaattorin vastuulla, mutta
+       projektikohtaisesti se voidaan sopia myös jonkun muun osapuolen tehtäväksi.
+            Ohje
+            Yleissuunnitteluvaiheessa yhdistelmämallilla tehdään vähintään rakenteiden ja järjestelmien
+            tilantarpeiden visuaaliset törmäystarkastelut. Näin voidaan tarkistaa järjestelmien ja rakenteiden
+            periaatteellinen yhteensopivuus sekä se, että arkkitehtisuunnitelmassa on rakenteiden ja järjestel-
+            mien vaatimat tilavaraukset otettu huomioon. Muita yhdistelmämallien tarkistuksia voidaan tehdä
+            kohteen luonteesta ja vaativuusasteesta riippuen.
+            Mallien virheettömyyden tarkistaminen on oleellista suunnitelmien hyväksymisen ja projektin
+            jatkotoimien kannalta. Tarkistusten avulla varmistetaan, että malleissa on mallinnusvaatimuksissa
+            määritelty sisältö. Samalla varmistetaan myös suunnitelmien laatua ja määrätietojen
+            luotettavuutta.
+
+4.3.7 Yleissuunnitteluvaiheen kustannusarvio
+       Luonnosvaiheen rakennusosamalleilla voidaan täydentää tilapohjaista kustannusarviota. Tilaluokkien
+       (toimistohuone, aulatila, saniteettitila…) ja pinta-alojen perusteella arkkitehdin mallista tehtyä
+       tilapohjaista kustannusarviota täydennetään arkkitehdin ja muiden suunnittelualojen rakennusosa-
+       luetteloista saatavilla määrätiedoilla. Mallipohjaista määrälaskentaa on käsitelty tietomallivaatimusten
+       osassa 7. Määrälaskenta.
+
+4.3.8 Energiankulutusanalyysit ja elinkaarikustannusten laskenta
+       Tilaluokkien (toimistohuone, aulatila, saniteettitila…) ja pinta-alojen perusteella arkkitehdin mallista
+       voidaan tehdä alustavia energia-analyysejä, joita täydennetään rakennuksen ulkovaipan tiedoilla. Näitä
+       ovat esimerkiksi alustavat ulkoseinien ominaisuudet sekä ikkunoiden pinta-alat ja tyyppitiedot siinä
+       laajuudessa kuin ne ovat tässä vaiheessa tiedossa.
+
+
+
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                      Sivu 17 / 21
+
+       Energia-analyysit ja elinkaarikustannusten laskenta kuuluvat mallipohjaisen prosessin pakollisiin
+       tehtäviin. Ne voidaan sisällyttää LVI-suunnittelijan tehtäviin tai teettää erillisenä konsultointina.
+       Energia-analyysejä ja elinkaarikustannusten laskentaa on käsitelty tietomallivaatimusten osassa 9
+       ”Mallien käyttö talotekniikan analyyseissä”.
+
+4.3.9 Tietomallikoordinaattorin tehtävät
+       Suunnittelun edetessä tietomallista on mahdollista saada hyödyllistä tietoa esim. määristä ja pinta-
+       aloista. Havainnollisuus kolmiulotteisesta mallista lisääntyy ja suunnitteluvirheitä on helpompi
+       tunnistaa, mikä edesauttaa pääsuunnittelijaa varmistamaan suunnitelmien ristiriidattomuuden. Mallin
+       avulla voidaan tarkastella maanpinnan muotojen soveltuvuutta rakennuksen korkomaailmaan ja voidaan
+       tutkia esteettömien suunnitteluratkaisujen toteutumista. Tietomallikoordinaattorin tehtävät ovat
+       suunnilleen samoja kuin ehdotussuunnitteluvaiheessa:
+           Päivittää tietomallintamisen aikataulu ja tavoitteet yleistilanteen mukaisesti.
+           Tarkistaa, että tarvittavat tietomallit on tehty.
+           Varmistaa eri suunnitteluosapuolten tietomallien yhteensopivuus.
+           Tarkistaa tietomallien yhteensopivuus ja ristiriidattomuus suunnittelutilanteen mukaisesti.
+
+4.4    Toteutussuunnittelu
+       Toteutussuunnitteluvaiheen menettely on sama kuin yleissuunnitteluvaiheenkin, mutta tuotettavan
+       tiedon tarkkuustaso kasvaa oleellisesti. Suunnitelmat viimeistellään urakkatarjouspyyntöjen
+       edellyttämään tarkkuustasoon ja kaikki projektista tehtävät mallit tarkentuvat yksityiskohtaisilla
+       tyyppitiedoilla. Kunkin suunnittelualan ajantasaiset mallit tulisi olla aina muiden saatavilla, mikä
+       varmistetaan sopimalla riittävän tiheä tietomallien tallennus esimerkiksi projektipankkiin. Sopiva
+       tallennusväli toteutusvaiheessa on noin yksi viikko. Mallien tietosisältö ja tarkkuustaso on määritelty
+       suunnittelualakohtaisten tietomallinnusohjeiden osissa 3-5.
+
+4.4.1 Mallinnuksen yhteys prosessiin ja päätöksiin
+       Tilaajan tehtävänä toteutussuunnitteluvaiheessa on suunnittelun ohjaus ja suunnitelmien hyväksyminen.
+       Tietomallien mahdollistama visualisointi ja analyysit tukevat kommunikointia ja päätöksentekoa.
+       Vaiheen lopussa hyväksytään toteutussuunnitelmat siinä laajuudessa, että niiden avulla voidaan siirtyä
+       rakennushankkeen valmisteluvaiheeseen ja urakkatarjouskyselyihin. Perinteisen suunnittelukäytännön
+       mukaisesti suunnittelua täydennetään toteutusvaiheessa. Myös kaikki tietomallit on tällöin päivitettävä
+       suunnitelmamuutoksia vastaavasti.
+
+4.4.2 Arkkitehtisuunnitelmat
+       Arkkitehdin mallin on toteutussuunnitteluvaiheen päättyessä oltava ns. rakennusosamalli, joka sisältää
+       rakennusosat siinä muodossa kuin ne on tarkoitus toteuttaa. Tietomalli tulee olla mallinnusohjeiden
+       mukaisesti mittatarkka (kohta 3.4). Tarvittava sisältö on määritelty tarkemmin tieto-
+       mallinnusvaatimusten osassa 3. Arkkitehtisuunnittelu. Mallia tulee voida käyttää määrälaskennassa ja
+       suunnitelmien yhteensovittamisessa ja se toimii pohjana kaikkien muiden suunnittelualojen malleille.
+
+4.4.3 Rakennesuunnitelmat
+       Rakennesuunnittelijan tietomallin tulee vastata arkkitehtimallia ja sen tulee täyttää tieto-
+       mallivaatimusten osassa 5. Rakennesuunnittelu määritellyt vaatimukset. Mallia tulee voida käyttää
+       määrälaskennassa, suunnitelmien yhteensovittamisessa ja toteutusaikataulun laatimisessa.
+
+4.4.4 LVI-suunnitelmat
+       LVI-suunnittelijan tietomallin tulee vastata arkkitehtimallia. Tässä vaiheessa mallinnus keskittyy
+       järjestelmämalliin. Sen tulee täyttää tietomallivaatimusten osassa 4. Talotekninen suunnittelu määritellyt
+       vaatimukset. Mallia tulee voida käyttää määrälaskennassa ja suunnitelmien yhteensovittamisessa.
+
+4.4.5 Sähkösuunnitelmat
+       Sähkösuunnittelijan tietomallin tulee vastata arkkitehtimallia. Tässä vaiheessa mallinnus keskittyy
+       järjestelmämalliin. Sen tulee täyttää tietomallivaatimusten osassa 4. Talotekninen suunnittelu määritellyt
+       vaatimukset. Mallia tulee voida käyttää määrälaskennassa ja suunnitelmien yhteensovittamisessa.
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                        Sivu 18 / 21
+
+
+4.4.6 Suunnitelmien havainnollistaminen
+       Malleja tulee voida hyödyntää suunnitelmien havainnollistamiseen. Vaadittu havainnollistamisen määrä
+       ja laatu määritellään tarjouspyynnössä ja suunnittelusopimuksissa projektikohtaisesti. On kuitenkin
+       huomioitava, että vaikka tietomallit sisältävätkin suuren osan havainnollistamisessa tarvittavista
+       lähtötiedoista, eivät ne kuitenkaan aina mahdollista halutun lopputuloksen saavuttamista ilman lisätyötä.
+       Siksi havainnollistamisessa vaadittua mallin tietosisältöä ei aina voida määritellä ennakkoon, vaan siitä
+       on ainakin osin päätettävä projektin edetessä niin, että havainnollistaminen tarjoaa päätöksenteossa
+       tarvittavan informaation.
+       Toteutussuunnitteluvaiheessa havainnollistamista voidaan käyttää huomattavasti aiempia vaiheita
+       paremmin, koska mallin tiedot riittävät usein varsin korkeatasoiseenkin havainnollistamiseen.
+       Havainnollistamista käsitellään tarkemmin tietomallivaatimusten osassa 8. Mallien käyttö havainnollis-
+       tamisessa.
+
+4.4.7 Mallien yhdistäminen ja tarkastaminen
+       Suunnittelijoiden malleista tulee tehdä yhdistelmämalli, jolla voidaan havainnollistaa suunnitelmia ja
+       tarkastella suunnitelmien yhteensopivuutta. Yhdistelmämallin laatimisesta vastaa
+       tietomallikoordinaattori, joka voi olla esimerkiksi pääsuunnittelija tai ulkopuolinen konsultti. Tämän
+       vaiheen tarkasteluja ovat esim. TATE-järjestelmien törmäystarkastelut, järjestelmien ja rakenteiden
+       törmäystarkastelut, järjestelmille varattujen tilojen riittävyyden verifiointi ja reikä- ja varaussuunnittelu.
+       Näitä yhdistelmämalleja on käsitelty tietomallivaatimusten osissa 4. Talotekninen suunnittelu,
+       5. Rakennesuunnittelu ja 6. Laadunvarmistus.
+       Hankkeen päätöksentekopisteissä tuotetut mallit tarkastetaan tietovaatimusten osan 6. Laadunvarmistus
+       mukaisesti.
+
+4.4.8 Kustannusarvio ja määräluettelot
+       Tarkastetuista tietomalleista tuotetaan määräluetteloita ja niihin perustuvia kustannusarvioita.
+       Määräluetteloja hyödynnetään myös urakkatarjousvaiheessa.
+       Tietomalleista tuotettavat määräluettelot ja kustannusarviot voidaan sisällyttää mallipohjaisen prosessin
+       tehtäviin. Ne voidaan tehdä tilaajan omana työnä, sisällyttää projektikonsultin tehtäviin tai teettää
+       erillisenä konsultointina. Tekijästä sovitaan projektikohtaisesti.
+       Mallipohjaisten määräluetteloiden lisäksi määriä joudutaan laskemaan myös perinteisillä menetelmillä,
+       koska mallinnus ei ainakaan tässä vaiheessa pysty kattamaan kaikkia tarvittavia tietoja. Lisää tietoa
+       aiheesta on tietomallivaatimusten osassa 7. Määrälaskenta.
+
+4.4.9 Energiankulutusanalyysit ja elinkaarikustannusten laskenta
+       Tarkentuneiden suunnitelmatietojen pohjalta toteutussuunnitteluvaiheen malleista voidaan tehdä
+       lopulliset energia-analyysit ja elinkaarikustannuslaskelmat, joita voidaan rakennuksen käytön aikana
+       verrata toteutumaan.
+       Energia-analyysejä ja elinkaarikustannusten laskentaa on käsitelty tietomallivaatimusten osassa
+       9. Mallien käyttö talotekniikan analyyseissä. Ne kuuluvat mallipohjaisen prosessin pakollisiin tehtäviin,
+       ja ne voidaan sisällyttää TATE-suunnittelijan tehtäviin tai teettää erillisenä konsultointina.
+
+4.4.10 Tietomallikoordinaattorin tehtävät
+       Monet tilaajatahot painottavat tietomallipohjaisessa suunnittelussa nimenomaan työmaavirheiden
+       ennaltaehkäisyä, ja toteutussuunnitteluvaiheessa pääsuunnittelijan velvollisuus on huolehtia, että
+       suunnitelmat ovat ristiriidattomia ja rakennettavissa. Tietomallikoordinaattorin tehtävänä on tukea
+       pääsuunnittelijaa ja muita osapuolia tämän tavoitteen saavuttamiseksi. Muilta osin
+       tietomallikoordinaattorin tehtävät noudattavat muista suunnitteluvaiheista tuttua kaavaa:
+           Päivittää tietomallintamisen aikataulu ja tavoitteet yleistilanteen mukaisesti.
+           Tarkistaa, että tarvittavat tietomallit on tehty.
+           Tarkistaa tietomallien yhteensopivuus ja ristiriidattomuus suunnittelutilanteen mukaisesti.
+
+
+
+
+                            Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                     Sivu 19 / 21
+
+
+4.5   Hankintoja palveleva suunnittelu
+      Hankintoja palvelevassa suunnitteluvaiheessa tietomallit ja niistä tuotetut määräluettelot, visualisoinnit
+      ja muut dokumentit annetaan tarjousten tekijöille helpottamaan urakkatarjousten tekemistä ja
+      rakennustyön alustavaa suunnittelua.
+
+4.5.1 Kohteen analysoiminen ja työn suunnittelu
+      Kolmiulotteisten mallien, visualisointien ja muun mallista saatavan informaation avulla urakoitsijat
+      voivat paremmin tutustua suunnitelmiin ja rakennuspaikkaan. Tarjouspyynnössä määriteltyjen
+      luettelojen osalta tarjousten tulee pohjautua niissä annettuihin määriin.
+           Ohje
+           Työn suunnitteluun ja aikataulutukseen on olemassa 4D-ohjelmistoja, joilla voidaan testata
+           erilaisia aikataulu- ja toteutusvaihtoehtoja. Niiden hyödyntäminen on urakoitsijan harkinnassa.
+           On kuitenkin huomioitava, että tietomallien hyödyntäminen työmaalla saattaa edellyttää erityisiä
+           mallinnustapoja, joten ko. ohjelmistojen käyttö tulisi olla selvillä mahdollisimman ajoissa.
+           Aikataulutuksen ja työn suunnittelun kannalta on oleellista että mallinnetaan niin kuin
+           rakennetaan. Mallin rakennusosien ja -tuotteiden sekä niiden ryhmittelyn tulisi vastata todellista
+           tilannetta työmaalla. Mikäli malleja aiotaan hyödyntää esimerkiksi aikataulutuksessa, tulisi
+           toteutustapa olla suunnittelijoiden tiedossa mahdollisimman aikaisessa vaiheessa, jotta malli
+           voidaan laatia sen mukaisesti.
+
+4.6   Toteutus
+4.6.1 Tietomallien hyödyntäminen työmaalla
+      Useimmat tietomallien hyödyntämistavat, joita urakoitsijat käyttävät, liittyvät tuotannon järjestämisen
+      sisältöihin. Tässä luvussa on kuvattu lyhyesti tärkeimmät mallien käyttötavat. Tarkemmin tietomallien
+      käyttöä työmaalla on käsitelty osassa 13. Tietomallien hyödyntäminen rakentamisessa.
+      Tietomallien visuaalisuus on edelleen merkittävä mallien hyödyntämistapa monissa erilaisissa
+      käyttötilanteissa. Tärkeimpiä käyttökohteita ovat perehtyminen kohteeseen ja rakenteisiin sekä
+      työjärjestysten suunnittelu ja töiden yhteensovittaminen.
+      Määrälaskenta tietomallista nopeuttaa laskentaa ja antaa tarkemman tuloksen edellyttäen, että mallinnus
+      on tehty oikein ja virheettömästi. Mallipohjainen määrälaskenta ja valmiit raporttipohjiin perustuvat
+      määräluettelot poistavat merkittävän määrän päällekkäistä työtä, mikä parantaa rakentamisen
+      tuottavuutta tältä osin.
+      Tietomallien yleistyessä malleja ja valmiita määräluetteloita tullaan käyttämään myös
+      alihankintatarjouspyyntöjen aineistona, mikä laajentaa niiden käyttöä. Alihankintoihin voi lisäksi
+      sisältyä toimittajan mallipohjaista suunnittelua.
+      Tietomallipohjaisen aikataulun tarkoitus on täydentää tilaajalle annettavaa rakentamisaikataulua ja
+      ohjata mm. täydentävän suunnittelun järjestystä. Projektin aikataulun kannalta kriittisiä rakenteita, joita
+      koskeva aikataulutieto viedään malliin voivat käytännössä olla esimerkiksi perustukset, runko ja
+      purkutyö.
+      Toteumatietoa voidaan tallentaa malliin esimerkiksi päivittäin tai viikoittain sovittuna päivänä, ja sen
+      tarkoituksena on havainnollistaa ja dokumentoida rakennus- ja asennustöiden eteneminen.
+      Toteutuksesta vastaavat urakoitsijat ja suunnittelijat käyvät tietomallin avulla läpi
+      elementtiasennussuunnitelman ja paikallavalurakenteet sekä hyväksyvät keskeiset asennusjärjestykset,
+      työnaikaiset tuennat, jäykistykset ja muottijärjestelmät. Elementtituet mallinnetaan ja päätoteuttaja ja
+      rakennesuunnittelija tarkistavat yhteistyössä niiden sijainnit sekä turvallisuuden että logistiikan
+      kannalta.
+      Työmaa pystyy hyödyntämään tietomallia myös TATE-asennuskatselmusten tekemiseen, joissa
+      asennettava alue käydään läpi urakoitsijoiden kanssa ja suunnitellaan asennusjärjestykset ja
+      varmistetaan aikataulun sopivuus eri urakoitsijoiden kesken.
+
+
+
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                    Sivu 20 / 21
+
+
+4.7   Vastaanotto
+      Mallintamisen näkökulmasta oleellisimmat rakennusvaiheessa tuotettavat asiat ovat toteumamallit ja
+      huoltokirja. Tietomallihankkeen lopussa tulee varmistaa, että rakentamisen aikana tehdyt muutokset on
+      viety malleihin ja tietomallit vastaavat toteutunutta rakennusta.
+
+4.7.1 Tietomallien hyödyntäminen käytön ja ylläpidon aikana
+      Mallipohjaiset huoltokirjat ovat edelleen kehittämisvaiheessa ja toistaiseksi niitä vaaditaan ainoastaan
+      poikkeustapauksissa. Kaikkien osapuolten on työskentelymenetelmistään riippumatta kuitenkin
+      täytettävä tilaajan asettamat normaalit huoltokirjoja koskevat aineistovaatimukset.
+      Tietomallien käyttöä elinkaaren aikana on käsitelty osassa 12. Tietomallien hyödyntäminen rakennuksen
+      käytön ja ylläpidon aikana.
+
+4.7.2 Toteumamallit
+      Kaikki projektissa vaaditut tietomallit tulee täydentää rakentamisvaiheessa tehtyjen muutosten
+      mukaisesti niin, että ne vastaavat lopputulosta (as-built). Tietosisällön vaatimukset ovat kaikille
+      osapuolille samat kuin toteutussuunnittelussa; tietomallivaatimukset, osat 3. Arkkitehtisuunnittelu,
+      4. Talotekninen suunnittelu ja 5. Rakennesuunnittelu. Muutostiedot toteumamalleista tulevat
+      urakoitsijoilta.
+      Urakkatarjouspyynnössä tai suunnittelutarjouspyynnössä voidaan kuitenkin määritellä myös
+      urakoitsijoilta vaadittavia toteumamalleja. Niiden pääasiallinen käyttötarkoitus liittyy rakennuksen
+      käyttöön, huoltoon ja korjauksiin. Näistä sovitaan tapauskohtaisesti.
+
+
+
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                                                                   Sivu 21 / 21
+
+
+LIITE 1: Mallien yleinen sisältö ja käyttötarkoitus
+
+ARK                                    RAK                                     TATE
+Vaatimusmalli                          Vaatimusmalli                           Vaatimusmalli
+Taulukkomuotoinen tilaohjelma,         Tilakohtaiset kuormat ja muut           Tilojen talotekniset vaatimukset       - tilantarpeiden ja muiden vaatimusten
+tilaajan ja käyttäjän vaatimukset      mahdolliset rakenteelliset              (sisäilmasto, valaistus,               dokumentointi strukturoidussa muodossa
+                                       vaatimukset                             järjestelmä-tarpeet jne.)
+Tontin malli
+Tontin rajat, korkeusasemat,                                                                                          - tontin käytön suunnittelu
+tarvittavat liittymät ympäristöön ja                                                                                  - rakennuksen/rakennusten sijainti tontilla
+teknisiin järjestelmiin
+Inventointimalli                       Inventointimalli                        Inventointimalli
+Olemassa olevan rakennuksen tilat ja Kantavat rakenteet, sisältyvät            Erityistapauksissa mallinnetaan        - korjausrakentamisen lähtötilanteen
+rakennusosat. Mallin voi laatia         useinmiten samaan malliin              talotekniset järjestelmät              dokumentointi
+mittaaja, arkkitehti tai joku muu taho. arkkitehtiosion kanssa                 tarvittavassa laajuudessa
+Tilaryhmämalli
+Tilaryhmämalli on tilamallin                                                                                          - rakennuksen massoittelun tutkiminen ja
+erikoistapaus. Siinä keskeiset                                                                                        havainnollistaminen sekä vaihtoehtojen
+tilaryhmät esitetään tilaobjekteina                                                                                   vertailu
+ja rakennusmassat erikseen                                                                                            - laajuuteen ja massoitteluun perustuva
+määritellyssä tarkkuudessa                                                                                            investointilaskenta
+käyttötarkoituksesta riippuen.                                                                                        - tarvittaessa karkea energiasimulointi
+Tilamalli                              Tilamalli                               Tilamalli
+Tilat tilaobjekteina, rakennuksen      Rakennejärjestelmäehdotus,              TATE-järjestelmien palvelualueet,      - vaihtoehtoisten tilaratkaisujen
+ulkovaippa                             perustusrakenne-ehdotus                 pääkanavistot, -hormit, merkittäviä    suunnittelu ja havainnollistaminen
+                                                                               tilavaatimuksia aiheuttavat            - laajuuden hallinta
+                                                                               putkistot, kaapelihyllyt ja muut       - investointilaskenta
+                                                                               tekniset järjestelmät sekä tekniset    - energiasimulointi ja tarvittaessa
+                                                                               tilat                                  olosuhdesimulointi (järjestelmien
+                                                                                                                      mitoitusperusteiden selvittäminen)
+                                                                                                                      - TATE-järjestelmävaihtoehtojen tutkiminen
+                                                                                                                      ja palvelualueiden määrittäminen
+                                                                                                                      - rakennejärjestelmävaihtoehtojen
+                                                                                                                      tutkiminen
+                                                                                                                      - rakenteiden ja järjestelmien tilantarpeista
+                                                                                                                      sopiminen
+
+
+Rakennusosa- ja järjestelmämallit
+Rakennusosa- ja järjestelmämallit ovat keskeinen osa suunnittelua ja hankkeen tiedonhallintaa.
+Tietomallipohjaisessa suunnittelussa mallien sisältö vastaa suunnittelun vaiheistusta ja tietosisältöä hankkeen
+    Alustava rakennusosamalli          Alustava rakennusosamalli               Alustava järjestelmämalli
+    Tilat, alustavat rakennusosat      Runkorakenteet (pysty- ja               TATE-järjestelmien palvelu-alueet,     - rakennusosien määrittely, rakennusosa- ja
+                                       vaakarungon mitat, sijainnit &          runkokanavat, ‑putket ja               rakennevalintojen vertailu
+                                       dimensiot), sovitut mallidetaljit,      keskuslaitteet, tyyppitilamalli        - määrätiedon hallinta
+                                       perustukset, rakennusosien                                                     - investointilaskenta
+                                       alustavat tyyppiratkaisut                                                      - energiasimulointi ja tarvittaessa
+                                                                                                                      olosuhdesimulointi (järjestelmien
+                                                                                                                      mitoitusperusteiden tarkentaminen)
+                                                                                                                      - rakenteiden alustava mitoitus
+                                                                                                                      - rakennuslupa
+    Rakennusosamalli - laskenta        Rakennusosa-/varausmalli -              Järjestelmä-/varausmalli -
+                                       laskenta                                laskenta
+    Tilat, rakennusosat                Runkorakenteet (pysty- ja               TATE-järjestelmien palvelualueet,       - rakenteiden mitoitus tarjouspyyntöjen
+    tyyppitietoineen                   vaakarungon mitat, sijainnit &          keskuslaitteet, kanavistot, putkistot, vaatimaan tarkkuuteen
+                                       dimensiot, mallielementit,              päätelaitteet, keskukset, johtotiet     - TATE-järjestelmien määrittely
+                                       tyyppirakenteet & liitokset,            (johto- ja kaapelikourut sekä -arinat), - määrätietojen tuottaminen
+                                       perustukset), liitokset perustuksiin,   valaisimet                              - investointilaskenta
+                                       varaukset                                                                       - energiasimulointi
+                                                                                                                       - mallien käyttö urakkatarjousten liitteinä
+                                                                                                                       - mallien käyttö reikä- ja varaussuunnittelun
+                                                                                                                       apuna
+    Rakennusosamalli - toteutus        Rakennusosa-/varausmalli -              Järjestelmä-/varausmalli –
+                                       toteutus                                toteutus
+    Edellisen vaiheen tarkkuustasoa Runkorakenteet ja liitokset,         TATE-järjestelmien palvelualueet,       - toteutussuunnittelu
+    vastaava malli päivitettynä     lähtötiedot                          keskuslaitteet, kanavistot, putkistot, - tiedot valmisosasuunnitteluun ja
+    toteutusta vastaavaksi          valmisosasuunnit-teluun, valuosat ja päätelaitteet, keskukset, johtotiet     tuotannonsuunnitteluun
+                                    paikallavalurakenteiden              (johto- ja kaapelikourut sekä -arinat),
+                                    raudoitukset, perustukset, liitokset valaisimet
+                                    perustuksiin, varaukset, detaljit
+Toteumamalli                           Toteumamalli                            Toteumamalli
+Edellisen vaiheen tarkkuustasoa        Edellisen vaiheen tarkkuustasoa         Edellisen vaiheen tarkkuustasoa        - tiedot huoltoon ja ylläpitoon,
+vastaava malli päivitettynä            vastaava malli päivitettynä             vastaava malli päivitettynä            tilahallintaan, myöhemmän käytön
+toteutusta vastaavaksi                 toteutusta vastaavaksi                  toteutusta vastaavaksi                 suunnitteluun
+
+
+
+
+                                        Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+

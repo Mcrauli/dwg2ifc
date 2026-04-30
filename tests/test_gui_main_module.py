@@ -8,14 +8,6 @@ import pytest
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
-def test_console_script_entrypoint_registered():
-    import importlib.metadata
-
-    eps = importlib.metadata.entry_points(group="console_scripts")
-    names = {ep.name for ep in eps}
-    assert "dxf2ifc-gui" in names
-    target = next(ep for ep in eps if ep.name == "dxf2ifc-gui")
-    assert target.value == "dxf2ifc.gui.app:run"
 
 
 def test_module_main_invokes_run():

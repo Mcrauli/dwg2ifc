@@ -8,7 +8,7 @@ from pathlib import Path
 
 from collections import Counter
 
-from dxf2ifc.core.dxf_reader import list_layers, read_dxf
+from dxf2ifc.core.dxf_reader import list_layers
 from dxf2ifc.gui.convert_worker import ConvertWorker
 from dxf2ifc.gui.file_panel import FilePanel
 from dxf2ifc.gui.layer_table import LayerTable
@@ -36,6 +36,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self._worker.finished.connect(self._on_convert_finished)
         self._worker.failed.connect(self._on_convert_failed)
         self._worker.report_ready.connect(self._on_report_ready)
+        # Status updates emitted by the AutoCAD COM preprocessing path during
+        # its 10–25 s cold start — surface them in both the status bar and
+        # the preview log so the user knows the app isn't frozen.
+        self._worker.progress.connect(self._on_convert_progress)
 
         central = QtWidgets.QWidget(self)
         root = QtWidgets.QVBoxLayout(central)
@@ -79,6 +83,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self._set_crs_action = QtGui.QAction("Set CRS…", self)
         self._set_crs_action.triggered.connect(self._on_set_crs)
         profile_menu.addAction(self._set_crs_action)
+        profile_menu.addSeparator()
+        self._reset_profile_action = QtGui.QAction("Reset to bundled default", self)
+        self._reset_profile_action.triggered.connect(self._on_reset_profile)
+        profile_menu.addAction(self._reset_profile_action)
         help_menu = menubar.addMenu("Help")
         self._about_action = QtGui.QAction("About", self)
         self._about_action.triggered.connect(self._on_about)
@@ -95,6 +103,15 @@ class MainWindow(QtWidgets.QMainWindow):
         dialog.profile_loaded.connect(self.apply_profile_from_path)
         dialog.exec()
 
+    def _on_reset_profile(self) -> None:
+        """Discard any cached last_profile_path and reload the bundled default.
+        Useful after an app upgrade ships new default-profile rules — without
+        this, RecentFilesStore keeps pointing at the user's stale TOML."""
+        self._recent_files.last_profile_path = None
+        self._profile = load_default_profile()
+        self._refresh_layer_table()
+        self.set_status("Profile reset to bundled default", level="success")
+
     def _on_set_crs(self) -> None:
         from dxf2ifc.gui.crs_dialog import CRSDialog
 
@@ -110,14 +127,14 @@ class MainWindow(QtWidgets.QMainWindow):
         )
 
     def _load_initial_profile(self):
-        last = self._recent_files.last_profile_path
-        if last and Path(last).is_file():
-            try:
-                return load_profile(last)
-            except Exception:  # noqa: BLE001 — corrupt cached path should not crash startup
-                self._recent_files.last_profile_path = None
-        elif last:
-            self._recent_files.last_profile_path = None
+        """Always start with the bundled default profile.
+
+        ``last_profile_path`` is no longer auto-loaded at startup — when we
+        ship updated default rules (e.g. Bugfix 12 narrowing scope to
+        refrigeration-only), users with a stale on-disk TOML otherwise keep
+        seeing the old rules and have to manually reset. The Load button in
+        the profile editor still lets users open a custom TOML on demand."""
+        self._recent_files.last_profile_path = None
         return load_default_profile()
 
     def apply_profile_from_path(self, path: str) -> None:
@@ -141,6 +158,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_status(f"Done: {out}", level="success")
         self.preview_log.append_success(f"Wrote {Path(out).name}")
         self.convert_finished.emit(out)
+
+    def _on_convert_progress(self, message: str) -> None:
+        """Forward streamed status from the worker to the status bar + log."""
+        self.set_status(message)
+        self.preview_log.append_info(message)
 
     def _on_convert_failed(self, message: str) -> None:
         self.file_panel.convert_button.setEnabled(True)
@@ -183,6 +205,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.file_panel = FilePanel()
         self.file_panel.convert_requested.connect(self._on_convert_requested)
         self.file_panel.input_edit.editingFinished.connect(self._refresh_layer_table)
+        # editingFinished only fires on manual edit-and-Enter — not when
+        # _on_browse_input setText()s a path. textChanged covers both flows.
+        self.file_panel.input_edit.textChanged.connect(self._refresh_layer_table)
         layout.addWidget(self.file_panel)
         self.layer_table = LayerTable()
         layout.addWidget(self.layer_table, stretch=1)
@@ -203,15 +228,48 @@ class MainWindow(QtWidgets.QMainWindow):
             self.preview_log.append_error(f"Failed to read {path.name}: {exc}")
             return
         self.layer_table.set_layers(layers, self._profile)
+        # Raw layer/entity census via ezdxf — counts EVERY model-space entity
+        # including 3DSOLID/SURFACE bodies that read_dxf would silently drop
+        # without a side-channel mesh. The preview is a planning aid, not a
+        # post-conversion report; it should reflect what's in the DXF, not
+        # what survived the geometry pipeline.
         try:
-            records = read_dxf(path)
+            import ezdxf as _ezdxf
+            _doc = _ezdxf.readfile(str(path))
+            layer_counts: dict[str, int] = dict(
+                Counter(entity.dxf.layer for entity in _doc.modelspace())
+            )
+            entity_count = sum(layer_counts.values())
         except Exception as exc:  # noqa: BLE001 — summary is best-effort
             self.preview_log.append_error(f"Failed to summarize {path.name}: {exc}")
             return
-        layer_counts = dict(Counter(record.layer for record in records))
         self.preview_log.set_dxf_summary(
-            path=str(path), entity_count=len(records), layer_counts=layer_counts
+            path=str(path), entity_count=entity_count, layer_counts=layer_counts
         )
+        # Conversion plan: show the user what each layer will become before
+        # they hit Convert. Match each DXF layer against the active profile
+        # using the same first-match-wins semantics as the mapper.
+        from dxf2ifc.core.mapper import layer_matches as _layer_matches
+        plan_lines = ["", "Conversion plan:"]
+        mapped_n = 0
+        skipped_n = 0
+        for layer, count in sorted(layer_counts.items()):
+            rule = next(
+                (r for r in self._profile.rules if _layer_matches(r.layer_pattern, layer)),
+                None,
+            )
+            if rule is None:
+                plan_lines.append(f"  {layer} ({count}) → no rule, skipped")
+                skipped_n += count
+                continue
+            mapped_n += count
+            code = rule.lvi_code or rule.talotekniikka_code or rule.talo2000_code or "—"
+            predef = f" {rule.predefined_type}" if rule.predefined_type else ""
+            plan_lines.append(
+                f"  {layer} ({count}) → {rule.ifc_type}{predef} ({rule.domain} {code})"
+            )
+        plan_lines.append(f"Total: {mapped_n} mapped, {skipped_n} skipped (of {entity_count} read)")
+        self.preview_log.append_info("\n".join(plan_lines))
 
     def _build_right_panel(self) -> QtWidgets.QWidget:
         panel = QtWidgets.QWidget()

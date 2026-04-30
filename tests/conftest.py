@@ -13,14 +13,30 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 def pytest_collection_modifyitems(config, items):
-    """Skip any test marked @pytest.mark.solibri when Solibri.exe is not on
-    PATH (Plan F Section 4 Task 13). Lauri runs these locally on Windows."""
-    if shutil.which("Solibri.exe"):
-        return
-    skip_marker = pytest.mark.skip(reason="Solibri.exe not on PATH")
-    for item in items:
-        if "solibri" in item.keywords:
-            item.add_marker(skip_marker)
+    """Skip integration tests when their external dependency is missing.
+
+    * ``@pytest.mark.solibri`` — needs ``Solibri.exe`` on PATH (Plan F).
+    * ``@pytest.mark.accoreconsole`` — needs AutoCAD's headless core under
+      ``%ProgramFiles%\\Autodesk\\AutoCAD *``.
+    """
+    if not shutil.which("Solibri.exe"):
+        skip_solibri = pytest.mark.skip(reason="Solibri.exe not on PATH")
+        for item in items:
+            if "solibri" in item.keywords:
+                item.add_marker(skip_solibri)
+
+    try:
+        from dxf2ifc.core.preprocessing import find_accoreconsole
+        accoreconsole_available = find_accoreconsole() is not None
+    except Exception:
+        accoreconsole_available = False
+    if not accoreconsole_available:
+        skip_acc = pytest.mark.skip(
+            reason="accoreconsole.exe not found under Program Files\\Autodesk"
+        )
+        for item in items:
+            if "accoreconsole" in item.keywords:
+                item.add_marker(skip_acc)
 
 
 @pytest.fixture

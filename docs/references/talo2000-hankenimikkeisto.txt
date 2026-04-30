@@ -1,0 +1,1886 @@
+                                                                                                                RT 10-10962
+                                                                                                                OHJEET
+                                                                                                                kesäkuu 2009
+                                                                                                                1 (27)
+
+
+
+TALO 2000 HANKENIMIKKEISTÖ
+
+
+
+
+HANKENIMIKKEISTÖ
+Talo 2000 Hankenimikkeistö koostuu rakennusosista, tekniikkaosista, edellisiin koh-
+distuvista rakenneosista sekä hanke- ja kiinteistö- ja käyttäjätehtävistä. Uudis- tai kor-
+jaushankkeen hankelaskennassa ja hinnan määrityksissä nimikkeistö sisältää myös
+hankevaraukset.
+
+
+
+
+                                                                 Rakennusosat rakennetaan tuotantoni-
+  1     RAKENNUSOSAT
+                                                                 mikkeistön jaottelua noudattaen. Tätä
+  11    Alueosat
+  12    Talo-osat                                                varten rakennusosat on jaoteltu raken-
+  13    Tilaosat                                                 neosiin silloin, kun yhden rakennusosan
+                                                                 tuottaminen edellyttää usean tuotan-
+  2     TEKNIIKKAOSAT
+                                                                 tonimikkeen soveltamista. Rakenneosa
+  21    Putkiosat
+  22    Ilmanvaihto-osat                                         koostuu yhdestä tai useammasta raken-
+  23    Sähköosat                                                nustuotteesta ja sisältää tuotteen asen-
+  24    Tiedonsiirto-osat                                        tamistyön sekä asennustuotteet. Jaotte-
+  25    Laiteosat                                                lu on ohjeellinen ja sitä tulee soveltaa ta-
+                                                                 pauskohtaisesti harkiten.
+  3     HANKETEHTÄVÄT
+  31    Hankkeen johtotehtävät                                      Rakennusosien määrämittausperus-
+  32    Suunnittelutehtävät                                      teet on tehty suunnittelu- ja tuotantorat-
+  33    Rakentamisen johtotehtävät                               kaisuista riippumattomiksi ja ne eroavat
+  34    Työmaatehtävät                                           yleensä tuotantomääristä (suoritemää-
+  4 KIINTEISTÖTEHTÄVÄT                                           rät). Siten esimerkiksi ulkoseinärakenne
+  41 Maa-aluetehtävät                                            mitataan aina samalla tavalla ja samoin
+  42 Rahoitus ja markkinointi                                    perustein. Rakennusosaa rakennettaessa
+                                                                 osa jaetaan tuotantomääriin sen mu-
+  5 KÄYTTÄJÄTEHTÄVÄT
+                                                                 kaan, kun suunnitteluratkaisu sitä edel-
+  51 Tilavarustus
+  52 Toiminnan ylläpito                                          lyttää. Esimerkiksi, jos ulkoseinäraken-
+                                                                 teessa on muurausta, se voi muodostaa
+  6 HANKEVARAUKSET                                               osan ulkoseinän rakennusosan määrästä
+  61 Suunnitelma- ja hintamuutokset
+                                                                 ja tämä osa ilmoitetaan tuotantomäärä-
+  62 Muut varaukset
+                                                                 nä.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                ohjeet – 2
+
+
+HANKENIMIKKEISTÖ                                                  1         RAKENNUSOSAT
+1     RAKENNUSOSAT                                                11        Alueosat
+11    Alueosat
+12    Talo-osat                                                   Alueosia ovat maaosat, tuennat ja vahvistukset, päällysteet, alueen varusteet ja alu-
+13    Tilaosat                                                    een rakenteet. Alueosat käsittävät rakennuksen ulkopuolen lisäksi myös osat, joita
+                                                                  tarvitaan rakennuksen sisäpuolella talo- ja tilarakenteiden rakentamista varten. Alue
+2     TEKNIIKKAOSAT                                               rajautuu toisaalta tonttisuunnitelman rajoihin ja toisaalta talo-osiin.
+21    Putkiosat
+22    Ilmanvaihto-osat                                            111 Maaosat
+23    Sähköosat
+                                                                  Maaosia ovat rakennettavan alueen raivaus, kaivannot, kanaalit, täyttöosat, penke-
+24    Tiedonsiirto-osat
+25    Laiteosat                                                   reet, kuivatusosat sekä erityiset maaosat.
+
+3     HANKETEHTÄVÄT                                               1111 Raivausosat
+31    Hankkeen johtotehtävät                                      Raivausosat käsittävät tonttialueen saattamisen rakentamiskelpoiseksi. Raivausosat
+32    Suunnittelutehtävät                                         jaetaan rakenneosiin seuraavasti:
+33    Rakentamisen johtotehtävät                                  1 Raivattava alue
+34    Työmaatehtävät                                              2 Olevat rakennukset ja rakenteet
+4 KIINTEISTÖTEHTÄVÄT                                              Raivattava alue rajautuu suunnitelmissa esitettyihin asianomaiseen rakennettavan
+41 Maa-aluetehtävät                                               alueen rajoihin ja toisaalta talo-osiin ja se mitataan vaakaprojektion pinta-alana eritel-
+42 Rahoitus ja markkinointi
+                                                                  len alueen erilaiset osat. Purettavat rakennukset mitataan tilavuutena rakennusten luku-
+5 KÄYTTÄJÄTEHTÄVÄT                                                määrä ilmoittaen. Purettavien rakennusten perustusrakenteet ja purettavat rakenteet il-
+51 Tilavarustus                                                   moitetaan pinta-alamitoin erikseen.
+52 Toiminnan ylläpito
+                                                                  1112 Kaivannot
+6 HANKEVARAUKSET
+                                                                  Kaivantoja ovat alueelle ja rakennuksen perustamiseksi maahan kaivettavat tai lou-
+61 Suunnitelma- ja hintamuutokset
+62 Muut varaukset                                                 hittavat yli 3 metriä leveät kaivannot.
+                                                                  Kaivannot rajautuvat raivatun maan pintaan, pohjavahvistettavien alueiden rajoihin
+                                                                  sekä perustusten ja alapohjan alapintaan. Kaivannot mitataan vaakatasossa pinta-ala-
+                                                                  na. Kaivannon syvyys, piiri ja luiskien kaltevuus ilmoitetaan erikseen.
+                                                                  1113 Kanaalit
+                                                                  Kanaaleja ovat muun muassa johtorakenteita palvelevat alle 3 metrin levyiset kaivet-
+                                                                  tavat tai louhittavat kanaalit.
+                                                                  Kanaalit rajautuvat kanaalin sisäpintaan, alapintaan ja raivatun maan pintaan. Kanaa-
+                                                                  lit mitataan vaakatasossa juoksumetreinä kaivusyvyys ja kanaalin pohjan leveys ilmoit-
+                                                                  taen. Luiskien kaltevuus ilmoitetaan erikseen.
+                                                                  1114 Täyttöosat
+                                                                  Täyttöosia ovat aluerakenteiden ja kanaalien täytöt, muut alueella tehtävät täytöt
+                                                                  sekä rakennukseen liittyvät täytöt eristysrakenteineen ja salaojituskerroksineen. Täyt-
+                                                                  töosat eritellään rakennusalueen, kanaalien sekä rakennuksen ulko- ja sisäpuolisiin
+                                                                  täyttörakenteisiin.
+                                                                  Alueen täyttöosat rajautuvat kaivutasosta päällysrakenteen rakennekerrosten alapin-
+                                                                  taan. Kanaalien täyttö rajautuu seinämien sisäpintaan. Rakennuksen ulkopuolinen täyt-
+                                                                  tö rajautuu perustusten alapinnasta päällysrakenteen rakennekerrosten alapintaan.
+                                                                  Rakennuksen sisäpuolinen täyttö rajautuu kaivusyvyydestä alapohjan rakennekerrosten
+                                                                  alapintaan.
+                                                                  Rakennusalueen täyttö mitataan rakenneteoreettisina kuutiometreinä täytettävän
+                                                                  alueen pinta-ala ilmoittaen. Kanaalien täyttö mitataan juoksumetreinä syvyys, luiskien
+                                                                  kaltevuus ja kaivannon pohjan leveys ilmoittaen.
+                                                                  Rakennuksen ulkoseinälinjan täyttö mitataan ulkoseinän ulkomittojen mukaan juoksu-
+                                                                  metreinä täyttökorkeuksien mukaan tarvittaessa eritellen. Rakennuksen sisäpuolinen
+                                                                  täyttö mitataan rakennuksen vaakasuorana projektioalana ulkoseinän ulkomittojen
+                                                                  mukaan neliömetreinä täyttökorkeuksien mukaan tarvittaessa eritellen. Mahdolliset
+                                                                  lämmöneristeet, routasuojaukset ja suodatinkankaat ilmoitetaan vaakaprojektiona ne-
+                                                                  liömetreinä.
+                                                                  1115 Penkereet
+                                                                  Penkereitä ovat olevan maanpinnan päälle tehtävät täytöt kuten esimerkiksi maan-
+                                                                  pinnan korotus täyttömateriaalilla, painopenkereet ja muut vastaavat.
+                                                                  Penkereet mitataan rakenneteoreettisena tilavuutena olemassa olevan maanpinnan ta-
+                                                                  sosta korkeus ilmoittaen.
+                                                                  1116 Kuivatusosat
+                                                                  Kuivatusosia ovat salaojat, salaojakaivot sekä muut kuin talotekniikkaan luettavat kai-
+                                                                  vot ja rummut tuentoineen, tuki- ja alusrakenteineen, alku- ja ympärystäyttöineen,
+                                                                  tasauskerroksineen sekä salaojan huolto- ja tarkastuskaivoineen.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                ohjeet – 3
+
+
+HANKENIMIKKEISTÖ                                                  Salaojat mitataan vaakatasossa salaojan keskilinjaa pitkin aloituskaivon keskeltä lope-
+                                                                  tuskaivon keskelle kaivojen halkaisijoita vähentämättä. Salaojakaivojen lukumäärä,
+1     RAKENNUSOSAT
+                                                                  tyyppi ja korkeus ilmoitetaan määräluettelossa. Kaivot ja rummut mitataan kappaleina
+11    Alueosat
+12    Talo-osat                                                   pituus sekä koko ilmoittaen.
+13    Tilaosat
+                                                                  1117 Erityiset maaosat
+2     TEKNIIKKAOSAT                                               Erityisiä maaosia ovat edellä oleviin alueosiin kuulumattomat maaosat kuten esimer-
+21    Putkiosat                                                   kiksi hule- ja jätevesien imeytysrakenteet tai radonin tuuletusputkistot.
+22    Ilmanvaihto-osat
+23    Sähköosat                                                   112 Tuennat ja vahvistukset
+24    Tiedonsiirto-osat
+                                                                  Tuentoja ja vahvistuksia ovat alueen ja rakennuksen paalut, tukirakenteet ja vahvis-
+25    Laiteosat
+                                                                  tukset.
+3     HANKETEHTÄVÄT
+31    Hankkeen johtotehtävät                                      1121 Paalut
+32    Suunnittelutehtävät                                         Paaluja ovat alueen tai rakennuspohjan teräsbetoni-, teräs-, kaivin- ja porapaalut si-
+33    Rakentamisen johtotehtävät                                  sältäen kärjet ja paalujatkokset.
+34    Työmaatehtävät
+                                                                  Paalut rajautuvat paaluanturoiden alapintaan ja paalukärkien yläpintaan. Paalut mita-
+4 KIINTEISTÖTEHTÄVÄT                                              taan juoksumetreinä tai kappaleina paalutyypeittäin. Kärjet ja paalujatkokset ilmoite-
+41 Maa-aluetehtävät                                               taan erikseen.
+42 Rahoitus ja markkinointi
+5 KÄYTTÄJÄTEHTÄVÄT                                                1122 Tuennat
+51 Tilavarustus                                                   Tuentoja ovat pohjarakentamisen yhteydessä tehtävät rakennusaikaiset ja pysyvät
+52 Toiminnan ylläpito                                             tukiseinät kuten esimerkiksi tuetun kaivannon tukiseinät. Tukirakenteisiin sisältyvät
+                                                                  rakenteen edellyttämät ankkuroinnit, vinotuet ja juuripalkit.
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset                                 Tuennat rajautuvat rakennettavan alueen maanpintaan, tuettavan alueen sisäpintaan
+62 Muut varaukset                                                 sekä tuentarakenteen alapintaan. Tuennat mitataan neliömetreinä tai juoksumetreinä
+                                                                  korkeus ilmoittaen ja erityyppiset tukirakenteet eritellen.
+
+                                                                  1123 Vahvistukset
+                                                                  Vahvistuksia ovat ennen varsinaisten rakennustöiden aloittamista alueella tehtävät
+                                                                  maapohjan esirakenteet, kuten kalkkistabilointi ja maapohjan rakennusaikainen sta-
+                                                                  bilointi, sekä olevien rakennusten perustusten vahvistamisrakenteet.
+                                                                  Vahvistukset rajautuvat vahvistettavan alueen rajoihin. Maapohjan esirakenteet mita-
+                                                                  taan vaakasuorana projektiona neliömetreinä syvyys ilmoittaen ja olevien rakennusten
+                                                                  perustusten vahvistaminen kappaleina vahvistustavoittain eritellen vahvistusta koske-
+                                                                  van erityissuunnitelman mukaisesti.
+
+                                                                  1124 Erityiset tuennat ja vahvistukset
+                                                                  Erityisiä tuentoja ja vahvistuksia ovat edellä oleviin alueosiin kuulumattomat erityiset
+                                                                  tuennat ja vahvistukset.
+
+                                                                  113 Päällysteet
+                                                                  Päällysteitä ovat liikenne-, paikoitus-, oleskelu ja leikkialueiden päällysteet, reunatuet
+                                                                  ja pintavesien poisjohtamisen rakenteet sekä kasvillisuus.
+
+                                                                  1131 Liikennealueiden päällysteet
+                                                                  Liikennealueiden päällysteitä ovat alueen käytön ja ulkonäön edellyttämät pintaker-
+                                                                  rokset liittymineen, tasaus- ja tukikerroksineen, saumauksineen, reunatukineen, hu-
+                                                                  levesikouruineen ja päällysteeseen tehtävine merkintöineen. Liikennealueiden pääl-
+                                                                  lysteet jaetaan rakenneosiin seuraavasti:
+                                                                  1 Pintakerros
+                                                                  2 Kantava kerros
+                                                                  3 Jakava kerros
+                                                                  4 Suodatinkangas tai -kerros
+                                                                  Liikennealueiden päällysteet rajautuvat päällystettävien alueiden reunakivien ulkoreu-
+                                                                  naan, toiseen päällysteeseen tai rakennuksen julkisivuun. Liikennealueiden päällysteet
+                                                                  mitataan vaakaprojektiona neliömetreinä kaivoja ja muita vastaavia aukkoja vähentä-
+                                                                  mättä.
+
+                                                                  1132 Paikoitusalueiden päällysteet
+                                                                  Paikoitusalueiden päällysteitä ovat alueen käytön ja ulkonäön edellyttämät pintaker-
+                                                                  rokset liittymineen, tasaus- ja tukikerroksineen, saumauksineen, reunatukineen, sa-
+                                                                  devesikouruineen ja päällysteeseen tehtävine merkintöineen. Paikoitusalueiden
+                                                                  päällysteet jaetaan rakenneosiin seuraavasti:
+                                                                  1 Pintakerros
+                                                                  2 Kantava kerros
+                                                                  3 Jakava kerros
+                                                                  4 Suodatinkangas tai -kerros
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                   ohjeet – 4
+
+
+HANKENIMIKKEISTÖ                                                  Paikoitusalueiden päällysteet rajautuvat päällystettävien alueiden reunakivien ulkoreu-
+                                                                  naan tai toiseen päällysteeseen tai rakennukseen. Paikoitusalueiden päällysteet mita-
+1     RAKENNUSOSAT
+                                                                  taan vaakaprojektiona neliömetreinä kaivoja ja muita vastaavia aukkoja vähentämättä.
+11    Alueosat
+12    Talo-osat
+13    Tilaosat                                                    1133 Oleskelu- ja leikkialueiden päällysteet
+                                                                  Oleskelu- ja leikkialueiden päällysteitä ovat alueen käytön ja ulkonäön edellyttämät
+2     TEKNIIKKAOSAT                                               pintakerrokset liittymineen, tasaus- ja tukikerroksineen, saumauksineen, reunatuki-
+21    Putkiosat                                                   neen, sadevesikouruineen ja päällysteeseen tehtävine merkintöineen. Oleskelu- ja
+22    Ilmanvaihto-osat                                            leikkialueiden päällysteet jaetaan rakenneosiin seuraavasti:
+23    Sähköosat
+                                                                  1 Pintakerros
+24    Tiedonsiirto-osat
+25    Laiteosat                                                   2 Kantava kerros
+                                                                  3 Jakava kerros
+3     HANKETEHTÄVÄT                                               4 Suodatinkangas tai -kerros
+31    Hankkeen johtotehtävät
+32    Suunnittelutehtävät                                         Oleskelu- ja leikkialueiden päällysteet rajautuvat päällystettävien alueiden reunakivien
+33    Rakentamisen johtotehtävät                                  ulkoreunaan, toiseen päällysteeseen tai rakennuksen julkisivuun. Oleskelu- ja leikkialuei-
+34    Työmaatehtävät                                              den päällysteet mitataan vaakaprojektiona neliömetreinä kaivoja ja muita vastaavia
+4 KIINTEISTÖTEHTÄVÄT                                              aukkoja vähentämättä.
+41 Maa-aluetehtävät
+42 Rahoitus ja markkinointi                                       1134 Kasvillisuus
+                                                                  Kasvillisuutta ovat alueelle istutettavat ja kylvettävät kasvit ja niiden kasvualustat,
+5 KÄYTTÄJÄTEHTÄVÄT                                                turve- ja nurmiverhoukset kastelu-, salaojitus- ja suojarakenteineen, tuentoineen ja
+51 Tilavarustus                                                   katteineen sekä luonnonvaraisten alueiden kunnostus.
+52 Toiminnan ylläpito
+                                                                  Kasvillisuus rajautuu alueen reunaan tai rakennuksen julkisivuun. Nurmikot mitataan
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset                                 vaakaprojektiona neliömetreinä kaivoja ja muita vastaavia aukkoja vähentämättä. Istu-
+62 Muut varaukset                                                 tettavat kasvit mitataan kappaleina erityyppiset ja kokoiset puut ja pensaat eritellen.
+
+                                                                  1135 Erityisalueiden päällysteet
+                                                                  Erityisalueiden päällysteitä ovat edellä oleviin alueosiin kuulumattomat päällysteet
+                                                                  kuten esimerkiksi urheilualueiden päällysteet. Päällysteisiin kuuluvat erityissuunni-
+                                                                  telman mukaiset tasaus- ja tukikerrokset, saumaukset, reunatuet, sadevesikourut ja
+                                                                  päällysteeseen tehtävät merkinnät.
+                                                                  Erityisalueet rajautuvat päällystettävän alueen rajoihin, reunakiviin tai rakennuksen jul-
+                                                                  kisivuun. Erityiset päällysteet mitataan vaakasuorana projektiona neliömetreinä erityyp-
+                                                                  piset päällysteet eritellen.
+
+                                                                  114 Alueen varusteet
+                                                                  Alueen varusteita ovat yleensä valmiina hankittavat ulkovarusteet sekä niiden perus-
+                                                                  taminen ja asennus. Alueen varusteita ovat myös valmiina hankittavat aidat ja valais-
+                                                                  tusrakenteet ja vastaavat.
+                                                                  Alueen varusteet ilmoitetaan luettelona, josta ilmenee varusteiden tyyppi, koko ja pai-
+                                                                  koilleen asettamisen edellytykset.
+
+                                                                  1141 Talovarusteet
+                                                                  Talovarusteita ovat talokohtaiset varusteet kuten lipputangot, pölytys- ja kuivausteli-
+                                                                  neet, porrasritilät, postilaatikot ja valmiina hankittavat aidat perustuksineen, kiinni-
+                                                                  tystarvikkeineen ja pintakäsittelyineen. Talovarusteita ovat myös jätehuollon varus-
+                                                                  teet ja laitteet, kuten jäteastiat, -lavat, -säiliöt ja -telineet perustuksineen ja ankkuroin-
+                                                                  teineen. Talovarusteet eritellään seuraavasti:
+                                                                  1 Talokohtaiset varusteet
+                                                                  2 Jätehuollon varusteet ja laitteet
+
+                                                                  1142 Oleskeluvarusteet
+                                                                  Oleskeluvarusteita ovat oleskelualueiden varusteet esimerkiksi pöydät, penkit ja gril-
+                                                                  lit perustuksineen ja pintakäsittelyineen.
+
+                                                                  1143 Leikkivarusteet
+                                                                  Leikkivarusteita ovat leikki- ja liikunta-alueiden varusteet esimerkiksi leikkivarusteet,
+                                                                  kuten keinut, hiekkalaatikot ja liukumäet ja urheilutelineet perustuksineen ja pinta-
+                                                                  käsittelyineen.
+
+                                                                  1144 Alueopasteet
+                                                                  Alueopasteita ovat rakennusalueen opasteet esimerkiksi rakennusalueen liikenne-
+                                                                  opasteet, liikennealueiden varusteet, kuten pylväät, liikennemerkit ja puomit, katu-
+                                                                  kilvet ja osoitenumerot sekä liikennemerkit perustuksineen, rakenteineen ja pintakä-
+                                                                  sittelyineen. Alue-opasteet eritellään seuraavasti:
+                                                                  1 Ulko-opasteet
+                                                                  2 Liikennealueiden varusteet
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                 ohjeet – 5
+
+
+HANKENIMIKKEISTÖ                                                  1145 Erityiset aluevarusteet
+                                                                  Erityisiä aluevarusteita ovat edellä oleviin alueosiin kuulumattomat aluevarusteet ku-
+1     RAKENNUSOSAT
+                                                                  ten esimerkiksi urheilupaikkojen varusteet. Erityisiin aluevarusteisiin sisältyvät eri-
+11    Alueosat
+12    Talo-osat                                                   tyissuunnitelman mukaiset perustukset, rakenteet ja merkinnät.
+13    Tilaosat
+                                                                  115 Alueen rakenteet
+2     TEKNIIKKAOSAT                                               Alueen rakenteita ovat erilliset rakennuksen ulkopuolelle tehtävät pihavarastot, -ka-
+21    Putkiosat                                                   tokset, terassit, tukimuurit, aidat ja muurit, valettavat kanaalit ja erityiskaivot, altaat,
+22    Ilmanvaihto-osat                                            ajoluiskat ja portaat perustuksineen, pintarakenteineen ja eristeineen.
+23    Sähköosat
+24    Tiedonsiirto-osat                                           1151 Pihavarastot
+25    Laiteosat                                                   Pihavarastoja ovat varsinaisesta rakennuksesta erilliset varastorakennukset, jä-
+3     HANKETEHTÄVÄT                                               tesuojat ja muut vastaavat varastot ja säilytystilat maarakenteineen, perustuksineen,
+31    Hankkeen johtotehtävät                                      eristeineen ja pintarakenteineen. Pihavarastot käsitellään kokonaisuutena ja mita-
+32    Suunnittelutehtävät                                         taan nettoaloina huonealan mittausperustetta noudattaen tai jaetaan tarvittaessa
+33    Rakentamisen johtotehtävät                                  edelleen rakenneosiin hankenimikkeistön asianomaisten nimikkeiden mukaisesti.
+34    Työmaatehtävät                                              Rakenneosia ovat tällöin seuraavat:
+4 KIINTEISTÖTEHTÄVÄT                                              1 Pihavarastojen perustukset
+41 Maa-aluetehtävät                                               2 Pihavarastojen alapohjat
+42 Rahoitus ja markkinointi                                       3 Pihavarastojen runko
+                                                                  4 Pihavarastojen julkisivut
+5 KÄYTTÄJÄTEHTÄVÄT                                                5 Pihavarastojen vesikatot
+51 Tilavarustus
+                                                                  6 Pihavarastojen ovet
+52 Toiminnan ylläpito
+                                                                  7 Pihavarastojen ikkunat
+6 HANKEVARAUKSET                                                  8 Pihavarastojen tilapinnat
+61 Suunnitelma- ja hintamuutokset                                 9 Pihavarastojen tilavarusteet
+62 Muut varaukset
+                                                                  1152 Pihakatokset
+                                                                  Pihakatoksia ovat varsinaisesta rakennuksesta erilliset katokset, pergolat ja muut vas-
+                                                                  taavat katokset ja katosrakennelmat perustuksineen, eristeineen ja pintarakentei-
+                                                                  neen.
+                                                                  1153 Aidat ja tukimuurit
+                                                                  Aitoja ja tukimuureja ovat rakenteelliset ja kevyet aidat, portit, muurit, tukimuurit ja
+                                                                  kaiteet perustuksineen.
+                                                                  1154 Alueen portaat, luiskat ja terassit
+                                                                  Alueen portaita, luiskia ja terasseja ovat ulkona olevat rakennuksesta erilliset raken-
+                                                                  teelliset portaat, luiskat, ajoluiskat, maastoaskelmat ja terassit perustuksineen ja pin-
+                                                                  tarakenteineen sekä niiden kaiteet.
+                                                                  1155 Alueen pysäköintirakenteet
+                                                                  Alueen pysäköintirakenteita ovat muun muassa rakennuksesta erilliset pysäköinti-
+                                                                  kannet.
+                                                                  1156 Erityiset alueen rakenteet
+                                                                  Erityisiä alueen rakenteita ovat edellä oleviin alueosiin kuulumattomat aluerakenteet
+                                                                  kuten esimerkiksi rakennuksen ulkopuolelle valettavat tai elementtirakenteiset ka-
+                                                                  naalit, erityiskaivot, suojakaukalot ja altaat.
+
+                                                                  12 Talo-osat
+                                                                  Talo-osat koostuvat perustuksista, alapohjasta, rungosta, julkisivuista, vesikatosta ja
+                                                                  ulkotasoista.
+
+                                                                  121 Perustukset
+                                                                  Perustuksia ovat rakennuksen alapohjan alapuoliset rakenteet kuten anturat, perus-
+                                                                  muurit, peruspilarit, peruspalkit ja erityiset perustusrakenteet.
+                                                                  1211 Anturat
+                                                                  Anturoita ovat rakennuksen seinäanturat, pilarianturat, paaluanturat ja perusmuu-
+                                                                  rianturat.
+                                                                  Antura rajautuu anturan alapinnasta perusmuurin, peruspilarin tai runkorakenteen ala-
+                                                                  pintaan kuitenkin enintään alapohjan kantavan rakenteen alapintaan. Anturat mita-
+                                                                  taan juoksumetreinä tai kappaleina anturakoot eritellen.
+                                                                  1212 Perusmuurit, peruspilarit ja peruspalkit
+                                                                  Perusmuureja, peruspilareita ja peruspalkkeja ovat rakennuksen alapohjan alapuoli-
+                                                                  set peruspilarit, perusmuurit, kaivonrengasperustukset ja peruspalkit lämmön-, ve-
+                                                                  den- ja kosteudeneristeineen sekä pintarakenteineen. Perusmuurit, peruspilarit ja
+                                                                  peruspalkit jaetaan rakenneosiin seuraavasti:
+                                                                  1 Perusmuurin, peruspilarin ja peruspalkin pinta
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                ohjeet – 6
+
+
+HANKENIMIKKEISTÖ                                                  2 Ulkopuolinen pintarakenne
+                                                                  3 Perusmuuri, peruspilari tai palkkirakenne
+1     RAKENNUSOSAT
+                                                                  4 Lämmöneriste
+11    Alueosat
+12    Talo-osat                                                   5 Veden- ja kosteudeneriste
+13    Tilaosat                                                    Perusmuurit ja peruspilarit rajautuvat anturan yläpintaan tai kallionpintaan ja alapoh-
+2     TEKNIIKKAOSAT                                               jan kantavan rakenteen alapintaan. Peruspalkit rajautuvat kantavan pystyrakenteen si-
+21    Putkiosat                                                   säpintaan. Perusmuurit ja peruspalkit mitataan juoksumetreinä eriteltynä rakenteen
+22    Ilmanvaihto-osat                                            korkeuden ja leveyden mukaan. Peruspilarit mitataan kappaleina pilarikoot eritellen.
+23    Sähköosat
+24    Tiedonsiirto-osat                                           1213 Erityiset perustukset
+25    Laiteosat                                                   Erityisiä perustuksia ovat muun muassa kone- ja laitepedit tai tuotantokoneita varten
+3     HANKETEHTÄVÄT                                               erityisesti rakennetut perustukset kiinnitysosineen.
+31    Hankkeen johtotehtävät
+32    Suunnittelutehtävät
+                                                                  Erityiset perustukset rajautuvat alapohjan kantavan rakenteen alapintaan tai korvaavat
+33    Rakentamisen johtotehtävät                                  alapohjarakenteen. Erityiset perustukset mitataan neliömetreinä, perustuskoot eritellen
+34    Työmaatehtävät                                              ja ne jaotellaan tarvittaessa rakenteen osiin.
+4 KIINTEISTÖTEHTÄVÄT
+41 Maa-aluetehtävät                                               122 Alapohjat
+42 Rahoitus ja markkinointi                                       Alapohjia ovat alapohjalaatat, alapohjan kanaalit ja erityiset alapohjat.
+5 KÄYTTÄJÄTEHTÄVÄT
+                                                                  1221 Alapohjalaatat
+51 Tilavarustus
+52 Toiminnan ylläpito                                             Alapohjalaattoja ovat kantavat ja maanvaraiset tasorakenteet lämmöneristyksineen
+                                                                  ja höyrynsulkuineen. Alapohjalaatat jaetaan rakenneosiin seuraavasti:
+6 HANKEVARAUKSET                                                  1 Alapohjarakenne
+61 Suunnitelma- ja hintamuutokset                                 2 Alapohjan lämmöneriste
+62 Muut varaukset
+                                                                  Alapohjalaatta rajautuu pystysuunnassa perusmuurin tai peruspilarin yläpintaan tai
+                                                                  (täytettyyn) maapohjaan ja vaakasuunnassa ulkoseinän sisäpintaan. Alapohja mita-
+                                                                  taan neliömetreinä yli 1 m :naukot aukkomitoin vähentäen. Alapohjamäärät eritellään
+                                                                  alapohjatyypeittäin, joita ovat rakenteeltaan ja rakennepaksuuksiltaan erilaiset alapoh-
+                                                                  jatyypit. Kaltevat alapohjat mitataan vaakasuorana tasona (projektioalana).
+
+                                                                  1222 Alapohjakanaalit
+                                                                  Alapohjakanaaleja ovat alapohjarakenteesta oleellisesti poikkeavat rakenteet kuten
+                                                                  tunnelit, suojakaukalot ja huolto- ym. erityiskuopat. Alapohjan kanaalit jaetaan ra-
+                                                                  kenneosiin seuraavasti:
+                                                                  1 Kanaalirakenne
+                                                                  2 Alapohjan kanaalin lämmöneristys
+                                                                  3 Alapohjan kanaalin vedeneristys
+                                                                  4 Alapohjan kanaalin ritilät, kannet ja luukut
+                                                                  Alapohjakanaali rajautuu pystysuunnassa kanaalin pohjarakenteen yläpintaan ja ala-
+                                                                  pohjan alapintaan ja vaakasuunnassa kanaalin seinämien ulkopintaan. Alapohja-
+                                                                  kanaalit mitataan aukkomitoin neliömetreinä. Kanaalien seinärakenteet mitataan ne-
+                                                                  liömetreinä rakennetyypeittäin eritellen. Kaltevat alapohjan kanaalit mitataan vaa-
+                                                                  kasuorana tasona (projektioalana). Ritilät, kannet ja luukut ilmoitetaan kappaleina koon
+                                                                  mukaan eriteltyinä. Alapohjan kanaalin liittyminen alapohjarakenteeseen mitataan ne-
+                                                                  liö- tai juoksumetreinä ja ilmoitetaan tarvittaessa erikseen.
+
+                                                                  1223 Erityiset alapohjat
+                                                                  Erityisiä alapohjia ovat tavanomaisista alapohjarakenteista oleellisesti poikkeavat ra-
+                                                                  kenteet kuten esimerkiksi luiskat ja uima-allasrakenteet. Erityiset alapohjat jaetaan
+                                                                  rakenneosiin seuraavasti:
+                                                                  1 Erityisen alapohjan rakenne
+                                                                  2 Erityisen alapohjarakenteen lämmöneristys
+                                                                  3 Erityisen alapohjarakenteen vedeneristys
+                                                                  4 Erityisen alapohjan ritilät, kannet ja luukut
+                                                                  Erityiset alapohjat rajautuvat varsinaisen lattiarakenteen alapintaan. Erityiset alapohjat
+                                                                  ja niiden seinämäiset osat mitataan aukkomitoin neliömetreinä alapohjatyypit eritellen.
+                                                                  Kaltevat erityiset alapohjat mitataan vaakasuorana tasona (projektioalana). Ritilät, kan-
+                                                                  net ja luukut ilmoitetaan kappaleina tai neliömetreinä ja kappaleina. Erityisten alapoh-
+                                                                  jien liittyminen alapohjarakenteeseen mitataan neliö- tai juoksumetreinä ja ilmoitetaan
+                                                                  erikseen.
+
+                                                                  123 Runko
+                                                                  Runkoa ovat rakennuksen kantavat, suojaavat ja palo-osastointia palvelevat raken-
+                                                                  nusosat kuten väestönsuojat, kantavat seinät, pilarit, palkit, välipohjat ja yläpohjat
+                                                                  sekä runkoportaat.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                ohjeet – 7
+
+
+HANKENIMIKKEISTÖ                                                  1231 Väestönsuojat
+                                                                  Väestönsuojia ovat K-, S1- ja S3 -luokan väestönsuojat tilaosineen ja väestönsuojava-
+1     RAKENNUSOSAT
+                                                                  rusteineen. Väestönsuoja ei sisällä tilan rauhanajan käytön varusteita. Väestönsuoja
+11    Alueosat
+12    Talo-osat                                                   jaetaan rakenneosiin seuraavasti:
+13    Tilaosat                                                    1 Alapohjarakenne
+                                                                  2 Ympäröivät seinät, kantavat väliseinät ja kattorakenne
+2     TEKNIIKKAOSAT                                               3 Sulkutila, hätäpoistumiskäytävä tai -aukko
+21    Putkiosat                                                   4 Suojaovet ja -luukut
+22    Ilmanvaihto-osat
+                                                                  5 Kriisiajan varusteet ja kuntakohtaiset varusteet.
+23    Sähköosat
+24    Tiedonsiirto-osat                                           6 Kantavan kattorakenteet päälle tulevat tasaus- ja salaojituskerrokset
+25    Laiteosat                                                   Väestönsuoja mitataan vaakasuorana alana suojatilaa ympäröivien kantavien seinien
+3     HANKETEHTÄVÄT                                               ulkomittojen mukaan. Väestösuojan suojapinta-ala mitataan väestösuojatilaa rajaa-
+31    Hankkeen johtotehtävät                                      vien kantavien seinien sisämittojen mukaan vähentäen alasta suojan sisäpuolisten kan-
+32    Suunnittelutehtävät                                         tavien rakenteiden vaakasuora-ala sekä väestösuojalaitteiden vaatima ala. Väestön-
+33    Rakentamisen johtotehtävät                                  suojan pinta-ala on siten suurempi kuin sen suojapinta-ala.
+34    Työmaatehtävät
+                                                                  1232 Kantavat seinät
+4 KIINTEISTÖTEHTÄVÄT                                              Kantavia seiniä ovat rakennuksen sisäpuoliset kantavat ja kuormia siirtävät väliseinät
+41 Maa-aluetehtävät                                               ja seinämäiset palkit.
+42 Rahoitus ja markkinointi
+                                                                  Kantava seinä rajautuu seinän alapuolisen laatan yläpintaan ja seinän yläpuolisen laa-
+5 KÄYTTÄJÄTEHTÄVÄT                                                tan alapintaan. Väestönsuojan kantava seinä luetaan väestösuojaan ja ulkoseinän kan-
+51 Tilavarustus
+                                                                  tava osa luetaan ulkoseinään. Kantavat seinät mitataan neliömetreinä yli 1 m :naukot
+52 Toiminnan ylläpito
+                                                                  aukkomitoin vähentäen. Määrät eritellään kantavien seinien rakennetyypeittäin.
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset                                 1233 Pilarit
+62 Muut varaukset                                                 Pilareita ovat rakennuksen pilarit sekä runkoon ja ulkoseiniin liittyvät pilasterit.
+                                                                  Pilari rajautuu alapuolisen laatan yläpintaan ja yläpuolisen laatan alapintaan. Pilasteri
+                                                                  rajautuu lisäksi seinän sisäpintaan. Pilarit mitataan juoksumetreinä tai pilarin ulkomitto-
+                                                                  jen mukaan kuutioina. Viisteiden, konsoleiden ja muiden vastaavien koko ja lukumäärä
+                                                                  ilmoitetaan tarvittaessa erikseen. Teräspilareiden osalta ilmoitetaan lisäksi koko, aine-
+                                                                  paksuus mahdollinen betonitäyttö ja raudoitus sekä lukumäärä.
+                                                                  1234 Palkit
+                                                                  Palkkeja ovat rakennuksen kantavat palkit.
+                                                                  Palkki rajautuu vaakasuunnassa pilarin tai seinän pintaan sekä pystysuunnassa laatan
+                                                                  alapintaan. Palkit mitataan juoksumetreinä tai palkin ulkomittojen mukaan kuutioina.
+                                                                  Viisteiden, konsoleiden yms. koko ja lukumäärä ilmoitetaan tarvittaessa erikseen. Teräs-
+                                                                  palkkien osalta ilmoitetaan lisäksi koko, ainepaksuus, mahdollinen betonitäyttö ja rau-
+                                                                  doitus sekä lukumäärä.
+                                                                  1235 Välipohjat
+                                                                  Välipohjia ovat kerrosten laatat tai paikalla tehdyn välipohjan yhtenäisen rakenteen
+                                                                  muodostavat kantavat vaakasuorat tasorakenteet rakenteeseen kuuluvine lämmön-
+                                                                  ja ääneneristyksineen. Välipohjan ala- ja yläpuoliset tilarakenteet ovat tilojen raken-
+                                                                  nusosia. Välipohjarakenne jaetaan rakenneosiin seuraavasti:
+                                                                  1 Välipohjarakenne
+                                                                  2 Lämmön- ja ääneneristys
+                                                                  Välipohja rajautuu vaakasuunnassa ulkoseinän sisäpintaan ja pystysuunnassa palkin ja
+                                                                  pilarin yläpintaan. Välipohjat mitataan neliömetreinä yli 1 m :naukot aukkomittoina vä-
+                                                                  hentäen. Määrät eritellään välipohjatyypeittäin. Liittymärakenteet ulkoseiniin mitataan
+                                                                  juoksumetreinä ja ilmoitetaan erikseen. Vinot välipohjat mitataan vaakasuorana tasona
+                                                                  (projektioalana).
+                                                                  1236 Yläpohjat
+                                                                  Yläpohjia ovat rakennuksen ylimmän kerroksen yläpuoliset laatat tai yhtenäisen ra-
+                                                                  kenteen muodostavat ylimmät kantavat vaakasuorat tasorakenteet rakenteeseen
+                                                                  kuuluvine lämmön- ja ääneneristyksineen sekä liittymärakenteineen. Yläpohjaraken-
+                                                                  ne jaetaan rakenneosiin seuraavasti:
+                                                                  1 Kantava yläpohjarakenne
+                                                                  2 Lämmön- ja ääneneristys
+                                                                  3 Tuulensuoja
+                                                                  4 Höyrynsulku
+                                                                  Yläpohja rajautuu vaakasuunnassa ulkoseinän sisäpintaan sekä pystysuunnassa ylä-
+                                                                  puolelta vesikattorakenteeseen tai vesikatteeseen ja alapuolelta tilarakenteisiin. Yläpoh-
+                                                                  jat mitataan neliömetreinä yli 1 m :naukot aukkomitoin aukot vähentäen. Määrät eritel-
+                                                                  lään yläpohjatyypeittäin. Vinot yläpohjat mitataan vaakasuorana tasona (projektioala-
+                                                                  na). Liittymärakenteet ulkoseiniin mitataan juoksumetreinä tyypeittäin ja ilmoitetaan
+                                                                  erikseen.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                ohjeet – 8
+
+
+HANKENIMIKKEISTÖ                                                  1237 Runkoportaat
+                                                                  Runkoportaita ovat rakennuksen kantavaan järjestelmään kuuluvat ja siihen kiinteäs-
+1     RAKENNUSOSAT
+                                                                  ti liittyvien portaiden porrassyöksyt, askellankut ja lepotasot tehtaalla tehtävine pin-
+11    Alueosat
+12    Talo-osat                                                   takäsittelyineen. Runkoportaisiin lasketaan myös rakennuksen ulkopuoliset usein
+13    Tilaosat                                                    kylmät varapoistumisportaat. Runkoporras jaetaan rakenneosiin seuraavasti:
+                                                                  1 Porrassyöksy
+2     TEKNIIKKAOSAT                                               2 Lepotaso
+21    Putkiosat
+22    Ilmanvaihto-osat                                            Runkoportaat mitataan neliömetreinä liittyvän seinärakenteen pinnasta tai jos liitosta
+23    Sähköosat                                                   seinärakenteeseen ei ole niin portaan reunasta. Pinta-ala mitataan vaakasuorana pro-
+24    Tiedonsiirto-osat                                           jektioalana erilaiset porrastyypit eritellen. Runkoportaan liittyminen seiniin ja kerros-
+25    Laiteosat                                                   tasoihin mitataan juoksumetreinä ja ilmoitetaan tarvittaessa erikseen.
+3     HANKETEHTÄVÄT
+31    Hankkeen johtotehtävät                                      1238 Erityiset runkorakenteet
+32    Suunnittelutehtävät                                         Erityisiä runkorakenteita ovat muihin runkorakenteisiin kuulumattomat runkoraken-
+33    Rakentamisen johtotehtävät                                  teet kuten esimerkiksi kehärakenteet, kerroksissa ja katolla olevat uima-allasraken-
+34    Työmaatehtävät                                              teet sekä ilmanvaihtokonehuoneiden teräsrungot, muihin runkorakenteiden nimik-
+4 KIINTEISTÖTEHTÄVÄT                                              keisiin liittyvät rakenteet.
+41 Maa-aluetehtävät
+42 Rahoitus ja markkinointi                                       124 Julkisivut
+5 KÄYTTÄJÄTEHTÄVÄT
+                                                                  Julkisivuja ovat rakennuksen tiloja ulkoilmasta tai katetusta, lämmittämättömästä ti-
+51 Tilavarustus                                                   lasta erottavat rakenteet kuten ulkoseinät julkisivuverhouksineen, ikkunat, ikkuna-
+52 Toiminnan ylläpito                                             seinät ja ulko-ovet.
+6 HANKEVARAUKSET                                                  1241 Ulkoseinät
+61 Suunnitelma- ja hintamuutokset                                 Ulkoseiniä ovat kantavat, kevyet, paikalla rakennettavat ja elementtirakenteiset ul-
+62 Muut varaukset
+                                                                  koseinät sekä julkisivuverhoukset tuulensuojineen ja lämmöneristeineen. Ulkosei-
+                                                                  nän osia ovat myös yläpohjan yläpuoliset julkisivurakenteet. Ulkoseinät jaetaan ra-
+                                                                  kenneosiin seuraavasti:
+                                                                  1 Ulkoseinän runko
+                                                                  2 Veden- ja kosteudeneristys
+                                                                  3 Lämmön- ja ääneneristys
+                                                                  4 Tuulensuoja
+                                                                  5 Julkisivuverhous
+                                                                  6 Julkisivuverhouksen pintakäsittely
+                                                                  Ulkoseinärakenteet mitataan ulkoseinän ulkomittojen mukaan neliömetreinä yli 1 m :n
+                                                                  aukot aukkomitoin vähentäen. Määrät eritellään ulkoseinä- ja julkisivuverhoustyypeit-
+                                                                  täin. Ulkoseinän liittymärakenteet perustuksiin, vesikattorakenteisiin ja vesikatteeseen
+                                                                  mitataan juoksumetreinä erikseen. Vesikatteen yläpuolelle jatkuvat ulkoseinät mitataan
+                                                                  ja ilmoitetaan erikseen.
+
+                                                                  1242 Ikkunat
+                                                                  Ikkunoita ovat julkisivun eri aineiset ikkunat sekä ikkunoiden karmirakenteet ympä-
+                                                                  röivine osineen, varusteineen ja liittymärakenteineen. Ikkunat jaetaan rakenneosiin
+                                                                  seuraavasti:
+                                                                  1 Ikkunat sisältäen karmit ja puitteet ja lasituslistat
+                                                                  2 Lasit ja lasitustarvikkeet
+                                                                  3 Ikkunoiden helat ja lukot
+                                                                  4 Vesipellit
+                                                                  5 Peitelistat
+                                                                  6 Ikkunan rakenteessa olevat korvausilmaventtiilit
+                                                                  7 Ikkunan apukarmit
+                                                                  Liittymärakenteet ulkoseinään kuten esimerkiksi peitelistat, pellitys, ikkunan vesipellit,
+                                                                  tiivistäminen ja tilkitseminen eritellään ja mitataan erikseen neliömetreinä ja juoksumet-
+                                                                  reinä. Ikkunan tilan puolella olevat osat esimerkiksi ikkunalaudat ja suojarakenteet ja
+                                                                  -varusteet luetaan tilaan kuuluvaan rakennusosaan.
+
+                                                                  1243 Ulko-ovet
+                                                                  Ulko-ovia ovat julkisivun puiset ja metalliset ulko-ovet, ikkunaovet, erityisulko-ovet
+                                                                  kuten heiluri-, kierto-, liuku-, taitto-, kippi, nosto- ja paljeovet sekä muut ulko-ovet
+                                                                  karmeineen, liittymärakenteineen ja varusteineen. Ulko-ovet jaetaan rakenneosiin
+                                                                  seuraavasti:
+                                                                  1 Ulko-ovi sisältäen karmin, kynnyksen ja ovilevyn
+                                                                  2 Ulko-oven lasitukset
+                                                                  3 Karmin osat kuten sähköpielet
+                                                                  4 Lukot ja helat
+                                                                  5 Ovikoneistot
+                                                                  6 Peitelistat
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                     ohjeet – 9
+
+
+HANKENIMIKKEISTÖ                                                  Ulko-ovi rajautuu ulkoseinään ja julkisivurakenteeseen sekä tilaan. Ulko-ovet mitataan
+                                                                  kappaleina ryhmiteltynä koon ja tyypin mukaan. Ulko-oven liittymärakenteet ulkosei-
+1     RAKENNUSOSAT
+                                                                  nään (peitelistat, pellitys, ikkunan vesipellit, tiivistäminen ja tilkitseminen) eritellään, mi-
+11    Alueosat
+12    Talo-osat                                                   tataan ja ilmoitetaan erikseen
+13    Tilaosat                                                    1244 Julkisivuvarusteet
+2     TEKNIIKKAOSAT                                               Julkisivuvarusteita ovat esimerkiksi talotikkaat, markiisit, auringonsuoja- ja muut sä-
+21    Putkiosat                                                   leiköt, luukut ja vastaavat julkisivun varusteet.Julkisivuvarusteet rajautuvat julkisivu-
+22    Ilmanvaihto-osat                                            rakenteeseen. Julkisivuvarusteet mitataan juoksumetreinä, kappaleina tai neliömet-
+23    Sähköosat                                                   reinä varustetyypeittäin eriteltyinä.
+24    Tiedonsiirto-osat
+25    Laiteosat                                                   1245 Erityiset julkisivurakenteet
+                                                                  Erityisiä julkisivurakenteita ovat muut julkisivuun kuulumattomat julkisivurakenteet.
+3     HANKETEHTÄVÄT
+31    Hankkeen johtotehtävät                                      125 Ulkotasot
+32    Suunnittelutehtävät                                         Ulkotasoja ovat rakennukseen kiinteästi liittyvät parvekkeet, katokset ja terassit.
+33    Rakentamisen johtotehtävät
+34    Työmaatehtävät                                              1251 Parvekkeet
+4 KIINTEISTÖTEHTÄVÄT                                              Parvekkeita ovat rakennuksen parvekkeet sekä niiden kaiteet, seinäkkeet ja katokset
+41 Maa-aluetehtävät                                               sekä parvekkeiden kannatus pintarakenteineen. Parveke jaetaan rakenneosiin seu-
+42 Rahoitus ja markkinointi                                       raavasti:
+                                                                  1 Parvekkeen pinta
+5 KÄYTTÄJÄTEHTÄVÄT                                                2 Parvekkeen pintarakenne
+51 Tilavarustus
+                                                                  3 Parvekkeen laattarakenne
+52 Toiminnan ylläpito
+                                                                  4 Parvekkeen kannatusrakenne
+6 HANKEVARAUKSET                                                  5 Parvekekatoksen rakenne
+61 Suunnitelma- ja hintamuutokset                                 6 Katoksen kannatusrakenne
+62 Muut varaukset                                                 7 Seinät ja seinäkkeet
+                                                                  8 Parvekkeen kaide
+                                                                  9 Parvekkeen käsijohde
+                                                                  10 Parvekelasitus
+                                                                  11 Vedenpoistorakenne
+                                                                  Parveke rajautuu vaakasuunnassa ulkoseinän ulkopintaan. Pystysuunnassa parvekkeen
+                                                                  kannatus rajautuu parvekelaatan yläpinnasta seuraavan parvekelaatan tai parvekeka-
+                                                                  toksen alapintaan. Alimman parvekelaatan kannatus rajautuu alapäästään alapohjan
+                                                                  alapinnan tasoon.Parvekelaatat mitataan ulkomitoin vaakasuorana alana neliömetrei-
+                                                                  nä. Parvekekatokset mitataan ulkomitoin vaakasuorana alana (projektioalana) ne-
+                                                                  liömetreinä. Parvekkeen kaide mitataan juoksumetreinä. Parvekelasitus mitataan ne-
+                                                                  liömetreinä kaiteen yläreunasta.
+                                                                  1252 Katokset
+                                                                  Katoksia ovat rakennukseen liittyvät katokset, katosten kannatusrakenteet, ja pinta-
+                                                                  rakenteet sekä niiden liittymät muihin rakenteisiin. Katos jaetaan rakenneosiin seu-
+                                                                  raavasti:
+                                                                  1 Katosrakenne
+                                                                  2 Katoksen kannatusrakenteet
+                                                                  1253 Erityiset ulkotasot
+                                                                  Erityisiä ulkotasoja ovat rakennuksen ulkotasot, kattoterassit ja luhtikäytävät sekä nii-
+                                                                  den kaiteet, seinäkkeet ja katokset, tasojen kannatus, portaat ja pintarakenteet sekä
+                                                                  näiden liittymät muihin rakenteisiin. Erityiset ulkotasot jaetaan rakenneosiin seuraa-
+                                                                  vasti:
+                                                                  1 Ulkotason pinta
+                                                                  2 Ulkotason pintarakenne
+                                                                  3 Ulkotason laattarakenne
+                                                                  4 Porras
+                                                                  5 Katoksen rakenne
+                                                                  6 Kannatusrakenne
+                                                                  7 Kaiteet
+                                                                  8 Käsijohteet
+                                                                  9 Seinät ja seinäkkeet
+                                                                  10 Ulkotasojen parvekelasitus
+                                                                  11 Vedenpoiston rakenteet
+                                                                  Erityiset ulkotasot rajautuvat ulkoseinään tai julkisivurakenteeseen. Erityiset ulkotasot,
+                                                                  kattoterassit ja luhtikäytävät mitataan ulkomitoin neliömetreinä. Katokset mitataan ul-
+                                                                  komitoin vaakasuorana alana (projektioalana) neliömetreinä. Portaista ilmoitetaan ker-
+                                                                  roksesta toiseen johtavien portaiden lukumäärä ja leveys. Kaiteet mitataan juoksumet-
+                                                                  reinä ja lasiseinät neliömetreinä kehysrakenteen ulkomitoin. Kannatusrakenteet mita-
+                                                                  taan neliömetreinä (kannatusseinät) tai ilmoitetaan kannatuspilareiden betonimäärä
+                                                                  kuutioina tai teräsrakenteisten pilareiden juoksumetrimäärä ja juoksumetripaino. Eri-
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                              ohjeet – 10
+
+
+HANKENIMIKKEISTÖ                                                  tyisten ulkotasojen pintakäsittely ja pintarakenteet ilmoitetaan neliömetreinä. Erityisten
+                                                                  ulkotasojen rajautuminen viereisiin rakenteisiin mitataan ja ilmoitetaan erikseen.
+1     RAKENNUSOSAT
+11    Alueosat                                                    126 Vesikatot
+12    Talo-osat                                                   Vesikattoja ovat yläpohjan kantavan rakenteen päälle tulevat vesikattorakenteet sekä
+13    Tilaosat                                                    erillisenä työvaiheena tehtävät räystäät, vesikatteet, vesikattovarusteet, lasikattora-
+2     TEKNIIKKAOSAT                                               kenteet ja kattoikkunat. Itsekantavat yläpohjarakenteet ovat yläpohjia.
+21    Putkiosat
+22    Ilmanvaihto-osat                                            1261 Vesikattorakenteet
+23    Sähköosat                                                   Vesikattorakenteita ovat yläpohjan kantavan rakenteen päälle tulevat rakenteet läm-
+24    Tiedonsiirto-osat                                           möneristeineen ja höyrynsulkuineen sisältäen tasakattojen tasausbetonit. Vesikatto-
+25    Laiteosat                                                   rakenteita ovat myös vesikattorakenteiden yhteydessä vesikatteen alle katolle raken-
+3     HANKETEHTÄVÄT                                               nettavat tai asennettavat laitesuojat ja -alustat sekä vesikattorakenteen väliseinät.
+31    Hankkeen johtotehtävät                                      Vesikattorakenteet jaetaan rakenneosiin seuraavasti:
+32    Suunnittelutehtävät                                         1 Vesikattorakenteen rakenneosa
+33    Rakentamisen johtotehtävät                                  2 Kosteudeneristys
+34    Työmaatehtävät                                              3 Lämmöneristys
+                                                                  4 Vesikattorakenteen tasausbetoni
+4 KIINTEISTÖTEHTÄVÄT
+41 Maa-aluetehtävät                                               5 Yläpohjan palo-osastointi
+42 Rahoitus ja markkinointi                                       6 Kulkurakenteet
+                                                                  7 Luukut
+5 KÄYTTÄJÄTEHTÄVÄT
+51 Tilavarustus                                                   Vesikattorakenne rajautuu alapuolelta yläpohjan kantavan laatan yläpintaan, huoneti-
+52 Toiminnan ylläpito                                             lan sisäkattorakenteeseen tai sisäkattopintaan ja yläpuolelta vesikatteeseen. Vesikatto-
+                                                                  rakenne mitataan vaakasuorana pinta-alana (projektioala) ulkoseinän ulkomittojen
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset                                 mukaisesti yli 1 m :naukot aukkomitoin vähentäen. Erilaiset vesikattorakennetyypit eri-
+62 Muut varaukset                                                 tellään. Vesikaton juurirakenteet ilmoitetaan erikseen kappaleina tai juoksumetreinä.
+                                                                  1262 Räystäsrakenteet
+                                                                  Räystäsrakenteita ovat omana työvaiheena tehtävät räystäät niihin liittyvine osineen.
+                                                                  Räystäsrakenne eritellään tarvittaessa rakenneosiin.
+                                                                  Räystäs rajautuu vesikattorakenteeseen ja julkisivurakenteeseen. Räystäsrakenteet mita-
+                                                                  taan juoksumetreinä ulkoseinän ja yläpohjan liitoskohdasta ulkoseinän ulkomittojen
+                                                                  mukaisesti. Erilaiset räystäsrakenteet eritellään. Räystään pituus ilmoitetaan.
+                                                                  1263 Vesikatteet
+                                                                  Vesikatteita ovat aluskate, kermikate suojakiveyksineen, tiilikate, peltikate ja muoto-
+                                                                  levykatteet alus- tai ruodelaudoituksineen ja pellityksineen, kuten piippu- ja luukku-
+                                                                  pelteineen ja kattokaivoineen. Vesikatteet jaetaan rakenneosiin seuraavasti:
+                                                                  1 Vesikate
+                                                                  2 Ruode- tai aluslaudoitus, orret ja korokepuut
+                                                                  3 Vesikatteen aluskate
+                                                                  4 Kattokaivot
+                                                                  Vesikate rajautuu pystysuunnassa vesikattorakenteeseen tai itsekantavaan yläpohjaan
+                                                                  ja vaakasuunnassa julkisivurakenteeseen ja räystäsrakenteeseen. Vesikate mitataan ka-
+                                                                  tettavan alan ulkomittojen mukaan vaakasuorana pinta-alana (projektioala) vesikat-
+                                                                  teen kaltevuus ilmoittaen ja yli 1 m :naukot ja rakenteet aukkomitoin vähentäen. Erilai-
+                                                                  set vesikatetyypit eritellään. Läpimenojen-, jalusta- ja luukkupellitysten lukumäärä ja
+                                                                  koko ilmoitetaan. Vesikatteen liittyminen muihin rakennusosiin mitataan juoksumetrei-
+                                                                  nä ja ylösnoston korkeus ilmoitetaan erikseen.
+                                                                  1264 Vesikattovarusteet
+                                                                  Vesikattovarusteita ovat kulkusillat, kattotikkaat, lumiesteet ynnä muut katon turva-
+                                                                  varusteet sekä räystäskourut ja syöksytorvet.
+                                                                  Vesikattovarusteet rajautuvat vesikatteeseen, julkisivuun ja räystäsrakenteeseen. Vesi-
+                                                                  kattovarusteet mitataan juoksumetreinä tai kappaleina.
+                                                                  1265 Lasikattorakenteet
+                                                                  Lasikattorakenteita ovat lasikatteet kantavine rakenteineen ja varusteineen sekä
+                                                                  muut niihin verrattavat rakennusosat täydentävine rakenteineen. Lasikattorakenne
+                                                                  jaetaan rakenneosiin seuraavasti:
+                                                                  1 Lasikate lasitustarvikkeineen ja heloineen
+                                                                  2 Lasikattorakenteen kantavat rakenteet
+                                                                  3 Lasikaton seinämäinen juurirakenne
+                                                                  4 Savunpoistorakenteet
+                                                                  5 Varusteet kuten lämmitysvastukset, murtosuojaus, putoamissuojat
+                                                                  6 Hoito- ja huoltotasot
+                                                                  Lasikattorakenne rajautuu pystysuunnassa vesikattorakenteeseen, yläpohjaan tai ul-
+                                                                  koseinään ja vaakasuunnassa rakennuksen kantaviin rakenteisiin. Lasikattorakenteet
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                 ohjeet – 11
+
+
+HANKENIMIKKEISTÖ                                                  mitataan karmirakenteen ulkomittojen mukaisesti vaakasuorana pinta-alana (projek-
+                                                                  tioalana). Lasikattorakenteen liittymärakenteet ulkoseinään ja yläpohjaan eritellään,
+1     RAKENNUSOSAT
+                                                                  mitataan ja ilmoitetaan erikseen.
+11    Alueosat
+12    Talo-osat                                                   1266 Kattoikkunat ja -luukut
+13    Tilaosat                                                    Kattoikkunoita ja kattoluukkuja ovat kattoikkunat, kattolyhdyt, savunpoistoluukut ja
+2     TEKNIIKKAOSAT                                               muut niihin verrattavat rakennusosat täydentävine rakenteineen. Kattoikkunat ja
+21    Putkiosat                                                   luukut jaetaan rakenneosiin seuraavasti:
+22    Ilmanvaihto-osat                                            1 Kattoikkuna tai luukku rakenteineen, lasitustarvikkeineen ja heloineen
+23    Sähköosat                                                   2 Kattoikkunan seinämäinen juurirakenne
+24    Tiedonsiirto-osat                                           3 Savunpoistorakenteet
+25    Laiteosat                                                   4 Varusteet kuten lämmitysvastukset, murtosuojaus, putoamissuojat
+3     HANKETEHTÄVÄT                                               5 Hoito- ja huoltotasot
+31    Hankkeen johtotehtävät
+32    Suunnittelutehtävät                                         Kattoikkunat ja luukut rajautuvat vesikattorakenteeseen ja vesikatteeseen. Kattoikkunat
+33    Rakentamisen johtotehtävät                                  ja luukut mitataan aukkomitoin erityyppiset ikkunat ja luukut eritellen. Kattoikkunoiden
+34    Työmaatehtävät                                              ja luukkujen liittymärakenteet muihin rakennusosiin eritellään, mitataan ja ilmoitetaan
+                                                                  erikseen.
+4 KIINTEISTÖTEHTÄVÄT
+41 Maa-aluetehtävät                                               1267 Erityiset vesikattorakenteet
+42 Rahoitus ja markkinointi                                       Erityisiä vesikattorakenteita ovat muihin vesikattorakenteisiin kuulumattomat vesi-
+5 KÄYTTÄJÄTEHTÄVÄT                                                kattorakenteet.
+51 Tilavarustus
+52 Toiminnan ylläpito                                             13 Tilaosat
+6 HANKEVARAUKSET                                                  Tila koostuu rakennuksen tiloja jakavista jako-osista, sisäpuolisista tilapinnoista, tila-
+61 Suunnitelma- ja hintamuutokset                                 varusteista ja muista tilaosista kuten hoitotasoista ja kulkurakenteista sekä tilaele-
+62 Muut varaukset
+                                                                  menteistä.
+
+                                                                  131 Tilan jako-osat
+                                                                  Tilan jako-osat ovat rungon rakenteesta riippumattomat tilaa jakavat osat kuten vä-
+                                                                  liseinät, erityisseinät, kaiteet sekä väli- ja erityisovet.
+                                                                  1311 Väliseinät
+                                                                  Väliseiniä ovat tiloja rajaavat ja jakavat paikalla rakennettavat tai elementeistä asen-
+                                                                  nettavat ei kantavat väliseinät.
+                                                                  Väliseinät rajautuvat pystysuunnassa alapuolisen laatan yläpintaan ja yläpuolisen laa-
+                                                                  tan alapintaan ja vaakasuunnassa tilaa rajaavan runkorakennusosan tai toisen välisei-
+                                                                  nän sisäpintaan. Väliseinät mitataan neliömetreinä yli 1 m :naukot aukkomittoina vä-
+                                                                  hentäen. Määrät eritellään väliseinätyypeittäin. Eri tyyppejä ovat rakenteeltaan erilaiset
+                                                                  väliseinät. Väliseinien liittymärakenteet runkorakennusosiin ja toisiin väliseiniin mita-
+                                                                  taan juoksumetreinä ja ilmoitetaan erikseen.
+                                                                  1312 Lasiväliseinät
+                                                                  Lasiväliseiniä ovat tilojen lasirakenteiset väliseinät. Lasiväliseinät jaetaan tarvittaessa
+                                                                  rakenneosiin.
+                                                                  Lasiväliseinät rajautuvat pystysuunnassa alapuolisen laatan yläpintaan ja yläpuolisen
+                                                                  laatan alapintaan ja vaakasuunnassa tilaa rajaavan runkorakennusosan tai toisen vä-
+                                                                  liseinän sisäpintaan. Lasiväliseinä mitataan neliömetreinä yli 1 m :naukot aukkomittoi-
+                                                                  na vähentäen. Määrät eritellään lasiväliseinätyypeittäin. Lasiväliseinän liittymäraken-
+                                                                  teet mitataan juoksumetreinä ja ilmoitetaan erikseen.
+                                                                  1313 Erityisväliseinät
+                                                                  Erityisväliseiniä ovat tavanomaisesta väliseinästä poikkeavat siirrettävät väli-, jako- ja
+                                                                  siirtoseinät sekä verkkoseinät. Pesutilojen suihkuväliseinät ja wc- tilojen jakoseinät
+                                                                  ovineen ovat erityisseiniä. Erityisväliseinät jaetaan rakenneosiin seuraavasti:
+                                                                  1 Erityisväliseinä
+                                                                  2 Erityisväliseinän koneistot
+                                                                  Erityisväliseinät rajautuvat pystysuunnassa alapuolisen laatan pintarakenteen yläpin-
+                                                                  taan ja yläpuolisen laatan alapintaan tai huonetilaan seinän ollessa korkeudeltaan va-
+                                                                  jaa. Vaakasuunnassa erityisväliseinät rajautuvat tilaa rajaavan runkorakennusosan tai
+                                                                  toisen väliseinän sisäpintaan. Erityisväliseinät mitataan neliömetreinä aukkomitoin eri-
+                                                                  tyisväliseinän ollessa rajattuna rakennusosiin tai rakennemitoin, jos erityisväliseinä ei ra-
+                                                                  jaudu rakennusosiin. Yli 1 m :naukot erityisväliseinässä vähennetään aukkomitoin. Eri-
+                                                                  tyisväliseinien liittymärakenteet mitataan juoksumetreinä ja ilmoitetaan erikseen.
+                                                                  1314 Kaiteet
+                                                                  Kaiteita ovat rakennuksen sisäpuoliset tilaa jakavat kaiteet ja käsijohteet sekä runko-
+                                                                  ja tilaportaiden ja lepotasojen kaiteet ja käsijohteet. Hoitotasojen ja -siltojen kaiteet
+                                                                  käsitellään ao. nimikkeellä. Kaiteet jaetaan rakenneosiin seuraavasti:
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                               ohjeet – 12
+
+
+HANKENIMIKKEISTÖ                                                  1 Kaiteen runkorakenne
+                                                                  2 Kaiderakenne
+1     RAKENNUSOSAT
+                                                                  3 Käsijohde
+11    Alueosat
+12    Talo-osat                                                   Kaiteet rajautuvat pystysuunnassa alapuolisen laatan pintarakenteen yläpintaan ja
+13    Tilaosat                                                    huonetilaan. Vaakasuunnassa kaiteet rajautuvat tilaa rajaavan runkorakennusosan tai
+2     TEKNIIKKAOSAT                                               toisen väliseinän sisäpintaan. Kaiteet mitataan juoksumetreinä korkeus ilmoittaen auk-
+21    Putkiosat                                                   komitoin. Erityyppiset kaiteet eritellään. Runkorakennusosan tai väliseinän yli jatkuvat
+22    Ilmanvaihto-osat                                            kaiteet lasketaan kaiteisiin ja ilmoitetaan erikseen. Kaiteiden liittymärakenteet mitataan
+23    Sähköosat                                                   juoksumetreinä ja ilmoitetaan erikseen.
+24    Tiedonsiirto-osat
+25    Laiteosat                                                   1315 Väliovet
+                                                                  Väliovia ovat rakennuksen sisäpuoliset tiloja rajaavat ovet kuten väliovet, kerrosta-
+3     HANKETEHTÄVÄT                                               so-ovet ja osastoivat ovet. Välioviin luetaan myös ovikarmit niihin liittyvine osineen ja
+31    Hankkeen johtotehtävät                                      liittymärakenteineen. Väliovet jaetaan rakenneosiin seuraavasti:
+32    Suunnittelutehtävät
+                                                                  1 Väliovi sisältäen ovilevyn, karmin ja kynnyksen
+33    Rakentamisen johtotehtävät
+34    Työmaatehtävät                                              2 Välioven lasitukset
+                                                                  3 Karmiin liittyvät osat kuten sähköpielet, lasipielet ja yläikkunat
+4 KIINTEISTÖTEHTÄVÄT                                              4 Lukot ja helat
+41 Maa-aluetehtävät                                               5 Ovikoneistot
+42 Rahoitus ja markkinointi                                       6 Listoitus
+5 KÄYTTÄJÄTEHTÄVÄT                                                Väliovet rajautuvat pysty- ja vaakasuunnassa runko- tai väliseinärakenteen sisäpintaan.
+51 Tilavarustus
+                                                                  Väliovet mitataan rajaavan rakenteen aukkomitoin kappaleina tai neliömetreinä.
+52 Toiminnan ylläpito
+                                                                  Pariovi mitataan yhtenä ovena. Ovityypit eritellään. Väliovien liittymärakenteet mita-
+6 HANKEVARAUKSET                                                  taan juoksumetreinä ja ilmoitetaan erikseen.
+61 Suunnitelma- ja hintamuutokset
+62 Muut varaukset                                                 1316 Erityisovet
+                                                                  Erityisovia ovat muut kuin tavanomaiset rakennuksen väliovet kuten palje-, taite- ja
+                                                                  nosto-ovet sekä niihin liittyvät koneistot ja liittymärakenteet. Erityisovia ovat myös
+                                                                  holvin ja arkiston ovet, saksiveräjät sekä muun muassa konehuoneisiin johtavat luuk-
+                                                                  ku-tikasrakenteet. Erityisovet jaetaan rakenneosiin seuraavasti:
+                                                                  1 Erityisovet sisältäen ovirakenteen, karmin ja kynnyksen
+                                                                  2 Karmiin liittyvät osat kuten sähköpielet, lasipielet ja yläikkunat
+                                                                  3 Lukot ja helat
+                                                                  4 Ovikoneistot
+                                                                  5 Listoitus
+                                                                  Erityisovet rajautuvat pysty- ja vaakasuunnassa runko- tai väliseinärakenteen sisäpin-
+                                                                  taan. Erityisovet mitataan rajaavan rakenteen aukkomitoin kappaleina tai neliömetrei-
+                                                                  nä. Ovityypit eritellään. Erityisovien liittymärakenteet mitataan juoksumetreinä ja ilmoi-
+                                                                  tetaan erikseen.
+                                                                  1317 Tilaportaat
+                                                                  Tilaportaita ovat tilojen sisäiset runkoportaisiin ja rakennuksen kantavaan järjestel-
+                                                                  mään kuulumattomat portaat käsittäen porrassyöksyt, askellankut ja lepotasot. Tila-
+                                                                  porras jaetaan rakenneosiin seuraavasti:
+                                                                  1 Porrassyöksy
+                                                                  2 Lepotaso
+                                                                  Tilaportaat rajautuvat pystysuunnassa ala- tai välipohjan laatan yläpinnasta välipohjan
+                                                                  yläpintaan ja vaakasuunnassa porrasta rajaavaan seinäpintaan tai kaiteeseen. Laatto-
+                                                                  jen väliset lepotasot kuuluvat portaaseen. Porras lasketaan pinta-alaan siinä kerroksessa
+                                                                  johon se nousee.Tilaportaat mitataan neliömetreinä liittyvän seinärakenteen pinnasta
+                                                                  tai jos liitosta seinärakenteeseen ei ole niin portaan reunasta. Pinta-ala mitataan vaaka-
+                                                                  tasona portaan ja portaaseen liittyvien lepotasojen pinta-alat erikseen ilmoittaen. Erilai-
+                                                                  set porrastyypit eritellään. Tarvittaessa porrassyöksyn reuna- tai keskipalkit, askelrinnat
+                                                                  ja askellankut tai askelmat mitataan ja ilmoitetaan erkseen. Tilaportaan liittyminen sei-
+                                                                  niin ja kerrostasoihin mitataan juoksumetreinä ja ilmoitetaan tarvittaessa erikseen.
+                                                                  1318 Erityiset tilajako-osat
+                                                                  Erityisiä tilajako-osia ovat edellä oleviin jako-osiin kuulumattomat jako-osat. Näiden
+                                                                  rajaamisessa ja mittaamisessa noudatetaan soveltuvin osin muiden tilan jako-osien
+                                                                  rajaus- ja mittausperusteita.
+
+                                                                  132 Tilapinnat
+                                                                  Tilapintoja ovat rakennuksen sisäpuoliset lattioiden, kattojen ja seinien pintaraken-
+                                                                  teet ja pintakerrokset alus- ja kiinnitysrakenteineen sekä pinnat ja pinnoitteet. Tila-
+                                                                  pinnat eritellään tilakohtaisesti huoneselostuksena.
+                                                                  1321 Lattioiden pintarakenteet
+                                                                  Lattioiden pintarakenteita ovat ala- tai välipohjan laattarakenteen päälle tehtävät ra-
+                                                                  kenteet eristyksineen ja korokelattiat. Lattioiden pintarakenteita ovat mm. pintabe-
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                               ohjeet – 13
+
+
+HANKENIMIKKEISTÖ                                                  tonit, kelluvat lattiarakenteet ja märkätilojen kallistusrakenteet. Korokelattioita ovat
+                                                                  kantavan vaakarakenteen päälle tehtävät kerrokselliset asennus- ja ontelolattiat nii-
+1     RAKENNUSOSAT
+                                                                  hin liittyvine lämmön, äänen- ja kosteudeneristeineen.
+11    Alueosat
+12    Talo-osat                                                   Lattian pintarakenne rajautuu vaakasuunnassa runkorakennusosien ja väliseinien sisä-
+13    Tilaosat                                                    pintaan ja pystysuunnassa ala- tai välipohjarakenteen yläpintaan. Lattian pintaraken-
+2     TEKNIIKKAOSAT                                               teet mitataan neliömetreinä yli 1 m :naukot aukkomittoina vähentäen. Määrät eritel-
+21    Putkiosat                                                   lään pintarakennetyypeittäin. Kaltevat pintarakenteet mitataan vaakasuorana tasona
+22    Ilmanvaihto-osat                                            (projektioalana). Liittymärakenteet ulkoseiniin ja väliseiniin mitataan juoksumetreinä ja
+23    Sähköosat                                                   ilmoitetaan erikseen.
+24    Tiedonsiirto-osat
+25    Laiteosat                                                   1322 Lattiapinnat
+                                                                  Lattiapintoja ovat tilojen lattianpäällyste, jalkalistat, lattianpäällysteen pintakäsittely
+3     HANKETEHTÄVÄT                                               ja muu pintakerros tasoitteineen ja kerrokseen kuuluvine alustoineen. Lattiapinta jae-
+31    Hankkeen johtotehtävät
+32    Suunnittelutehtävät
+                                                                  taan rakenneosiin seuraavasti:
+33    Rakentamisen johtotehtävät                                  1 Pintakäsittely
+34    Työmaatehtävät                                              2 Lattian päällyste
+                                                                  3 Veden- ja kosteudeneriste
+4 KIINTEISTÖTEHTÄVÄT                                              4 Alustan käsittely
+41 Maa-aluetehtävät                                               5 Jalkalistat
+42 Rahoitus ja markkinointi
+                                                                  Lattiapinta rajautuu vaakasuunnassa runkorakennusosien ja väliseinien sisäpintaan ja
+5 KÄYTTÄJÄTEHTÄVÄT
+51 Tilavarustus                                                   pystysuunnassa ylä- tai välipohjarakenteen tai lattian pintarakenteen yläpintaan. Lat-
+52 Toiminnan ylläpito                                             tiapinnat mitataan huonealoina yli 1 m :naukot aukkomittoina vähentäen. Jalkalistat
+                                                                  mitataan juoksumetreinä listatyypeittäin. Määrät eritellään lattiapintatyypeittäin. Liit-
+6 HANKEVARAUKSET                                                  tymärakenteet runkorakennusosiin ja väliseiniin mitataan juoksumetreinä ja ilmoite-
+61 Suunnitelma- ja hintamuutokset                                 taan erikseen.
+62 Muut varaukset
+                                                                  1323 Sisäkattorakenteet
+                                                                  Sisäkattorakenteita ovat kantavasta laatasta ripustetut alakatot tarvikkeineen, sisä-
+                                                                  kattoverhoukseksi asennettavat lämmön- ja ääneneristeet niihin kuuluvine alus- ja
+                                                                  kiinnitysrakenteineen sekä sisäkattoverhoukset niihin kuuluvine alus- ja kiinnitysra-
+                                                                  kenteineen.
+                                                                  Sisäkattorakenne rajautuu vaakasuunnassa runkorakennusosien ja väliseinien sisäpin-
+                                                                  taan ja pystysuunnassa ylä- tai välipohjarakenteen alapintaan. Sisäkattorakenteet mita-
+                                                                  taan huonealoina yli 1 m :naukot aukkomittoina vähentäen. Sisäkattojen otsat mita-
+                                                                  taan juoksumetreinä korkeus ilmoittaen. Määrät eritellään sisäkattorakennetyypeittäin.
+                                                                  Kaltevat sisäkattorakenteet mitataan kattopinnan vaakasuorana projektioalana. Liitty-
+                                                                  märakenteet runkorakennusosiin ja väliseiniin mitataan juoksumetreinä ja ilmoitetaan
+                                                                  erikseen.
+                                                                  1324 Sisäkattopinnat
+                                                                  Sisäkattopintoja ovat rapattu kattopinta ja maalattu kattopinta tasoitteineen sekä si-
+                                                                  säkattopinnoitteet
+                                                                  Sisäkattopinta rajautuu vaakasuunnassa runkorakennusosien ja väliseinien sisäpintaan
+                                                                  ja pystysuunnassa ylä- tai välipohjarakenteen alapintaan tai sisäkattorakenteeseen.
+                                                                  Sisäkattopinnat mitataan huonealoina yli 1 m :naukot aukkomittoina vähentäen. Mää-
+                                                                  rät eritellään sisäkattopintatyypeittäin. Kaltevat kattopinnat mitataan kattopinnan vaa-
+                                                                  kasuorana projektioalana.
+                                                                  1325 Seinien pintarakenteet
+                                                                  Seinän pintarakenteita ovat runko- ja tilaosien päälle tehtävät sisäseinien verhoukset
+                                                                  alusrakenteineen. Seinien pintarakenteita ovat myös erityistilojen, kuten saunan,
+                                                                  jäähdytystilojen, konehuoneiden ym. tilojen seinien yhtenäiset pintakerrokset. Ikku-
+                                                                  napenkkien ja ikkunasyvennysten pintarakenteet luetaan myös seinien pintaraken-
+                                                                  teisiin.
+                                                                  Seinien pintarakenteet rajautuvat vaakasuunnassa runkorakennusosien ja väliseinien si-
+                                                                  säpintaan ja pystysuunnassa ala- tai välipohjan yläpintaan ja väli- tai yläpohjan alapin-
+                                                                  taan. Seinien pintarakenteet mitataan neliömetreinä yli 1 m :naukot aukkomittoina vä-
+                                                                  hentäen. Määrät eritellään seinien pintarakennetyypeittäin. Kaltevat seinärakenteet mi-
+                                                                  tataan pystysuorana projektioalana. Liittymärakenteet runkorakennusosiin mitataan
+                                                                  juoksumetreinä ja ilmoitetaan erikseen.
+                                                                  1326 Seinäpinnat
+                                                                  Seinäpintoja ovat maalattu seinäpinta tasoitteineen, laatoitettu seinäpinta ve-
+                                                                  deneristeineen, tapetoitu ja rapattu seinäpinta. Ikkunapenkkien ja ikkunasyvennys-
+                                                                  ten pinnat luetaan seinäpintoihin. Seinäpinta jaetaan rakenneosiin seuraavasti:
+                                                                  1 Seinäpinta
+                                                                  2 Veden- ja kosteudeneristys
+                                                                  3 Alustan käsittely
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                              ohjeet – 14
+
+
+HANKENIMIKKEISTÖ                                                  Seinäpinnat rajautuvat vaakasuunnassa runkorakennusosien ja väliseinien sisäpintaan
+                                                                  tai seinän pintarakenteeseen ja pystysuunnassa ala- tai välipohjan yläpintaan ja väli- tai
+1     RAKENNUSOSAT
+                                                                  yläpohjan alapintaan. Seinäpinnat mitataan neliömetreinä yli 1 m :naukot aukkomit-
+11    Alueosat
+12    Talo-osat                                                   toina vähentäen. Määrät eritellään seinien pintatyypeittäin. Kaltevat seinärakenteet mi-
+13    Tilaosat                                                    tataan pystysuorana projektioalana. Liittymärakenteet runkorakennusosiin mitataan
+                                                                  juoksumetreinä ja ilmoitetaan erikseen. Ikkunapenkkien ja ikkunasyvennysten määrät il-
+2     TEKNIIKKAOSAT                                               moitetaan erikseen.
+21    Putkiosat
+22    Ilmanvaihto-osat                                            1327 Erityiset tilapinnat
+23    Sähköosat
+                                                                  Erityisiä tilapintoja ovat edellä oleviin rakennusosiin kuulumattomat tilapinnat.
+24    Tiedonsiirto-osat
+25    Laiteosat
+                                                                  133 Tilavarusteet
+3     HANKETEHTÄVÄT                                               Tilavarusteita ovat rakennuksen sisäpuoliset kiinteät kalusteet, laitteet ja vakiolait-
+31    Hankkeen johtotehtävät                                      teet, jotka eivät ole irtaimistoa sekä varusteet ja opasteet. Tilavarusteet eritellään ti-
+32    Suunnittelutehtävät
+33    Rakentamisen johtotehtävät
+                                                                  laselostuksessa.
+34    Työmaatehtävät
+                                                                  1331 Vakiokiintokalusteet
+4 KIINTEISTÖTEHTÄVÄT                                              Vakiokiintokalusteita ovat rakennuksen sisäpuoliset vakiovalmisteiset kiinteät kalus-
+41 Maa-aluetehtävät                                               teet kuten komerot, kaapit, hyllyt ja pesupöydät verhouksineen, koteloineen ja listoi-
+42 Rahoitus ja markkinointi                                       tuksineen.
+5 KÄYTTÄJÄTEHTÄVÄT                                                Vakiokiintokalusteiden määrät eritellään kalustetyypin ja materiaalin mukaan ja mita-
+51 Tilavarustus
+52 Toiminnan ylläpito
+                                                                  taan kalustetyypeittäin kappaleina tai suurimman pituusmitan mukaan juoksumetrei-
+                                                                  nä. Määräluettelossa ilmoitetaan kalusteen korkeus, syvyys ja leveys.
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset                                 1332 Erityiskiintokalusteet
+62 Muut varaukset                                                 Erityiskiintokalusteita ovat rakennuksen sisäpuoliset erikseen suunniteltavat ja ti-
+                                                                  lauksen mukaan valmistettavat kiinteät kalusteet kuten komerot, kaapit, hyllyt ja pe-
+                                                                  supöydät verhouksineen, koteloineen ja listoituksineen.
+                                                                  Erityiskiintokalusteiden määrät eritellään kalustetyypin ja materiaalin mukaan ja mita-
+                                                                  taan kalustetyypeittäin kappaleina tai suurimman pituusmitan mukaan juoksumetrei-
+                                                                  nä. Määräluettelossa ilmoitetaan kalusteen korkeus, syvyys ja leveys.
+
+                                                                  1333 Varusteet
+                                                                  Varusteita ovat muun muassa naulakot, koukut, peilit, tuuletustelineet, asennettavat
+                                                                  ikkunapenkit, jalkaritilät, porrasmatot, urheiluvälinetelineet, verholaudat, verhokis-
+                                                                  kot, sälekaihtimet ja muut vastaavat varusteet.
+                                                                  Varusteet mitataan kappaleina, suurimman pituusmitan mukaan juoksumetreinä tai ni-
+                                                                  mellismitoin neliömetreinä. Määrät eritellään varusteittain ja tyypeittäin.
+
+                                                                  1334 Vakiolaitteet
+                                                                  Vakiolaitteita ovat liedet, jääkaapit, pakastimet ja kiukaat ja vastaavat vakiolaitteet.
+                                                                  Vakiolaitteet mitataan kappaleina laitteen tyypin mukaan
+
+                                                                  1335 Tilaopasteet
+                                                                  Tilaopasteita ovat rakennuksen sisäpuoliset opasteet kuten nimikilvet, -taulut ja osoi-
+                                                                  tetaulut. Tilaopasteet mitataan kappaleina tyypin mukaan.
+
+                                                                  1336 Erityiset tilavarusteet
+                                                                  Erityisiä tilavarusteita ovat edellä oleviin rakennusosiin kuulumattomat tilavarusteet.
+
+                                                                  134 Muut tilaosat
+                                                                  Muita tilaosia ovat muun muassa hoitotasot ja kulkurakenteet sekä tulisijat ja niiden
+                                                                  hormit.
+
+                                                                  1341 Hoitotasot ja kulkurakenteet
+                                                                  Hoitotasoja ja kulkurakenteita ovat tilaan erillisenä rakennetut hoitotasot, kulkusillat,
+                                                                  tikkaat ja tasoja täydentävät kevyet portaat kaiteineen. Hoitotasot ja kulkurakenteet
+                                                                  jaetaan rakenneosiin seuraavasti:
+                                                                  1 Hoitotasot ja kulkurakenteet sisältäen hoitotasojen portaat ja askelmat
+                                                                  2 Talon rungosta erilliset runkorakenteet
+                                                                  3 Kaiteet ja käsijohteet
+                                                                  4 Hoitotasojen ja kulkurakenteiden verhous, pintakerrokset ja -käsittely
+                                                                  Hoitotasot ja kulkurakenteet mitataan neliömetreinä ulkomitoin. Määräluettelossa il-
+                                                                  moitetaan hoitotasoihin sisältyvät askelmat ja porrasrakenteet. Hoitotasojen rakennuk-
+                                                                  sen rungosta erilliset runkorakenteet mitataan ja ilmoitetaan erikseen. Hoitotasojen kai-
+                                                                  teet mitataan juoksumetreinä. Hoitotasojen ja kulkurakenteiden verhous, pintakerrokset
+                                                                  ja -käsittely mitataan neliömetreinä.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                 ohjeet – 15
+
+
+HANKENIMIKKEISTÖ                                                  1342 Tulisijat ja savuhormit
+                                                                  Tulisijoja ja savuhormeja ovat paikalla rakennettavat huonetulisijat, takat ja uunit
+1     RAKENNUSOSAT
+                                                                  suojauksineen, paloneristyksineen ja hormeineen. Tulisijat ja savuhormit jaetaan ra-
+11    Alueosat
+12    Talo-osat                                                   kenneosiin seuraavasti:
+13    Tilaosat                                                    1 Tulisija sisältäen tulisijan rungon, tulipesän, luukut
+                                                                  2 Savuhormi sisältäen pellit
+2     TEKNIIKKAOSAT                                               3 Tulisijan verhous ja pintakäsittely sisältäen verhouksen paloneristeet
+21    Putkiosat
+22    Ilmanvaihto-osat                                            Tulisijat mitataan kappaleina ja eritellään tyypin ja materiaalin mukaan. Savuhormit mi-
+23    Sähköosat                                                   tataan juoksumetreinä.
+24    Tiedonsiirto-osat
+25    Laiteosat                                                   1343 Muut erityiset tilaosat
+3     HANKETEHTÄVÄT                                               Muita erityisiä tilaosia ovat edellä oleviin rakennusosiin kuulumattomat erityiset tila-
+31    Hankkeen johtotehtävät                                      osat.
+32    Suunnittelutehtävät
+33    Rakentamisen johtotehtävät
+34    Työmaatehtävät                                              135 Tilaelementit
+                                                                  Kevyet tilaelementit ovat useita rakennusosia korvaavia valmiita tiloja, jotka voivat si-
+4 KIINTEISTÖTEHTÄVÄT                                              sältää kiinteät kalusteet ja talotekniset osat. Tilaelementtiä käsitellään yhtenä koko-
+41 Maa-aluetehtävät                                               naisuutena, minkä vuoksi sen sisältämät tilaosat, sisäpinnat ja rakennusvarusteet lue-
+42 Rahoitus ja markkinointi
+                                                                  taan kuuluviksi tilaelementtiin.
+5 KÄYTTÄJÄTEHTÄVÄT
+51 Tilavarustus                                                   1351 Kylpyhuone-elementit
+52 Toiminnan ylläpito                                             Kylpyhuone-elementit ovat roiskeveden kestäviä ja pesu- ja kylpytoimintaan tarkoi-
+6 HANKEVARAUKSET                                                  tettuja tilaelementtejä, jotka sisältävät tilan jako-osat, tilapinnat, tilavarusteet sekä ti-
+61 Suunnitelma- ja hintamuutokset                                 laan sisältyvät tekniikkaosat. Kylpyhuone-elementit voivat käsittää usean huoneen
+62 Muut varaukset                                                 kokonaisuuden.
+                                                                  Kylpyhuoneet mitataan kappaleina ja eritellään tyypin, koon ja varustuksen mukaan. Lii-
+                                                                  tosrakenteet muihin rakennusosiin eritellään ja mitataan.
+
+                                                                  1352 Kylmähuone-elementit
+                                                                  Kylmähuone-elementit ovat lämmöneristettyjä ja kosteudenkestäviä kylmäsäilytyk-
+                                                                  seen tarkoitettuja tilaelementtejä, jotka sisältävät tilan jako-osat, tilapinnat, tilavarus-
+                                                                  teet sekä tilaan kuuluvat tekniikkaosat.
+                                                                  Kylmähuoneet mitataan kappaleina ja eritellään tyypin, koon ja varustuksen mukaan.
+                                                                  Liitosrakenteet muihin rakennusosiin eritellään ja mitataan.
+
+                                                                  1353 Saunaelementit
+                                                                  Saunaelementit ovat lämmöneristettyjä saunomiseen tarkoitettuja tilaelementtejä,
+                                                                  jotka sisältävät tilan jako-osat, tilapinnat, tilavarusteet sekä tilan sisäpuoliset talotek-
+                                                                  niikkaosat.
+                                                                  Saunaelementit mitataan kappaleina ja eritellään tyypin, koon ja varustuksen mukaan.
+                                                                  Liitosrakenteet muihin rakennusosiin eritellään ja mitataan.
+
+                                                                  1354 Talotekniikan tilaelementit
+                                                                  Talotekniikan tila-elementit ovat taloteknisten laitteiden suojaamiseen tarkoitettuja
+                                                                  tilaelementtejä, jotka sisältävät rungon ja tilan osat kokonaan tai osin sekä sisäpuoli-
+                                                                  set tekniikkaosat.
+                                                                  Talotekniikan tilaelementit mitataan kappaleina ja eritellään tyypin, koon ja varustuksen
+                                                                  mukaan. Liitosrakenteet muihin rakennusosiin eritellään ja mitataan.
+
+                                                                  1355 Hormielementit
+                                                                  Hormielementtejä ovat valmisrakenteiset asennuskuilut, jotka sisältävät kuilun rajaa-
+                                                                  vat talo- ja tilarakennusosat sekä talotekniikan laiteosat.
+                                                                  Hormielementit mitataan kappaleina ja eritellään tyypin, koon ja varustuksen mukaan.
+                                                                  Liitosrakenteet muihin rakennusosiin eritellään ja mitataan.
+
+                                                                  1356 Erityiset tilaelementit
+                                                                  Erityisiä tilaelementtejä ovat edellä oleviin rakennusosiin kuulumattomat erityiset ti-
+                                                                  laelementit.
+
+
+
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                 ohjeet – 16
+
+
+HANKENIMIKKEISTÖ                                                  2         TEKNIIKKAOSAT
+1     RAKENNUSOSAT                                                Tekniikkaosat koostuvat putkiosista, ilmanvaihto-osista, sähköosista, tiedonsiirto-
+11    Alueosat                                                    osista ja laiteosista.
+12    Talo-osat
+13    Tilaosat                                                    21 Putkiosat
+2     TEKNIIKKAOSAT                                               22 Ilmanvaihto-osat
+21    Putkiosat
+22    Ilmanvaihto-osat                                            23 Sähköosat
+23    Sähköosat
+24    Tiedonsiirto-osat                                           24 Tiedonsiirto-osat
+25    Laiteosat
+3     HANKETEHTÄVÄT                                               25 Laiteosat
+31    Hankkeen johtotehtävät                                      Talolaitteet koostuvat siirtolaitteista ja tilalaitteista.
+32    Suunnittelutehtävät
+33    Rakentamisen johtotehtävät                                  251 Siirtolaitteet
+34    Työmaatehtävät                                              Siirtolaitteita ovat rakennuksen liikennettä ja materiaalisiirtoa palvelevat konetekni-
+4 KIINTEISTÖTEHTÄVÄT                                              set laitteet ja hankinnat kuten hissit, liukuportaat ja kuljettimet. Siirtolaitteille on esi-
+41 Maa-aluetehtävät                                               tetty määrämittauksen ohella toiminnalliset ja mitoitusperusteet.
+42 Rahoitus ja markkinointi                                       2511 Hissit
+5 KÄYTTÄJÄTEHTÄVÄT                                                Hissejä ovat rakennuksen sisäpuoliset tai tiloja palvelevat rakennuksen julkisivura-
+51 Tilavarustus                                                   kenteeseen liittyvät hissit. Hissinimikkeeseen sisältyy hissikori varusteineen, hissi-
+52 Toiminnan ylläpito                                             koneisto, ohjausjärjestelmä, koneistoon välittömästi liittyvä suojarakenne tai kone-
+6 HANKEVARAUKSET                                                  huone, hissikuilun kevyet seinät, kuilun varusteet, oven edustarakenteet ja verhouk-
+61 Suunnitelma- ja hintamuutokset                                 set, hissikorin sisäpuoliset pintarakenteet ja pinnat sekä hissin ja hissikuilun sisäpuoli-
+62 Muut varaukset                                                 set tekniikkaosat.
+                                                                  Hissit rajautuvat talo-osien osalta kantavien tai osastoivien rakenteiden sisäpintoihin,
+                                                                  sähköosien osalta sähkönsyöttöjärjestelmään ja ilmanvaihto-osien osalta rakennuksen
+                                                                  ilmanvaihdon kanavajärjestelmään.
+                                                                  Hissit mitataan kappaleina erityyppiset hissit eritellen. Hisseistä ilmoitetaan mitoi-
+                                                                  tushenkilömäärä ja kantavuus kiloina, pysähdystasot, kulkunopeus, koneistorakenne,
+                                                                  ohjausjärjestelmä ja konehuonetarve, ovityyppi ja ovien lukumäärä kerroksittain, ovien
+                                                                  palonkestovaatimukset sekä korin ja kerros-tasoedustojen pintarakenteet ja varusteet.
+                                                                  2512 Kuljettimet
+                                                                  Kuljettimia ovat rakennuksen sisäpuoliset liukuportaat ja -käytävät sekä tavarakuljet-
+                                                                  timet koneistoineen, ohjausjärjestelmineen, kaiteineen, verhouksineen ja listoituksi-
+                                                                  neen.
+                                                                  Kuljettimet rajautuvat talo-osien osalta kantavien rakenteiden sisäpintoihin ja tekniikka-
+                                                                  osien osalta rakennuksen talotekniikan syöttöjärjestelmiin. Kuljettimet mitataan kappa-
+                                                                  leina ja juoksumetreinä erityyppiset kuljettimet eritellen. Kuljettimista ilmoitetaan mitoi-
+                                                                  tusperuste, leveys, askelmien määrä, nopeus, pituus, koneistorakenne, ohjausjärjestelmä
+                                                                  ja konehuonetarve sekä kuljettimien pintarakenteet ja varusteet.
+                                                                  2513 Erityiset siirtolaitteet
+                                                                  Erityisiä siirtolaitteita ovat muut kuin edellä olevissa tekniikkaosissa esitetyt siirtolait-
+                                                                  teet kuten esimerkiksi nostimet, nostopöydät, potilasnostimet ja porrasnostimet ja
+                                                                  siltanosturit. Erityiset siirtolaitteet eritellään tarkoituksensa ja tyypin mukaan.
+
+                                                                  252 Tilalaitteet
+                                                                  Tilalaitteita ovat yhtenäisen toiminnallisen ja suunnittelukokonaisuuden muodosta-
+                                                                  mat laitteistot kuten esimerkiksi laitoskeittiön, pesulan, uima-altaan, väestönsuojan
+                                                                  ja muiden vastaavien tilaryhmien laitteet.
+                                                                  2521 Keittiölaitteet
+                                                                  Keittiölaitteita ovat erilliseen keittiölaitesuunnitelmaan perustuvat laitoskeittiöiden
+                                                                  laitteet kuten esimerkiksi padat, liedet, uunit, jää- ja pakastekaapit sekä tarjoilulinjas-
+                                                                  tot.
+                                                                  Keittiölaitteet rajautuvat talo-osien osalta tilapintoihin ja tekniikkaosien osalta raken-
+                                                                  nuksen talotekniikan syöttöjärjestelmiin. Keittiölaitteet mitoitetaan keittiötyypin ja an-
+                                                                  nosmäärän perusteella.
+                                                                  2522 Pesulalaitteet
+                                                                  Pesulalaitteita ovat erilliseen pesulasuunnitelmaan perustuvat laitospesuloiden lait-
+                                                                  teet kuten esimerkiksi pesukoneet, lingot ja kuivaimet.
+                                                                  Pesulalaitteet rajautuvat talo-osien osalta tilapintoihin ja tekniikkaosien osalta raken-
+                                                                  nuksen syöttöjärjestelmiin. Pesulalaitteet mitoitetaan pesulatyypin ja pestävän materi-
+                                                                  aalin määrän ja ominaisuuksien perusteella.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                                  ohjeet – 17
+
+
+HANKENIMIKKEISTÖ                                                  2523 Väestösuojalaitteet
+                                                                  Väestönsuojalaitteita ovat väestönsuojan kriisinajan ilmanvaihtolaitteistot.
+1     RAKENNUSOSAT
+11    Alueosat                                                    2524 Allaslaitteet
+12    Talo-osat                                                   Allaslaitteita ovat erilliseen suunnitelmaan perustuvat uima-allaslaitteet kuten veden
+13    Tilaosat                                                    puhdistuslaitteet, pumput, kemikaalien annostuslaitteet ja putkistot.
+2     TEKNIIKKAOSAT                                               2525 Erityiset tilalaitteet
+21    Putkiosat
+                                                                  Erityiset tilalaitteet ovat tilaryhmien laitteita, jotka eivät sisälly edellä esitettyihin ni-
+22    Ilmanvaihto-osat
+23    Sähköosat                                                   mikkeisiin.
+24    Tiedonsiirto-osat
+25    Laiteosat
+3     HANKETEHTÄVÄT
+31    Hankkeen johtotehtävät
+32    Suunnittelutehtävät
+33    Rakentamisen johtotehtävät
+34    Työmaatehtävät
+4 KIINTEISTÖTEHTÄVÄT
+41 Maa-aluetehtävät
+42 Rahoitus ja markkinointi
+5 KÄYTTÄJÄTEHTÄVÄT
+51 Tilavarustus
+52 Toiminnan ylläpito
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset
+62 Muut varaukset
+
+
+
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                            ohjeet – 18
+
+
+HANKENIMIKKEISTÖ                                                  3         HANKETEHTÄVÄT
+1     RAKENNUSOSAT                                                Hanketehtäviä ovat hankkeen johtotehtävät, rakentamisen johtotehtävät, työmaa-
+11    Alueosat                                                    tehtävät ja suunnittelutehtävät. Hanketehtävien nimikkeitä ei jaeta erillisiin tuotan-
+12    Talo-osat                                                   tonimikkeisiin. Kaikki nimikkeet ovat rakennus- ja tekniikkaosia vastaavasti itsenäisiä
+13    Tilaosat                                                    sisältäen vieraan palvelun ehdoin kaikki nimikkeen edellyttämät tehtävät, työsuori-
+2     TEKNIIKKAOSAT                                               tukset, kaluston, välineet ja aineet. Yhden rakennus- tai tekniikkaosan nimikkeen te-
+21    Putkiosat                                                   kemistä palvelevat tehtävät sisällytetään asianomaiseen nimikkeeseen.
+22    Ilmanvaihto-osat
+23    Sähköosat
+24    Tiedonsiirto-osat                                           31 Hankkeen johtotehtävät
+25    Laiteosat                                                   Hankkeen johtotehtäviä ovat rakennuttaminen, paikallisvalvonta ja hankkeen hallin-
+3     HANKETEHTÄVÄT                                               to.
+31    Hankkeen johtotehtävät
+32    Suunnittelutehtävät                                         311 Rakennuttaminen
+33    Rakentamisen johtotehtävät                                  Rakennuttamista ovat hankkeen valmistelu, suunnittelun valmistelu ja ohjaus, raken-
+34    Työmaatehtävät                                              tamisen valmistelu ja rakentamisen ohjaus, rakennussuorituksen tai sen osan vas-
+                                                                  taan- ja käyttöönoton ohjaus sekä takuuajan johtotehtävät.
+4 KIINTEISTÖTEHTÄVÄT
+41 Maa-aluetehtävät                                               3111 Hankkeen valmistelu
+42 Rahoitus ja markkinointi                                       Hankkeen valmistelua on suunnittelun käynnistämisen edellyttämän hankesuunni-
+5 KÄYTTÄJÄTEHTÄVÄT                                                telman laadinta. Hankesuunnitelmassa kuvataan toiminta, esitetään tilaohjelma, tilo-
+51 Tilavarustus                                                   jen ominaisuudet, vaatimukset ja tavoitteet hankkeelle ja kiinteistön pidolle, raken-
+52 Toiminnan ylläpito                                             nuspaikkaa koskevat selvitykset ja tutkimukset, hankkeen kaavalliset ja viranomaislu-
+6 HANKEVARAUKSET                                                  pia edellyttävät selvitykset, hankkeen tavoitehinta investointi- ja ylläpitomenoille,
+61 Suunnitelma- ja hintamuutokset                                 selvitys hankkeen rahoituksesta ja kannattavuudesta sekä toteutusaikataulu raken-
+62 Muut varaukset                                                 nustietokortin RT 10-10575 tehtäväluettelon RAP 95 kohtien C1 ja C2 mukaisesti.
+                                                                  Hankesuunnitelman laadinnassa käytetään tarvittavassa määrin hankkeen suunnit-
+                                                                  telutehtäviin kuuluvia palveluja.
+                                                                  3112 Suunnittelun valmistelu ja ohjaus
+                                                                  Suunnittelun valmistelua ja ohjausta ovat suunnitteluorganisaation ja suunnittelijoi-
+                                                                  den valinta, sopimusten valmistelu ja suunnittelun ohjaus kuten suunnittelijoiden
+                                                                  valvonta, vaihtoehtojen vertailu suhteessa toiminnallisiin ja taloudellisiin tavoittei-
+                                                                  siin, kustannussuunnittelu, tarvittavien lupien selvittäminen sekä perustelut suunni-
+                                                                  telmien hyväksymiseksi rakennustietokortin RT 10-10575 tehtäväluettelon RAP 95
+                                                                  kohtien C3 ja C4 mukaisesti.
+                                                                  3113 Rakentamisen valmistelu
+                                                                  Rakentamisen valmistelua ovat toteutusmuodon valinta, tarjouspyyntöasiakirjojen
+                                                                  valmistelu, rakennuttajan määrälaskenta, tarjousten hankinta ja vertailu sekä hankin-
+                                                                  tasopimusten valmistelu rakennustietokortin RT 10-10575 tehtäväluettelon RAP 95
+                                                                  kohdan C5 mukaisesti.
+                                                                  3114 Rakentamisen ohjaus
+                                                                  Rakentamisen ohjausta ovat rakennustyön ajallinen, taloudellinen ja sopimukselli-
+                                                                  nen valvonta, lisä- ja muutostöiden käsittely sekä rakennuttajan hankintojen suoritta-
+                                                                  minen rakennustietokortin RT 10-10575 tehtäväluettelon RAP 95 kohdan C6 mukai-
+                                                                  sesti.
+                                                                  3115 Vastaan- ja käyttöönoton ohjaus
+                                                                  Vastaan- ja käyttöönoton ohjausta ovat rakenteiden ja laitejärjestelmien tarkastukset,
+                                                                  rakennuksen vastaanotto, taloudelliset loppuselvitykset sekä käyttö- ja ylläpitodoku-
+                                                                  mentoinnista huolehtiminen rakennustietokortin RT 10-10575 tehtäväluettelon RAP
+                                                                  95 kohdan C7 mukaisesti.
+                                                                  3116 Takuuajan rakennuttaminen
+                                                                  Takuuajan rakennuttamista ovat takuuajan tarkastukset, taloudelliset loppuselvityk-
+                                                                  set, vakuuksien palauttaminen ja muut takuuajan tehtävät rakennustietokortin RT
+                                                                  10-10575 tehtäväluettelon RAP 95 kohdan C8 mukaisesti.
+                                                                  3117 Muu hankkeen rakennuttaminen
+                                                                  Muuta rakennuttamista on edellisiin kuulumaton rakennuttaminen.
+
+                                                                  312 Paikallisvalvonta
+                                                                  Paikallisvalvontaa on työmaalla tapahtuva rakentamisen ja tekniikan työmaavalvon-
+                                                                  ta sekä muu paikallisvalvonta.
+                                                                  3121 Rakentamisen työmaavalvonta
+                                                                  Rakentamisen työmaavalvontaa on työmaalla tapahtuva paikallisvalvonta rakennus-
+                                                                  tietokortissa RT 16-10746 ja maa- ja vesirakennustyön työmaavalvonnan rakennus-
+                                                                  tietokortissa RT 16-10466 esitettyjen tehtäväluetteloiden mukaisesti.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                             ohjeet – 19
+
+
+HANKENIMIKKEISTÖ                                                  3122 Tekniikan työmaavalvonta
+                                                                  Tekniikan työmaavalvontaa on työmaalla tapahtuva paikallisvalvonta rakennustieto-
+1     RAKENNUSOSAT
+                                                                  kortissa RT 16-10747 esitetyn tehtäväluettelon mukaisesti.
+11    Alueosat
+12    Talo-osat                                                   3123 Muu paikallisvalvonta
+13    Tilaosat                                                    Muuta paikallisvalvontaa ovat edellisiin kuulumattomat valvontatehtävät.
+2     TEKNIIKKAOSAT
+21    Putkiosat                                                   313 Hankkeen hallinto
+22    Ilmanvaihto-osat                                            Hankkeen hallintoa ovat hankkeen hallintotehtävät, lupatehtävät, rakentamisen va-
+23    Sähköosat                                                   kuuttaminen sekä muu rakennuttamisen hallinto.
+24    Tiedonsiirto-osat
+25    Laiteosat                                                   3131 Hankkeen hallintotehtävät
+                                                                  Hankkeen hallintotehtäviä ovat rakennustoimikunnan tai vastaavan tai yhtiön, jonka
+3     HANKETEHTÄVÄT                                               lukuun hanketta rakennutetaan, perustaminen ja toiminta. Hallintotehtäviin kuulu-
+31    Hankkeen johtotehtävät
+                                                                  vat myös rakennuttajan antamat vakuudet ja vastuuvakuutukset.
+32    Suunnittelutehtävät
+33    Rakentamisen johtotehtävät                                  3132 Lupatehtävät
+34    Työmaatehtävät                                              Lupatehtäviä ovat rakennusluvan tai muun luvan hakeminen sekä viranomaisen
+4 KIINTEISTÖTEHTÄVÄT                                              määräämät maksut ja tehtävät, joita rakentaminen edellyttää. Rakennuslupa haetaan
+41 Maa-aluetehtävät                                               rakennushankkeeseen ryhtyvän nimiin.
+42 Rahoitus ja markkinointi
+                                                                  3133 Rakentamisen vakuuttaminen
+5 KÄYTTÄJÄTEHTÄVÄT                                                Rakentamisen vakuuttaminen käsittää rakennustyövakuutuksen tai vastaavan han-
+51 Tilavarustus                                                   kinnan. Vakuutus otetaan rakennushankkeeseen ryhtyvän nimiin. Vakuutus kohdis-
+52 Toiminnan ylläpito
+                                                                  tuu koko työmaahan.
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset                                 3134 Muu rakennuttamisen hallinto
+62 Muut varaukset                                                 Muu rakennuttamisen hallinto on edellä oleviin kuulumatonta rakennuttajan hallin-
+                                                                  toa.
+
+                                                                  32 Suunnittelutehtävät
+                                                                  Suunnittelutehtäviä ovat tilasuunnittelu, rakennussuunnittelu, suunnittelun asian-
+                                                                  tuntijatehtävät sekä hanketietotehtävät
+
+                                                                  321 Tilasuunnittelu
+                                                                  Tilasuunnittelua ovat toiminnallinen tilasuunnittelu ja tilayhteyssuunnittelu.
+                                                                  3211 Toiminnallinen tilasuunnittelu
+                                                                  Toiminnallinen tilasuunnittelu on yrityksen toimitilastrategiaan ja toimintoihin pe-
+                                                                  rustuvaa tilojen tarpeen, toimintojen sijaintipaikan sekä hankkeen investointi- ja yllä-
+                                                                  pito-ohjelman suunnittelu. Toiminnallinen tilasuunnittelu käsittää tilojen ajallisen ja
+                                                                  geometrisen mallintamisen. Toiminnalliseen tilasuunnitteluun sisältyy myös nykyti-
+                                                                  lanteen kartoitus rakennussuunnittelun edellytysten luomiseksi.
+                                                                  3212 Tilayhteyssuunnittelu
+                                                                  Tilayhteyssuunnittelu on tilojen välisten yhteyksien toiminnallisten vaatimusten sel-
+                                                                  vittäminen, tilayhteyskaavioiden laadinta sekä tilojen sisäisen toiminnan suunnittelu.
+
+                                                                  322 Rakennussuunnittelu
+                                                                  Rakennussuunnittelutehtäviä ovat rakennuksen aikaansaamiseksi tarvittavien raken-
+                                                                  nus- ja erityispiirustusten sekä muiden suunnitelmien ja suunnitteluasiakirjojen laa-
+                                                                  dinta, huoltokirjan osien laadinta, asiantuntijalausunnot sekä luovutusasiakirjojen
+                                                                  kuten dokumentointipiirustusten, mittausasiakirjojen ja muiden vastaavien laadinta.
+                                                                  Rakennussuunnittelua ovat pääsuunnittelu, arkkitehtisuunnittelu, rakennesuunnit-
+                                                                  telu, LVI- suunnittelu, sähkösuunnittelu ja sisustussuunnittelu
+                                                                  3221 Pääsuunnittelu
+                                                                  Pääsuunnittelua ovat maankäyttö- ja rakennuslain mukaiset suunnittelun koor-
+                                                                  dinointi- ja yhteensovittamistehtävät sekä hankekohtaisesti sovittavat tehtäväluette-
+                                                                  lon mukaiset tehtävät.
+                                                                  3222 Arkkitehtisuunnittelu
+                                                                  Arkkitehtisuunnittelua ovat arkkitehtisuunnittelun asiantuntijatehtävät, arkkiteh-
+                                                                  tisuunnitelmien laadinta hankkeen ehdotus-, luonnos, työ- ja rakentamisvaiheissa,
+                                                                  rakennuslupa- ja muiden viranomaisselvitysten laadinta sekä rakennustöiden arkki-
+                                                                  tehtisuunnittelua koskevien asioiden valvonta rakennustietokortissa RT 10-10576
+                                                                  esitetyn tehtäväluettelon ARK 95 mukaisesti.
+                                                                  3223 Rakennesuunnittelu
+                                                                  Rakennesuunnittelua ovat rakennesuunnittelun asiantuntijatehtävät, rakenteiden
+                                                                  mitoitus ja suunnittelu hankkeen ehdotus-, luonnos, työ- ja rakentamisvaiheissa, ele-
+                                                                  mentti- ja muiden valmistus- ja konepajapiirustusten laadinta sekä rakenteiden työn-
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                              ohjeet – 20
+
+
+HANKENIMIKKEISTÖ                                                  aikainen valvonta rakennustietokortissa RT 10-10577 esitetyn tehtäväluettelon RAK
+                                                                  95 mukaisesti.
+1     RAKENNUSOSAT
+11    Alueosat                                                    3224 LVI-suunnittelu
+12    Talo-osat                                                   LVI-suunnittelua ovat talotekniikan asiantuntijatehtävät, lämpö, vesi-, viemäri- ja
+13    Tilaosat                                                    muiden putkijärjestelmien sekä ilmastoinnin mitoitus ja suunnittelu hankkeen ehdo-
+2     TEKNIIKKAOSAT                                               tus-, luonnos, työ- ja rakentamisvaiheissa edellä mainittujen suunnitelmien toteutuk-
+21    Putkiosat                                                   sen työnaikainen valvonta rakennustietokortistossa RT 10-10579 esitetyn tehtävä-
+22    Ilmanvaihto-osat                                            luettelon TATE 95 mukaisesti.
+23    Sähköosat
+24    Tiedonsiirto-osat                                           3225 Sähkösuunnittelu
+25    Laiteosat                                                   Sähkösuunnittelua ovat sähkötekniikan asiantuntijatehtävät, sähkö- ja tietojärjestel-
+                                                                  mien mitoitus ja suunnittelu hankkeen ehdotus-, luonnos, työ- ja rakentamisvaiheis-
+3     HANKETEHTÄVÄT
+31    Hankkeen johtotehtävät                                      sa edellä mainittujen suunnitelmien toteutuksen työnaikainen valvonta rakennustie-
+32    Suunnittelutehtävät                                         tokortistossa RT 10-10579 esitetyn tehtäväluettelon TATE 95 mukaisesti.
+33    Rakentamisen johtotehtävät
+                                                                  3226 Sisustussuunnittelu
+34    Työmaatehtävät
+                                                                  Sisustussuunnittelua ovat sisustussuunnittelun asiantuntijatehtävät, hankkeen sisä-
+4 KIINTEISTÖTEHTÄVÄT                                              tilojen rakennusosiin ja irtaimistoon liittyvä ehdotus-, luonnos-, työ- ja valmistuspii-
+41 Maa-aluetehtävät                                               rustusten laadinta sekä edellä mainittujen suunnitelmien toteutuksen valvonta ra-
+42 Rahoitus ja markkinointi                                       kennustietokortistossa RT 10-10581 esitetyn tehtäväluettelon SIS 95 mukaisesti.
+5 KÄYTTÄJÄTEHTÄVÄT
+51 Tilavarustus                                                   323 Suunnittelun asiantuntijatehtävät
+52 Toiminnan ylläpito                                             Suunnittelun asiantuntijatehtäviä ovat tehtävät, joiden työn tuloksena olevat suun-
+                                                                  nittelun osaratkaisut sisällytetään hankkeen suunnitelmiin. Tällaisia ovat esimerkiksi
+6 HANKEVARAUKSET                                                  geotekniset, akustiset, maisema, palo- ja pelastussuunnitelmien laadintatehtävät, ta-
+61 Suunnitelma- ja hintamuutokset
+62 Muut varaukset
+                                                                  lousasiantuntijatehtävät sekä muut suunnittelun asiantuntijatehtävät.
+                                                                  3231 Geotekniset asiantuntijatehtävät
+                                                                  Geoteknistä asiantuntijatehtävää on pohjatekniikan asiantuntijatehtävät, pohjatut-
+                                                                  kimusten suorittaminen, tutkimustulosten esittäminen sekä perustamistapaselvityk-
+                                                                  sen ja tarvittavien työselosteiden laatiminen sekä edellä olevien suunnitelmien to-
+                                                                  teutuksen työn aikainen valvonta rakennustietokortistossa RT 10-10580 esitetyn teh-
+                                                                  täväluettelon GEO 95 mukaisesti.
+                                                                  3232 Akustiset asiantuntijatehtävät
+                                                                  Akustisia asiantuntijatehtäviä ovat hankkeen ehdotus-, luonnos, työ- ja rakentamis-
+                                                                  vaiheissa laadittavat suunnitelmat sekä akustiikan työnaikainen valvonta.
+                                                                  3233 Maisema-asiantuntijatehtävät
+                                                                  Maisema-asiantuntijatehtäviä ovat hankkeen alueosiin ja alueen irtaimistoon liittyvä
+                                                                  ehdotus-, luonnos-, työ- ja valmistuspiirustusten laadinta sekä riittävä työn aikainen
+                                                                  valvonta suunnitelmien toteutumisesta.
+                                                                  3234 Paloasiantuntijatehtävät
+                                                                  Paloasiantuntijatehtäviä ovat ehdotus-, luonnos, työ- ja rakentamisvaiheissa (ehdo-
+                                                                  tus-, yleis-, toteutus- sekä tuoteosa- ja valmistusvaiheissa) laadittavat suunnitelmat ja
+                                                                  lausunnot.
+                                                                  3235 Talousasiantuntijatehtävät
+                                                                  Talousasiantuntijatehtäviä ovat ehdotus-, luonnos, työ- ja rakentamisvaiheissa (eh-
+                                                                  dotus-, yleis-, toteutus- sekä tuoteosa- ja valmistusvaiheissa) laadittavat laskelmat ja
+                                                                  lausunnot.
+                                                                  3236 Muut suunnittelun asiantuntijatehtävät
+                                                                  Muita asiantuntijatehtäviä ovat edellisiin kohtiin sisältymättömät asiantuntijatehtä-
+                                                                  vät kuten esimerkiksi rakennuksen erityisosien sekä pienoismallien ja mallihuonei-
+                                                                  den suunnittelu.
+
+                                                                  324 Hanketietotehtävät
+                                                                  Hanketietotehtäviä ovat kopiointi-, tietokanta-, huoltokirja- ja erityiset hanketieto-
+                                                                  tehtävät.
+                                                                  3241 Kopiointitehtävät
+                                                                  Kopiointitehtäviä ovat kopiolaitoksessa otettavat kopiot sekä rakennuttamis- ja
+                                                                  suunnittelutehtäviin sisältymättömät kopiot.
+                                                                  3242 Tietokantatehtävät
+                                                                  Tietokantatehtäviä ovat projektitietokannan ja kiinteistötietokannan luominen ja yl-
+                                                                  läpitäminen hankkeen ajan ja siirtäminen rakennuttajalle hankkeen vastaanoton jäl-
+                                                                  keen. Projektitietokanta on projektipankki, jota käytetään suunnittelun ja rakentami-
+                                                                  sen aikana. Kiinteistötietokantaan tallennetaan kiinteistön käyttöön ja ylläpitoon tar-
+                                                                  koitetut tiedot.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                             ohjeet – 21
+
+
+HANKENIMIKKEISTÖ                                                  3243 Huoltokirjatehtävät
+                                                                  Huoltokirjatehtäviä ovat huoltokirjan tietojen kokoaminen, laadinta ja ylläpito hank-
+1     RAKENNUSOSAT
+                                                                  keen aikana ja luovutus rakennuttajalle vastaanoton jälkeen sekä käyttöohjeiden laa-
+11    Alueosat
+12    Talo-osat                                                   dinta ja kokoaminen sekä käyttäjän käytönopastus.
+13    Tilaosat
+                                                                  3244 Erityiset hanketietotehtävät
+2     TEKNIIKKAOSAT                                               Erityisiä hanketietotehtäviä ovat edelle oleviin kuulumattomat hanketietotehtävät.
+21    Putkiosat
+22    Ilmanvaihto-osat
+23    Sähköosat                                                   33 Rakentamisen johtotehtävät
+24    Tiedonsiirto-osat                                           Rakentamisen johtotehtäviä ovat rakentamisen yleisjohto ja hallinto sekä työmaan
+25    Laiteosat                                                   johtotehtävät. Rakentamisen johtotehtävät vastaavat rakennusurakan yleisten sopi-
+3     HANKETEHTÄVÄT                                               musehtojen (YSE 98) 4 §:n mukaisia työmaan johtovelvollisuuksia lukuun ottamatta
+31    Hankkeen johtotehtävät                                      hankkeen hallintotehtäviin kuuluvaa rakennustyövakuutusta.
+32    Suunnittelutehtävät
+33    Rakentamisen johtotehtävät                                  331 Rakentamisen yleisjohto ja hallinto
+34    Työmaatehtävät                                              Rakentamisen yleisjohtoa ja hallintoa ovat työmaan yleisjohto, laskenta- ja hankinta-
+4 KIINTEISTÖTEHTÄVÄT                                              tehtävät, yritystehtävät sekä muut rakentamisen yleisjohto- ja hallintotehtävät.
+41 Maa-aluetehtävät
+42 Rahoitus ja markkinointi                                       3311 Työmaan yleisjohto
+                                                                  Työmaan yleisjohtoa ovat työmaan johto-organisaation kokoaminen, ohjaus ja toi-
+5 KÄYTTÄJÄTEHTÄVÄT                                                mintaedellytysten varmistaminen, rakentamistehtävien suunnittelu, johtaminen ja
+51 Tilavarustus                                                   koordinointi, rakentamisen käynnistys, seuranta ja valvonta sekä rakentamisen hallin-
+52 Toiminnan ylläpito
+                                                                  non ja työmaajohdon välisen toiminnan järjestely ja yhteensovitus. Työmaan yleis-
+6 HANKEVARAUKSET                                                  johdon tehtävänä on myös luoda yhteys rakennuttajan ja työmaan välille.
+61 Suunnitelma- ja hintamuutokset
+62 Muut varaukset                                                 3312 Laskentatehtävät
+                                                                  Laskentatehtäviä ovat määrälaskenta, kustannusarviolaskenta, tarjouslaskenta ja ra-
+                                                                  kentamisen kustannusseuranta sekä sopimusten taloudellisen tilanteen seuranta.
+
+                                                                  3313 Hankintatehtävät
+                                                                  Hankintatehtäviä ovat urakoiden, hankintojen ja materiaalitoimitusten sekä rakenta-
+                                                                  mis- ja talotekniikkatehtävien muiden suorittajien hankinta rakennustietokortin
+                                                                  RT 10-10846 tehtäväluettelon A4 ”Hankintatoimi”mukaisesti sekä urakkaneuvottelut
+                                                                  ja sopimusten valmistelu.
+
+                                                                  3314 Yritystehtävät
+                                                                  Yritystehtäviä ovat rakentamisen johtotehtävistä vastaavan organisaation sopimus-
+                                                                  ja hallintotehtävät kuten esimerkiksi sopimukset, sopimussakot ja keskeytyskustan-
+                                                                  nukset, vakuuskulut kuten vakuuksista aiheutuvat provisiot, korot ja kulut, yritystoi-
+                                                                  minnan vakuutukset, keskushallinnon yleiskulut ja varautuminen riskeihin.
+
+                                                                  3315 Muut rakentamisen yleisjohto- ja hallintotehtävät
+                                                                  Muita työmaan yleisjohto- ja hallintotehtäviä ovat edellä lueteltuihin kuulumattomat
+                                                                  tehtävät.
+
+                                                                  332 Työmaan johtotehtävät
+                                                                  Työmaan johtotehtäviä ovat vastaava työnjohto, työnsuunnittelu ja ohjaus, työmaan
+                                                                  työturvallisuus sekä rakennustyön työnjohto ja valvonta.
+
+                                                                  3321 Vastaava työnjohto
+                                                                  Vastaavaa työnjohtoa ovat maankäyttö- ja rakennuslain, rakentamismääräysten sekä
+                                                                  viranomaisten vastaavalle työnjohtajalle asettamat tehtävät kuten esimerkiksi vastuu
+                                                                  työmaan johtamisesta, rakennustöiden laadunvalvonnasta, hyvien rakentamistapo-
+                                                                  jen noudattamisesta, työmaajärjestelystä, rakennustöiden yhteensovituksesta, työ-
+                                                                  aikataulun laadinnasta, seurannasta ja valvonnasta sekä työturvallisuuslainsäädän-
+                                                                  nön tarkoittamista toteuttajalle asetetuista tehtävistä. Vastaavan työn johdon velvol-
+                                                                  lisuutena on luoda yhteys rakennusvalvonnan ja työmaan välille.Vastaava erityisalo-
+                                                                  jen työnjohto käsittää maankäyttö- ja rakennuslain, rakentamismääräysten sekä vi-
+                                                                  ranomaisten erityisalojen vastaavalle työnjohtajalle asettamat tehtävät.
+
+                                                                  3322 Työnsuunnittelu ja ohjaus
+                                                                  Työnsuunnittelua ja ohjausta ovat rakentamistehtäviä palveleva työnsuunnittelu, ra-
+                                                                  kentamistehtävien yhteensovitus, suunnitelmien käsittely, tarkastus ja yhteensovi-
+                                                                  tus, työ- ja työvaiheaikataulujen laadinta ja seuranta sekä lisä- ja muutostöiden käsit-
+                                                                  tely.
+
+                                                                  3323 Työmaan työturvallisuus
+                                                                  Työmaan työturvallisuus käsittää työmaan yleisen työturvallisuuden valvonnan, sekä
+                                                                  muut työturvallisuuslainsäädännön toteuttajalle asettamat työturvallisuusvelvoit-
+                                                                  teet siten kuin Valtioneuvoston asetus rakennustyön turvallisuudesta määrää.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                              ohjeet – 22
+
+
+HANKENIMIKKEISTÖ                                                  3324 Rakennustyön työnjohto ja valvonta
+                                                                  Rakennustyön työnjohtoa ja valvontaa ovat useampaa rakentamistehtävää palveleva
+1     RAKENNUSOSAT
+                                                                  työnjohto ja valvonta sekä muut edellisiin kuulumattomat lainsäädännön, viran-
+11    Alueosat
+12    Talo-osat                                                   omaisten tai hankeorganisaation edellyttämät tai rakennuttajan määräämät muut
+13    Tilaosat                                                    työnjohtotehtävät.
+
+2     TEKNIIKKAOSAT
+21    Putkiosat                                                   34 Työmaatehtävät
+22    Ilmanvaihto-osat                                            Työmaatehtäviä ovat työmaata kokonaisuutena palvelevat työmaapalvelut ja työ-
+23    Sähköosat
+                                                                  maan kalusto. Työmaatehtävät ovat rakennus- ja tekniikkaosien rakentamisen suh-
+24    Tiedonsiirto-osat
+25    Laiteosat                                                   teen välillisiä ja kohdistuvat työmaahan tai sen osaan kokonaisuutena.
+
+3     HANKETEHTÄVÄT                                               341 Työmaapalvelut
+31    Hankkeen johtotehtävät                                      Työmaapalveluja ovat työmaarakennukset, työmaa-alue, käyttöaineet ja energia, työ-
+32    Suunnittelutehtävät
+                                                                  maan lämmitys ja kuivaus, työmaan puhtaanapito ja suojaus, työmaan vartiointi sekä
+33    Rakentamisen johtotehtävät
+34    Työmaatehtävät                                              muut työmaan palvelut.
+
+4 KIINTEISTÖTEHTÄVÄT                                              3411 Työmaarakennukset
+41 Maa-aluetehtävät                                               Työmaarakennuksia ovat työmaata palvelevat toimistotilat, työntekijöiden sosiaali- ja
+42 Rahoitus ja markkinointi                                       taukotilat, työsuojat, varastot ja työpajat varusteineen ja muut vastaavat tilat. Nimik-
+5 KÄYTTÄJÄTEHTÄVÄT                                                keeseen kuuluu kuljetus, pystytys ja purku, vuokrat, korjaukset, käyttöaineet ja ener-
+51 Tilavarustus                                                   gia sekä työmaarakennusten kalusteet. Työmaatoimisto käsittää toimistotarvikkeet,
+52 Toiminnan ylläpito                                             toimistovälineet, työmaan atk-laitteet, -kytkennät ja -ylläpidon, puhelin- ja postikulut
+                                                                  sekä kopiolaitteet.
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset
+                                                                  3412 Työmaa-alue
+62 Muut varaukset
+                                                                  Työmaa-alue käsittää alueen työmaarakennuksia ja työmaan toimintaa varten työ-
+                                                                  maatiet, työnaikaiset vesi-, viemäri- ja lämpöjohdot, työmaan sähköistämistä palvele-
+                                                                  vat työnaikaiset asennukset, työmaan aitauksen, työmaakilvet sekä työmaa-alueen
+                                                                  vuokrat.
+
+                                                                  3413 Avustavat rakennustyöt
+                                                                  Avustavia rakennustöitä ovat yleismittaus, rakennussuojaus, lumi- ja jäätyöt, liiken-
+                                                                  teen hoito sekä työmaakokeet ja katselmukset ja muut vastaavat rakennus- ja talotek-
+                                                                  niikkatehtävien suorittajia yhteisesti palvelevat työt.
+
+                                                                  3414 Käyttöaineet ja energia
+                                                                  Käyttöaineita ja energiaa ovat sähkö, vesi, kaukolämpö, höyry, kaasu sekä näihin liitty-
+                                                                  vät työt ja hankinnat.
+
+                                                                  3415 Työmaan lämmitys ja kuivaus
+                                                                  Työmaan lämmitystä ja kuivausta ovat rakentamis- ja talotekniikkatehtäviä yhteisesti
+                                                                  palvelevat lämmittimet ja kuivaimet sekä lämminilmapuhaltimet sekä näihin liittyvät
+                                                                  työt ja hankinnat, käyttöaineet ja energia.
+
+                                                                  3416 Työmaan puhtaanapito ja suojaus
+                                                                  Työmaan puhtaanapitoa on työmaatilojen hoito, loppusiivous, työmaalta poiskulje-
+                                                                  tettavien jätteiden jätehuolto sekä kulutustarvikkeet, joita ei voi kohdistaa nimikkeil-
+                                                                  le kuten suojauspahvit ja -muovit sekä puhdistusaineet.
+
+                                                                  3417 Työmaan vartiointi
+                                                                  Työmaan vartiointia ovat piirivartiointi, kulunvalvonta, työmaan kameravalvonta
+                                                                  sekä rikosilmoitusjärjestelmä.
+
+                                                                  3418 Muut työmaan palvelut
+                                                                  Muita työmaan palveluja ovat edellä lueteltuihin kuulumattomat työmaapalvelut.
+
+                                                                  342 Työmaakalusto
+                                                                  Työmaakalustoa ovat erikseen sovittavat rakentamis- ja talotekniikkatehtäviä yhtei-
+                                                                  sesti palvelevat erikseen suunniteltavat nostot ja siirrot, telineet, työmaakuljetukset
+                                                                  sekä muu työmaan kalusto.
+
+                                                                  3421 Nostot ja siirrot
+                                                                  Nostot ja siirrot käsittävät erikseen sovittavat rakentamis- ja talotekniikkatehtäviä yh-
+                                                                  teisesti palvelevat nosto- ja siirtolaitteet kuten torninosturit, ajoneuvonosturit, raken-
+                                                                  nushissit ja kurottajat. Nimikkeeseen kuuluu nosto- ja siirtolaitteiden tarvitsemat pe-
+                                                                  rustamis-, vahvistus- ja muut maarakennustyöt, torninosturin radan teko, kunnossa-
+                                                                  pito ja purku sekä nosturin tuonti työmaalle, käyttö, huolto, pystytys ja purku, ajoneu-
+                                                                  vo- ja muiden vastaavien nosturien käyttö, rakennushissien pystytys, työmaahuolto,
+                                                                  purku ja käyttö sekä nostimien ja kurottimien käyttö ja huolto.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                           ohjeet – 23
+
+
+HANKENIMIKKEISTÖ                                                  3422 Telineet
+                                                                  Telineitä ovat useampaa rakennus- ja talotekniikkatehtävää suorittavaa palvelevien
+1     RAKENNUSOSAT
+                                                                  telineiden ja muiden vastaavien vastaanottolavojen pystytys, siirrot, käyttö ja purku.
+11    Alueosat
+12    Talo-osat                                                   3423 Työmaakuljetukset
+13    Tilaosat                                                    Työmaakuljetuksia ovat useampaa rakennus- ja talotekniikkatehtävää suorittavaa
+2     TEKNIIKKAOSAT                                               palvelevat kuljetukset, jotka eivät ole rakennusaineiden ja -rakennustuotteiden rah-
+21    Putkiosat                                                   teja. Työmaakuljetuksia ovat esimerkiksi pientarvikkeiden noutokuljetukset, konei-
+22    Ilmanvaihto-osat                                            den ja laitteiden siirrot sekä työmaan huoltokuljetukset.
+23    Sähköosat
+24    Tiedonsiirto-osat                                           3424 Muu työmaan kalusto
+25    Laiteosat                                                   Muu työmaan kalusto on lueteltuihin kuulumaton useita työkuntia palveleva työ-
+                                                                  maakalusto.
+3     HANKETEHTÄVÄT
+31    Hankkeen johtotehtävät
+32    Suunnittelutehtävät
+33    Rakentamisen johtotehtävät
+34    Työmaatehtävät
+4 KIINTEISTÖTEHTÄVÄT
+41 Maa-aluetehtävät
+42 Rahoitus ja markkinointi
+5 KÄYTTÄJÄTEHTÄVÄT
+51 Tilavarustus
+52 Toiminnan ylläpito
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset
+62 Muut varaukset
+
+
+
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                               ohjeet – 24
+
+
+HANKENIMIKKEISTÖ                                                  4         KIINTEISTÖTEHTÄVÄT
+1     RAKENNUSOSAT                                                41        Maa-aluetehtävät
+11    Alueosat
+12    Talo-osat                                                   Maa-aluetehtäviä ovat tonttitehtävät, liittymät sekä maa-alueen kehittäminen.
+13    Tilaosat
+                                                                  411 Tonttitehtävät
+2     TEKNIIKKAOSAT                                               Tonttitehtäviä ovat tontin hankinta ja vuokraus, maa-alueeseen liittyvät leima-, va-
+21    Putkiosat                                                   rainsiirto- ja muut verot sekä kiinnitys- ja muut rasitteet sekä erityiset tonttitehtävät.
+22    Ilmanvaihto-osat
+23    Sähköosat                                                   4111 Tontin hankinta ja vuokraus
+24    Tiedonsiirto-osat                                           Tontin hankintaa ja vuokrausta ovat tontin ostamiseen ja tontin vuokraamisen liitty-
+25    Laiteosat                                                   vät tehtävät, velvoitteet, sopimukset ja kulut.
+3     HANKETEHTÄVÄT                                               4112 Verot ja rasitteet
+31    Hankkeen johtotehtävät
+                                                                  Veroja ja rasitteita ovat tontinhankintaan liittyvät varainsiirto- ja muut verot sekä kiin-
+32    Suunnittelutehtävät
+33    Rakentamisen johtotehtävät                                  teistöön kohdistuvat rasitteet ja näihin liittyvät tehtävät.
+34    Työmaatehtävät                                              4113 Erityiset tonttitehtävät
+4 KIINTEISTÖTEHTÄVÄT                                              Erityisiä tonttitehtäviä ovat tontin mittaaminen ja lohkominen sekä muut edellä mai-
+41 Maa-aluetehtävät                                               nittuihin kuulumattomat tonttitehtävät.
+42 Rahoitus ja markkinointi
+                                                                  412 Liittymät
+5 KÄYTTÄJÄTEHTÄVÄT
+                                                                  Liittymiä ovat liittymiset rakennuksiin ja verkostoihin sekä erityiset liittymät.
+51 Tilavarustus
+52 Toiminnan ylläpito                                             4121 Liittyminen rakennuksiin
+6 HANKEVARAUKSET                                                  Liittyminen rakennuksiin käsittää liittymiset rakennettavan hankkeen ulkopuolella si-
+61 Suunnitelma- ja hintamuutokset                                 jaitseviin rakennuksiin. Liittymiä ovat muun muassa autopaikoitusliittymät, kerhotila-
+62 Muut varaukset                                                 liittymät ja väestösuojaliittymät. Liittymiin kuuluu siitä aiheutuvat tehtävät, sopimuk-
+                                                                  set, velvoitteet ja korvaukset.
+                                                                  4122 Liittyminen verkostoihin
+                                                                  Liittymistä verkostoihin ovat liittyminen rakennettavan hankkeen ulkopuolella sijait-
+                                                                  seviin verkostoihin. Liittymiä ovat muun muassa kaukolämpö-, kaukokylmä-, vesi- ja
+                                                                  viemäri-, sähkö-, kaasu- ja tietotekniset liittymät. Tietoteknisiä liittymiä ovat muun
+                                                                  muassa liittymät puhelin-, kaapeli- ja dataverkkoon.
+                                                                  4123 Erityiset liittymät
+                                                                  Erityisiä liittymiä ovat edellä oleviin kuulumattomat liittymät.
+
+                                                                  413 Maa-alueen kehittäminen
+                                                                  Maa-alueen kehittämistä ovat kiinteistökehitys ja kaavoitus.
+                                                                  4131 Kiinteistökehitys
+                                                                  Kiinteistökehitystä on maa-alueen tai olemassa olevien rakennusten kehittäminen
+                                                                  uuteen käyttötarkoitukseen sekä tähän liittyvät tehtävät ja sopimukset.
+                                                                  4132 Kaavoitus
+                                                                  Kaavoitusta on yleis- ja asemakaavan laadinta sekä näihin liittyvät tehtävät, sopimuk-
+                                                                  set ja velvoitteet.
+
+                                                                  42 Rahoitus ja markkinointi
+                                                                  Rahoitusta ja markkinointia ovat rahoitustehtävät ja markkinointitehtävät.
+
+                                                                  421 Rahoitustehtävät
+                                                                  Rahoitustehtäviä ovat lainoitustehtävät, yhtiötehtävät sekä erityiset rahoitustehtä-
+                                                                  vät.
+                                                                  4211 Lainoitustehtävät
+                                                                  Lainoitustehtäviä ovat hankkeen suunnittelu- ja rakennusaikaisten lainojen hankin-
+                                                                  taan ja nostoon liittyvät tehtävät ja kulut sekä lainojen korot ja muut maksut. Lainojen
+                                                                  järjestely- ja hoitokuluja ovat muun muassa varainsiirtoverot, provisiot ja toimitusku-
+                                                                  lut.
+                                                                  4212 Yhtiötehtävät
+                                                                  Yhtiötehtäviä ovat hanketta palvelevien yhtiöiden perustamistehtävät kuten yh-
+                                                                  tiöjärjestyksen laadinta ja yhtiön rekisteröinti sekä näihin liittyvät tehtävät, sopimuk-
+                                                                  set ja kulut.
+                                                                  4213 Erityiset rahoitustehtävät
+                                                                  Erityisiä rahoitustehtäviä ovat edellä oleviin kuulumattomat rahoitustehtävät.
+
+                                                                  422 Markkinointitehtävät
+                                                                  Markkinointitehtäviä ovat asunto- ja toimitilamarkkinointi sekä muu markkinointi.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                       ohjeet – 25
+
+
+HANKENIMIKKEISTÖ                                                  4221 Asuntomarkkinointi
+                                                                  Asuntomarkkinointi käsittää asuntojen markkinoinnin, myynnin ja vuokrauksen ai-
+1     RAKENNUSOSAT
+                                                                  heuttamat tehtävät, sopimukset ja kulut.
+11    Alueosat
+12    Talo-osat                                                   4222 Toimitilamarkkinointi
+13    Tilaosat                                                    Toimitilamarkkinointi käsittää toimitilojen markkinoinnin, myynnin ja vuokrauksen
+2     TEKNIIKKAOSAT                                               aiheuttamat tehtävät, sopimukset ja kulut.
+21    Putkiosat
+                                                                  4223 Muu markkinointi
+22    Ilmanvaihto-osat
+23    Sähköosat                                                   Muuta markkinointia on edellä oleviin kuulumaton hanketta palveleva markkinointi.
+24    Tiedonsiirto-osat
+25    Laiteosat
+3     HANKETEHTÄVÄT
+31    Hankkeen johtotehtävät
+32    Suunnittelutehtävät
+33    Rakentamisen johtotehtävät
+34    Työmaatehtävät
+4 KIINTEISTÖTEHTÄVÄT
+41 Maa-aluetehtävät
+42 Rahoitus ja markkinointi
+5 KÄYTTÄJÄTEHTÄVÄT
+51 Tilavarustus
+52 Toiminnan ylläpito
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset
+62 Muut varaukset
+
+
+
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                             ohjeet – 26
+
+
+HANKENIMIKKEISTÖ                                                  5         KÄYTTÄJÄTEHTÄVÄT
+1     RAKENNUSOSAT                                                51        Tilavarustus
+11    Alueosat
+12    Talo-osat                                                   Tilavarustusta ovat irtaimisto, toiminnan kojeet ja laitteet sekä erityinen toimintava-
+13    Tilaosat                                                    rustus.
+
+2     TEKNIIKKAOSAT                                               511 Irtaimisto
+21    Putkiosat                                                   Irtaimistoa ovat tilan käyttäjän mukaan tuomat toiminnan edellyttämät irtaimet ka-
+22    Ilmanvaihto-osat                                            lusteet ja varusteet sekä erityinen irtaimisto.
+23    Sähköosat
+24    Tiedonsiirto-osat                                           5111 Irtaimet kalusteet
+25    Laiteosat                                                   Irtaimia kalusteita ovat irtaimeen omaisuuteen luettavat tiloihin sijoitettavat kalus-
+3     HANKETEHTÄVÄT                                               teet materiaalista ja mahdollisesta kiinnitystavasta riippumatta. Irtaimia kalusteita ei
+31    Hankkeen johtotehtävät                                      lueta kiinteistön tarpeistoon ja ne voidaan kiinteistön käyttäjän muuttaessa poistaa.
+32    Suunnittelutehtävät                                         Irtaimistoa ovat muun muassa työpöydät, työtuolit, hyllyköt ja kaapistot sekä seinille
+33    Rakentamisen johtotehtävät                                  ripustettavat taulut ja vastaavat.
+34    Työmaatehtävät
+                                                                  5112 Irtaimet varusteet
+4 KIINTEISTÖTEHTÄVÄT                                              Irtaimet varusteet ovat irtaimeen omaisuuteen luettavat toiminnan vaatimat käyttä-
+41 Maa-aluetehtävät
+                                                                  jäkohtaiset varusteet kuten kirjoitus- ja muistiinpanovälineet, kirjoitusalustat, ja
+42 Rahoitus ja markkinointi
+                                                                  muut toimisto- tai tuotantotarvikkeet.
+5 KÄYTTÄJÄTEHTÄVÄT
+51 Tilavarustus                                                   512 Toiminnan kojeet ja laitteet
+52 Toiminnan ylläpito                                             Toiminnan kojeet ja laitteet ovat kiinteistön tarpeistoon kuulumattomia toiminnan
+6 HANKEVARAUKSET                                                  vaatimia koneita ja laitteita tai laitekokonaisuuksia suunnitelmineen.
+61 Suunnitelma- ja hintamuutokset                                 5121 Toiminnan kojeet
+62 Muut varaukset
+                                                                  Toiminnan kojeita ovat irtaimet käyttökojeet kuten esimerkiksi tietokoneet, kopioko-
+                                                                  neet ja tulostimet.
+                                                                  5122 Toiminnan laitteet
+                                                                  Toiminnan laitteet ovat prosessin edellyttämiä laitekokonaisuuksia, joiden hankinta
+                                                                  ja käyttöönotto edellyttävät suunnittelua. Tällaisia ovat esimerkiksi tehdaslaitteistot,
+                                                                  hoitovälineet ja puhelinkeskukset.
+
+                                                                  52 Toiminnan ylläpito
+                                                                  Toiminnan ylläpitoa ovat väliaikainen toiminta ja käyttöönotto.
+
+                                                                  521 Väliaikainen toiminta
+                                                                  Väliaikainen toiminta käsittää toiminnan jatkuvuuden edellyttämät rakennusaikaiset
+                                                                  väliaikaiset tilat sekä väliaikaiset rakenteet ja laitteet.
+                                                                  5211 Väliaikaiset tilat
+                                                                  Väliaikaisia tiloja ovat toiminnan rakennusaikaiseksi jatkamiseksi ostettavat tai vuok-
+                                                                  rattavat tilat ja niiden käyttöönottoon liittyvät tehtävät, sopimukset ja kulut.
+                                                                  5212 Väliaikaiset rakenteet ja laitteet
+                                                                  Väliaikaiset rakenteet ja laitteet ovat toiminnan rakennusaikaiseksi jatkamiseksi tar-
+                                                                  vittavat väliaikaiset rakenteet, laitteet ja asennukset sekä näiden hankintaan liittyvät
+                                                                  tehtävät, sopimukset ja kulut.
+                                                                  5213 Muu väliaikainen toiminta
+                                                                  Muu väliaikainen toiminta on edellä oleviin kuulumatonta toiminnan jatkuvuuden
+                                                                  edellyttämää toimintaa. Tällaista on esimerkiksi henkilöstöön liittyvät tehtävät.
+
+                                                                  522 Käyttöönotto
+                                                                  Käyttöönotto käsittää muuton rakennettaviin tiloihin sekä tilojen ja laitteiden käyttö-
+                                                                  koulutuksen, käyttöohjeet ja muut tehtävät, joiden avulla tilojen käyttäjä voi tiloja
+                                                                  suunnitellulla tavalla käyttää.
+                                                                  5221 Muutto
+                                                                  Muuttoa on rakennettaviin tiloihin tehtävän muuton edellyttämät tehtävät, sopimuk-
+                                                                  set ja kulut. Muuttotehtäviin kuuluu myös toiminnan käynnistämiseen liittyvät tehtä-
+                                                                  vät.
+                                                                  5222 Käyttökoulutus
+                                                                  Käyttökoulutus käsittää rakennettavan rakennuksen ominaisuuksien opastuksen,
+                                                                  koulutuksen ja informoinnin käyttäjille.
+                                                                  5223 Muu käyttöönotto
+                                                                  Muu käyttöönotto on edellä mainittuihin kuulumatonta käyttöönottoa. Tähän kuulu-
+                                                                  vat muun muassa henkilöstötehtävät.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+RT 10-10962                                                       HANKENIMIKKEISTÖ                                                              ohjeet – 27
+
+
+HANKENIMIKKEISTÖ                                                  6         HANKEVARAUKSET
+1     RAKENNUSOSAT                                                61        Suunnitelma- ja hintamuutokset
+11    Alueosat
+12    Talo-osat                                                   Suunnitelma- ja hintamuutokset on tarkoitettu nimikkeistössä ainoastaan hankelas-
+13    Tilaosat                                                    kentaa varten. Nimikkeelle kohdistetaan asiakirjamuutosten ja suunnittelu- ja raken-
+                                                                  nusaikaisesta hintatason muutoksesta aiheutuvat menot.
+2     TEKNIIKKAOSAT
+21    Putkiosat                                                   611 Asiakirjamuutokset
+22    Ilmanvaihto-osat                                            Asiakirjamuutoksia ovat suunnitelmamuutokset ja rakentamismuutokset.
+23    Sähköosat
+24    Tiedonsiirto-osat                                           6111 Suunnitelmamuutokset
+25    Laiteosat                                                   Suunnitelmamuutoksia ovat suunnitteluasiakirjoihin tehtävät muutokset, jotka ai-
+3     HANKETEHTÄVÄT                                               heutuvat suunnitelmien ristiriitaisuuksista tai virheellisyyksistä, viranomaisista johtu-
+31    Hankkeen johtotehtävät                                      vista muutoksista sekä toiminnan edellyttämistä rakennusaikaisista suunnitelmiin
+32    Suunnittelutehtävät                                         kohdistuvista muutostarpeista. Muutokset dokumentoidaan rakentamisen valmis-
+33    Rakentamisen johtotehtävät                                  tuttua loppuasiakirjoihin.
+34    Työmaatehtävät
+                                                                  6112 Rakentamismuutokset
+4 KIINTEISTÖTEHTÄVÄT                                              Rakentamismuutoksia ovat muun muassa työtavoista, materiaaleista tai olosuhteista
+41 Maa-aluetehtävät                                               aiheutuvat muutokset rakentamistehtävien suoritukseen.
+42 Rahoitus ja markkinointi
+5 KÄYTTÄJÄTEHTÄVÄT                                                612 Hintatasomuutokset
+51 Tilavarustus                                                   Hintatasomuutosta on suunnittelu- ja rakennusaikainen hintatason ennustettu ja in-
+52 Toiminnan ylläpito                                             vestointisuunnitelmissa huomioon otettu hintatason muutos muuttuminen verrat-
+                                                                  tuna investointilaskelmiin, tavoitehintaan tai kustannusarvioon.
+6 HANKEVARAUKSET
+61 Suunnitelma- ja hintamuutokset                                 6121 Suunnitteluaikainen hintamuutos
+62 Muut varaukset                                                 Suunnitteluaikainen hintatasomuutos on rakentamisen hintatasossa tapahtuva suh-
+                                                                  danteista tai muusta hintakehityksestä johtuva hintatason muutos, joka otetaan huo-
+                                                                  mioon budjetoinnissa hintatasovarauksena.
+                                                                  6122 Rakennusaikainen hintamuutos
+                                                                  Rakennusaikainen hintatasomuutos on rakentamisen hintatasossa tapahtuva suh-
+                                                                  danteista tai muusta hintakehityksestä johtuva hintatason muutos, joka otetaan huo-
+                                                                  mioon budjetoinnissa hintatasovarauksena.
+                                                                  6123 Muu hintamuutos
+                                                                  Muu hintamuutos on edellisiin kuulumaton hintatasossa tapahtuva muutos, johon
+                                                                  budjetoinnissa varaudutaan. Varautumista voi edellyttää esimerkiksi poikkeukselli-
+                                                                  sen suuri tai vaikea rakennuskohde alueen väestöön ja muuhun rakentamiseen ver-
+                                                                  rattuna.
+
+                                                                  62 Muut varaukset
+                                                                  Muut varaukset ovat riskivarauksia tai erityisiä varauksia, joihin tulee varautua ja jotka
+                                                                  tulee ottaa huomioon hankkeen investointilaskelmissa, tavoitehinnassa tai kustan-
+                                                                  nusarviossa.
+
+                                                                  621 Riskit
+                                                                  Riskit ovat sijainti-, olosuhde- ja muita riskejä.
+                                                                  6211 Sijaintiriskit
+                                                                  Sijaintiriskit aiheutuvat rakennuskohteen poikkeuksellisesta sijainnista, joka vaikeut-
+                                                                  taa rakentamistehtävien suoritusta. Tällaisia rakentamispaikkoja ovat esimerkiksi pit-
+                                                                  kien kulkuyhteyksien päässä olevat rakennuspaikat, saaret ja muut vesialueisiin liitty-
+                                                                  vät rakennuspaikat.
+                                                                  6212 Olosuhderiskit
+                                                                  Olosuhderiskejä ovat esimerkiksi sääoloista, pohjaolosuhteista tai naapurustosta ai-
+                                                                  heutuvat riskit.
+                                                                  6213 Muut riskit
+                                                                  Muita riskejä ovat edellä oleviin kuulumattomat riskit. Tällaisia ovat esimerkiksi hank-
+                                                                  keen viivästymisestä aiheutuvat menot tai jäämättä saatavat tuotot.
+
+                                                                  622 Erityiset varaukset
+                                                                  Erityisiä varauksia ovat toteutusmuotovaraus ja muu erityinen varaus.
+                                                                  6221 Toteutusmuotovaraus
+                                                                  Toteutusmuotovaraus on rakentamisen toteutusmuotoon liittyvä kustannustasova-
+                                                                  raus.
+                                                                  6222 Muu erityinen varaus
+                                                                  Muu erityinen varaus on edelliseen kuulumaton varaus.
+
+RL, PL/1/kesäkuu 2009/1400/Kyriiri/Rakennustieto Oy © Rakennustietosäätiö RTS 2009
+

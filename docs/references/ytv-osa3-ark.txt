@@ -1,0 +1,1426 @@
+YTV
+versio 1.0
+             Yleiset tietomallivaatimukset
+             2012
+
+
+
+
+                               Osa 3.
+                     Arkkitehtisuunnittelu
+Alkusanat
+
+
+Julkaisusarja ”Yleiset Tietomallivaatimukset 2012” on laajapohjaisen kehittämishankkeen, COBIM, tulos.
+Tarve vaatimuksille juontaa rakennusalalla nopeasti kasvavasta tietomallintamisen käytöstä.
+Rakennushankkeen kaikissa vaiheissa osapuolilla on tarve määritellä entistä täsmällisemmin mitä ja miten
+mallinnetaan. ”Yleiset Tietomallivaatimusten 2012” lähtökohtana ovat olleet tilaaja-organisaatioiden
+aikaisemmat ohjeet ja niistä saadut käyttökokemukset sekä ohjeitten kirjoittajien seikkaperäinen kokemus
+mallipohjaisesta toiminnasta.
+
+
+Hankkeen osapuolet: Rahoittajat: Aitta Oy, Arkkitehtitoimisto Larkas & Laine Oy, buildingSMART
+Finland, Espoon kaupunki Tekninen palvelukeskus, Future CAD Oy, Helsingin kaupunki
+Asuntotuotantotoimisto, Helsingin kaupunki Tilakeskus, Helsingin yliopisto, Helsingin
+Yliopistokiinteistöt Oy, HUS-Kiinteistöt Oy, HUS-Tilakeskus, ISS Palvelut Oy, Kuopion kaupunki
+Tilakeskus, Lemminkäinen Talo Oy, M.A.D. Oy, NCC Rakennus Oy, Sebicon Oy, Senaatti-kiinteistöt,
+Skanska Oy, SRV Rakennus Oy, SWECO PM OY, Tampereen kaupunki, Vantaan kaupunki Tilakeskus,
+ympäristöministeriö. Kirjoittajat: Finnmap Consulting Oy, Gravicon Oy, Insinööritoimisto Olof
+Granlund Oy, Lemminkäinen Talo Oy, NCC Rakennus Oy, Pöyry CM Oy, Skanska Oyj/VTT, Solibri Oy,
+SRV Rakennus Oy, Tietoa Finland Oy. Johto: Rakennustietosäätiö RTS.
+
+
+Vaatimukset on hyväksynyt Rakennustietosäätiön toimikuntana TK 320 toiminut hankkeen osapuolista
+koostuva johtoryhmä, joka on myös itse aktiivisesti osallistunut vaatimusten sisällön kehittämiseen sekä
+lausuttamiseen niin omassa kuin sidosryhmiensä keskuudessa.
+
+
+       © COBIM - hankkeen osapuolet
+
+
+
+
+                     Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                  Osan 3 laatija Gravicon Oy Tomi Henttinen
+
+
+
+Sisällysluettelo
+1   Tietomallinnuksen päätavoitteet                                              4
+2   Johdanto                                                                     5
+3   Mallinnusperiaatteet arkkitehtisuunnittelussa                                5
+    3.1 Koordinaatit ja mittayksiköt                                             5
+    3.2 Rakennukset, kerrokset ja lohkot                                         6
+    3.3 Mallintamiset tarkkuustasot                                              7
+    3.4 Rakennetyypit                                                            7
+    3.5 Mallien julkaisu ja tarkastus                                            8
+    3.6 Työmallit                                                                8
+    3.7 Tietomalliselostus                                                       8
+    3.8 Kuvatasot                                                                9
+4   Tietomallinnus peruskorjauskohteessa                                         9
+    4.1 Inventointimallin käsittely                                              9
+    4.2 Suunnitelmien yhteensovittaminen                                         9
+5   Tietomallinnusvaatimukset hankkeen eri vaiheissa                             10
+    5.1 Tarveselvitys                                                            10
+          5.1.1 Vaatimusmalli                                                    10
+    5.2 Hankesuunnittelu ja suunnittelun valmistelu                              11
+          5.2.1 Lähtötilanteen mallinnus                                         11
+          5.2.2 Tontin malli                                                     12
+          5.2.3 Hankesuunnittelumallin sisältö                                   12
+    5.3 Ehdotussuunnittelu                                                       12
+          5.3.1 Tilamalli                                                        12
+          5.3.2 Tilojen mallintaminen                                            13
+          5.3.3 Tiloista ja tilaryhmistä vaadittavat tiedot                      13
+          5.3.4 Tilojen muutostenhallinta                                        14
+          5.3.5 Pinta-alat, tilavuudet ja niiden määräytyminen                   15
+          5.3.6 Tiedonsiirto                                                     15
+    5.4 Yleissuunnittelu                                                         16
+          5.4.1 Rakennusosamalli                                                 16
+          5.4.2 Rakennusosamalli yleissuunnitteluvaiheessa                       17
+    5.5 Toteutussuunnittelu                                                      17
+          5.5.1 Rakennusosamalli toteutussuunnittelu vaiheessa                   17
+          5.5.2 Rakennusosien mallintaminen                                      17
+          5.5.3 Tilat rakennusosamallissa                                        20
+    5.6 Rakentaminen                                                             21
+          5.6.1 Mallin hyödyntäminen rakentamisessa                              21
+    5.7 Vastaanotto                                                              21
+          5.7.1 Toteumamalli                                                     21
+    5.8 Käyttöönotto ja ylläpito                                                 21
+          5.8.1 Ylläpitomalli                                                    21
+6   Arkkitehtimallien sisältövaatimukset                                         22
+
+
+
+
+                            Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                    Sivu 4 / 24
+
+
+
+1   Tietomallinnuksen päätavoitteet
+    Kiinteistöjen ja rakennuksien mallinnuksen tavoite on suunnittelun ja rakentamisen laadun, tehokkuuden,
+    turvallisuuden ja kestävän kehityksen mukaisen hanke- ja elinkaariprosessin tukeminen. Tietomalleja
+    hyödynnetään koko rakennuksen elinkaaren ajan, lähtien suunnittelun alusta ja jatkuen vielä
+    rakennusprojektin jälkeenkin käytön ja ylläpidon aikana.
+    Tietomallit mahdollistavat mm:
+     investointipäätöksien tuen vertailemalla ratkaisujen toimivuutta, laajuutta ja kustannuksia
+     energia-, ympäristö- ja elinkaarianalyysit ratkaisujen vertailua, suunnittelua ja ylläpidon
+         tavoiteseurantaa varten
+        suunnitelmien havainnollistamisen ja rakennettavuuden analysoimisen
+        saadunvarmistuksen, tiedonsiirron parantamisen ja suunnitteluprosessin tehostamisen
+        rakennushankkeiden tietojen hyödyntämisen käytön ja ylläpidon aikaisissa toiminnoissa
+    Mallinnuksen onnistumiseksi on malleille ja mallien hyödyntämiselle asetettava hankekohtaiset
+    painopistealueet ja tavoitteet. Tavoitteiden ja tämän julkaisusarjan yleisvaatimusten pohjalta määritetään
+    ja dokumentoidaan projektikohtaiset vaatimukset.
+    Yleisiä mallinnukselle asetettuja tavoitteita ovat esimerkiksi:
+        tukea hankkeen päätöksentekoprosesseja
+        sitouttaa osapuolet hankkeen tavoitteisiin mallin avulla
+        havainnollistaa suunnitteluratkaisuja
+        auttaa suunnittelua ja suunnitelmien yhteensovittamista
+        nostaa ja varmistaa rakennusprosessin ja lopputuotteen laatua
+        tehostaa rakentamisaikaisia prosesseja
+        parantaa turvallisuutta rakentamisen aikana ja elinkaarella
+        tukea hankkeen kustannus ja elinkaarianalyysejä
+        tukea hankkeen tietojen siirtämistä käytönaikaiseen tiedonhallintaan
+    ’Yleiset tietomallivaatimukset 2012’ kattavat uudis- ja korjausrakentamiskohteet, sekä rakennusten
+    käytön ja ylläpidon. Mallinnusvaatimuksissa esitetään vähimmäisvaatimukset mallinnukselle ja mallien
+    tietosisällölle. Vähimmäisvaatimukset on tarkoitettu noudatettavaksi kaikissa rakennushankkeissa, joissa
+    näitä vaatimuksia halutaan käyttää. Vähimmäisvaatimusten lisäksi voidaan esittää lisävaatimuksia
+    tapauskohtaisesti. Mallinnusvaatimukset ja – sisältö on esitettävä kaikissa suunnittelusopimuksissa
+    sitovasti ja yhdenmukaisesti.
+    Julkaisusarja ’Yleiset tietomallivaatimukset 2012’ koostuu seuraavista dokumenteista:
+        1.  Yleinen osuus
+        2.  Lähtötilanteen mallinnus
+        3.  Arkkitehtisuunnittelu
+        4.  Talotekninen suunnittelu
+        5.  Rakennesuunnittelu
+        6.  Laadunvarmistus
+        7.  Määrälaskenta
+        8.  Mallien käyttö havainnollistamisessa
+        9.  Mallien käyttö talotekniikan analyyseissä
+        10. Energia-analyysit
+        11. Tietomallipohjaisen projektin johtaminen
+        12. Tietomallien hyödyntäminen rakennuksen käytön ja ylläpidon aikana
+        13. Tietomallien hyödyntäminen rakentamisessa
+        14. Tietomallien hyödyntäminen rakennusvalvonnassa
+    Jokaisen tietomallihankkeen osapuolen on tutustuttava oman alansa vaatimusten lisäksi ainakin yleiseen
+    osuuteen (osa 1) sekä laadunvarmistuksen periaatteisiin (osa 6). Projektia tai projektin tiedonhallintaa
+    johtavan henkilön on hallittava tietomallivaatimusten periaatteet kokonaisuutena.
+
+
+
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                       Sivu 5 / 24
+
+
+
+2   Johdanto
+    Tietomallipohjaisessa suunnitteluprosessissa arkkitehdin mallinnus on pakollista kaikissa suunnittelun
+    vaiheissa. Arkkitehtimalli toimii pohjana kaikille muille malleille ja on keskeinen osa myös monia
+    analyyseja ja simulointeja. Siksi on ensiarvoisen tärkeää, että arkkitehtimalli tehdään teknisesti oikein
+    kaikissa projektin vaiheissa.
+    Tämä dokumentti määrittää vaatimukset arkkitehtimallin tietosisällölle projektin eri vaiheissa. Liitteenä
+    olevassa ’Arkkitehtimallin sisältövaatimukset’ taulukossa mallinnettavat rakenneosat on jaoteltu Talo
+    2000 -nimikkeistön mukaisesti, mutta mallintamisessa ei edellytetä minkään tietyn nimikkeistön käyttöä.
+    Yleisissä vaatimuksissa ei myöskään määritetä käytettäviä ohjelmistoja tai ohjelmistokohtaisia teknisiä
+    toimintatapoja. Tilaajakohtaisesti näihin vaatimuksiin voidaan asettaa lisävaatimuksia.
+    Yleiset, kaikille suunnittelualoille yhteiset vaatimukset, on esitetty osassa 1. Yleinen osuus, jonka
+    mallivaihetaulukossa on kuvattu eri suunnittelualojen tuottamia malleja ja niiden käyttötarkoituksia.
+    Suunnittelija on vastuussa oman työnsä vaatimustenmukaisuuden tarkastamisesta. Suunnitelmat
+    tarkastetaan prosessin aikana myös kolmannen osapuolen toimesta osassa 6. Laadunvarmistus esitetyllä
+    tavalla.
+
+
+3   Mallinnusperiaatteet arkkitehtisuunnittelussa
+    Arkkitehtimallin geometria ja tietosisältö vaihtelevat hankkeen vaiheen ja mallin käyttötarkoituksen
+    mukaan. Mallien sisältöä eri hankevaiheissa on käsitelty kohdassa 5 Tietomallinnusvaatimukset hankkeen
+    eri vaiheissa.
+    Mallintaessa tulee käyttää aina kyseisen rakennusosan mallintamiseen tarkoitettuja työkaluja; seinä
+    mallinnetaan seinätyökalulla, laatat laattatyökalulla jne. Jos tämä ei syystä tai toisesta ole mahdollista, on
+    poikkeavat mallinnustavat dokumentoitava. Rakennusosat tulee mallintaa siten, että tietoa siirrettäessä
+    rakennusosan sijainti, nimi/tyyppi ja geometria siirtyvät myös muiden osapuolten ohjelmistoihin.
+
+3.1 Koordinaatit ja mittayksiköt
+    Projektille määritellään projektikoordinaatisto siten, että koko rakennusalue on positiivisessa
+    koordinaatistossa ja origo sijaitsee lähellä rakennusta. Koska arkkitehti tekee yleensä hankkeen
+    ensimmäiset tietomallit, on hänen vastuullaan myös käytettävän koordinaatiston määrittäminen.
+           Ohje
+           Suunnittelua kunnan koordinaatistoon ei suositella, koska tietomallin sijaitseminen kaukana
+           koordinaatiston origosta aiheuttaa ongelmia useimmille suunnitteluohjelmistoille.
+           Negatiiviset koordinaattiluvut eivät ole enää nykyisin tekninen ongelma. Inhimillisten erehdysten
+           välttämiseksi on syytä välttää paikallisen origopisteen määrittelyä siten, että rakennusalue
+           jakaantuu koordinaattiakseleiden eri puolille. Varsinkin työmaalla erimerkkiset koordinaatit
+           voivat aiheuttaa ongelmia.
+    Projektikoordinaatiston sijainti suhteessa kunnan koordinaatistoon dokumentoidaan vähintään kahden
+    vastinpisteen avulla. Vastinpisteille ilmoitetaan x- ja y-koordinaatit projektikoordinaatistossa ja kunnan
+    koordinaatistossa. Vaihtoehtoinen tapa on ilmoittaa yksi piste ja kiertokulma. Tällöin on kuitenkin
+    huomioitava, että varsinkin pidemmillä etäisyyksillä kiertokulma johtaa aina epätarkkuuksiin, joilla voi
+    olla huomattava merkitys rakentamisvaiheessa.
+           Ohje
+           Projektikoordinaatiston muunnos kunnan koordinaatistoon tehdään näiden vastinpisteiden avulla
+           käyttäen Helmert- eli yhdenmuotoisuusmuunnosta.
+    Korkeussuunnassa tietomallit mallinnetaan todelliseen korkeusasemaan kunnan korkeusjärjestelmässä.
+    Rakennusten tietomallien mittayksikkönä käytetään millimetriä. Kiertokulmat ilmoitetaan aina vähintään
+    kahden desimaalin tarkkuudella.
+           Ohje
+           Kukin tontilla oleva rakennus mallinnetaan samaan, suunnittelutyöskentelyn kannalta
+           tarkoituksenmukaiseen X,Y -koordinaatistoon. Rakennusten korkeusasemat määritetään
+           absoluuttisina korkeusasemina paikallisessa koordinaattijärjestelmässä, mutta hankekohtaisesti
+           on mahdollista sopia myös muunlaisesta korkeusasemasta. Rakennusten mallinnuksessa
+
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                      Sivu 6 / 24
+
+           käytettävästä koordinaatistosta sovitaan viimeistään tilamallinnusta aloitettaessa.
+           Koordinaatiston suhde kaupungin koordinaatistoon dokumentoidaan, eikä sovittua
+           koordinaatistoa saa muuttaa hankkeen aikana ilman painavia syitä. Mahdolliset muutokset tulee
+           hyväksyttää kaikilla suunnitteluosapuolilla sekä projektipäälliköllä ja ne tulee dokumentoida
+           suunnittelukokouksessa.
+           Tontin malli tehdään samaan koordinaatistoon kuin rakennuksetkin. Tontin malli tarkoittaa
+           rakennuspaikan ympäristöä eli pihaa, kasvillisuutta, liikenne- ja aluerakenteita. Tästä
+           vaatimuksesta voidaan kuitenkin poiketa hankkeissa, joihin liittyy erityisen laajoja infra-
+           rakenteita.
+    Kun käytettävästä suunnittelukoordinaatistosta sovitaan, on inventointimalli(t) liiteaineistoineen
+    (esimerkiksi lasermittauksen pisteet) muutettava kyseiseen koordinaatistoon kunkin suunniteltavan
+    rakennuksen osalta. Luonnollisesti voidaan myös sopia, että suunnittelussa käytetään inventointimallin
+    koordinaatistoa.
+           Ohje
+           Harkinnanvaraisesti voidaan käyttää koordinaatistoa, jonka xy -origo on tietyllä etäisyydellä
+           esimerkiksi rakennuksen moduuliviivastosta. Tämä vaihtoehto voi olla perusteltu varsinkin silloin,
+           kun rakennuksen paikka voi muuttua vielä suunnittelun loppuvaiheessa. Tyypillisesti tällaisia ovat
+           monet asuntokohteet. Tällöinkin on tärkeää dokumentoida origon sijainti ja x-akselin suunta
+           suhteessa karttakoordinaatistoon nähden. Z -korko määritetään kuten perustapauksessa.
+           Vaikka joissakin suunnittelujärjestelmissä on mahdollista suunnitella suoraan kaupungin
+           koordinaatissa, ei tätä suositella. Useimmissa mallintavissa ohjelmistoissa aiheutuu ongelmia,
+           mikäli ns. world -origo on kaukana itse rakennuksesta. Sen tulisi siis sijaita lähellä varsinaista
+           suunnittelumallia.
+    Määrittelyn jälkeen koordinaatistot ja niiden yhteensopivuus eri suunnittelualojen kesken tulee aina
+    testata. Tähän testiin voidaan käyttää yksinkertaista, koirankoppi -tyyppistä mallia, johon kaikki
+    suunnittelualat mallintavat jotakin, jonka avulla voidaan selvästi havaita, että tietomallit voidaan yhdistää
+    ongelmitta. Tietomallien ohella tulee varmistaa, että myös mallintamisen lähtötietona oleva 2D-muodossa
+    jaettava piirustusaineisto on samassa koordinaatistoissa kuin tietomallitkin.
+
+3.2 Rakennukset, kerrokset ja lohkot
+    Jokainen erillinen rakennus on luovutettava itsenäisenä mallina. Tarvittaessa rakennus voidaan jakaa
+    useampiin lohkoihin, mahdollisesta lohkojaosta on sovittava projektiryhmän kesken. Jokainen rakennus
+    on luovutettava yhtenä kokonaisuutena IFC- ja ohjelmiston omassa tiedostomuodossa (ns. natiivimuoto).
+    Suurissa rakennuksissa voidaan joutua käyttämään kerros- tai lohkojakoa tiedonsiirrossa
+    ohjelmistoteknisistä syistä.
+    Arkkitehtimallit laaditaan kerroksittain, vaikka mallinnusohjelmisto tukisikin muuntyyppistä
+    mallinnustapaa. Tämä johtuu siitä, että malleista laadittavat analyysit tehdään usein kerroksittain, käyttäjä
+    ja tilaaja käsittelevät tulevia tiloja kerroksittain ja muut osapuolet työmaata myöten käsittelevät
+    suunnitelmia pääosin kerroksittain.
+
+
+
+
+    Arkkitehtimallin kerrosjako
+
+           Ohje
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                     Sivu 7 / 24
+
+           Arkkitehtimallissa kunkin kerroksen malliin kuuluu kyseisen kerroksen alapuolinen laatta
+           pintarakenteineen (kerroksesta riippuen ala- tai välipohja) sekä alaslasketut sisäkatot ja
+           yläpuoliseen laattaan liittyvät tilaa vievät akustoivat rakenteet. Arkkitehdin ei tarvitse mallintaa
+           perustuksia, mutta sokkelirakenteet on mallinnettava ainakin maanpäällisiltä osiltaan. Yläpohja ja
+           vesikattorakenteet mallinnetaan arkkitehtimallissa omana kerroksenaan. Vesikaton laitteita ja
+           varusteita ei mallinneta, ellei siitä erikseen sovita.
+           Kunkin kerrostason korkona, eli esimerkiksi leikkauksissa ja pohjapiirroksissa esitettävänä
+           kerroksen korkona, käytetään valmiin lattiapinnan korkoa. Alapuoliset kantavat vaakarakenteet ja
+           kevyet lattiarakenteet mallinnetaan tämän koron alapuolelle.
+           Useiden kerrosten läpi menevät rakenteet pilkotaan useimmiten kerroksen korkuisiksi siivuiksi,
+           mutta mallin käyttötarkoituksesta riippuen tätä on arvioitava tapauskohtaisesti. Hankekohtaisesti
+           on mahdollista tehdä poikkeuksia vaatimukseen kerroksittaisesta mallinnustavasta, jos se on
+           rakenneratkaisun tai rakennuksen muun ominaisuuden kannalta järkevää.
+
+3.3 Mallintamiset tarkkuustasot
+    Tietomallintamisen tarkkuustaso riippuu hankkeen vaiheesta ja tietomallien hyödyntämistarpeista.
+    Pääosin tarkkuusvaatimukset voidaan jakaa kolmeen tasoon, joiden sisällä on pieniä eroavaisuuksia eri
+    rakenneosien välillä:
+    Taso 1 Käyttötarkoitus on suunnittelijoiden välinen kommunikaatio ja suunnitelmien
+           yhteensovittaminen; sijainti ja geometria on mallinnettu vaatimusten mukaisesti, rakennusosat on
+           nimetty kuvaavasti.
+    Taso 2 Käyttötarkoituksina ovat hanke- ja luonnosvaiheissa energia-analyysit, rakentamisen
+           valmisteluvaiheessa rakennusosapohjainen määrälaskenta; sijainti ja geometria on mallinnettu
+           vaatimusten mukaisesti, rakennetyyppi määritelty ja oikean niminen ja tuoteosat mallinnettu
+           niin, että kappalemäärät ja muu oleellinen määrätieto saadaan tuotetyypeittäin mallista.
+    Taso 3 Käyttötarkoituksina ovat työmaan aikataulutus ja hankinnat; sijainti ja geometria on mallinnettu
+           vaatimusten mukaisesti, hankintaa varten oleelliset tiedot ovat attribuutti tms. kenttinä
+           rakennusosissa ja ne voidaan listata (esim. ikkuna: tyyppi, aukkomitat, db-vaatimukset jne.).
+    Tämän dokumentin liitteenä olevaan Arkkitehtimallin sisältövaatimukset -taulukkoon voidaan merkitä
+    kullekin rakennusosalle hankkeen eri vaiheessa haluttava vaatimustaso. Useissa paikoin asetettuja
+    tasovaatimuksia on syytä myös hieman selventää, sillä esimerkiksi energiasimuloinnin ja määrälaskennan
+    asettamat vaatimukset malleille ovat hieman erilaiset, vaikka niitä molempia kuvataan tasolla 2.
+           Ohje
+           Jos halutaan, että arkkitehtimallia käytetään sekä simulointiin että määrälaskentaan, voidaan
+           mallista joutua tekemään kaksi eri versiota. Tästä syystä energiasimulointimallit on nostettu
+           tasolle 2, vaikkei niiden sisältö käytännössä olekaan kovin detaljoitua.
+    Jatkossa tämän dokumentit vaatimuksissa ja ohjeissa viitataan näihin tarkkuustasoihin.
+
+3.4 Rakennetyypit
+    Vastuu rakennetyyppien määrittelystä jakautuu rakennesuunnittelijan ja arkkitehdin kesken.
+    Rakennesuunnittelijan tehtävänä on määritellä kaikki kantavat rakenteet sekä vaippaan liittyvät
+    rakennetyypit. Kevyet väliseinät ja muut kevyet rakenteet määrittelee arkkitehti tai rakennesuunnittelija,
+    ja osapuolesta on sovittava hankeen alussa. Ikkunoiden ja ovien rakennetyypit (ts. tyypit) määrittelee
+    arkkitehti. Mikäli arkkitehdilla ei ole käytössään rakennesuunnittelijan määrittämiä rakenteita, merkitään
+    rakennetyypit siten, että niiden ensisijainen materiaali tai käyttö voidaan tunnistaa. Merkintätavan tulee
+    olla sellainen, että nämä luonnostyypit voidaan jälkeenpäin helposti korvata oikeilla rakennetyypeillä.
+           Ohje
+           Rakennetyyppien sisäisiä komponentteja ei tarvitse välttämättä mallintaa, mutta useimmiten jo
+           pelkästään piirustusteknisesti tämä on järkevää tai jopa välttämätöntä. Monimutkaisissa
+           rakenneratkaisuissa myös alikomponenttien mallintaminen voi olla toteutuksen vuoksi tarpeellista,
+           mutta yleensä tätä tapaa tulee välttää.
+    Kantavissa rakenteissa arkkitehti mallintaa ensisijaisesti näkyviä pintoja, jolloin rakenteiden ulkomittojen
+    tulee olla oikein. Holvien ym. välipohjarakenteiden mallintaminen kuuluu rakennesuunnittelijalle,
+    arkkitehtimalliin nämäkin rakenteet tulee mallintaa ns. tilavarauskappaleina laattatyökalulla. Kantavien
+    välipohjarakenteiden päälle tulevat kelluvat lattiarakenteet ja tasauskerrokset mallinnetaan
+
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                      Sivu 8 / 24
+
+    arkkitehtimalliin joko osaksi vaakarakenteen tilavarausta tai tarvittaessa erillisenä rakenteena.
+    Rakenteissa olevat aukot mallinnetaan nimellismitoilla, todelliset aukkomitat määrittää ja mallintaa
+    rakennesuunnittelija.
+           Ohje
+           Tavallisesti arkkitehti mallintaa vaakarakenteen yhtenä laattana, joka sisältää kaikki
+           rakennekerrokset (Tasot 1-2). Työmaan aikataulua tai muuta erityiskäyttöä varten voi olla joskus
+           tarve mallintaa kerrokset erikseen (Taso 3). Ongelmalliseksi asia muuttuu, jos suunnittelu-
+           teknisistä syistä arkkitehti joutuu mallintamaan rakennekerrokset erikseen, mutta määrälaskenta
+           haluaisi koko välipohjan yhtenä rakennusosana, jolla on yksi rakennetyyppi. Tarvittaessa
+           mallinnustavasta on sovittava tapauskohtaisesti, mutta suosituksena on, että tasoa 3 käytetään
+           vain erityistapauksissa. Samoja periaatteita ja suosituksia voidaan soveltaa myös seiniin.
+
+3.5 Mallien julkaisu ja tarkastus
+    Julkaistaessa arkkitehtimalleja niihin ei saa sisällyttää muiden suunnittelijoiden malleja, vaikka niitä
+    olisikin käytetty referenssimalleina. Mallien yhteensovitusta ja tarkistamista varten arkkitehtimalli
+    tallennetaan IFC -muotoon, jolloin arkkitehdin on varmistettava, että kaikki tarpeellinen siirtyy IFC-
+    tiedostoon ja toisaalta, ettei sinne mene mitään ylimääräistä.
+    Ennen mallin julkaisua suunnittelijan on tehtävä malliin laadunvarmistus tämän ohjeen ja mahdollisesti
+    yrityksen oman laatujärjestelmän mukaisesti. Mallit julkaistaan tämän ohjeistuksen tai hankkeessa
+    muuten sovitun käytännön ja aikataulun mukaisesti.
+
+3.6 Työmallit
+    Varsinaiseen julkaisu- ja laadunvarmistusprosessin mukaiseen tarkistukseen tietomallit toimitetaan
+    projektiaikataulun mukaisesti ainoastaan tietyistä suunnitteluvaiheista.
+    Projektin aikana on tarkoituksenmukaista jakaa suunnitteluosapuolien välillä tietoa tietomallimuodossa.
+    Tiedon ei tarvitse aina kulkea laadunvarmistusta käsittelevässä osiossa kuvatun julkaisuprosessin kautta,
+    kunhan toimintatapa ja siitä mahdollisesti aiheutuvat rajoitukset ovat tietoa hyödyntävän osapuolen
+    tiedossa. Työmallit ovat osa joustavaa ja nopeaa tiedonvaihtoa ja ne kuvaavat aiottua suunnittelu-
+    ratkaisua, tilavarauksia, tietyn yksityiskohdan havainnollistamista jne.
+    Työmalleja voidaan lähettää osapuolille aina tilanteen mukaan niin sovittaessa, mutta hyvin
+    organisoidussa tietomallihankkeessa työmallit tallennetaan säännöllisesti esimerkiksi projektipankkiin.
+    Päivitysten sykli määräytyy hankkeen ja suunnitteluvaiheen mukaan, tyypillisesti vaihteluväli on yhdestä
+    neljään viikkoon. Näiden mallien ei tarvitse olla kaikilta osin tarkastettuja, eivätkä ne siksi sovellu
+    käytettäviksi kaikkiin tehtäviin vaan ainoastaan sovittuun tarkoitukseen. Mallin lähettäjän tulee tehdä
+    selväksi kaikille osapuolille, että kyseessä on työmalli. Myös työmallien jakamiseen kuuluu oleellisena
+    osana tietomalliselostus, jossa on kuvattu mallin sisältö ja käyttötarkoitus.
+
+3.7 Tietomalliselostus
+    Tietomalliselostus on kunkin suunnittelualan ylläpitämä kuvaus mallin sisällöstä. Se kertoo, mihin
+    tarkoitukseen malli on julkaistu ja mikä on sen tarkkuusaste. Selostuksessa kuvataan mallintamisessa
+    käytetty ohjelmisto, alkuperäisestä mallista eri käyttötarkoituksia varten mahdollisesti luodut malliversiot,
+    mallin sisältö ja poikkeamat tässä ohjeessa annetuista vaatimuksista ja suosituksista. Lisäksi
+    dokumentoidaan käytetyt rakennetyyppien nimeämiskäytännöt, mallin sisällön valmiusaste ja mallin
+    käyttöä koskevat rajoitukset.
+    Tietomalliselostus tallennetaan esimerkiksi projektipankkiin tietomallin tallennuksen yhteydessä ja sitä
+    päivitetään aina kun mallissa tapahtuu sellaisia muutoksia, jotka vaikuttavat selostuksen sisältöön.
+     Tietomalliselostus päivitetään aina kun malli julkaistaan muiden osapuolten käyttöön, olipa sitten
+        kyseessä työmalli tai tietomalli urakkalaskentaa varten.
+     Selosteessa kuvataan järjestelmien ja rakennusosien nimeämiskäytännöt ja tarvittaessa mallin yleinen
+        rakenne.
+     Mallien valmiusaste ja tärkeimmät muutokset tulee dokumentoida niin, että eri osapuolet löytävät ne.
+     Hankkeen virallisessa tarkastelupisteessä julkaistun mallin puutteellisesta tai virheellisestä muutosten
+        dokumentoinnista johtuvista seurauksista vastaa virheen tekijä suunnittelusopimusten ja yleisten
+        sopimusehtojen määrittelemässä laajuudessa.
+     Työmallien kohdalla selosteen tarkoitus on olla sisältöä ja tehtyjä muutoksia selventävä, ja siten
+        kirjaukset voivat olla luonteeltaan muistiinpanomaisempia.
+
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                        Sivu 9 / 24
+
+     Tietomalliseloste tulee nimetä ja/tai revisioida siten, että tiedetään mihin tietomalliin se liittyy.
+    Tietomalliselostuksen lisäksi suunnittelija antaa suunnitteluvaiheilmoituksen ohessa tietomallintamisen
+    vaiheilmoituksen, jossa voidaan viitata tiettyyn tietomalliselostuksen versioon.
+
+3.8 Kuvatasot
+    Jos suunnittelija on käyttänyt mallissaan kuvatasoja siten, että niillä on merkitystä hankkeen muille
+    osapuolille, tulee tietomalliselostuksessa dokumentoida tasojen merkitykset ja sisältö (esim. Talo
+    2000 -nimikkeistön mukainen jaottelu). Minkään tietyn tasojärjestelmän käyttöä ei kuitenkaan vaadita,
+    koska mallin osien näkyvyyttä voidaan säädellä esimerkiksi mallinnettaessa syntyvien rakennusosien
+    luokkien mukaan.
+
+
+4   Tietomallinnus peruskorjauskohteessa
+    Peruskorjaushankkeiden määrä on kasvamassa ja myös mallintaminen niissä yleistyy. Korjaushankkeiden
+    ongelmat ovat hieman toisentyyppisiä kuin uudisrakentamisessa, mutta mallintamisen näkökulmasta
+    niissä on kuitenkin paljon samankaltaisuuksia.
+    Suurin ero on tietenkin olemassa oleva rakennus ja sen mukanaan tuomat rajoitteet. Uudenaikaisella
+    mittaustekniikalla saadaan tarkat tiedot olemassa olevasta tilanteesta ja mallinnustekniikan ja osaamisen
+    kehittyessä inventointimalleista saadaan hyvä lähtökohta suunnittelulle. On kuitenkin huomioitava, että
+    kompastuskivenä voi olla tiedonsiirto eri ohjelmistojen välillä. Tiedonsiirto jopa saman
+    ohjelmistovalmistajan ohjelmistojen välillä voi olla ongelmallista. Käytettäessä IFC-tiedonsiirtoa saattaa
+    3D-geometria siirtyä näennäisen hyvin, mutta useimmiten malleista ja niiden komponenteista katoaa
+    ominaisuudet, joita tarvitaan rakennusosien esitystapojen hallitsemiseen dokumenttien laadinnassa.
+    Inventointimalleja ja niiden tekoa on kuvattu osassa 2. Lähtötilanteen mallinnus.
+    Mikäli käytössä on hyvä inventointimalli, voi arkkitehdin mallinnustyön määrä olla huomattavasti
+    uudisrakentamista pienempi. Toisaalta, jos inventointimalli on puutteellinen tai se puuttuu kokonaan, voi
+    mallintamiseen kuluva aika olla moninkertainen verrattuna vastaavaan uudisrakennukseen.
+    Peruskorjauskohteiden tietomallintamisen ohjeet ja vaatimukset ovat pääosin samoja kuin
+    uudisrakentamisessakin, mutta seuraavassa on käsitelty lyhyesti muutamia eroavaisuuksia.
+
+4.1 Inventointimallin käsittely
+    Ideaalitilanteessa inventointimalli on laadittu samalla ohjelmistolla, jota arkkitehti käyttää. Tällöin
+    luonnollisesti minimoidaan mallin tiedonsiirrosta aiheutuvat ongelmat. Lopputulosta parantaa edelleen,
+    jos malli on laadittu arkkitehdin valvonnassa tai toimesta, jolloin työn kuluessa on mahdollisuus vaikuttaa
+    erilaisten mallinnustapojen käyttöön, rakennusosien nimeämiseen, mallinnuksen tarkkuuteen ja työn
+    vaiheistukseen.
+    Mikäli malli on laadittu jollain toisella suunnitteluohjelmistolla, on arkkitehdin valmistauduttava osittain
+    tai pahimmassa tapauksessa jopa kokonaan mallintamaan kohde uudelleen. Tähän on sekä teknisiä että
+    sisällöllisiä syitä. Vaikka mallien geometria siirtyy IFC-tiedonsiirron kautta kohtuullisen hyvin, niin mitä
+    detaljoidummin malli on laadittu, sitä todennäköisemmin kaikki parametrisyys ja muokattavuus jää
+    matkan varrelle. Tästä aiheutuu ongelmia dokumenttien tuottamisessa ja esimerkiksi uusien ovien
+    sijoittamissa olemassa oleviin seinärakenteisiin. Ohjelmistot toki kehittyvät koko ajan ja myös
+    inventointimallin laatijan ammattitaidolla on erittäin suuri vaikutus yhteensopivuuteen, joten aina edellä
+    esitetyt kauhuskenaariot eivät toteudu.
+
+4.2 Suunnitelmien yhteensovittaminen
+    Mikäli kohteesta on saatavilla jo suunnittelun alussa hyvä inventointimalli, helpottaa se myös
+    tietomallipohjaista suunnitelmien yhteensovittamista. Kun arkkitehti pääsee nopeasti käsiksi
+    suunnitteluasioihin, voidaan erikoissuunnittelijoille toimittaa lähtötiedoksi malleja nopealla aikataululla.
+    Peruskorjaushankkeiden yhteydessä rakennuksiin tulee usein suuri määrä uutta talotekniikkaa. Tämä lisää
+    yhteensovitustyötä, jota voidaan ratkaisevasti helpottaa tietomalleilla
+    Rakennesuunnittelijan ei usein tarvitse mallintaa koko hanketta, riittää kun hän laatii mallin uusien
+    rakenteiden osalta ja niiltä osin kun vanhoihin rakenteisiin tulee muutoksia. Käytännössä arkkitehtimalli,
+    tai itse asiassa inventointimalli, toimii myös rakennemallin korvikkeena yhteensovittamisvaiheessa.
+
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                     Sivu 10 / 24
+
+    Mikäli peruskorjauksen yhteydessä tehtävät muutokset ovat niin laajoja, että niillä on vaikutusta rungon
+    statiikkaan, on rakennemalli kuitenkin syytä laatia koko rungon osalta.
+           Ohje
+           Peruskorjauskohteen mallipohjainen yhteensovitus ei tietenkään ole ongelmatonta, vaikka hyväkin
+           lähtöaineisto olisi saatavilla. Rakennusmittaukset ja niistä laadittavat tietomallit joudutaan usein
+           tekemään siinä vaiheessa, kun rakennus on vielä käytössä. Tästä johtuen mittausvaiheessa ei voida
+           tehdä alaslaskettujen sisäkattojen tai muiden rakenteiden purkamista, jolloin osa asioista jää
+           väistämättä dokumentoimatta. Purkutöiden yhteydessä paljastuvat yllättävät palkit tms. ovat myös
+           tietomallisuunnittelun arkipäivää, ja niihin on vaikea varautua suunnitteluvaiheessa.
+
+
+5   Tietomallinnusvaatimukset hankkeen eri vaiheissa
+
+
+
+
+    Hankkeen tietomallirakenne
+
+
+5.1 Tarveselvitys
+    Tarveselvitysvaiheessa perustellaan tilahankinnan tarpeellisuus tai olemassa olevan tilan muutostarve,
+    kuvataan alustavasti tarvittavat tilat ja niille asetettavat vaatimukset, tutkitaan vaihtoehtoiset
+    käyttömahdollisuudet sekä arvioidaan eri ratkaisujen edullisuus. (TELU2012)
+    Hankkeen alussa tietomallin muoto saattaa poiketa tavanomaisesta kolmiulotteisesta tietomalli-
+    suunnitelmasta. Suunnittelu- ja laatuvaatimusten päivittäminen tavoitteiden ja suunnittelun kehittymisen
+    myötä on tärkeä osa prosessia, ja ne kuuluvat pääsääntöisesti joko projektipäällikölle tai
+    pääsuunnittelijalle. Vastuu tulee määritellä sopimuksissa.
+    Kaikki päätöksenteon kannalta keskeiset versiot vaatimuksista tulee säilyttää, jotta muutoshistoriaa
+    voidaan tarvittaessa tarkastella jälkeenpäin.
+
+    5.1.1 Vaatimusmalli
+    Vaatimusmallin minimivaatimus on taulukkomuodossa oleva tilaohjelma, jota voidaan käyttää
+    tilaohjelman ja suunnitelmaratkaisujen vertailussa. Tilaohjelman tulee sisältää tilakohtaiset pinta-ala- ja
+    erityisvaatimukset. Taulukkomaista tilaohjelmaa voidaan täydentää käyttäjän ja/tai tilaajan tiloille
+    asettamilla vaatimuksilla. Niin tilaohjelmaa kuin tiloille asetettuja vaatimuksiakin tulee ylläpitää
+    sähköisessä muodossa siten, että niiden avulla voidaan jatkossa verrata suunnitelmaa vaatimuksiin.
+    Yksittäisille tiloille asetettavia vaatimuksia voidaan esittää laatutasovaatimuksina myös tilaryhmän tai
+    tilatyypin vaatimuksiin viittaamalla.
+    Tilaohjelmassa esitettäviä vaatimuksia ovat esimerkiksi:
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                         Sivu 11 / 24
+
+        tilan nettoalatarve ja tarvittaessa mittoihin ja muotoihin liittyviä vaatimuksia
+        tilan käyttö ja käyttäjät, keskeiset yhteydet ja vaikutukset muihin tiloihin
+        sisäilmasto, ääneneritys, valaistus, kuormitus, kestävyys, turvallisuus ja laatutaso
+        LVI-järjestelmät, sähköjärjestelmät, kalusteet, varusteet, laitteet, tilan jako-osat, sisäpuoliset
+         pintarakenteet.
+
+     VAATIMUSMALLI
+        Lähtötiedot:
+               tilaajan vaatimukset ja budjetti
+               tavoitteet.
+
+     Mallin sisältö ja vaatimukset katso kohta 6.
+
+     Mallista saatavat hyöty:
+               suunnittelun lähtötiedot
+               kustannuslaskennan lähtötiedot.
+
+
+5.2 Hankesuunnittelu ja suunnittelun valmistelu
+    Hankesuunnittelu perustuu sekä tarve- että hankeselvitykseen. Siinä selvitetään ja arvioidaan tarvittavalla
+    tarkkuudella hankkeen vaihtoehtoiset toteuttamismahdollisuudet ja toteuttamistavat. Suunnittelun
+    valmistelussa organisoidaan suunnittelu, pidetään mahdolliset suunnittelukilpailut, käydään tarvittavat
+    neuvottelut, valitaan suunnittelijat ja tehdään suunnittelusopimukset. (TELU2012)
+
+    5.2.1 Lähtötilanteen mallinnus
+    Lähtötilanne mallinnetaan osassa 2. Lähtötilanteen mallinnus kuvatulla tavalla. Uudisrakennuskohteissa
+    mallinnetaan tontti ja korjausrakentamiskohteissa lisäksi olemassa oleva rakennus tai rakennukset.
+    Rakennusten lähtötilannemallia kutsutaan nimellä inventointimalli.
+    Alkuperäinen tontin malli ja inventointimalli(t) arkistoidaan tietomallivaatimusten osassa 1. Yleinen osuus
+    kuvatulla tavalla ennen niiden käyttöönottoa arkkitehdin suunnittelumalleina.
+     LÄHTÖTIETOMALLI
+        Lähtötiedot:
+                 olemassa olevat rakennukset ja rakenteet
+                 2D kuvat ARK, RAK
+                 3D kuvat ARK, RAK
+                 mittaustulokset
+                 tontin vaaitus.
+
+     Mallin sisältö ja vaatimukset katso kappale 6.
+     Huomioitavaa                                    Jos malli on jo olemassa, on tutkittava mallin ja mallin
+                                                       tietosisällön siirtyminen käytettävien ohjelmistojen
+                                                       välillä.
+
+     Mallista saatava hyöty:
+                 rakennusosa- ja tilaluettelot
+                 laajuustietoja
+                 suunnittelun lähtötilanne olemassa olevista rakennusosista, tiloista ja rakenteista
+                 tontin korkomaailma
+                 tontin mallin hyödyntäminen asemapiirroksen laadinnassa
+                 visualisointiaineisto
+                 rakennusten inventointitieto.
+
+
+
+
+                            Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                         Sivu 12 / 24
+
+    5.2.2 Tontin malli
+    Tontin malli tarkoittaa rakennuspaikan ympäristöä eli pihaa, kasvillisuutta, liikenne- ja aluerakenteita.
+    Tontin mallin mittayksikkö on millimetri ja se tehdään samaan koordinaatistoon kuin rakennuksetkin.
+    Näistä vaatimuksista voidaan kuitenkin poiketa hankkeissa, joihin liittyy erityisen laajoja infra-rakenteita.
+    Kukin tontilla oleva rakennus mallinnetaan samaan, suunnittelutyöskentelyn kannalta tarkoituksen-
+    mukaiseen X,Y -koordinaatistoon. Arkkitehdin tulee määrittää koordinaatisto kohdassa 3.1 kuvatulla
+    tavalla.
+    Kun käytettävästä suunnittelukoordinaatistosta sovitaan, on inventointimalli(t) liiteaineistoineen
+    (esimerkiksi lasermittauksen pisteet) muutettava kyseiseen koordinaatistoon kunkin suunniteltavan
+    rakennuksen osalta. Luonnollisesti voidaan myös sopia, että suunnittelussa käytetään inventointimallin
+    koordinaatistoa.
+
+    5.2.3 Hankesuunnittelumallin sisältö
+    Hankesuunnitteluvaiheessa arkkitehdin tilamallin avulla tutkitaan eri suunnitteluvaihtoehtoja ja niiden
+    kustannuksia tilapohjaisilla analyyseillä. Lisäksi mallilla voidaan tehdä energia- ja olosuhdesimulointeja
+    elinkaarikustannustarkasteluiden tueksi. Mallissa tuleekin olla tilat ja niitä ympäröivät seinät tai muut
+    jako-osat yksinkertaisesti mallinnettuna. Energia-analyysejä varten ulkoseinissä tulee olla myös ikkunat,
+    joskin joissain simulointiohjelmissa ne on mahdollista lisätä myös aukotusprosentteihin perustuen.
+    Simulointien kannalta ikkunoiden muodolla tai sijainnilla ei tässä vaiheessa ole suurta merkitystä riittävän
+    tarkkuuden aikaansaamiseksi.
+
+5.3 Ehdotussuunnittelu
+    Ehdotussuunnittelussa laaditaan vaihtoehtoiset suunnitteluratkaisut asetettujen tavoitteiden täyttämiseksi.
+    Tuloksena on valittu ehdotussuunnitelma.(TELU2012)
+    Ehdotussuunnitteluvaiheessa voidaan sopivinta perusratkaisua hakea karkealla tasolla olevilla
+    vaihtoehtoisilla tilamalleilla, joissa arkkitehti mallintaa kohteen sopivina tilaryhminä käytetyn
+    ohjelmiston tila- tai vyöhyketyökalua käyttäen. Yksi tila voi siten esittää esimerkiksi jonkin
+    käyttötarkoituksen kaikkia tiloja rakennuksen tietyssä kerroksessa. Työn tarkoituksena on tutkia
+    vaihtoehtoja tilojen ryhmittelystä sekä rakennuksen massoittelusta ja sijoittamisesta tontille. Projektin
+    laajuudesta ja tarpeista riippuen voidaan tämä vaihe ohittaa ja siirtyä suoraan tilakohtaisen tilamallin
+    käyttöön. Tilaryhmien lisäksi tilaryhmämallissa mallinnetaan vähintään rakennuksen ulkovaippa. Sisäisiä
+    rakennusosia (laatat, seinät, jne.) ei tarvitse mallintaa. Haluttaessa tilaryhmämallissa voidaan esittää myös
+    väliseiniä ja laattoja.
+
+
+
+
+    Tilat mallinnetaan omina mallinnusosinaan.
+
+    5.3.1 Tilamalli
+    Tilamalli käsittää tavallisesti tilat ja niitä rajaavat seinät. Jotta tilamallia voidaan hyödyntää erilaisissa
+    analyyseissä, pitää seinät jakaa minimissään ulko- ja väliseiniin. Joissakin ohjelmissa on mahdollista
+    korvata väliseinät tilaa rajaavilla piirustusobjekteilla.
+    Energiasimulointia varten tarvitaan yleensä myös yksinkertaisesti mallinnetut ikkuna-alueet; tärkeää
+    niiden mallintamisessa on ikkunan koko, sijainnit voivat olla suuntaa antavia. Myös vaakarakenteiden
+    mallintaminen karkeina tilavarauskappaleina voi olla tarpeen. Varsinkin suunnittelun alkuvaiheessa
+
+
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                   Sivu 13 / 24
+
+karkeita simulointeja tehdään ns. tilaryhmämalleilla, missä tilat on mallinnettu isoina alueina
+käyttötarkoituksittain tai jopa kerroksen kokoisena. Muilta osin tilaryhmämallin sisältö vastaa tilamallia.
+       Ohje
+       Erikoistapaus tilamallista on malli, jossa on vain tilat. Tällaista mallia voidaan käyttää
+       suunnittelun alkuvaiheessa tilaohjelman ratkaisemiseen ja siitä saada luetteloitua erilaisia
+       laajuustietoja ja huoneluetteloita. Tällaista yksinkertaista tilamallia täydennetään usein erilaisilla
+       2D-komponenteilla, jotka suunnittelun edetessä korvataan seinillä ja muilla rakennusosilla.
+       Toinen erikoistapaus on edellä kuvattu tilaryhmämalli, jossa yhdellä tilalla esitetään laajempaa
+       kokonaisuutta.
+       Suunnittelun edetessä tilamallista tulee osa rakennusosamallia. Mallin monimutkaistuessa käy
+       kuitenkin usein niin, että tiedonsiirto erilaisiin analysointiohjelmiin hankaloituu tai tulee
+       mahdottomaksi. Tällöin voi olla tarpeen tehdä rakennusosamallista yksinkertaistettu tilamalli-
+       versio. Kansainvälinen standardointi (buildingSMART) ja ohjelmistovalmistajat tekevät
+       parhaillaan työtä näiden käyttötapausten määrittelemiseksi ja tavoitteena on, että tulevaisuudessa
+       erilaisten versioiden tallennus voidaan tehdä suoraan mallinnusohjelmasta ilman lisätöitä.
+Tilat tulee jakaa tilaohjelman mukaisesti toiminnallisiin tiloihin (mm. toimisto, varasto, yleinen alue),
+vaikka tila fyysisesti olisi yksi kokonaisuus. Tilaohjelman mukaiset tilat tai saman pinta-alatyypin tilat
+eivät saa olla edes osittain päällekkäin. Eri pinta-alatyyppien tilat voivat kuitenkin olla päällekkäisiä,
+esim. huoneen ja bruttoalan tilat voivat olla päällekkäin, mutta kahden eri huoneen tilat eivät. Jokainen
+pinta-alaltaan yli 0.5 m2 oleva rakennuksen tila tulee mallintaa, tätä pienempiä tiloja ei mallinneta.
+       Ohje
+       Arkkitehdin tilamallissa tilat ryhmitellään palo-osastoihin ja huoneistoihin tai osastoihin. Sama
+       tila voi siis kuulua moneen eri tilaryhmään. Arkkitehti ei mallinna rakentamisen lohkoja tai
+       talotekniikkasuunnittelun (TATE) tarvitsemia vyöhykkeitä (esim. ilmastointivyöhyke).
+       Erikseen niin sovittaessa taloteknisten järjestelmien tilavaraukset tutkitaan tilamallivaiheessa tai
+       mahdollisesti jo tilaryhmävaiheessa TATE -suunnittelijan tekemien tilavarausmallien kanssa
+       yhdistelmämallina. Tilavaraukset mallinnetaan kolmiulotteisina komponentteina
+       Talotekniikkasuunnittelun tietomallivaatimuksissa kuvatulla tavalla. Tilavarausten tekemisestä
+       sovitaan suunnittelusopimuksissa.
+
+5.3.2 Tilojen mallintaminen
+Tilat mallinnetaan käytettävän ohjelmiston tilatyökaluilla. Tila on kolmiulotteinen mallinnusosa, jota
+rajaavat tilaa ympäröivät seinät, katto ja lattia. Jos näiden tilaa rajaavien elementtien koko tai sijainti
+muuttuu, tulee myös tilan koko päivittää muutosta vastaavaksi. Tilat sijoitetaan mallinnusohjelmasta
+riippuen joko yhteen malliin jaoteltuina eri kerroksiin tai kerroksittain jaettuihin erillisiin malli-
+tiedostoihin. Yhdessä kerroksessa sijaitsevien tilojen korkeuden tulee vastata suunniteltua huonekorkeutta
+lattiatasosta yläpuolisen laatan alapintaan. Vinokattoisissa ja -lattiaisissa tiloissa korkeus määritellään tätä
+ohjetta soveltaen niin, että vähintään tilan kokonaistilavuus on oikea. Käytetyt mallinnustavat tulee
+dokumentoida tietomalliselostuksessa. Mallille tehtävien simulointien ehtona on, että tilojen rajat ovat
+yhteneviä niitä ympäröivien komponenttien kanssa. Tähän päästään yleensä käyttämällä tilatyökalua, joka
+generoi tilat automaattisesti ympäröivien rakennusosien perusteella.
+       Ohje
+       Simulointitarpeita varten usean kerroksen korkuiset tilat mallinnetaan yleensä erikseen kunkin
+       kerroksen osalta. Tuolloin korkean tilan ylemmissä kerroksissa sijaitsevat yläosat tulee nimetä
+       esimerkiksi tilanimellä ”Yläosa” ja samalla numerolla kuin lattiatasossa oleva tila. Ylemmän
+       kerroksen tilan tulee ulottua alemman kerroksen kattotasoon eli samaan tasoon, johon alemman
+       kerroksen tila päättyy. Simulointiohjelmat kehittyvät jatkuvasti ja niiden välillä on eroja, joten
+       mallinnustapa kannattaa sopia hankekohtaisesti. Tarpeetonta tilojen viipalointia kannattaa
+       välttää, koska se hankaloittaa tilamallien muuta käyttöä.
+
+5.3.3 Tiloista ja tilaryhmistä vaadittavat tiedot
+Tilan tietojen huolellinen ja johdonmukainen käyttö on ensiarvoisen tärkeää, koska niitä tarvitaan
+tietomallipohjaisessa prosessissa useisiin tarkoituksiin kuten tilapohjaiseen kustannuslaskentaan,
+suunnitelmien ja tilaohjelman vertailuun, energia-analyyseihin ja kiinteistönhallintasovelluksiin.
+Minimivaatimuksena on, että IFC-tiedonsiirrossa siirtyvät tilan tunniste ja tilan käyttötarkoitus. Tilan
+pinta-ala voidaan laskea geometriasta ja muita tietoja voidaan siirtää esimerkiksi tietokantamuodossa, kun
+tilat ovat yksiselitteisesti tunnistettavissa tilan tunnisteen avulla.
+
+                      Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                   Sivu 14 / 24
+
+Tilan tunniste: Tästä voidaan käyttää myös nimitystä tilan numero, vaikka numeron osana voidaan
+käyttää tarvittaessa myös kirjaimia ja välimerkkejä osastoa tai muuta käyttöyksikköä kuvaavana
+tunnisteena. Kaikki tilat on voitava tunnistaa numeron tai tunnisteen perusteella.
+       Ohje
+       Alkuvaiheessa usealla tilalla voi olla sama tunniste, jos ne ovat vaatimuksiltaan identtisiä (2.14).
+       Suunnittelun loppuvaiheessa tunnisteiden pitää kuitenkin olla yksilöllisiä, sillä niihin sidotaan
+       huoneiden laiteasennukset, kalusteet, varusteet jne. (2.14.05). Suunnittelijoiden tulee noudattaa
+       tilaohjelman mukaista numerointia suunnittelumalleissa.
+       Tilojen tunnistenumeron voi rakentaa esimerkiksi siten, että siihen sisältyvät käyttäjätieto,
+       vaatimustilan tunniste ja yksilöivä tunniste alla olevan taulukon mukaisesti.
+          Käyttäjän           Vaatimustilan        Huoneen            Tilan tunniste        Tilan sijainti,
+          tunniste            tunniste             yksilöivä tunniste                       esim. ovinumero
+          11                  10                   23                   11.10.23            A3109
+          12                  20                   4                    12.20.04            B2018
+
+       Vastaavaa periaatetta voidaan soveltaa myös asuntosuunnittelussa oheisen taulukon mukaisesti.
+          Rakennus tai        Asunnon numero Huoneen tunniste Tilan tunniste                Vaihtoehtoinen
+          porras                                                                            esitystapa
+          A                   30                   MH1                  A.30.MH1            A30MH1
+
+Tilan sijainti: Tilan sijaintitietoa tarvitaan suunnittelu- ja rakennusaikana, ja sitä käytetään rinnan tilan
+tunnisteen kanssa. Pelkkään sijaintiin perustuva numero on harhaanjohtava, sillä tila saattaa siirtyä
+esimerkiksi kerroksesta toiseen, jolloin sen sijaintinumeroa hyödyntävät kalusteet, varusteet jne. pitää
+revisioida. Tilan ja kalusteiden yms. välisessä linkityksessä tuleekin ensisijaisesti käyttää tilan tunnistetta.
+       Ohje
+       Viimeistään toteumamallissa tilat numeroidaan tunnisteen lisäksi käyttäen tarkoituksenmukaista
+       tilaajan kanssa sovittua huone- tai ovinumerointia, joka yleensä perustuu tilan sijaintiin (A3201).
+       Mikäli käytettävä suunnitteluohjelmisto ei pysty tukemaan useita tunnisteita samalle tilalle, on
+       minimivaatimuksena taulukko, jossa tilan tunniste ja tilan sijaintiin perustuva huonenumero on
+       yhdistetty toisiinsa niin, että tilojen yksiselitteinen identifiointi on mahdollista. Tilan tunniste ja
+       huonenumero voidaan ilmoittaa myös samassa tietokentässä (2.14.05-A3201), mutta tämä
+       pidentää tulosteissa näkyvän numeron varsin pitkäksi.
+Tilan käyttötarkoitus: Tilan toiminnallinen määritys, esimerkiksi Toimistotila. Käyttötarkoituksesta
+käytetään myös termiä tilatyyppi. Tilan käyttötarkoituksen avulla voidaan laatia tilapohjaisia
+kustannusarvioita ja talotekniikan suunnittelijat hyödyntävät tätä simuloinneissa. Tilatyypissä kuvataan
+esimerkiksi ilmanvaihtoa tai sähköpisteiden lukumäärää henkilöä, neliötä tai työpistettä kohden.
+Tilan nimi: Tilan kuvaava nimitys, esimerkiksi Henkilöstöpäällikkö.
+Käyttäjä: Tiedossa olevat tilojen käyttäjät voidaan määritellä tilaohjelmassa, mutta tätä tietoa ei tarvitse
+siirtää malliin, ellei niin ole erikseen sovittu. Käyttäjätieto voidaan sisällyttää tilan tunnisteeseen edellä
+olevan taulukon mukaisesti.
+Huoneala: Tilojen pinta-ala ja tilavuus lasketaan ohjelmallisesti tilan geometrian perusteella. Tiedot tulee
+päivittää aina, kun tilaa muutetaan.
+Huoneistoala: Lasketaan standardin SFS 5139 (RT 12-11055) mukaan. Tiedot tulee päivittää aina, kun
+huoneistoa muutetaan.
+
+5.3.4 Tilojen muutostenhallinta
+Muutostenhallinnan ja suunnittelunohjauksen vuoksi tunnisteiden tulee säilyttää muuttumattomina
+suunnittelun aikana. Tiloja muokattaessa niiden poistamista mallista ja korvaamista uusilla tulee välttää,
+koska silloin niiden ohjelman sisäinen IFC-id eli GUID menetetään. Järjestelmällisellä tilan tunnisteiden
+käytöllä tämä ongelma voidaan kuitenkin kiertää, koska tila voidaan tunnistaa myös ilman GUIDia. Tilan
+sijaintiin perustuvaa ns. ovinumeroa voidaan tarpeen mukaan muuttaa, kun siihen ei sidota huonekortti-,
+varuste- tai kalustetietoja.
+
+
+
+
+                       Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                  Sivu 15 / 24
+
+5.3.5 Pinta-alat, tilavuudet ja niiden määräytyminen
+Tilat, tilaryhmät ja tilavuudet mallinnetaan tila- tai vyöhyketyökaluilla kolmiulotteisesti siten, että niiden
+geometrioista voidaan automaattisesti laskea tilojen pinta-alat ja tilavuudet liitettynä tilojen tunnisteisiin
+ja tilaluokkiin. Pinta-alat ja tilavuudet lasketaan tilan geometriasta. Pinta-alojen ja tilavuuksien
+mallinnuksessa tulee noudattaa standardien SFS 5139 (RT 12-11955) ja SFS 2460 (RT 120.12)
+määrityksiä eri pinta-aloille ja tilavuuksille.
+       Ohje
+       Muiden kuin yksiselitteisesti pinta-alaan mukaan tai siitä pois laskettavien rakennusosien osalta
+       voidaan niiden vaikutus pinta-alaan laskea laskentasäännöillä, jotka noudattavat em.
+       standardeissa määritettyjä pinta-alojen ja tilavuuksien laskentasääntöjä.
+Suunnittelija vastaa siitä, että projektin virallisissa dokumenteissa ilmoitettavat pinta-alat noudattavat
+standardien määräyksiä, vaikka mallinnuksessa käytettävät ohjelmistot eivät niitä kaikilta osilta
+tukisikaan.
+Jos tila- tai tilaryhmämallit mallinnetaan ilman väliseiniä, tulee tilojen pinta-alassa olla mukana
+väliseinien paksuus tai ne on sijoitettava oletetun väliseinäpaksuuden etäisyydelle toisistaan. Käytetty
+toimintatapa on kirjattava tietomalliselostukseen.
+Ohjelmistosta riippuen tilamalliin tai erilliseen tiedostoon mallinnetaan seuraavat tilat:
+Huoneala
+Kunkin yksittäisen tilan huoneala on pinta-ala, jota rajaavat seinien sisäpinnat vähennettynä tilassa
+sijaitsevien pilarien, kantavien seinien ja hormien pinta-alalla. On suositeltavaa käyttää tilatyökalua, joka
+generoi tilat automaattisesti.
+Bruttoala
+Jokaisen kerrokseen mallinnetaan tila nimeltä ”Bruttoala”, jonka korkeus on suunniteltu kerroskorkeus ja
+joka rajautuu kerroksen suunniteltujen ulkoseinien ulkopintaan. Tätä käytetään apuna tilojen analyysissä,
+tunnuslukujen laskennassa sekä mahdollisten puuttuvien tai päällekkäisten tilojen havaitsemisessa.
+Rajaavista rakennusosista automaattisesti generoituva tila soveltuu heikosti bruttoalan määrittämiseen.
+Muut pinta-alat
+Hanke- tai tilaajakohtaisesti määritellään, mitä muita aloja sisällytetään tietomalliin. Määrittelyssä on
+huomioitava, että jotkin pinta-alojen alaryhmät kuten huoneistot ja tilaryhmät voivat kuvata täsmälleen
+samaa asiaa, joten niitä molempia ei välttämättä tarvita samassa hankkeessa. Kerrosalat, palo-osastot,
+huoneistot ja osastot ja muut mahdollisesti tarvittavat pinta-alat mallinnetaan käyttäen ohjelmistosta
+riippuen joko tila- tai aluetyökaluja. Päällekkäin mallinnetut tilat pitää erottaa toisistaan joko
+tasoasetuksin tai jakamalla ne eri tiedostoihin.
+Tilavuus (tilat, tilaryhmät, bruttoala)
+Tilavuustieto sisältyy tilan geometriatietoon, joka siirtyy IFC-muodossa. Tilojen korkeuden tulee vastata
+suunniteltua huonekorkeutta lattiatasosta yläpuolisen laatan alapintaan, tai laskennalliseen lasketun katon
+alapintaan. Käytetty mallinnustapa tulee dokumentoida tietomalliselostuksessa.
+Bruttoalojen koosteesta saadaan rakennuksen kokonaistilavuus ja kerrosalojen koosteesta kohteen
+kokonaiskerrosala. Tietoja käytetään mm. määrä- ja kustannuslaskennassa, viranomaisprosessissa sekä
+projektikohtaisesti muissa analyyseissä.
+
+5.3.6 Tiedonsiirto
+Arkkitehdin on tuotettava tilat, niiden numerot ja tilaluokat sekä pinta-ala- ja tilavuustiedot
+alkuperäismallin lisäksi IFC-muodossa.
+Mallista on mahdollista tulostaa laajuustiedot jäsennettynä tilaohjelman mukaisesti taulukkomuodossa.
+Käytettävissä olevista ohjelmista riippuen suunnitelmista saadut tilatiedot voidaan yhdistää tai linkittää
+tilaohjelmaan eri vaihtoehtojen vertailuja ja tilapohjaista kustannuslaskentaa varten.
+
+
+
+
+                      Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                            Sivu 16 / 24
+
+       TILAMALLI
+
+       Lähtötiedot:
+                  tilaaja
+                  alustava tilaohjelma
+                  energialuokkatavoitteet
+                  RAK
+                  ulkovaipan rakenteiden U-arvot.
+
+       Mallin sisältö ja vaatimukset katso kappale 6.
+       Huomioitavaa:
+                tutkittava mallin ja mallin tietosisällön siirtyminen käytettävien ohjelmistojen välillä
+                jos mallista ei olla tekemässä simulointeja, ei ikkunoita tarvitse mallintaa.
+
+       Mallista saatava hyöty:
+                  rakennusosien määräluettelot
+                  tilaluetteloita suunnittelua varten
+                  laajuustietoja
+                  tilaryhmien jaottelu ja hyötysuhteet
+                  simulointiaineisto, energialuokkatavoitteet
+                  visualisointiaineisto
+                  massoittelu, sijainti tontilla.
+
+
+
+
+5.4 Yleissuunnittelu
+    Yleissuunnittelussa ehdotussuunnitelma kehitetään toteutuskelpoiseksi yleissuunnitelmaksi.
+    Mallintamisen yleinen tarkkuustaso on 1, mutta hankekohtaisesti tätä voidaan nostaa joidenkin
+    rakennusosien kohdalla tasoon 2. Yleissuunnitelma kohdistuu sekä rakennuksen kiinteään perusosaan että
+    muuntuvien tila-alueiden suunnitteluun. Yleissuunnitelma voi sisältää erilaisia vaihtoehtoja
+    tilaratkaisuiksi.(TELU2012)
+
+
+
+
+    Rakennusosamalli koostuu nimensä mukaisesti rakennuksen kiinteistä osista kuten seinistä, laatoista, portaista,
+    ikkunoista ja ovista.
+    Eurooppa-koulu,Bulevardi 18 pk / Senaatti-kiinteistöt, ISS Suunnittelupalvelut Oy
+
+    5.4.1 Rakennusosamalli
+    Nimensä mukaisesti rakennusosamalli sisältää tilojen lisäksi rakennusosia. Rakennusosamallin tulee olla
+    mittatarkka tietomallivaatimusten osassa 1. Yleinen osuus määritellyissä puitteissa.
+
+
+
+
+                            Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                       Sivu 17 / 24
+
+    Kun rakennusosamalli julkaistaan suunnitteluprosessin aikana vaiheissa, joissa kaikkien rakennusosien
+    tyyppitietoa ei ole vielä määritelty, tulee määrittelemättömät rakennusosat nimetä käyttäen esimerkiksi
+    Talo 2000-nimikkeistöä.
+    Mallissa mallinnetaan kunkin kerroksen osuus omana kokonaisuutenaan eli esimerkiksi usean kerroksen
+    korkuiset seinät ja tilat pyritään mallintamaan erikseen jokaisen kerroksen osalta.
+
+    5.4.2 Rakennusosamalli yleissuunnitteluvaiheessa
+    Rakennusosamallista tuotetaan rakennusluvan hakemiseen tarvittavat dokumentit (mm. pääpiirustukset).
+    Rakennuslupadokumenttien on vastattava tarkkuustasoltaan viranomaisten vaatimuksia, vaikka mallissa
+    ei joitain tietoja tarvitsekaan esittää.
+    Yleissuunnitteluvaiheessa rakennusosamallin tietosisältö voi olla seuraavilta osin suppeampi kuin
+    toteutussuunnitteluvaiheessa:
+     Mallin komponentit saavat vielä olla liittymämitoilla mallinnettuja, esimerkiksi ikkunoiden ja ovien
+        aukot saavat olla nimellismitan mukaisia (10M = 1000 mm) eikä todellisia sovitusvaroja tarvitse
+        huomioida. Lopullisessa rakennusosamallissa vaaditaan kuitenkin todelliset aukkomitat, joten niitä saa
+        haluttaessa käyttää jo yleissuunnitteluvaiheen rakennusosamallissa. Käytetty mallinnustapa on
+        dokumentoitava tietomalliselostuksessa.
+       Tiloihin ei tarvitse liittää pintojen materiaalitietoja.
+       Ikkunoissa ja ovissa ei tarvita varsinaisia tyyppitietoja ja heloitustunnuksia, ainoastaan toiminnallisesti
+        erilaiset perustyypit ja niiden vaatimukset tulee olla tunnistettavissa (esim. palo-ovi).
+       Hoitotasoja ja kulkurakenteita ei tarvitse mallintaa.
+       Huoltoluukkuja ei tarvitse mallintaa.
+       Rakennusosien karkeat tyyppimäärittelyt tulee tehdä jo tässä vaiheessa. Ulkoseinät, kantavat ja kevyet
+        sisäseinät tulee erottaa toisistaan. (Seinissä esim. US, VK, VS ja vaakarakenteissa AP, VP, YP).
+        Talo2000 nimikkeistön kaltaiset tyyppimerkinnät ovat kuitenkin pakollisia rakennusosien tunnista-
+        mista varten.
+    Rakennusosien mallintamisessa noudatetaan edellä kerrotuin poikkeuksin toteutussuunnitteluosiossa
+    annettuja mallinnusohjeita.
+
+5.5 Toteutussuunnittelu
+    Toteutussuunnittelussa suunnitelma kehitetään rakentamisen edellyttämiksi mitoitetuiksi suunnitelmiksi
+    ja tuotemäärittelyiksi. Mallintamisen yleinen tarkkuustaso on hankkeesta riippuen 1 tai 2, mutta tätä
+    voidaan nostaa joidenkin rakennusosien kohdalla tasoon 3. On kuitenkin huomioitava, että hankkeissa,
+    joissa urakoitsijaa ei ole vielä tässä vaiheessa valittu, tason 3 saavuttaminen voi olla mahdotonta tai
+    ainakin siitä voi aiheutua lisätyötä varsinaisessa toteutusvaiheessa. Toteutussuunnitteluun sisältyy tuote-
+    ja järjestelmäosasuunnittelu. (TELU2012)
+
+    5.5.1 Rakennusosamalli toteutussuunnittelu vaiheessa
+    Lopullinen rakennusosamalli tehdään tyypillisesti urakkalaskenta-/työpiirustusvaiheessa. Mallissa
+    esitetään rakenneosat todellisin rakennusselostuksen mukaisin tyyppitiedoin, ei kuitenkaan vielä määrätyn
+    toimittajan tuotteina, ellei niin ole erikseen sovittu.
+
+    5.5.2 Rakennusosien mallintaminen
+    Seinät
+    Seinät mallinnetaan käyttäen seinätyökalua. Kaikki seinät mallinnetaan lattiapinnasta yläpuolisen holvin
+    alapintaan, paitsi ulkoseinät ja porrashuoneiden, monikerroksisten aulatilojen jne. seinät, jotka
+    mallinnetaan soveltaen kerroskorkeuden mukaisesti. Pääsääntöisesti seinärakenne sisältää kaikki ko.
+    rakenteen alikomponentit (Taso 2). Erikseen sovittaessa seinät voidaan mallintaa myös erillisinä
+    rakennekomponentteina (Taso 3), mihin mallinnustapaan liittyy usein kuitenkin erityisiä tarpeita kuten
+    akustisesti monimutkaisia rakenteita, työmaan määrittelemiä hankintapaketteja tai poikkeuksellisia
+    rakenteellisia ratkaisuja.
+    Suunnittelijan tulee tyyppitiedoissa erottaa sisäseinät ja ulkoseinät toisistaan yksiselitteisesti; oman
+    suunnitteluohjelmiston toimittajalta voi tarvittaessa varmistaa, miten ulkoseinien määrittely tehdään niin,
+    että tyyppitiedot saadaan mukaan IFC-tiedonsiirrossa.
+    Seinillä tulee olla yhteys liittyviin seiniin ja tiloihin, joita ne rajaavat. Suunnitteluohjelmisto luo nämä
+    yhteydet automaattisesti edellyttäen, että mallinnus tehdään tarkasti ilman seinä- ja tilakomponenttien
+
+                           Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                  Sivu 18 / 24
+
+väliin jääviä rakoja. Erilaisilla tarkistusohjelmilla voidaan varmistua ennen mallien julkaisua, että malli
+on näiltä osin vaatimusten mukainen.
+       Ohje
+       Usean kerroksen korkuiset seinät mallinnetaan erikseen kuhunkin kerrokseen ko. kerroksen
+       korkuisina. Projektin luonteen ja mallien käyttötarkoituksen mukaan on kuitenkin mahdollista
+       mallintaa seinät useamman kerroksen korkuisena, jos suunnitteluohjelma tukee mallin viipalointia
+       kerroksittain IFC-mallin uloskirjoitusvaiheessa. Tämä ei kuitenkaan sovellu kaikkiin
+       käyttötapauksiin; kerrostason ala- tai yläpuolelle ulottuvat seinät tai pintamateriaalit katkeavat
+       epäloogisesti ja kerroskohtaisiin määräluetteloihin saattaa tulla virheellisiä määriä.
+Ovet ja ikkunat
+Ovet mallinnetaan ovityökalulla ja ikkunat ikkunatyökalulla. Ikkunat ja ovet mallinnetaan
+tyyppitietoineen ja heloitustunnuksineen. Alustavassa rakennusosamallissa ei näitä tietoja kuitenkaan
+tarvita. Ovien ja ikkunoiden tarviketiedot (esim. helat) liitetään niiden ominaisuuskenttiin ja käytetyt
+kentät dokumentoidaan tietomalliselosteeseen. Haluttaessa liitetyt helat voidaan ilmaista yhdellä koodilla,
+jolloin yksityiskohtainen helaluettelo esitetään kaaviossa tai erillisenä listana.
+       Ohje
+       Useimmissa tapauksissa ovi-työkalulla voidaan mallintaa myös muita kulkuaukkoja, joissa ei
+       välttämättä ole ovea. Suunnittelijan tulee tällöin nimetä aukko siten, ettei sitä vahingossa tulkita
+       oveksi esimerkiksi luettelossa. Ovi tulee aina sijoittaa seinään eikä se saa ulottua seinän
+       ulkopuolelle, ellei seinätyyppi vaihdu oven kohdalla. Suunnittelijan tulee varmistaa, että ovi on
+       kytketty seinään, jossa se sijaitsee.
+Ikkunat ja ovet mallinnetaan viimeistään varsinaiseen rakennusosamalliin niin, että asennusaukot
+sisältävät asennusvarat (aukkomitoitus).
+       Ohje
+       Mikäli käytettävä ohjelmisto sallii, on suositeltavaa tehdä ovi- ja ikkunakomponentit siten, että
+       syötettävät mitat ovat nimellismittoja, mutta malliin muodostuvat ikkuna- ja oviaukot todellisilla
+       aukkomitoilla sisältäen sovitusvarat. Valittu toimintatapa dokumentoidaan malliselostuksessa.
+       Ikkunoiden ja ovien karmimitat ilmoitetaan koko hankkeessa yhdenmukaisella tavalla joko karmi-
+       tai aukkomitoilla, ja huolehditaan siitä, että tieto käytetystä mitoitustavasta välittyy myös ikkuna-
+       ja ovivalmistajalle.
+Tilaan liittyvät ovien ja ikkunoiden tulee kytkeytyä tilaan. Jos tilaan lisätään ovi tai ikkuna sen jälkeen,
+kun tila on määritelty, tulee tila päivittää. Kytkennät tiloja rajaaviin seiniin ja aukkoihin syntyvät yleensä
+automaattisesti tilojen muodostamisen tai päivityksen yhteydessä.
+Lasiseinät, näyteikkunajulkisivut, suuret ikkunakokonaisuudet
+Jos mallissa on lasiseiniä tai -julkisivuja, jotka muodostuvat kokonaan ikkunoista ja ovista, tulee ensin
+mallintaa umpinainen seinä (isäntäseinä) ja siihen ikkunat ja ovet, jotka muodostavat lasiseinän. Erityistä
+huomiota tulee kiinnittää siihen, ettei isäntäseinän ja sitä ympäröivien seinien väliin jää rakoja.
+Kun seinät mallinnetaan kerroksittain ja ikkunat ulottuvat useampaan kerrokseen, tulee varmistaa, että
+jokaisessa kerroksessa seinässä on asianmukainen aukko ja ikkunat linkittyvät tiloihin.
+       Ohje
+       Käytettäessä ohjelmistoissa olevia verhoseinätyökaluja (Curtain Wall), tulee varmistaa että
+       IFC-kirjoitustoiminto tukee sitä ja asianmukaiset ikkuna- ja seinäkomponentit siirtyvät
+       IFC-tiedostoon. Verhoseinien tietosisältö ei aina siirry IFC-muodossa, joten niiden mahdollinen
+       käyttö tulee dokumentoida tarkasti mallinnusselostuksessa.
+Laatat (ala-, väli- ja yläpohjat)
+Rakennuksen ala-, väli- ja yläpohjat mallinnetaan laattatyökalulla. Mikäli työkalun
+mallinnusominaisuudet ovat puutteelliset (esimerkiksi työkalu ei pysty mallintamaan laattoja, joiden
+paksuus, kaltevuus tai profiili vaihtelee), tulee suunnittelijan luoda yleinen mallinnusosa, joka määritetään
+laataksi. Kaatoja ei pääsääntöisesti mallinneta.
+       Ohje
+       Vapaiden muotojen ja erilaisten kattolyhtyratkaisujen yleistyminen arkkitehtuurissa asettaa
+       tietomallintamiselle lisähaasteita. IFC-tiedonsiirto tukee hyvin monimutkaistakin geometriaa,
+       mutta ongelmaksi muodostuu tuon geometrian tulkinta vastaanottavassa päässä vaikkapa
+       määrälaskennassa tai energiasimuloinnissa. Tarvittaessa näiden rakennusosien osalta saatetaan
+       tarvita vaihtoehtoisia lähestymistapoja, joista on syytä sopia hankekohtaisesti. Monimutkaisten
+
+
+                      Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                  Sivu 19 / 24
+
+       muotojen kohdalla pelkkään määrään perustuva laskenta ei kuitenkaan riitä, joten ne vaativat
+       joka tapauksessa laskijan tulkintaa ja ammattitaitoa.
+Laattojen ja seinien liittymäkohta tulee mallintaa siten, että laatta päättyy kantavan seinärakenteen pintaan
+eikä ulotu sen sisälle. Näin varmistetaan, että määrä- ja kustannuslaskentaan saadaan johdonmukaista
+tietoa. Välipohjat mallinnetaan rajautumaan ulkoseinän sisäpintaan, ellei projektissa sovita muusta
+käytännöstä.
+       Ohje
+       Laattoihin liittyvät lämmöneristykset mallinnetaan yleensä osana laattaa, mutta erityistapauksissa
+       ne voidaan mallintaa erillisinä laattamaisina rakennusosina. Suunnitelmien yhteensovituksen
+       kannalta merkittävät tilaavievät akustiset eristeet esitetään arkkitehtimallissa, ellei hankkeessa
+       muuta sovita.
+Palkit ja pilarit
+Palkit mallinnetaan palkkityökalulla. Mikäli työkalun mallinnusominaisuudet ovat puutteelliset (esim.
+työkalu ei pysty mallintamaan kaltevia tai viistettyjä palkkeja), tulee suunnittelijan luoda yleinen
+mallinnusosa, joka määritetään palkiksi.
+Pilarit mallinnetaan pilarityökalulla. Mikäli työkalun mallinnusominaisuudet ovat puutteelliset (esim.
+työkalu ei pysty mallintamaan pilareita, joiden leikkaus vaihtelee), tulee suunnittelijan luoda yleinen
+mallinnusosa, joka määritetään pilariksi. Pilarit mallinnetaan ulkomitoilla sisältäen pintarakenteen.
+       Ohje
+       Yleensä palkkien määriä ei oteta arkkitehtimallista, joten niiden absoluuttisen oikealla
+       mallinnustavalla ei ole merkitystä. Usein arkkitehdillä ei edes ole tarvittavaa tietoa siitä, mitkä
+       ovat palkkien ja pilareiden lopulliset rakenteelliset mitat tai miten ne liittyvät muihin rakenteisiin.
+       Palkit voidaan mallintaa arkkitehtimallissa vain laatan alapuolisilta osiltaan. Kun rakennemalli
+       on käytettävissä, on palkkien mitat hyvä tarkistaa, jotta vältytään suunnitteluvirheiltä esimerkiksi
+       talotekniikan reittejä määriteltäessä.
+       Pilareiden korkeus mallinnetaan arkkitehtimallissa kuten tilojen korkeus eli alapuolisen laatan
+       yläpinnasta yläpuolisen laatan alapintaan. Päällekkäisyydet tai sisäkkäisyydet laattojen kanssa
+       aiheuttavat yleensä turhia virheilmoituksia laadunvarmistuksessa. Jos pilari sijaitsee usean
+       kerroksen korkuisessa tilassa, mallinnetaan pilarit pääsääntöisesti ylemmissä kerroksissa
+       alemman kerroksen pilarin yläpinnasta (= alapuolisen laatan alapinnan taso) yläpuolisen laatan
+       alapinnan tasoon. Tapauskohtaisesti voi olla järkevämpää mallintaa pilarit täyskorkuisina. Seiniin
+       liittyvät pilarit saavat leikata seinää eli seiniä ei tarvitse katkaista pilarien kohdalla. Pilasterit
+       voidaan mallintaa myös seinätyökalulla.
+Portaat
+Portaat mallinnetaan porrastyökalulla erikseen kuhunkin kerrokseen. Tarvittaessa voidaan lepo-, kerros-
+ja porrastasot mallintaa laattoina.
+       Ohje
+       Portaat ovat edelleen useimpien mallinnusohjelmien kompastuskivi. Yleensä mallin oikeellisuus ja
+       piirustussääntöjen mukainen pohjapiirrosmerkintä ovat vaativa yhdistelmä. Määrälaskennassa
+       portaan eri osien tulkitseminen vaatii käytännössä ohjelmistokohtaisen ratkaisun käyttöä ja
+       edelleen sen ehdoilla mallinnettua porrasta. Määrälaskennassa voidaan kuitenkin hyötyä jo
+       pelkästään erityyppisten portaiden määrästä, joten on tärkeää että myös portaille annetaan
+       rakennetyypin kaltainen tunnus.
+Muut rakennusosat
+Kaksoisjulkisivut (esimerkiksi ulkoseinästä irti oleva säleikkö tai lasitus) mallinnetaan varsinaisesta
+seinärakenteesta erillisinä rakenteina noudattaen soveltaen seinistä ja lasiseinistä annettuja
+mallinnusohjeita.
+Tarvittavat sokkelit ja perusmuurit mallinnetaan seinätyökalulla ja niiden tunnisteissa on huolehdittava
+siitä että ne erottuvat seinistä. Perustuksia ei yleensä tarvitse mallintaa arkkitehtimalliin.
+Hoitotasot ja kulkurakenteet mallinnetaan laattatyökaluilla ja muilla mallinnusosilla, joissa on tarvittavat
+tunnisteet (nimi tai rakennusosaluokka).
+Pystyhormit mallinnetaan kerrosten korkuisina tilaohjelmaan kuulumattomina seinien rajaamina tiloina ja
+varustetaan tarvittaessa huoltoluukuilla tai ovilla.
+Sisäkatot mallinnetaan laattatyökalulla tai sisäkattotyökalulla ja niiden on oltava tunnistetietojen avulla
+eroteltavissa muista laattatyökalulla mallinnetuista rakennusosista. Sisäkattorakenne ja -pinta
+
+                      Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                    Sivu 20 / 24
+
+mallinnetaan useimmiten yhtenä levynä (Taso 2), jolle annetaan paksuudeksi niiden vaatima tilavaraus.
+Alaslaskettujen sisäkattojen levyjakoja (Taso 3) tai kannakerakenteita ei yleensä mallinneta.
+Kiintokalusteet ja suunnitelmiin sisältyvät laitteet mallinnetaan ohjelman kalustetyökaluilla, ja niiden
+tunnisteiden tulee sisältää niiden tyyppi. Mahdolliset irtokalusteet on mallinnettava omille kuvatasoilleen
+tai muuten loogisesti eroteltuina niin, että ne voidaan helposti erottaa urakkaan kuuluvista osista ja jättää
+kokonaan kirjoittamatta IFC-tiedostoihin.
+Väestönsuoja mallinnetaan seinä-, laatta- ja tilatyökalulla. Kalusteet, varusteet ja laitteet mallinnetaan
+samoin kuin muissakin tiloissa.
+Kaikki keskenään eri tyyppiä olevat rakennusosat tulee mallintaa erillisinä komponentteina ja ne tulee
+merkitä selvästi tunnistettaviksi esimerkiksi nimeämisellä tai rakennusosaluokan valinnalla.
+
+5.5.3 Tilat rakennusosamallissa
+Tilamallin sisältämät tilat tulee säilyttää mallissa ja tarvittaessa muokata niitä. Mikäli tila poistetaan ja sen
+tilalle muodostetaan uusi, menetetään ohjelmiston ylläpitämä yksilöllinen IFC -tunniste (GUID).
+Tarpeeton tilojen poistaminen ja uudelleenmallintaminen hankaloittaa muutosten seurantaa merkittävästi
+ja siksi sitä tulee välttää, ellei se jostain syystä ole ehdottoman välttämätöntä (esimerkiksi huoneiston
+huonejärjestyksen täydellinen muuttuminen). Tiloja hyödynnetään tilakorttien laadinnassa.
+       Ohje
+       Tiloihin liittyvä materiaalitieto tulee linkittää tilanumeron ja tilanimen kautta tilaan, samoin
+       huone-, maalaus- ym. selosteet. Nämä voidaan tallentaa joko tilojen ominaisuuskenttiin tai
+       taulukkomuodossa ulkopuoliseen tiedostoon tai tietokantaan tilakohtaisesti jaoteltuina. Käytetty
+       tapa ja ominaisuuskenttien, taulukon tai tietokannan nimikkeet ja muoto dokumentoidaan
+       tietomalliselosteessa.
+
+
+ RAKENNUSOSAMALLI
+
+ Lähtötiedot:
+ Tilaaja
+         tilaohjelma
+         energialuokkatavoitteet
+ RAK
+         ulkovaipan rakenteiden U-arvot
+         rakennetyypit
+ TATE
+         simulointitulokset
+         alustavat tilavaatimukset laitteistoille
+
+ Mallin sisältö ja vaatimukset katso kohta 6.
+ Huomioitavaa
+         rakennusosamallista voidaan ensin tehdä alustava versio, jota tarkennetaan suunnittelun
+            edetessä
+         tutkittava mallin ja mallin tietosisällön siirtyminen käytettävien ohjelmistojen välillä.
+
+ Mallista saatava hyöty:                                  Tulosteet:
+         rakennusosien määräluettelot (ovi- ja                       pääpiirustukset, työpiirustukset
+            ikkunaluettelot)                                          pohjat
+           tilaluettelot                                             leikkaukset (kaavio)
+           laajuustietoja                                            julkisivut (kaavio)
+           tilaryhmien jaottelu ja hyötysuhteet                      tarpeelliset detaljikuvat.
+           tilojen käyttötarkoitukset
+           simulointiaineisto,
+            energialuokkatavoitteet.
+            visualisointiaineisto
+           havainnollistavat kuvat
+
+                       Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                   Sivu 21 / 24
+
+
+             työmaan ohjaus
+             aikataulun ohjaus ja tarkkailu
+             erikoissuunnittelijoiden suunnitelmien
+                törmäystarkastelu
+
+
+
+
+5.6 Rakentaminen
+    Rakentamisen ohjauksella varmistetaan sopimuksenmukainen toteutus, tavoitteet täyttävä lopputulos sekä
+    tarvittavat käyttö- ja ylläpitovalmiudet. Rakennuksen valmistuminen todetaan vastaanotossa.
+    (TELU2012)
+
+    5.6.1 Mallin hyödyntäminen rakentamisessa
+    Työmaalla mallia hyödynnetään työn ohjauksessa ja aikataulun hallinnassa. Arkkitehtimallin tarkkuustaso
+    rakentamisvaiheessa tulee sopia erikseen työmaan tarpeiden mukaisesti.
+           Ohje
+           Tarkkuuden nostaminen tasosta 2 tasoon 3 voi hankkeesta riippuen merkitä mittavaa lisätyötä
+           arkkitehtimalliin, joten asioiden sopiminen etukäteen on ensiarvoisen tärkeää.
+    Muutokset suunnitelmissa tulee päivittää rakennusosamalliin, jota työmaa hyödyntää. Työmaasta ja
+    urakoitsijoista riippuen suunnitelmia tarkastellaan tietomallin avulla paperikopioiden sijasta.
+    Suunnitteluohjelmistoilla tai erilaisilla mallinkatseluohjelmilla (Solibri, NavisWorks, Tekla BIMsight
+    jne.) suunnitelmia pystytään tarkastelemaan työmaalla kolmiulotteisesti. Mallia voidaan tarkkailla
+    tietokoneen näytöltä tai tulostaa tarvittavista kohdista näkymiä.
+    Mallin hyödyntämisestä rakentamisen aikana käsitellään tarkemmin osassa 13. Tietomallien
+    hyödyntäminen rakentamisessa.
+
+5.7 Vastaanotto
+    5.7.1 Toteumamalli
+    Rakennuksen valmistuttua arkkitehti päivittää rakennusosamallin vastaamaan lopullista toteutusta niin,
+    että se vastaa lopputulosta (as-built) ja että sitä voidaan käyttää esimerkiksi tilahallinnon, kiinteistön
+    ylläpidon ja käytönaikaisten muutosten pohjana. Vaadittu tietosisältö on sama kuin rakennusosamallissa.
+
+5.8 Käyttöönotto ja ylläpito
+    Takuuaikana seurataan rakennuksen toimivuutta, tehdään takuuajan säädöt, pidetään tarvittavat
+    tarkastukset ja korjataan mahdolliset puutteet. (TELU2012)
+
+    5.8.1 Ylläpitomalli
+    Ylläpidossa mallia käytetään huoltokirjan osana esimerkiksi vuokrattavien neliöiden tai kiinteistöhuollon
+    hallintatyökaluna. Mallille tehtyjä olosuhdesimulointien tuloksia voidaan verrata toteutuneisiin
+    olosuhteisiin. Rakennusosamallista voidaan muokata erillinen malli ylläpitoa varten, missä malli sisältää
+    ainoastaan ylläpidon kannalta tarvittavat tiedot, koska vaatimukset ylläpitomallille voivat poiketa
+    huomattavasti rakennusvaiheen vaatimuksista.
+
+
+     YLLÄPITOMALLI / TOTEUMAMALLI
+     Lähtötiedot:
+             tehdyt suunnitelmat
+             toteutunut rakennus
+
+     Mallin sisältö ja vaatimukset katso kohta 6.
+
+
+
+
+                          Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                                                                   Sivu 22 / 24
+
+     Huomioitavaa
+                  rakennussuunnittelua ja rakentamista palvellut malli voi olla sisällöltään liian kompleksi
+                      ylläpidon vaatimuksiin nähden
+                     mahdollisesti tehtävä uusi simulointeja ja tilojen hallintaa palveleva yksinkertaistettu malli
+                     tilojen lopulliset positiotunnukset.
+
+     Mallista saatava hyöty:
+                     rakennusosien ja laitteistojen määräluettelot
+                     tilaluettelot
+                     laajuustietoja (esim. vuokrattava pinta-ala)
+                     tilaryhmien jaottelu ja hyötysuhteet
+                     tilojen käyttötarkoitukset
+                     simulointiaineisto, energialuokkatavoitteet
+                     havainnollistavat piirustukset (opasteet, huoltokartat).
+
+
+
+6   Arkkitehtimallien sisältövaatimukset
+    Seuraavassa taulukossa on esitetty listana arkkitehtimallille asetettavat sisältövaatimukset hankkeen eri
+    vaiheissa. Pakolliset tehtävät on merkitty kirjaimella P ja suositeltavaa tarkkuustasoa merkitsevällä
+    numerolla. Hankekohtaisesti määriteltävät valinnaiset tehtävät on merkitty V ja suositeltavaa
+    tarkkuustasoa merkitsevällä numerolla. Hanke- tai tilaajakohtaisesti voidaan lisäksi määritellä muita
+    tietomallitehtäviä.
+    Mallien tarkkuustasot on kuvattu kohdassa 3.3 Mallintamisen tarkkuustasot.
+    TA=Ta rves el vi tys , HA=Ha nkes uunni ttel u, EHD=Ehdotus s uunni ttel u, YS=Yl ei s s uunni ttel u,
+    LUPA=Ra kennus l upa , TOT=Toteutus s uunni ttel u, UR=Ura kka l a s kenta, RA=Ra kentami nen,
+    VA=Va s taa notto, YL=Yl l ä pi to
+    P=Pa kol l i nen; tarkkuus tas o s ovi taa n ha nkekohtai s es ti (P1, P2, P3=s uos i tel tava t tas ot)
+    V=Va l i nna i nen; tarkkuus tas o s ovi taa n ha nkekohtai s es ti (V1, V2, V3=s uos i tel tava t tas ot)
+    Tyhjä =Ei norma a l i ma l l i nnus tehtävä ; ma l l i nnus tapa ja -l a a juus s ovi taa n ha nkekohtai s es ti
+
+
+
+
+                                                                                                                                            LUPA
+                                                                                                                                 EHD
+
+
+
+
+                                                                                                                                                    TOT
+                                                                                                                            HA
+
+
+
+
+                                                                                                                                                          UR
+
+                                                                                                                                                               RA
+
+                                                                                                                                                                    VA
+                                                                                                                       TA
+
+
+
+
+                                                                                                                                       YS
+    Ta l o 2000 ni mi ke
+
+
+
+
+                                                                                                                                                                         YL
+    11 Al ueos a t (Tontin ma l l i )
+    111 Ma a ra kenteet
+    1111 Ra kennetta va t a l ueet                                                                                                                 V1     V1   V1   V1   V1
+    1114 Tä yttöra kenteet
+    1115 Penkereet
+    1119 Eri tyi s et ma a ra kenteet
+    113 Pä ä l l ys teet
+    1131 Li i kennea l uei den pä ä l l ys teet
+    1132 Pys ä köi ntia l uei den pä ä l l ys teet
+    1133 Ol es kel u- ja l ei kki a l uei den pä ä l l ys teet
+    1134 Ka s vi l l i s uus ja ka s vua l us tat
+    1139 Eri tyi s a l uei den pä ä l l ys teet
+    114 Al ueva rus teet
+    1141 Ta l ova rus teet                                                                                                                         V2     V2   V2   V2   V2
+    1142 Ol es kel uva rus teet                                                                                                                    V2     V2   V2   V2   V2
+    1143 Lei kki va rus teet                                                                                                                       V2     V2   V2   V2   V2
+    1144 Ul ko-opa s teet
+    1149 Eri tyi s et a l ueva rus teet
+    115 Al uera kenteet
+    1151 Ul kova ra s tot                                                                                                        V1    P1   P1     P2     P2   P2   P2   P2
+    1152 Al ueen ka toks et                                                                                                            V1   V1     V1     V1   V1   V1   V1
+    1153 Ai da t ja tuki muuri t                                                                                                       V1   V1     V1     V1   V1   V1   V1
+    1154 Al ueen portaa t, l ui s ka t ja tera s s i t                                                                                 V1   V1     V1     V1   V1   V1   V1
+    1155 Al ueen pys ä köi ntira kenteet                                                                                                           V2     V2   V2
+    1159 Eri tyi s et a l uera kenteet
+
+
+
+
+                                      Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                                                                   Sivu 23 / 24
+
+TA=Ta rves el vi tys , HA=Ha nkes uunni ttel u, EHD=Ehdotus s uunni ttel u, YS=Yl ei s s uunni ttel u,
+LUPA=Ra kennus l upa , TOT=Toteutus s uunni ttel u, UR=Ura kka l a s kenta , RA=Ra kenta mi nen,
+VA=Va s ta a notto, YL=Yl l ä pi to
+P=Pa kol l i nen; ta rkkuus ta s o s ovi ta a n ha nkekohta i s es ti (P1, P2, P3=s uos i tel ta va t ta s ot)
+V=Va l i nna i nen; ta rkkuus ta s o s ovi ta a n ha nkekohta i s es ti (V1, V2, V3=s uos i tel ta va t ta s ot)
+Tyhjä =Ei norma a l i ma l l i nnus tehtä vä ; ma l l i nnus ta pa ja -l a a juus s ovi ta a n ha nkekohta i s es ti
+
+
+
+
+                                                                                                                                            LUPA
+                                                                                                                                 EHD
+
+
+
+
+                                                                                                                                                    TOT
+                                                                                                                            HA
+
+
+
+
+                                                                                                                                                          UR
+
+                                                                                                                                                               RA
+
+                                                                                                                                                                    VA
+                                                                                                                       TA
+
+
+
+
+                                                                                                                                       YS
+Ta l o 2000 ni mi ke
+
+
+
+
+                                                                                                                                                                         YL
+12 Ta l o-os a t
+121 Perus tuks et
+1211 Antura t (ra kennema l l i n perus teel l a )
+1212 Perus muuri t                                                                                                                     P1   P1      P2    P2   P2   P2   P2
+1212 Perus pa l ki t
+1212 Ul kopuol i nen pi nta ra kenne
+1219 Eri tyi s et perus tuks et
+122 Al a pohja t
+1221 Al a pohja l a a ta t                                                                                                  V1   V1    P1   P1     P1     P1   P1   P1   P1
+1222 Al a pohja ka na a l i t                                                                                                          V1   V1     V1     V1   V1   V1   V1
+1222 Al a pohja n ri ti l ä t, ka nnet, l uukut ja muut tä ydentä vä t ra kennus os a t                                                            V1     V1   V1   V1   V1
+123 Runko
+1231 Vä es töns uoja n l a tti a                                                                                                 V1    P1   P1     P2     P2   P2   P2   P2
+1231 Vä es töns uoja n s ei nä                                                                                                   V1    P1   P1     P2     P2   P2   P2   P2
+1231 Vä es töns uoja n ka tto                                                                                                    V1    P1   P1     P2     P2   P2   P2   P2
+1231 Vä es töns uoja n s ul kuti l a , hä tä poi s tumi s kä ytä vä ta i -a ukko                                                       P1   P1     P2     P2   P2   P2   P2
+1231 Vä es töns uoja n s uoja ovet ja -l uukut                                                                                         P1   P1     P2     P2   P2   P2   P2
+1231 Vä es töns uoja n ti kka a t, i l ma nva i htol a i ttei den ja va rus tei den s uoja hä kki                                      V1   V1     P1     P1   P1   P1   P1
+1231 Vä es töns uoja n kri i s i a ja n va rus teet ja kunta kohta i s et va rus teet                                                  V1   V1     V1     V1   V1   V1   V1
+1232 Ka nta va t s ei nä t                                                                                                  V1   P1    P2   P2     P2     P2   P2   P2   P2
+1233 Pi l a ri t                                                                                                                 V1    P1   P1     P1     P1   P1   P1   P1
+1234 Pa l ki t                                                                                                                   V1    P1   P1     P1     P1   P1   P1   P1
+1235 Vä l i pohja ra kenne                                                                                                  V1   P1    P1   P1     P2     P2   P2   P2   P2
+1236 Yl ä pohja ra kenne                                                                                                    V1   P1    P1   P1     P2     P2   P2   P2   P2
+1237 Porta a t ja l epota s ot                                                                                              V1   V1    P1   P1     P2     P2   P2   P2   P2
+1237 Ka i teet ja kä s i johteet                                                                                                       V1   V1     P1     P1   P1   P1   P1
+1239 Eri tyi s et runkora kenteet                                                                                                      V1   V1     V1     V1   V1   V1   V1
+124 Jul ki s i vut
+1241 Ul kos ei nä t                                                                                                              P1    P2   P2      P2    P2   P2   P2   P2
+1242 Ikkuna t                                                                                                                    P1    P1   P1      P2    P2   P3   P3   P3
+1242 Ikkunoi den l uki tus - ja hel oi tus ti edot                                                                                                  P2    P2   P3   P3   P3
+1242 Ikkuna n ves i pel l i t ja pei tel i s ta t
+1243 Ul ko-ovet                                                                                                                  V1    P1   P1      P2    P2   P3   P3   P3
+1243 Ul ko-ovi en l uki tus - ja hel oi tus ti edot                                                                                                 P2    P2   P3   P3   P3
+1244 Jul ki s i vuva rus teet                                                                                                                       P1    P1   P1   P1   P1
+1245 Jul ki s i vun l a s i ra kententeet                                                                                        V1    V1   V1      P1    P1   P1   P1   P1
+125 Ul kota s ot
+1251 Pa rvekkeen l a a tta - ja ka tos ra kenne                                                                                  V1    P1   P1     P2     P2   P2   P2   P2
+1251 Pa rvekkeen ka i teet ja kä s i johteet                                                                                           P1   P1     P1     P1   P1   P1   P1
+1251 Pa rvekel a s i tus                                                                                                               V1   V1     V1     V1   V1   V1   V1
+1252 Ka toks et ja ni i den ra kenteet                                                                                                 P1   P1     P1     P1   P1   P1   P1
+1253 Ul kota s ot ja -porta a t                                                                                                  V1    P1   P1     P1     P1   P1   P1   P1
+1253 Ul kota s ojen ka i teet ja kä s i johteet                                                                                        V1   V1     V1     V1   V1   V1   V1
+1253 Ul kota s ojen l a s i tus                                                                                                        V1   V1     V1     V1   V1   V1   V1
+126 Ves i ka tot
+1261 Ves i ka ttora kenne                                                                                                        P1    P1   P1     P2     P2   P2   P2   P2
+1261 Yl ä pohja n pa l o-os a s toi nti                                                                                                P1   P1     P1     P1   P1   P1   P1
+1261 Kul kura kenteet                                                                                                                  V1   V1     P1     P1   P1   P1   P1
+1261 Luukut                                                                                                                            P1   P1     P2     P2   P2   P2   P2
+1262 Rä ys tä s ra kenteet                                                                                                             V1   V1     V1     V1   V1   V1   V1
+1262 Tä ydentä vä t ra kenteet ja pel l i tyks et
+1263 Ves i ka te a l us ka ttei neen
+1263 Ka ttoka i vot                                                                                                                    V1   V1      P1    P1   P1   P1   P1
+1264 Ves i ka ttova rus teet                                                                                                           V1   V1      P1    P1   P1   P1   P1
+1265 La s i ka ttora kenteet                                                                                                           P1   P1      P2    P2   P2   P2   P2
+1265 La s i ka ton hel oi tus ti edot                                                                                                               P2    P2   P3   P3   P3
+1265 La s i ka ton s ei nä mä i nen juuri ra kenne                                                                               P1    P1   P1      P2    P2   P2   P2   P2
+1265 Hoi to- ja huol tota s ot                                                                                                                      P1    P1   P1   P1   P1
+1266 Ka ttoi kkuna t ja l uukut                                                                                                        P1   P1      P2    P2   P2   P2   P2
+1266 Ka ttoi kkunoi den hel a t ja a utoma ti i kka                                                                                                 P2    P2   P3   P3   P3
+1266 Ka ttoi kkuna n s ei nä mä i nen juuri ra kenne                                                                             P1    P1   P1      P2    P2   P2   P2   P2
+
+
+
+
+                                  Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+                                                                                                                                                   Sivu 24 / 24
+
+TA=Ta rves el vi tys , HA=Ha nkes uunni ttel u, EHD=Ehdotus s uunni ttel u, YS=Yl ei s s uunni ttel u,
+LUPA=Ra kennus l upa , TOT=Toteutus s uunni ttel u, UR=Ura kka l a s kenta , RA=Ra kenta mi nen,
+VA=Va s ta a notto, YL=Yl l ä pi to
+P=Pa kol l i nen; ta rkkuus ta s o s ovi ta a n ha nkekohta i s es ti (P1, P2, P3=s uos i tel ta va t ta s ot)
+V=Va l i nna i nen; ta rkkuus ta s o s ovi ta a n ha nkekohta i s es ti (V1, V2, V3=s uos i tel ta va t ta s ot)
+Tyhjä =Ei norma a l i ma l l i nnus tehtä vä ; ma l l i nnus ta pa ja -l a a juus s ovi ta a n ha nkekohta i s es ti
+
+
+
+
+                                                                                                                                            LUPA
+                                                                                                                                 EHD
+
+
+
+
+                                                                                                                                                    TOT
+                                                                                                                            HA
+
+
+
+
+                                                                                                                                                          UR
+
+                                                                                                                                                               RA
+
+                                                                                                                                                                    VA
+                                                                                                                       TA
+
+
+
+
+                                                                                                                                       YS
+Ta l o 2000 ni mi ke
+
+
+
+
+                                                                                                                                                                         YL
+13 Ti l a os a t
+1311 Kevyet vä l i s ei nä t                                                                                                V1   P1    P1   P1      P2    P2   P2   P2   P2
+1312 La s i vä l i s ei nä t                                                                                                     V1    P1   P1      P2    P2   P2   P2   P2
+1315 Vä l i ovet                                                                                                            V1   V1    P1   P1      P2    P2   P2   P2   P2
+1315 Vä l i ovi en l uki tus - ja hel oi tus ti edot                                                                                                P2    P2   P3   P3   P3
+1317 Ti l a porta a t ja l epota s ot                                                                                            V1    P1   P1      P1    P1   P1   P1   P1
+1317 Ti l a porta i den ka i teet ja kä s i johteet                                                                                    P1   P1      P1    P1   P1   P1   P1
+132 Ti l a pi nna t
+1321 La tti oi den pi nta ra kenteet                                                                                                               V1     V1   V1   V1   V1
+1322 La tti a pi nna t
+1323 Si s ä ka ttora kenteet                                                                                                           P1   P1     P1     P1   P1   P1   P1
+1324 Si s ä ka ttopi nna t                                                                                                             P1   P1     P2     P2   P2   P2   P2
+1325 Sei nä n pi nta ra kenteet                                                                                                                    V1     V1   V1   V1   V1
+1326 Sei nä pi nna t
+133 Ti l a va rus teet
+1331 Va ki oki i ntoka l us teet                                                                                                       P1   P1     P2     P2   P2   P2   P2
+1332 Eri tyi s ki i ntoka l us teet                                                                                                    V1   V1     V2     V2   V2   V2   V2
+1333 Va rus teet                                                                                                                       V1   V1     V2     V2   V2   V2   V2
+1334 Va ki ol a i tteet                                                                                                                P1   P1     P2     P2   P2   P2   P2
+1335 Ti l a opa s teet                                                                                                                                         V2   V2   V2
+1336 Sa ni teetti ka l us teet                                                                                                         P1   P1     V2     V2   V2   V2   V2
+1337 Sa ni teetti va rus teet                                                                                                          V1   V1     V2     V2   V2   V2   V2
+134 Muut ti l a os a t
+1341 Hoi tota s ot ja kul kura kenteet s i s ä l tä en hoi tota s ojen porta a t ja a s kel ma t                                       V1   V1     V2     V2   V2   V2   V2
+1341 Hoi tota s ot ta l on rungos ta eri l l i s et runkora kenteet                                                                    V1   V1     V1     V1   V1   V1   V1
+1341 Ka i teet ja kä s i johteet                                                                                                       V1   V1     V1     V1   V1   V1   V1
+1342 Tul i s i ja t ja s a vuhormi t                                                                                                   P1   P1     P1     P1   P1   P1   P1
+135 Kevyet ti l a el ementi t
+1351 Kyl pyhuone-el ementi t
+1352 Kyl mä huone-el ementi t
+1353 Sa una el ementi t
+1354 Ta l otekni i ka n ti l a el ementi t
+1355 Hormi el ementi t
+1359 Eri tyi s et ti l a el ementi t
+9 La a juus ti edot
+91 Ohjel ma -a l a t
+911 Ra kennus os i en ohjel ma -a l a t
+9111 Al ueen ohjel ma -a l a t
+9112 Ra kennuks en ohjel ma -a l a t
+9113 Ti l ojen ohjel ma -a l a t
+912 Tekni i kka os i en ohjel ma -a l a t
+92 Al uei den pi nta -a l a t
+921 Tontti en a l a t                                                                                                  V2   V2   V2    V2   V2     V2     V2   V2   V2   V2
+922 Korttel i en a l a t
+923 Ra kennus a l ue
+924 Li i kennea l ue
+929 Eri tyi s et a l uei den pi nta -a l a t
+93 Ra kennuks en kokona i s a l a t
+931 Bruttoa l a                                                                                                        P2   P2   P2    P2   P2     P2     P2   P2   P2   P2
+932 Kerros ta s oa l a t                                                                                               V2   V2   V2    V2   V2     V2     V2   V2   V2   V2
+933 Huonei s tojen a l a t                                                                                             V2   P2   V2    V2   V2     V2     V2   V2   V2   V2
+934 Ti l a ryhmi en a l a t                                                                                            V2   P2   V2    V2   V2     V2     V2   V2   V2   V2
+935 Huonea l a t                                                                                                       V2   V2   P2    P2   P2     P2     P2   P2   P2   P2
+9351 Al l e 1600 mm korkea t huonea l a t                                                                                              V2   V2     V2     V2   V2   V2   V2
+9361 Runkora kennus os i en a l a t
+9362 Ei -ka nta vi en ra kennus os i en a l a t
+94 Os a s tot
+9411 Pa l o-os a s tojen a l a t
+95 Ti l vuudet
+95 Ra kennuks et ti l a vuus                                                                                                V2   V2    V2   V2
+
+
+
+
+                                  Versio 1.0 27.03.2012 © COBIM - hankkeen osapuolet
+

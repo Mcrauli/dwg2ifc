@@ -39,6 +39,21 @@ class PolygonGeometry:
 
 
 @dataclass(frozen=True)
+class MeshGeometry:
+    """A faceted polyhedral mesh.
+
+    Used for DXF MESH entities. ``accoreconsole.exe -MESHSMOOTH`` converts
+    3DSOLIDs into MESH so we can read them without an ACIS parser.
+
+    ``vertices`` is the deduplicated vertex pool. Each entry in ``faces``
+    is a tuple of indices into ``vertices`` defining one (n>=3-gon) face.
+    """
+
+    vertices: tuple[Point3D, ...]
+    faces: tuple[tuple[int, ...], ...]
+
+
+@dataclass(frozen=True)
 class BlockInstance:
     """A DXF INSERT placement.
 
@@ -58,7 +73,7 @@ class EntityRecord:
     """One DXF entity as read from the source file.
 
     `geometry` is one of the geometry dataclasses defined in this module
-    (currently only LineGeometry; Plan B extends with polyline/solid/block).
+    (LineGeometry, PolygonGeometry, BlockInstance, MeshGeometry).
     `attributes` carries DXF-specific extras (color, linetype, thickness).
     `block_name` and `xform` are only populated for INSERT entities.
     """
@@ -83,4 +98,8 @@ class MappedEntity(EntityRecord):
     talo2000_name: str | None = ""
     lvi_code: str | None = None
     talotekniikka_code: str | None = None
+    fi_komponentti: dict[str, Any] | None = None
+    fi_tuote: dict[str, Any] | None = None
+    fi_tekninen: dict[str, Any] | None = None
+    fi_sijainti: dict[str, Any] | None = None
     extra_props: dict[str, Any] = field(default_factory=dict)

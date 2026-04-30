@@ -11,7 +11,6 @@ import tomli_w
 from dxf2ifc.profiles.schema import Profile
 
 _DEFAULT_RESOURCE = "default_kylmalaite.toml"
-_TATE_ONLY_RESOURCE = "default_kylmalaite_tate_only.toml"
 
 
 def _parse_profile(toml_text: str) -> Profile:
@@ -32,19 +31,8 @@ def _load_packaged(resource: str) -> Profile:
 
 
 def load_default_profile() -> Profile:
-    """Load the bundled Kylmälaite Talo2000 profile via importlib.resources."""
+    """Load the bundled Kylmälaite RAVA profile via importlib.resources."""
     return _load_packaged(_DEFAULT_RESOURCE)
-
-
-def load_default_tate_only_profile() -> Profile:
-    """Load the bundled TATE-only Kylmälaite profile (Bugfix 12).
-
-    This profile drops every architectural rule (walls, slabs, doors,
-    windows, panels, AR/K layers) so the converter only emits IFC for
-    elements a Finnish refrigeration designer actually models — pipes,
-    drains, cable carriers, shelving, and cooling equipment.
-    """
-    return _load_packaged(_TATE_ONLY_RESOURCE)
 
 
 def dump_profile(profile: Profile, path: str | Path) -> None:

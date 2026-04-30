@@ -60,6 +60,18 @@ def apply_profile(entities: list[EntityRecord], profile: Profile) -> list[Mapped
                 talo2000_name=rule.talo2000_name,
                 lvi_code=rule.lvi_code,
                 talotekniikka_code=rule.talotekniikka_code,
+                fi_komponentti=(
+                    rule.fi_komponentti.model_dump(exclude_none=True)
+                    if rule.fi_komponentti is not None
+                    else None
+                ),
+                fi_tuote=(
+                    rule.fi_tuote.model_dump(exclude_none=True)
+                    if rule.fi_tuote is not None
+                    else None
+                ),
+                fi_tekninen=dict(rule.fi_tekninen) if rule.fi_tekninen else None,
+                fi_sijainti=dict(rule.fi_sijainti) if rule.fi_sijainti else None,
                 extra_props=extras,
             )
         )

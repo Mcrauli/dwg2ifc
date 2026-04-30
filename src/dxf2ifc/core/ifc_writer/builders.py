@@ -1,25 +1,18 @@
-"""Generate an IFC file from MappedEntity objects.
+"""All IFC element builders: walls, slabs, doors, windows, pipes,
+furniture, cable carriers, building-element proxies, cooling equipment.
 
-Plan A covers: IfcProject/Site/Building/Storey hierarchy, IfcUnitAssignment
-(millimetres), single IfcWall creation with classification reference.
-Plan B extends with slabs, doors, windows, pipes, furniture, etc.
+Plus IfcSystem grouping + cable-carrier/pipe-segment type caches and
+the file-write helper.
 """
 
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import TYPE_CHECKING
 
 import ifcopenshell
 import ifcopenshell.api
 import ifcopenshell.guid
 
-if TYPE_CHECKING:  # pragma: no cover
-    from dxf2ifc.core.quality import ValidationReport
-
-from dxf2ifc.core.dxf_reader import read_dxf
 from dxf2ifc.core.geometry import (
     FurnitureBoxExtrusion,
     block_to_furniture_box,
@@ -30,230 +23,26 @@ from dxf2ifc.core.geometry import (
     panel_to_proxy_solid,
     polygon_to_slab_extrusion,
 )
-from dxf2ifc.core.mapper import apply_profile
+from dxf2ifc.core.ifc_writer.mesh import (
+    _add_mesh_product,
+    _attach_brep_representation,
+    _mesh_bbox_min,
+    _mesh_to_brep,
+)
+from dxf2ifc.core.ifc_writer.transforms import _z_rotation_matrix
 from dxf2ifc.core.types import (
     BlockInstance,
     LineGeometry,
     MappedEntity,
+    MeshGeometry,
     Point3D,
     PolygonGeometry,
 )
-from dxf2ifc.profiles.schema import CRSConfig, Profile
-
-
-@dataclass
-class IfcSkeleton:
-    """Bundle of the spatial structure produced by
-    :func:`build_ifc_project_skeleton`. Behaves like the underlying
-    ``ifcopenshell.file`` for legacy callers via ``__getattr__`` proxy."""
-
-    file: ifcopenshell.file
-    project: object
-    site: object
-    building: object
-    storeys: list[object] = field(default_factory=list)
-    contexts: dict[str, object] = field(default_factory=dict)
-
-    def __getattr__(self, name: str):
-        return getattr(self.file, name)
-
-
-def build_ifc_project_skeleton(
-    *,
-    project_name: str = "Untitled",
-    site_name: str = "Default Site",
-    building_name: str = "Default Building",
-    schema: str = "IFC4",
-    crs: CRSConfig | None = None,
-    storey_z_levels_mm: list[float] | None = None,
-) -> IfcSkeleton:
-    """Create a minimal IFC project file with the requested ``schema``
-    (``"IFC4"`` or ``"IFC4X3"``) and the IfcProject → Site → Building →
-    list[Storey] spatial hierarchy. Length units are millimetres via
-    IfcUnitAssignment.
-
-    ``storey_z_levels_mm`` is a list of Z-elevations (millimetres) — one
-    ``IfcBuildingStorey`` per entry, named ``"Kerros 1"``, ``"Kerros 2"``…
-    Defaults to ``[0.0]`` (single ground-level storey). Each storey gets an
-    ``IfcLocalPlacement`` whose ``RelativePlacement`` puts the origin at
-    ``(0, 0, z_mm)`` and whose ``PlacementRelTo`` chains to the building.
-    Site→Building placements use the same chain with ``z=0``.
-
-    When ``crs`` is provided, an ``IfcProjectedCRS`` and ``IfcMapConversion``
-    are written linking the model context to a real-world projected CRS
-    (Plan G Section 2). When ``crs`` is ``None`` (the default), no
-    georeferencing entities are emitted.
-    """
-    if storey_z_levels_mm is None:
-        storey_z_levels_mm = [0.0]
-
-    ifc = ifcopenshell.api.run("project.create_file", version=schema)
-
-    project = ifcopenshell.api.run(
-        "root.create_entity", ifc, ifc_class="IfcProject", name=project_name
-    )
-
-    ifcopenshell.api.run(
-        "unit.assign_unit",
-        ifc,
-        length={"is_metric": True, "raw": "MILLIMETERS"},
-    )
-
-    model_context = ifcopenshell.api.run("context.add_context", ifc, context_type="Model")
-    body_context = ifcopenshell.api.run(
-        "context.add_context",
-        ifc,
-        context_type="Model",
-        context_identifier="Body",
-        target_view="MODEL_VIEW",
-        parent=model_context,
-    )
-
-    site = ifcopenshell.api.run("root.create_entity", ifc, ifc_class="IfcSite", name=site_name)
-    building = ifcopenshell.api.run(
-        "root.create_entity", ifc, ifc_class="IfcBuilding", name=building_name
-    )
-
-    site.ObjectPlacement = _make_origin_placement(ifc)
-    building.ObjectPlacement = _make_origin_placement(ifc, parent=site.ObjectPlacement)
-
-    storeys = []
-    for index, z_mm in enumerate(storey_z_levels_mm, start=1):
-        storey = ifcopenshell.api.run(
-            "root.create_entity",
-            ifc,
-            ifc_class="IfcBuildingStorey",
-            name=f"Kerros {index}",
-        )
-        storey.ObjectPlacement = _make_origin_placement(
-            ifc, parent=building.ObjectPlacement, z_mm=float(z_mm)
-        )
-        storey.Elevation = float(z_mm)
-        storeys.append(storey)
-
-    ifcopenshell.api.run("aggregate.assign_object", ifc, products=[site], relating_object=project)
-    ifcopenshell.api.run("aggregate.assign_object", ifc, products=[building], relating_object=site)
-    ifcopenshell.api.run("aggregate.assign_object", ifc, products=storeys, relating_object=building)
-
-    if crs is not None:
-        _attach_projected_crs(ifc, crs)
-
-    return IfcSkeleton(
-        file=ifc,
-        project=project,
-        site=site,
-        building=building,
-        storeys=storeys,
-        contexts={"Model": model_context, "Body": body_context},
-    )
-
-
-def _make_origin_placement(
-    ifc: ifcopenshell.file,
-    parent: object | None = None,
-    z_mm: float = 0.0,
-) -> object:
-    """Create an ``IfcLocalPlacement`` whose RelativePlacement is at
-    ``(0, 0, z_mm)`` and whose PlacementRelTo points at ``parent`` (or
-    ``None`` for the root site placement)."""
-    location = ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, float(z_mm)))
-    axis_placement = ifc.create_entity("IfcAxis2Placement3D", Location=location)
-    return ifc.create_entity(
-        "IfcLocalPlacement",
-        PlacementRelTo=parent,
-        RelativePlacement=axis_placement,
-    )
-
-
-def _attach_projected_crs(ifc: ifcopenshell.file, crs: CRSConfig) -> None:
-    """Write IfcProjectedCRS + IfcMapConversion linked to the model context.
-
-    The MapConversion's SourceCRS is the IfcGeometricRepresentationContext for
-    the "Model" (created in ``build_ifc_project_skeleton``). Geometry stays in
-    LOCAL coordinates; the MapConversion expresses how to project those local
-    coordinates into the real-world projected CRS.
-    """
-    model_context = next(
-        (
-            ctx
-            for ctx in ifc.by_type("IfcGeometricRepresentationContext", include_subtypes=False)
-            if ctx.ContextType == "Model"
-        ),
-        None,
-    )
-    if model_context is None:  # pragma: no cover - skeleton always has Model context
-        raise RuntimeError("IfcGeometricRepresentationContext 'Model' missing — cannot attach CRS")
-
-    projected = ifc.create_entity(
-        "IfcProjectedCRS",
-        Name=crs.epsg_code,
-        Description=crs.name,
-        GeodeticDatum=crs.geodetic_datum,
-    )
-    ifc.create_entity(
-        "IfcMapConversion",
-        SourceCRS=model_context,
-        TargetCRS=projected,
-        Eastings=crs.eastings_mm,
-        Northings=crs.northings_mm,
-        OrthogonalHeight=crs.orthogonal_height_mm,
-        XAxisAbscissa=crs.x_axis_abscissa,
-        XAxisOrdinate=crs.x_axis_ordinate,
-        Scale=crs.scale,
-    )
 
 
 def write_ifc(ifc: ifcopenshell.file, output_path: str | Path) -> None:
     """Write the IFC file to disk."""
     ifc.write(str(output_path))
-
-
-def validate_local_extent(skeleton: object, *, max_extent_mm: float = 5_000_000.0) -> None:
-    """Defensive double-transform guard. Scans every ``IfcCartesianPoint``
-    in the file and raises ``RuntimeError`` if any coordinate component
-    exceeds ``max_extent_mm`` (default 5 000 000 mm = 5 km).
-
-    Geometry must stay in LOCAL coordinates; the MapConversion linking
-    the model to a real-world projected CRS does the LOCAL→WORLD
-    projection at view time. A vertex at e.g. 25 496 000 mm (ETRS-TM35FIN
-    easting magnitude) is a clear signal that the MapConversion was
-    applied twice — once into the geometry and once again at view time.
-    """
-    ifc = skeleton.file if hasattr(skeleton, "file") else skeleton
-    for point in ifc.by_type("IfcCartesianPoint"):
-        for component in point.Coordinates:
-            if abs(component) > max_extent_mm:
-                raise RuntimeError(
-                    f"Local coordinate {component} exceeds max_extent_mm="
-                    f"{max_extent_mm} on {point} — possible double-transform "
-                    f"(CRS world coordinates leaked into LOCAL geometry)."
-                )
-
-
-def _entity_anchor_z(geometry: object) -> float:
-    """Anchor-Z used by the orchestrator to pick a storey:
-    LineGeometry → min(start.z, end.z), PolygonGeometry → min(p.z),
-    BlockInstance → insertion_point.z. Other geometry types fall back to 0."""
-    if isinstance(geometry, LineGeometry):
-        return min(geometry.start.z, geometry.end.z)
-    if isinstance(geometry, PolygonGeometry):
-        return min(p.z for p in geometry.vertices)
-    if isinstance(geometry, BlockInstance):
-        return geometry.insertion_point.z
-    return 0.0
-
-
-def resolve_storey(storeys: list[object], z_mm: float) -> object:
-    """Return the highest ``IfcBuildingStorey`` whose ``Elevation`` is
-    ``<= z_mm``. When ``z_mm`` is below the lowest storey, falls back to
-    ``storeys[0]`` so an element never ends up unparented."""
-    if not storeys:
-        raise ValueError("resolve_storey requires at least one storey")
-    candidate = storeys[0]
-    for storey in storeys:
-        if storey.Elevation is not None and storey.Elevation <= z_mm:
-            candidate = storey
-    return candidate
 
 
 def add_wall(
@@ -721,7 +510,18 @@ def add_furniture(
     PolygonGeometry (closed polyline) the bounding box of the polygon
     drives width / depth and the box is anchored at (xmin, ymin); the
     extrusion height still comes from extra_props.
+
+    For :class:`MeshGeometry` (DXF MESH after accoreconsole pre-processing)
+    a faceted Brep representation is emitted instead of an extrusion, with
+    the placement at the mesh's bounding-box minimum.
     """
+    if isinstance(mapped.geometry, MeshGeometry):
+        return _add_mesh_product(
+            ifc,
+            mapped,
+            ifc_class="IfcFurniture",
+            parent_storey=parent_storey,
+        )
     if isinstance(mapped.geometry, BlockInstance):
         width = float(mapped.extra_props.get("default_width_mm", 1000.0))
         depth = float(mapped.extra_props.get("default_depth_mm", 600.0))
@@ -946,6 +746,149 @@ def add_cable_carrier_segment(
     return seg
 
 
+def add_cable_carrier(
+    ifc,
+    mapped: MappedEntity,
+    *,
+    parent_storey,
+    predefined_type: str = "CABLETRAYSEGMENT",
+) -> object:
+    """Create an IfcCableCarrierSegment from a MeshGeometry- or
+    BlockInstance-bearing MappedEntity.
+
+    Mirrors :func:`add_cable_carrier_segment` (which handles 2D LineGeometry
+    rails) but consumes 3D inputs: DXF MESH entities post accoreconsole
+    pre-processing, or block placements with default-dimension
+    extra_props. ``predefined_type`` follows Granlund convention:
+    ``"CABLELADDERSEGMENT"`` for tikashylly, ``"CABLETRAYSEGMENT"`` for
+    levyhylly. As with :func:`add_cable_carrier_segment` a single
+    IfcCableCarrierSegmentType per (predefined_type) is created and
+    re-used. Tokens outside IfcCableCarrierSegmentTypeEnum are mapped to
+    USERDEFINED + ObjectType / ElementType for round-tripping.
+    """
+    if not isinstance(mapped.geometry, (MeshGeometry, BlockInstance, PolygonGeometry)):
+        raise TypeError(
+            "add_cable_carrier expects MeshGeometry, BlockInstance or PolygonGeometry, "
+            f"got {type(mapped.geometry).__name__}"
+        )
+
+    is_userdefined = predefined_type not in _IFC_CABLE_CARRIER_SEGMENT_TYPES
+    enum_value = "USERDEFINED" if is_userdefined else predefined_type
+
+    if isinstance(mapped.geometry, MeshGeometry):
+        seg = _add_mesh_product(
+            ifc,
+            mapped,
+            ifc_class="IfcCableCarrierSegment",
+            parent_storey=parent_storey,
+            predefined_type=enum_value,
+        )
+    else:
+        # BlockInstance or PolygonGeometry fallback: width × depth × height
+        # extrusion box. PolygonGeometry typically comes from a closed
+        # LWPOLYLINE outlining the carrier footprint; bbox-extrude into a
+        # default-thickness shelf board.
+        if isinstance(mapped.geometry, PolygonGeometry):
+            xs = [v.x for v in mapped.geometry.vertices]
+            ys = [v.y for v in mapped.geometry.vertices]
+            zs = [v.z for v in mapped.geometry.vertices]
+            width = max(xs) - min(xs)
+            depth = max(ys) - min(ys)
+            if width < 50.0 or depth < 50.0:
+                raise ValueError(
+                    "add_cable_carrier polygon outline is degenerate "
+                    f"(width={width:.1f} mm, depth={depth:.1f} mm; min side 50 mm)"
+                )
+            height = float(mapped.extra_props.get("default_height_mm", 80.0))
+            box = FurnitureBoxExtrusion(
+                anchor=Point3D(min(xs), min(ys), min(zs)),
+                angle_rad=0.0,
+                width_mm=width,
+                depth_mm=depth,
+                height_mm=height,
+            )
+        else:
+            width = float(mapped.extra_props.get("default_width_mm", 300.0))
+            depth = float(mapped.extra_props.get("default_depth_mm", 600.0))
+            height = float(mapped.extra_props.get("default_height_mm", 80.0))
+            box = block_to_furniture_box(
+                mapped.geometry, width_mm=width, depth_mm=depth, height_mm=height
+            )
+
+        seg = ifcopenshell.api.run(
+            "root.create_entity",
+            ifc,
+            ifc_class="IfcCableCarrierSegment",
+            name=mapped.layer,
+            predefined_type=enum_value,
+        )
+
+        matrix = _z_rotation_matrix(box.anchor.x, box.anchor.y, box.anchor.z, box.angle_rad)
+        ifcopenshell.api.run(
+            "geometry.edit_object_placement",
+            ifc,
+            product=seg,
+            matrix=matrix,
+            is_si=False,
+        )
+
+        model_ctx = [
+            c
+            for c in ifc.by_type("IfcGeometricRepresentationSubContext")
+            if c.ContextIdentifier == "Body"
+        ][0]
+        rect = ifc.create_entity(
+            "IfcRectangleProfileDef",
+            ProfileType="AREA",
+            ProfileName=None,
+            Position=ifc.create_entity(
+                "IfcAxis2Placement2D",
+                Location=ifc.create_entity(
+                    "IfcCartesianPoint",
+                    Coordinates=(box.width_mm / 2.0, box.depth_mm / 2.0),
+                ),
+            ),
+            XDim=box.width_mm,
+            YDim=box.depth_mm,
+        )
+        extruded = ifc.create_entity(
+            "IfcExtrudedAreaSolid",
+            SweptArea=rect,
+            Position=ifc.create_entity(
+                "IfcAxis2Placement3D",
+                Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
+            ),
+            ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
+            Depth=box.height_mm,
+        )
+        shape = ifc.create_entity(
+            "IfcShapeRepresentation",
+            ContextOfItems=model_ctx,
+            RepresentationIdentifier="Body",
+            RepresentationType="SweptSolid",
+            Items=[extruded],
+        )
+        seg.Representation = ifc.create_entity(
+            "IfcProductDefinitionShape", Representations=[shape]
+        )
+
+        ifcopenshell.api.run(
+            "spatial.assign_container",
+            ifc,
+            products=[seg],
+            relating_structure=parent_storey,
+        )
+
+    seg_type = _ensure_cable_carrier_segment_type(ifc, predefined_type, enum_value)
+    ifcopenshell.api.run("type.assign_type", ifc, related_objects=[seg], relating_type=seg_type)
+
+    seg.PredefinedType = enum_value
+    if is_userdefined:
+        seg.ObjectType = predefined_type
+
+    return seg
+
+
 def add_building_element_proxy(
     ifc,
     mapped: MappedEntity,
@@ -1036,18 +979,28 @@ def add_cooling_equipment(
     parent_storey,
 ) -> object:
     """Create an IfcEvaporator / IfcCondenser / IfcCompressor from a
-    BlockInstance-bearing MappedEntity. The selected IFC class comes from
-    ``mapped.ifc_type``; the body is a width × depth × height extrusion
-    using extra_props defaults that match storage furniture.
+    BlockInstance- or MeshGeometry-bearing MappedEntity. The selected
+    IFC class comes from ``mapped.ifc_type``; for BlockInstance the body
+    is a width × depth × height extrusion using extra_props defaults that
+    match storage furniture, while MeshGeometry produces a faceted Brep
+    representation (DXF MESH after accoreconsole pre-processing).
     """
     if mapped.ifc_type not in _COOLING_EQUIPMENT_CLASSES:
         raise ValueError(
             f"add_cooling_equipment requires ifc_type in {sorted(_COOLING_EQUIPMENT_CLASSES)}, "
             f"got {mapped.ifc_type!r}"
         )
+    if isinstance(mapped.geometry, MeshGeometry):
+        return _add_mesh_product(
+            ifc,
+            mapped,
+            ifc_class=mapped.ifc_type,
+            parent_storey=parent_storey,
+        )
     if not isinstance(mapped.geometry, BlockInstance):
         raise TypeError(
-            f"add_cooling_equipment expects BlockInstance, got {type(mapped.geometry).__name__}"
+            f"add_cooling_equipment expects BlockInstance or MeshGeometry, "
+            f"got {type(mapped.geometry).__name__}"
         )
 
     width = float(mapped.extra_props.get("default_width_mm", 800.0))
@@ -1191,216 +1144,3 @@ def _ensure_pipe_segment_type(ifc, requested_type: str, enum_value: str) -> obje
     if enum_value == "USERDEFINED":
         pipe_type.ElementType = requested_type
     return pipe_type
-
-
-def _z_rotation_matrix(x: float, y: float, z: float, angle: float) -> list[list[float]]:
-    c, s = math.cos(angle), math.sin(angle)
-    return [
-        [c, -s, 0.0, x],
-        [s, c, 0.0, y],
-        [0.0, 0.0, 1.0, z],
-        [0.0, 0.0, 0.0, 1.0],
-    ]
-
-
-_CLASSIFICATION_SOURCES: dict[str, dict[str, str]] = {
-    "Talo2000": {"Source": "Rakennustieto Oy", "Edition": "Talo 2000"},
-    "RAVA-LVI": {"Source": "Rakennustietojärjestelmä RYTJ", "Edition": "LVI-TUOTEOSA v1.0"},
-    "RAVA-TATE": {
-        "Source": "Rakennustietojärjestelmä RYTJ",
-        "Edition": "TALOTEKNIIKKA-TUOTEOSA v1.0",
-    },
-}
-
-
-def _classification_name_for(domain: str, code: str) -> str:
-    """Resolve the IfcClassification.Name for a (domain, code) pair."""
-    if domain == "ARK":
-        return "Talo2000"
-    if domain == "TATE":
-        if code.startswith("T-LVI"):
-            return "RAVA-LVI"
-        if code.startswith("T-TATE"):
-            return "RAVA-TATE"
-    raise ValueError(f"Cannot resolve classification source for domain={domain!r}, code={code!r}")
-
-
-def add_classification(
-    ifc, product, *, domain: str, code: str | None, name: str | None = None
-) -> object | None:
-    """Attach a discipline-aware IfcClassificationReference to ``product``.
-
-    domain="ARK" emits IfcClassification "Talo2000".
-    domain="TATE" emits "RAVA-LVI" for T-LVI-… codes and "RAVA-TATE" for
-    T-TATE-… codes. Returns ``None`` and does nothing if ``code`` is empty.
-    Each IfcClassification entity is created at most once per file and
-    reused across products.
-    """
-    if not code:
-        return None
-    classification_name = _classification_name_for(domain, code)
-    existing = [c for c in ifc.by_type("IfcClassification") if c.Name == classification_name]
-    if existing:
-        classification = existing[0]
-    else:
-        meta = _CLASSIFICATION_SOURCES[classification_name]
-        classification = ifc.create_entity(
-            "IfcClassification",
-            Source=meta["Source"],
-            Edition=meta["Edition"],
-            Name=classification_name,
-        )
-
-    reference = ifc.create_entity(
-        "IfcClassificationReference",
-        Identification=code,
-        Name=name,
-        ReferencedSource=classification,
-    )
-    ifc.create_entity(
-        "IfcRelAssociatesClassification",
-        GlobalId=ifcopenshell.guid.new(),
-        RelatedObjects=[product],
-        RelatingClassification=reference,
-    )
-    return reference
-
-
-def add_talo2000_classification(
-    ifc, product, *, code: str | None, name: str | None
-) -> object | None:
-    """Backwards-compatible wrapper around :func:`add_classification` (ARK domain).
-
-    Returns ``None`` and does nothing for products without a Talo2000 code
-    (TATE-domain rules use ``add_classification`` directly with their RAVA code).
-    """
-    return add_classification(ifc, product, domain="ARK", code=code, name=name)
-
-
-def convert_dxf(
-    *,
-    dxf_path: str | Path,
-    output_path: str | Path,
-    profile: Profile,
-    project_name: str | None = None,
-    validate: bool = False,
-    schema: str = "IFC4",
-) -> tuple[dict[str, list], ValidationReport | None]:
-    """Orchestrate DXF -> IFC conversion end-to-end.
-
-    Returns a tuple ``(systems, report)`` where ``systems`` maps each
-    ``Rule.system_name`` to the IFC products that were grouped under that
-    system, and ``report`` is a :class:`ValidationReport` produced by
-    :func:`dxf2ifc.core.quality.validate_ifc` when ``validate=True`` (or
-    ``None`` otherwise). ``schema`` selects between ``"IFC4"`` (default)
-    and ``"IFC4X3"`` (Plan H).
-    """
-    name = project_name or Path(dxf_path).stem
-    entities = read_dxf(dxf_path)
-    mapped = apply_profile(entities, profile)
-    skeleton = build_ifc_project_skeleton(
-        project_name=name,
-        schema=schema,
-        crs=profile.crs,
-        storey_z_levels_mm=list(profile.storey_z_levels_mm),
-    )
-    ifc = skeleton.file
-    systems: dict[str, list] = {}
-
-    def _storey_for(m) -> object:
-        return resolve_storey(skeleton.storeys, _entity_anchor_z(m.geometry))
-
-    def _record(m: object, product: object) -> None:
-        sys_name = m.extra_props.get("system_name") if m.extra_props else None
-        if sys_name:
-            systems.setdefault(sys_name, []).append(product)
-
-    def _classify(product: object, m: object) -> None:
-        if m.domain == "ARK":
-            add_classification(
-                ifc, product, domain="ARK", code=m.talo2000_code, name=m.talo2000_name
-            )
-        elif m.domain == "TATE":
-            code = m.lvi_code or m.talotekniikka_code
-            add_classification(ifc, product, domain="TATE", code=code)
-
-    for m in mapped:
-        if m.ifc_type == "IfcWall":
-            wall = add_wall(
-                ifc,
-                m,
-                parent_storey=_storey_for(m),
-                predefined_type=m.predefined_type or "STANDARD",
-            )
-            _classify(wall, m)
-            _record(m, wall)
-        elif m.ifc_type == "IfcSlab":
-            slab = add_slab(
-                ifc,
-                m,
-                parent_storey=_storey_for(m),
-                predefined_type=m.predefined_type or "FLOOR",
-            )
-            _classify(slab, m)
-            _record(m, slab)
-        elif m.ifc_type == "IfcDoor":
-            door = add_door(
-                ifc,
-                m,
-                parent_storey=_storey_for(m),
-                predefined_type=m.predefined_type or "DOOR",
-            )
-            _classify(door, m)
-            _record(m, door)
-        elif m.ifc_type == "IfcWindow":
-            window = add_window(
-                ifc,
-                m,
-                parent_storey=_storey_for(m),
-                predefined_type=m.predefined_type or "WINDOW",
-            )
-            _classify(window, m)
-            _record(m, window)
-        elif m.ifc_type == "IfcPipeSegment":
-            pipe = add_pipe_segment(
-                ifc,
-                m,
-                parent_storey=_storey_for(m),
-                predefined_type=m.predefined_type or "REFRIGERATION",
-            )
-            _classify(pipe, m)
-            _record(m, pipe)
-        elif m.ifc_type == "IfcFurniture":
-            furniture = add_furniture(ifc, m, parent_storey=_storey_for(m))
-            _classify(furniture, m)
-            _record(m, furniture)
-        elif m.ifc_type == "IfcCableCarrierSegment":
-            seg = add_cable_carrier_segment(
-                ifc,
-                m,
-                parent_storey=_storey_for(m),
-                predefined_type=m.predefined_type or "CABLETRUNKINGSEGMENT",
-            )
-            _classify(seg, m)
-            _record(m, seg)
-        elif m.ifc_type == "IfcBuildingElementProxy":
-            proxy = add_building_element_proxy(ifc, m, parent_storey=_storey_for(m))
-            _classify(proxy, m)
-            _record(m, proxy)
-        elif m.ifc_type in _COOLING_EQUIPMENT_CLASSES:
-            equipment = add_cooling_equipment(ifc, m, parent_storey=_storey_for(m))
-            _classify(equipment, m)
-            _record(m, equipment)
-
-    for system_name, products in systems.items():
-        system = add_system(ifc, name=system_name)
-        assign_to_system(ifc, products=products, system=system)
-
-    write_ifc(ifc, output_path)
-
-    report: ValidationReport | None = None
-    if validate:
-        from dxf2ifc.core.quality import validate_ifc as _validate_ifc
-
-        report = _validate_ifc(output_path)
-    return systems, report

@@ -24,13 +24,6 @@ def test_cli_no_args_prints_help():
     assert "usage" in (r.stdout + r.stderr).lower()
 
 
-def test_cli_convert_default_profile(fixtures_dir: Path, tmp_path: Path):
-    out = tmp_path / "out.ifc"
-    r = _run_cli("convert", str(fixtures_dir / "simple_wall.dxf"), str(out))
-    assert r.returncode == 0, r.stderr
-    assert out.exists()
-    ifc = ifcopenshell.open(str(out))
-    assert len(ifc.by_type("IfcWall")) == 1
 
 
 def test_cli_convert_validate_flag_exit_zero_on_clean_ifc(fixtures_dir: Path, tmp_path: Path):

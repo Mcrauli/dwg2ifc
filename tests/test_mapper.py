@@ -99,41 +99,27 @@ def test_apply_profile_uses_first_matching_rule_by_order():
     assert mapped[0].predefined_type == "PARTITIONING"
 
 
-def test_apply_profile_maps_partition_walls_via_default_profile():
+def test_apply_profile_maps_storage_shelves_via_default_profile():
+    """Bugfix 12: cold-storage shelves map to IfcCableCarrierSegment per
+    Granlund convention (CABLELADDERSEGMENT for tikashylly, CABLETRAYSEGMENT
+    for levyhylly)."""
     profile = load_default_profile()
     entities = [
-        _sample_line_record(layer="KYL-VALISEINA"),
-        _sample_line_record(layer="KYL-LASIVALISEINA"),
+        _sample_line_record(layer="KYL-LEVYHYLLY-1500"),
+        _sample_line_record(layer="KYL-TIKASHYLLY-2000"),
+        _sample_line_record(layer="KYL-TIKASHYLLY-V-2200"),
     ]
     mapped = apply_profile(entities, profile)
     by_layer = {m.layer: m for m in mapped}
-    vs = by_layer["KYL-VALISEINA"]
-    assert vs.ifc_type == "IfcWall"
-    assert vs.predefined_type == "PARTITIONING"
-    assert vs.talo2000_code == "1311"
-    assert vs.talo2000_name == "Väliseinät"
-    lasi = by_layer["KYL-LASIVALISEINA"]
-    assert lasi.ifc_type == "IfcWall"
-    assert lasi.predefined_type == "PARTITIONING"
-    assert lasi.talo2000_code == "1312"
-    assert lasi.talo2000_name == "Lasiväliseinät"
-
-
-def test_apply_profile_maps_ikkuna_block_to_ifcwindow_via_default_profile():
-    profile = load_default_profile()
-    entity = EntityRecord(
-        layer="KYL-IKKUNA-MUOVI",
-        dxf_type="INSERT",
-        geometry=BlockInstance(insertion_point=Point3D(2000, 1500, 0)),
-        block_name="IKKUNA",
-    )
-    mapped = apply_profile([entity], profile)
-    assert len(mapped) == 1
-    window = mapped[0]
-    assert window.ifc_type == "IfcWindow"
-    assert window.talo2000_code == "1242"
-    assert window.talo2000_name == "Ikkunat"
-    assert window.block_name == "IKKUNA"
+    levy = by_layer["KYL-LEVYHYLLY-1500"]
+    assert levy.ifc_type == "IfcCableCarrierSegment"
+    assert levy.predefined_type == "CABLETRAYSEGMENT"
+    assert levy.talotekniikka_code == "T-TATE-01-01-001"
+    tikas = by_layer["KYL-TIKASHYLLY-2000"]
+    assert tikas.ifc_type == "IfcCableCarrierSegment"
+    assert tikas.predefined_type == "CABLELADDERSEGMENT"
+    tikas_v = by_layer["KYL-TIKASHYLLY-V-2200"]
+    assert tikas_v.predefined_type == "CABLELADDERSEGMENT"
 
 
 def test_apply_profile_propagates_system_name_to_extra_props():

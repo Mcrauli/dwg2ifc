@@ -10,7 +10,7 @@ from pathlib import Path
 import ezdxf
 
 from dxf2ifc.core.ifc_writer import convert_dxf
-from dxf2ifc.profiles.loader import load_default_tate_only_profile
+from dxf2ifc.profiles.loader import load_default_profile
 
 
 def _two_storey_dxf(tmp_path: Path) -> Path:
@@ -30,7 +30,7 @@ def _two_storey_dxf(tmp_path: Path) -> Path:
 
 
 def test_orchestrator_routes_pipes_to_anchor_z_storey(tmp_path: Path):
-    profile = load_default_tate_only_profile()
+    profile = load_default_profile()
     profile = profile.model_copy(update={"storey_z_levels_mm": [0.0, 3500.0]})
 
     dxf_path = _two_storey_dxf(tmp_path)
