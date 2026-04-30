@@ -13,7 +13,8 @@ src/dxf2ifc/
   core/
     dxf_reader.py     DXF luku (ezdxf) + 3DSOLID handler acis_meshes-väylällä
     geometry.py       Extrusion-dataclassit + extents_from_geometry
-    ifc_writer.py     convert_dxf orchestrator + add_* tuoteputket  (ISO!)
+    ifc_writer/       paketti — fasadi + skeleton + classification +
+                      mesh + transforms + builders + orchestrator
     finnish_psets.py  FI_Asennus / Geometria / Komponentti / Tuote /
                       Tekninen / Sijainti
     positio.py        positiov2-blokin luku → Koneikko/Laitetunnus
@@ -67,12 +68,16 @@ Copy-Item dist/dxf2ifc.exe dist/dxf2ifc-0.1.0.exe -Force
 
 ## Latest delivery
 
-**Build #28** (2026-04-30) ships:
-- AutoCAD COM removed → accoreconsole+STLOUT
-- 6 FI_*-PSetit per IFC-tuote
-- POSITIO → Koneikko/Laitetunnus -linkitys
-- Suunnittelualat-luokittelu (TATE/ARK)
+**Build #29** (2026-04-30, SHA `76A4F5CB606034E0`):
+- AutoCAD COM removed → accoreconsole+STLOUT (Build #20–28)
+- 6 FI_*-PSetit per IFC-tuote (RAVA3Pro convention)
+- POSITIO → Koneikko/Laitetunnus -linkitys (auto-match)
+- Suunnittelualat-luokittelu (TATE/ARK) eksplisiittisesti
 - FI_Geometria Pituus hyllyille/putkille
+- **`ifc_writer.py` (1908 r) split → paketti** 7 fileä, public API re-export-fasadin kautta
+- 440/440 testiä passes (oli 47 fail), -4090 r netti
+
+Build-historia + per-task-SHA: [`PROGRESS.md`](PROGRESS.md). Plans A–H -arkkitehtuuri-spec: [`docs/plans/`](docs/plans/).
 
 ## Token-säästöt Claudelle
 
@@ -107,4 +112,12 @@ Värilista + tyylit: katso aiempi CLAUDE.md tai `gui/style.qss`.
 
 ## Avoimet todoit
 
-Nähtävillä `~/.claude/projects/.../memory/project_dxf2ifc.md`.
+Nähtävillä `~/.claude/projects/.../memory/project_dxf2ifc.md` ja [`PROGRESS.md`](PROGRESS.md).
+
+## Onboarding fresh Claude:lle
+
+Tämä CLAUDE.md + auto-loaded muisti `memory/project_dxf2ifc.md` antaa
+kaiken tarvittavan kontekstin. Jos haluat syvempää historiaa: katso
+[`PROGRESS.md`](PROGRESS.md) (current state) tai
+[`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md) (Plan A–H + Bugfix-historia).
+Plan-tasoinen arkkitehtuuri-spec: [`docs/plans/`](docs/plans/).
