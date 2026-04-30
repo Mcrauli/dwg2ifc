@@ -5,6 +5,17 @@ bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
 ## Latest
 
+**v0.1.0-alpha** (2026-04-30) — ensimmäinen julkinen pre-release Build
+#29:n pohjalta. Asennettavissa:
+<https://github.com/Mcrauli/dxf2ifc/releases/tag/v0.1.0-alpha>
+
+- Pre-release tag (näkyy "Pre-release" -merkillä Releases-sivulla)
+- Asset:t: `dxf2ifc-0.1.0.exe` (102 MB) + `.sha256` + `LICENSES.md`
+- release.yml smoke-step korjattu: ei enää invokoi exe:tä
+  `--version`-flagilla (windowed PyInstaller exe:llä ei stdoutia),
+  vain tarkistaa että artifaktin koko on > 50 MB
+- build.yml + release.yml uudelleen aktivoitu (olivat disabled)
+
 **Build #29** (2026-04-30, SHA `76A4F5CB606034E0`)
 
 - Repo cleanup + paketointi: `ifc_writer.py` (1908 r) → 6-moduulin paketti
