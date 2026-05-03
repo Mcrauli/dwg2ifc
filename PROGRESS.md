@@ -5,6 +5,20 @@ bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
 ## Latest
 
+**Inno Setup -installeri** (branch `claude/parser-installer-setup-3kPsS`)
+
+- `build/installer.iss` + `scripts/build_installer.ps1` ketju:
+  PyInstaller exe → ISCC compile → `dist/dxf2ifc-Setup-<v>.exe`
+- Per-user install (`PrivilegesRequired=lowest`) → ei UAC-promptia,
+  vähemmän SmartScreen-kitkaa kuin paljaalla `.exe`:llä
+- Stable AppId GUID upgrade/uninstall-identiteettiä varten
+- `lzma2/max` -kompressio: installer ~40-60% pienempi kuin paljas exe
+- Suomi + englanti -kielet, Start-menu + optional desktop shortcut
+- `.spec` + `.iss` poimivat `assets/dxf2ifc.ico`:n automaattisesti
+- `build.yml` + `release.yml` rakentavat installerin GitHub Actionsissa
+- Code-signing-hookki dokumentoitu `docs/packaging.md`:ssä — lisätään kun
+  SignPath OSS Foundation -hakemus hyväksytään
+
 **Build #35** (2026-05-04) — Solibri auto-detect + energiateho-diagnostiikka + outlier-poisto
 
 - **Solibri auto-detect**: lisätty `Pset_Project` `Authorization=

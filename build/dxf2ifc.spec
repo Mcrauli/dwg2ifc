@@ -30,6 +30,11 @@ _ifcopenshell_datas = collect_data_files('ifcopenshell')
 
 block_cipher = None
 
+# Brand icon is optional during MVP — assets/dxf2ifc.ico is wired automatically
+# once the file exists. PyInstaller falls back to its bootloader icon otherwise.
+_icon_path = os.path.join(ROOT, 'assets', 'dxf2ifc.ico')
+_icon = _icon_path if os.path.exists(_icon_path) else None
+
 a = Analysis(
     [os.path.join(ROOT, 'src/dxf2ifc/gui/__main__.py')],
     pathex=[os.path.join(ROOT, 'src')],
@@ -97,5 +102,5 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     version=os.path.join(SPECPATH, 'version_info.py'),
-    icon=os.path.join(ROOT, 'assets', 'dxf2ifc.ico'),
+    icon=_icon,
 )

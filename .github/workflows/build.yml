@@ -21,10 +21,10 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v3
 
-      - name: Build dxf2ifc.exe
+      - name: Build dxf2ifc installer
         shell: pwsh
         run: |
-          .\scripts\build_exe.ps1
+          .\scripts\build_installer.ps1
 
       - name: Smoke check exe artifact
         shell: pwsh
@@ -32,10 +32,21 @@ jobs:
           # The bundled exe is windowed (console=False), so `--version`
           # cannot write to stdout reliably under PyInstaller. We simply
           # verify the artifact exists and has plausible size (> 50 MB).
-          $exe = Get-ChildItem dist/dxf2ifc-*.exe | Where-Object { $_.Name -notmatch '\.sha256$' } | Select-Object -First 1
+          # Filter both .sha256 sidecars and *Setup* installer artifacts.
+          $exe = Get-ChildItem dist/dxf2ifc-*.exe `
+            | Where-Object { $_.Name -notmatch '\.sha256$' -and $_.Name -notlike "*Setup*" } `
+            | Select-Object -First 1
           if (-not $exe) { throw "No dxf2ifc-*.exe in dist/" }
           if ($exe.Length -lt 50MB) { throw "exe smaller than 50 MB: $($exe.Length)" }
           Write-Host "Smoke OK: $($exe.Name) ($([int]($exe.Length/1MB)) MB)"
+
+      - name: Smoke check installer artifact
+        shell: pwsh
+        run: |
+          $setup = Get-ChildItem dist/dxf2ifc-Setup-*.exe | Select-Object -First 1
+          if (-not $setup) { throw "No dxf2ifc-Setup-*.exe in dist/" }
+          if ($setup.Length -lt 30MB) { throw "installer smaller than 30 MB: $($setup.Length)" }
+          Write-Host "Installer OK: $($setup.Name) ($([int]($setup.Length/1MB)) MB)"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

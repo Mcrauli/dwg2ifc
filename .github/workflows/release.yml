@@ -122,6 +122,7 @@ jobs:
       - name: Bundle LICENSES.md
         shell: pwsh
         run: |
+          New-Item -ItemType Directory -Force -Path "dist" | Out-Null
           $out = "dist/LICENSES.md"
           $sections = @(
             "# Third-party licenses bundled with dxf2ifc.exe",
@@ -147,6 +148,28 @@ jobs:
           )
           $sections -join "`n" | Set-Content -Encoding UTF8 -Path $out
 
+      - name: Build dxf2ifc installer
+        shell: pwsh
+        run: |
+          .\scripts\build_installer.ps1
+
+      - name: Smoke check artifacts
+        shell: pwsh
+        run: |
+          # Windowed PyInstaller exe (console=False) cannot reliably write to
+          # stdout, so smoke is artifact-existence + plausible size.
+          $exe = Get-ChildItem dist/dxf2ifc-*.exe `
+            | Where-Object { $_.Name -notlike "*Setup*" } `
+            | Select-Object -First 1
+          if (-not $exe) { throw "No dxf2ifc-*.exe in dist/" }
+          if ($exe.Length -lt 50MB) { throw "exe smaller than 50 MB: $($exe.Length)" }
+          Write-Host "Exe OK      : $($exe.Name) ($([int]($exe.Length/1MB)) MB)"
+
+          $setup = Get-ChildItem dist/dxf2ifc-Setup-*.exe | Select-Object -First 1
+          if (-not $setup) { throw "No dxf2ifc-Setup-*.exe in dist/" }
+          if ($setup.Length -lt 30MB) { throw "installer smaller than 30 MB: $($setup.Length)" }
+          Write-Host "Installer OK: $($setup.Name) ($([int]($setup.Length/1MB)) MB)"
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -154,6 +177,8 @@ jobs:
           path: |
             dist/dxf2ifc-*.exe
             dist/dxf2ifc-*.exe.sha256
+            dist/dxf2ifc-Setup-*.exe
+            dist/dxf2ifc-Setup-*.exe.sha256
             dist/LICENSES.md
           if-no-files-found: error
 
@@ -163,8 +188,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $tag = "${env:GITHUB_REF_NAME}"
+          # Include both the raw exe and the Inno Setup installer
+          # plus their .sha256 sidecars in the GitHub release.
           $assets = @(
-            (Get-ChildItem dist/dxf2ifc-*.exe | Where-Object { $_.Name -notmatch '\.sha256$' }).FullName,
+            (Get-ChildItem dist/dxf2ifc-*.exe `
+              | Where-Object { $_.Name -notmatch '\.sha256$' }).FullName,
             (Get-ChildItem dist/dxf2ifc-*.exe.sha256).FullName,
             "dist/LICENSES.md"
           )

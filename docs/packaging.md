@@ -17,6 +17,59 @@ uv run pyinstaller build/dxf2ifc.spec --clean --noconfirm
 Output päätyy `dist/dxf2ifc(.exe)` -tiedostona. Spec on Plan E Section 1
 -skeleton (datas, hidden_imports ja version_info täydennetään Section 2:ssa).
 
+## Installer (Inno Setup)
+
+PyInstaller-exen ympärille käännetään **Inno Setup 6** -installeri jota Lauri
+jakelee loppukäyttäjille `.\scripts\build_installer.ps1`-skriptillä. Installer
+näyttää oikealta Windows-asennusohjelmalta (Start-menu -merkintä,
+Apps & Features -uninstaller, version-info), mikä vähentää SmartScreenin
+"unknown publisher" -kitkaa verrattuna paljaaseen `.exe`:hen.
+
+```powershell
+# Asenna Inno Setup 6 kerran: https://jrsoftware.org/isinfo.php
+# Build-ketju: PyInstaller exe → ISCC compile → dist/dxf2ifc-Setup-<v>.exe
+.\scripts\build_installer.ps1
+```
+
+Installer-konfig on `build/installer.iss`. Avainpäätökset:
+
+- **`PrivilegesRequired=lowest`** + `PrivilegesRequiredOverridesAllowed=dialog`
+  → asennetaan oletuksena per-user (`%LOCALAPPDATA%\Programs\dxf2ifc`), ei
+  UAC-promptia eikä admin-oikeuksia. Käyttäjä voi halutessaan elevoida
+  Program Files -asennukseen wizard-dialogista.
+- **Stable `AppId`** GUID → upgrade/uninstall toimii oikein versioiden välillä.
+  ÄLÄ koskaan vaihda GUIDia — muuten vanhaa asennusta ei pystytä päivittämään.
+- **`x64compatible`** ainoa tuettu arkkitehtuuri (PySide6 + ifcopenshell
+  vaativat 64-bittisen Pythonin).
+- **`compression=lzma2/max`** → installer ~40-60% pienempi kuin paljas
+  PyInstaller-exe.
+- **Suomi + englanti** -kielet.
+
+### Build pipeline
+
+`scripts/build_installer.ps1` ajaa:
+1. `scripts/build_exe.ps1` → `dist/dxf2ifc.exe` + `dist/dxf2ifc-<v>.exe`
+2. `dist/LICENSES.md`-fallback (CI:n release.yml korvaa sen rikkaammalla
+   versiolla ennen installerin compilea).
+3. ISCC-compile `build/installer.iss` → `dist/dxf2ifc-Setup-<v>.exe`
+4. SHA256-sidecar `dist/dxf2ifc-Setup-<v>.exe.sha256`
+
+CI:n `windows-latest`-runnerit pitävät Inno Setup 6:n esiasennettuna, joten
+workflowt eivät vaadi erillistä install-stepiä.
+
+### SmartScreen-realiteetit
+
+Allekirjoittamaton installer saa edelleen "Windows protected your PC"
+-varoituksen ensimmäisillä latauksilla — SmartScreen-reputaatio rakentuu
+vasta latausmäärän kasvaessa tai EV-code-signing-sertifikaatilla. Per-user
+asennus + GitHub Releases -domain vähentävät kitkaa, mutta eivät poista
+varoitusta täysin. Loppukäyttäjän ohje: **More info → Run anyway**.
+
+Code signing -hookki (`signtool sign /f cert.pfx /tr http://timestamp.digicert.com
+/fd sha256 /td sha256 ...`) lisätään `build_installer.ps1`:een kun
+sertifikaatti on hankittu — sekä `dxf2ifc.exe`:lle ennen ISCC-compilea
+että installerille sen jälkeen.
+
 ### Huomautus alustasta
 
 PyInstaller ei tee cross-compilea: alustan natiivi binääri syntyy aina ajavan
@@ -93,9 +146,10 @@ ihminen GitHub-UI:ssa.
    git push origin vX.Y.Z
    ```
 4. **Workflow ajaa.** `.github/workflows/release.yml` triggeröityy `v*.*.*`
-   -tagista, buildaa Windows-`.exe`:n, ajaa `--version`-smoke-testin, kerää
-   `LICENSES.md`:n ja luo *draft* GitHub Releasen tagista. Artifactit:
-   `dxf2ifc-X.Y.Z.exe`, `dxf2ifc-X.Y.Z.exe.sha256`, `LICENSES.md`.
+   -tagista, buildaa Windows-`.exe`:n + Inno Setup -installerin, ajaa
+   smoke-testit, kerää `LICENSES.md`:n ja luo *draft* GitHub Releasen tagista.
+   Artifactit: `dxf2ifc-X.Y.Z.exe`, `dxf2ifc-X.Y.Z.exe.sha256`,
+   `dxf2ifc-Setup-X.Y.Z.exe`, `dxf2ifc-Setup-X.Y.Z.exe.sha256`, `LICENSES.md`.
 5. **Tarkista ja julkaise.** Lataa `.exe` GitHub-UI:n draft-releasesta omalle
    Windows-koneelle, vertaa SHA256:ta `.sha256`-sidecariin, aja
    `docs/packaging-smoke.md`-checklist (Task 20). Kun kaikki vihreää,
@@ -160,11 +214,11 @@ käynnistyksessä, mikä lisää 3-8 sekuntia cold start -aikaa.
 Jos cold start -aika nousee ongelmaksi, vaihda `.spec`:n `EXE(...)` →
 `COLLECT(...)` -reseptiin ja jaa zip-paketointina.
 
-## Icon TODO
+## Icon
 
-`build/dxf2ifc.spec` ei vielä viittaa `.ico`-tiedostoon (`icon=None`). Brand-icon
-suunnitellaan ja toimitetaan polkuun `assets/dxf2ifc.ico` ennen ensimmäistä
-julkaisua, ja `.spec`:n `icon=None` vaihdetaan polkuun. ICO-vaatimukset:
+`build/dxf2ifc.spec` ja `build/installer.iss` poimivat `assets/dxf2ifc.ico`:n
+automaattisesti jos tiedosto on olemassa — muuten PyInstaller-bootloaderin
+default-icon ja Inno Setupin default-installer-icon. ICO-vaatimukset:
 multi-resolution (16/32/48/256 px) ja sininen-amber-paletti (CLAUDE.md
-brand-värit). Kunnes icon on olemassa, .exe käyttää PyInstallerin
-oletusbootloader-kuvaketta.
+brand-värit). Kun `assets/dxf2ifc.ico` on lisätty, ei spec- eikä iss-tiedostoon
+tarvitse koskea — seuraava build poimii sen automaattisesti.
