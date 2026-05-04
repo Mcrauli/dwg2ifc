@@ -4,9 +4,7 @@ from __future__ import annotations
 
 import ctypes
 import os
-import shutil
 import sys
-import tempfile
 
 # PyInstaller onefile workaround: ifcopenshell/express/__init__.py at import
 # time runs `subprocess.call([sys.executable, "bootstrap.py"], cwd=express_dir)`
@@ -60,38 +58,6 @@ def _set_app_user_model_id() -> None:
         pass
 
 
-def cleanup_stale_meipass_dirs() -> None:
-    """Sweep leftover ``_MEI***`` PyInstaller temp dirs.
-
-    The self-update flow swaps the running exe and uses ``os._exit`` on
-    the way out, which skips the bootloader's normal _MEI cleanup. The
-    abandoned directory then sits in %TEMP% until something deletes it.
-    On the next launch we walk %TEMP% for ``_MEI*`` dirs not tied to a
-    running process and remove them. Failures are silent — Windows
-    cleans up stragglers on reboot anyway.
-    """
-    if sys.platform != "win32":
-        return
-    if not getattr(sys, "frozen", False):
-        return
-    try:
-        my_meipass = getattr(sys, "_MEIPASS", None)
-        temp_root = tempfile.gettempdir()
-        for entry in os.scandir(temp_root):
-            if not entry.is_dir():
-                continue
-            if not entry.name.startswith("_MEI"):
-                continue
-            if my_meipass and os.path.normcase(entry.path) == os.path.normcase(my_meipass):
-                continue
-            try:
-                shutil.rmtree(entry.path, ignore_errors=True)
-            except OSError:
-                pass
-    except OSError:
-        pass
-
-
 def _load_app_icon() -> QtGui.QIcon | None:
     """Return the dxf2ifc application icon as a QIcon.
 
@@ -136,7 +102,6 @@ def run(argv: list[str] | None = None) -> int:
     # Best-effort cleanup of the previous exe parked by self-update.
     # Always safe to call: no-op when running from source.
     cleanup_old_exe()
-    cleanup_stale_meipass_dirs()
 
     # Must run BEFORE QApplication so the taskbar honours the icon.
     _set_app_user_model_id()

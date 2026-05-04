@@ -6,6 +6,24 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.5-alpha1 — 2026-05-04
+
+**Fixed (CRITICAL — v0.1.4 was broken)**:
+- v0.1.4-alpha1:n `cleanup_stale_meipass_dirs`-funktio poisti vahingossa
+  ajossa olevan exen oman `_MEI***`-temp-kansion → seuraava käynnistys
+  failasi `[Errno 2] No such file or directory: ...\_MEI*\base_library.zip`
+  -virheellä. Vika oli Windows-polkujen short-form (`LAURIR~1`) vs
+  long-form (`LauriRekola`) -vertailussa: `os.path.normcase` ei
+  yhdenmukaista niitä, joten oma _MEI tunnistettiin "vanhentuneeksi"
+  ja siivottiin pois.
+- Korjaus: cleanup-funktio poistettu kokonaan. Windows siivoaa %TEMP%:n
+  ajan myötä — meidän omasta riskinotosta ei ole hyötyä joka oikeuttaisi
+  bugin riskin.
+
+> Jos sun nykyinen exe on rikki (ei käynnisty), lataa **v0.1.5-alpha1
+> manuaalisesti** GitHubista ja korvaa nykyinen — itsepäivitys ei
+> luonnollisesti toimi rikkinäisestä prosessista.
+
 ## v0.1.4-alpha1 — 2026-05-04
 
 **Fixed**:
