@@ -16,20 +16,20 @@ def test_default_profile_resource_uses_new_name():
     assert not package_files.joinpath("default_kylmalaite_talo2000.toml").is_file()
 
 
-def test_default_profile_is_tate_only():
-    """Bugfix 12: default profile is refrigeration-only — every rule must
-    be TATE-domain with a RAVA code (lvi_code or talotekniikka_code) and
-    no Talo2000/ARK leakage."""
+def test_default_profile_is_kyl_only():
+    """Default profile is refrigeration-only — every rule must be
+    KYL-domain (kylmälaitesuunnittelu) with a RAVA code
+    (lvi_code or talotekniikka_code) and no Talo2000/ARK leakage."""
     profile = load_default_profile()
     for rule in profile.rules:
-        assert rule.domain == "TATE", (
-            f"{rule.layer_pattern}: default profile must be TATE-only; got {rule.domain}"
+        assert rule.domain == "KYL", (
+            f"{rule.layer_pattern}: default profile must be KYL-only; got {rule.domain}"
         )
         assert rule.talo2000_code is None, (
             f"{rule.layer_pattern}: default profile must not carry Talo2000 codes"
         )
         assert rule.lvi_code or rule.talotekniikka_code, (
-            f"{rule.layer_pattern}: TATE rule needs an lvi_code or talotekniikka_code"
+            f"{rule.layer_pattern}: KYL rule needs an lvi_code or talotekniikka_code"
         )
 
 
@@ -62,17 +62,17 @@ def test_load_default_profile_has_pipe_segment_rules():
     lt = by_layer["LT IMU"]
     assert lt.ifc_type == "IfcPipeSegment"
     assert lt.predefined_type == "REFRIGERATION"
-    assert lt.domain == "TATE"
+    assert lt.domain == "KYL"
     assert lt.lvi_code == "T-LVI-02"
     assert lt.talo2000_code is None
     assert lt.system_name == "Refrigeration LT"
     assert lt.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 22.0
     mt_imu = by_layer["MT IMU"]
-    assert mt_imu.domain == "TATE"
+    assert mt_imu.domain == "KYL"
     assert mt_imu.lvi_code == "T-LVI-02"
     assert mt_imu.system_name == "Refrigeration MT"
     mt_neste = by_layer["MT NESTE"]
-    assert mt_neste.domain == "TATE"
+    assert mt_neste.domain == "KYL"
     assert mt_neste.lvi_code == "T-LVI-02"
     assert mt_neste.system_name == "Refrigeration MT"
     assert mt_neste.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 12.0
@@ -84,7 +84,7 @@ def test_load_default_profile_has_drainpipe_rule():
     drain = by_layer["KYL-VIEMARI*"]
     assert drain.ifc_type == "IfcPipeSegment"
     assert drain.predefined_type == "DRAINPIPE"
-    assert drain.domain == "TATE"
+    assert drain.domain == "KYL"
     assert drain.lvi_code == "T-LVI-04-01-001"
     assert drain.talo2000_code is None
     assert drain.system_name == "Drainage"
@@ -101,13 +101,13 @@ def test_load_default_profile_has_storage_furniture_rules():
     levy = by_layer["KYL-LEVYHYLLY*"]
     assert levy.ifc_type == "IfcCableCarrierSegment"
     assert levy.predefined_type == "CABLETRAYSEGMENT"
-    assert levy.domain == "TATE"
+    assert levy.domain == "KYL"
     assert levy.talotekniikka_code == "T-TATE-01-01-001"
     assert levy.talo2000_code is None
     tikas = by_layer["KYL-TIKASHYLLY*"]
     assert tikas.ifc_type == "IfcCableCarrierSegment"
     assert tikas.predefined_type == "CABLELADDERSEGMENT"
-    assert tikas.domain == "TATE"
+    assert tikas.domain == "KYL"
     assert tikas.talotekniikka_code == "T-TATE-01-01-001"
     tikas_v = by_layer["KYL-TIKASHYLLY-V*"]
     assert tikas_v.predefined_type == "CABLELADDERSEGMENT"
@@ -121,7 +121,7 @@ def test_load_default_profile_has_cable_carrier_rule():
     cable = by_layer["KAAPELIHYLLY*"]
     assert cable.ifc_type == "IfcCableCarrierSegment"
     assert cable.predefined_type == "CABLETRUNKINGSEGMENT"
-    assert cable.domain == "TATE"
+    assert cable.domain == "KYL"
     assert cable.talotekniikka_code == "T-TATE-01-01-001"
     assert cable.talo2000_code is None
     assert cable.system_name == "Cable carriers"
@@ -136,7 +136,7 @@ def test_load_default_profile_has_cooling_equipment_rules():
     by_layer = {r.layer_pattern: r for r in profile.rules}
     hoyr_o = by_layer["KYL-HOYRYSTI*"]
     assert hoyr_o.ifc_type == "IfcEvaporator"
-    assert hoyr_o.domain == "TATE"
+    assert hoyr_o.domain == "KYL"
     assert hoyr_o.lvi_code == "T-LVI-01-01-023"
     assert hoyr_o.system_name == "Refrigeration plant"
     hoyr_uml = by_layer["KYL-HÖYRYSTI*"]

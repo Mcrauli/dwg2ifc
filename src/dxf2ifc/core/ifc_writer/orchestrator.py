@@ -12,10 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from dxf2ifc.core.quality import ValidationReport
 
 from dxf2ifc.core.dxf_reader import read_dxf
-from dxf2ifc.core.outliers import (
-    DEFAULT_OUTLIER_THRESHOLD_MM,
-    find_geometric_outliers,
-)
+from dxf2ifc.core.outliers import find_geometric_outliers
 from dxf2ifc.core.ifc_writer.builders import (
     _COOLING_EQUIPMENT_CLASSES,
     add_building_element_proxy,
@@ -57,7 +54,8 @@ def convert_dxf(
     schema: str = "IFC4",
     preprocess_acis: bool = True,
     progress: object | None = None,
-    outlier_threshold_mm: float = DEFAULT_OUTLIER_THRESHOLD_MM,
+    detect_outliers: bool = True,
+    outlier_threshold_mm: float | None = None,
 ) -> tuple[dict[str, list], ValidationReport | None]:
     """Orchestrate DXF -> IFC conversion end-to-end.
 
@@ -87,24 +85,36 @@ def convert_dxf(
 
     entities = read_dxf(dxf_path, acis_meshes=acis_meshes)
 
-    # Pre-conversion outlier scan: flag entities whose centroid is more
-    # than ``outlier_threshold_mm`` from the median centroid of the rest.
-    # Catches stray xref leftovers and accidental drag operations BEFORE
-    # the user opens Solibri and sees the generic "Mallit hajallaan"
-    # warning. Always emitted to stderr; routed through the progress
-    # callback when GUI is the caller; stashed for ValidationReport when
-    # validate=True.
-    outlier_warnings = find_geometric_outliers(
-        entities, threshold_mm=outlier_threshold_mm
-    )
-    for warning in outlier_warnings:
-        message = f"WARNING [geometric_outlier]: {warning['message']}"
-        print(message, file=sys.stderr)
-        if callable(progress):
-            try:
-                progress(message)
-            except Exception:  # noqa: BLE001 — never block convert on UI errors
-                pass
+    # Pre-conversion outlier scan: adaptive Tukey-fence detection over
+    # the per-entity centroid distance distribution. Catches stray xref
+    # leftovers BEFORE the user opens Solibri's generic "Mallit
+    # hajallaan" warning. Output goes to stderr + progress callback.
+    # ``detect_outliers=False`` short-circuits when the user knows the
+    # model is intentionally wide.
+    outlier_warnings: list[dict] = []
+    if detect_outliers:
+        outlier_warnings = find_geometric_outliers(
+            entities, threshold_mm=outlier_threshold_mm
+        )
+        if outlier_warnings:
+            summary = (
+                f"Outlier-varoitus: {len(outlier_warnings)} entiteetti(ä) "
+                "kaukana muusta mallista — tarkista AutoCADissa"
+            )
+            print(summary, file=sys.stderr)
+            if callable(progress):
+                try:
+                    progress(summary)
+                except Exception:  # noqa: BLE001 — never block convert on UI errors
+                    pass
+            for warning in outlier_warnings:
+                line = f"  • {warning['message']}"
+                print(line, file=sys.stderr)
+                if callable(progress):
+                    try:
+                        progress(line)
+                    except Exception:  # noqa: BLE001
+                        pass
 
     mapped = apply_profile(entities, profile)
 
@@ -207,9 +217,12 @@ def convert_dxf(
             add_classification(
                 ifc, product, domain="ARK", code=m.talo2000_code, name=m.talo2000_name
             )
-        elif m.domain == "TATE":
+        elif m.domain in ("TATE", "KYL"):
+            # KYL and TATE share the RAVA-LVI / RAVA-TATE classification
+            # source — they only differ in the discipline (suunnittelualat)
+            # marker emitted further down.
             code = m.lvi_code or m.talotekniikka_code
-            add_classification(ifc, product, domain="TATE", code=code)
+            add_classification(ifc, product, domain=m.domain, code=code)
         # Always also emit an explicit discipline classification so
         # Solibri's "suunnittelualat" view shows the right value
         # (otherwise it falls back to ARK for every IFC type heuristic).

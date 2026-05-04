@@ -5,6 +5,20 @@ bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
 ## Latest
 
+**Build #32** (2026-05-04) — outlier IQR + suunnitteluala KYL
+
+- `core/outliers.py`: Tukey-IQR-pohjainen kynnys (`max(50 m, Q3+3·IQR)`)
+  korvasi kiinteän 100 m raja-arvon. Sopeutuu mallin todelliseen
+  hajontaan — leveä rakennus ei enää false-positive. Yksiriviset
+  varoitukset preview-logiin: `KYL-TIKASHYLLY handle 118A on 731 m
+  irrallaan muusta mallista`. `convert_dxf(detect_outliers=False)`
+  kytkee koko skannauksen pois.
+- `domain="KYL"` lisätty profiili-skeemaan; default-profiili kaikki
+  kylmälaite-säännöt KYL-domainissa. `suunnittelualat`-luokitus näyttää
+  nyt KYL Solibrissa Talotekniikan sijaan. RAVA-koodit toimivat
+  identtisesti (KYL ja TATE jakavat RAVA-LVI/RAVA-TATE-lähteet).
+- 482/482 testiä passes.
+
 **Build #31** (2026-05-04) — itsepäivitys + SignPath code-signing -hookki
 
 - `core/updater.py`: GitHub Releases -polling + asset-lataus +

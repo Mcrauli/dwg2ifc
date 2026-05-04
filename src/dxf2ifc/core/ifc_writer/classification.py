@@ -21,7 +21,7 @@ def _classification_name_for(domain: str, code: str) -> str:
     """Resolve the IfcClassification.Name for a (domain, code) pair."""
     if domain == "ARK":
         return "Talo2000"
-    if domain == "TATE":
+    if domain in ("TATE", "KYL"):
         if code.startswith("T-LVI"):
             return "RAVA-LVI"
         if code.startswith("T-TATE"):
@@ -77,16 +77,18 @@ def add_discipline_classification(
 
     Solibri's rule engine otherwise infers every product as ARK from
     its IFC entity type (yes, even IfcEvaporator), which is wrong for
-    refrigeration / TATE products. By emitting an explicit
-    ``IfcClassification`` named ``suunnittelualat`` with reference
-    ``ARK`` / ``TATE``, the discipline appears in the
-    "Luokittelusäännöistä" tab as authoritative and Solibri's heuristic
-    no longer overrides it.
+    refrigeration products. By emitting an explicit ``IfcClassification``
+    named ``suunnittelualat`` with reference ``ARK`` / ``TATE`` / ``KYL``,
+    the discipline appears in the "Luokittelusäännöistä" tab as
+    authoritative and Solibri's heuristic no longer overrides it.
+
+    Refrigeration items use ``KYL`` rather than the more generic ``TATE``
+    so cold-room equipment shows up under the right design discipline.
 
     The IfcClassification entity is created once per file and reused
     across products (same dedup pattern as :func:`add_classification`).
     """
-    if domain not in ("ARK", "TATE"):
+    if domain not in ("ARK", "TATE", "KYL"):
         return None
     existing = [c for c in ifc.by_type("IfcClassification") if c.Name == "suunnittelualat"]
     if existing:

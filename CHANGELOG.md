@@ -6,6 +6,20 @@ project uses semantic versioning.
 
 ## Unreleased
 
+**Changed**:
+- **Outlier detection now adaptive (Tukey IQR)** — replaces the fixed
+  100 m threshold that flagged whole models in wide buildings. Threshold
+  becomes `max(50 m, Q3 + 3·IQR)` of the per-entity distance distribution,
+  and the warning message is one-line short: `KYL-TIKASHYLLY handle 118A
+  on 731 m irrallaan muusta mallista`. Detection can be disabled per-call
+  via `convert_dxf(detect_outliers=False)`.
+- **Refrigeration discipline is now `KYL` instead of `TATE`** in the
+  default profile. The IFC `suunnittelualat` classification reference
+  now reads `KYL` for kylmälaite/cooling items so Solibri's discipline
+  view shows kylmälaitesuunnittelu, not generic Talotekniikka. Schema
+  still accepts `TATE` for general LVI/HVAC mappings; only refrigeration
+  rules switched.
+
 **Added**:
 - **In-app self-update**: GUI shows an amber banner at the top of the
   main window when a newer dxf2ifc release is on GitHub. "Päivitä nyt"

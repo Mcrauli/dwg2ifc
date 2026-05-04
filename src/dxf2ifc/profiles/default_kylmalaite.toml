@@ -5,9 +5,11 @@
 # panels) are out of scope and intentionally NOT mapped — the architect handles
 # those.
 #
-# Domain rule (Plan H):
-# - Cold-storage shelving + refrigeration equipment + pipes → TATE domain with
-#   RAVA-LVI / RAVA-TATE classification codes.
+# Domain rule:
+# - Cold-storage shelving + refrigeration equipment + pipes → KYL domain
+#   (kylmälaitesuunnittelu) with RAVA-LVI / RAVA-TATE classification codes.
+#   The KYL discipline marker keeps refrigeration items distinct from generic
+#   talotekniikka in Solibri's "suunnittelualat" view.
 # - No ARK/Talo2000 mappings ship by default.
 #
 # RAVA codes verified against koodistot.suomi.fi (LVI-TUOTEOSA Versio 1.0,
@@ -56,7 +58,7 @@ apply_to = ["IfcEvaporator", "IfcCondenser", "IfcCompressor"]
 layer_pattern = "LT IMU"
 ifc_type = "IfcPipeSegment"
 predefined_type = "REFRIGERATION"
-domain = "TATE"
+domain = "KYL"
 lvi_code = "T-LVI-02"
 system_name = "Refrigeration LT"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 22.0 } }
@@ -66,7 +68,7 @@ fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "KYLMÄAINEPUTKISTOT
 layer_pattern = "MT IMU"
 ifc_type = "IfcPipeSegment"
 predefined_type = "REFRIGERATION"
-domain = "TATE"
+domain = "KYL"
 lvi_code = "T-LVI-02"
 system_name = "Refrigeration MT"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 18.0 } }
@@ -76,7 +78,7 @@ fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "KYLMÄAINEPUTKISTOT
 layer_pattern = "MT NESTE"
 ifc_type = "IfcPipeSegment"
 predefined_type = "REFRIGERATION"
-domain = "TATE"
+domain = "KYL"
 lvi_code = "T-LVI-02"
 system_name = "Refrigeration MT"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 12.0 } }
@@ -92,7 +94,7 @@ fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "KYLMÄAINEPUTKISTOT
 layer_pattern = "KYL-VIEMARI*"
 ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
-domain = "TATE"
+domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
 system_name = "Drainage"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 110.0 } }
@@ -112,7 +114,7 @@ fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT",
 layer_pattern = "KYL-TIKASHYLLY-V*"
 ifc_type = "IfcCableCarrierSegment"
 predefined_type = "CABLELADDERSEGMENT"
-domain = "TATE"
+domain = "KYL"
 talotekniikka_code = "T-TATE-01-01-001"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Tikashylly (pystysuora)", yleistunnus = "AHJ.LVI" }
@@ -122,7 +124,7 @@ fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjest
 layer_pattern = "KYL-TIKASHYLLY*"
 ifc_type = "IfcCableCarrierSegment"
 predefined_type = "CABLELADDERSEGMENT"
-domain = "TATE"
+domain = "KYL"
 talotekniikka_code = "T-TATE-01-01-001"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Tikashylly", yleistunnus = "AHJ.LVI" }
@@ -132,7 +134,7 @@ fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjest
 layer_pattern = "KYL-LEVYHYLLY*"
 ifc_type = "IfcCableCarrierSegment"
 predefined_type = "CABLETRAYSEGMENT"
-domain = "TATE"
+domain = "KYL"
 talotekniikka_code = "T-TATE-01-01-001"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Levyhylly", yleistunnus = "AHJ.LVI" }
@@ -146,7 +148,7 @@ fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjest
 layer_pattern = "KAAPELIHYLLY*"
 ifc_type = "IfcCableCarrierSegment"
 predefined_type = "CABLETRUNKINGSEGMENT"
-domain = "TATE"
+domain = "KYL"
 talotekniikka_code = "T-TATE-01-01-001"
 system_name = "Cable carriers"
 fi_komponentti = { paaryhma = "LAITTEISTOT - SÄHKÖ", alaryhma = "KAAPELOINTIJÄRJESTELMÄT", yleisnimi = "Kaapelihylly", yleistunnus = "KH" }
@@ -168,7 +170,7 @@ fi_komponentti = { paaryhma = "LAITTEISTOT - SÄHKÖ", alaryhma = "KAAPELOINTIJ�
 [[rules]]
 layer_pattern = "KYL-HÖYRYSTI*"
 ifc_type = "IfcEvaporator"
-domain = "TATE"
+domain = "KYL"
 lvi_code = "T-LVI-01-01-023"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Höyrystin", yleistunnus = "HÖY" }
@@ -176,7 +178,7 @@ fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT
 [[rules]]
 layer_pattern = "KYL-HOYRYSTI*"
 ifc_type = "IfcEvaporator"
-domain = "TATE"
+domain = "KYL"
 lvi_code = "T-LVI-01-01-023"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Höyrystin", yleistunnus = "HÖY" }
@@ -184,7 +186,7 @@ fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT
 [[rules]]
 layer_pattern = "KYL-LAUHDUTI*"
 ifc_type = "IfcCondenser"
-domain = "TATE"
+domain = "KYL"
 lvi_code = "T-LVI-01-01-018"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Lauhdutin", yleistunnus = "LAU" }
@@ -192,7 +194,7 @@ fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT
 [[rules]]
 layer_pattern = "KYL-KOMPRESSO*"
 ifc_type = "IfcCompressor"
-domain = "TATE"
+domain = "KYL"
 lvi_code = "T-LVI-01-01-017"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kompressori", yleistunnus = "KOMP" }

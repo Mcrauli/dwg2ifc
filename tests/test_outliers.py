@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dxf2ifc.core.outliers import (
-    DEFAULT_OUTLIER_THRESHOLD_MM,
+    OUTLIER_FLOOR_MM,
+    OUTLIER_IQR_MULTIPLIER,
     entity_centroid,
     find_geometric_outliers,
 )
@@ -159,7 +160,7 @@ class TestFindGeometricOutliers:
         assert w["type"] == "geometric_outlier"
         assert w["layer"] == "KYL-TIKASHYLLY"
         assert w["handle"] == "118A"
-        assert w["distance_mm"] >= 100_000
+        assert w["distance_mm"] >= OUTLIER_FLOOR_MM
         assert "118A" in w["message"]
         assert "KYL-TIKASHYLLY" in w["message"]
 
@@ -185,21 +186,52 @@ class TestFindGeometricOutliers:
         assert warnings[0]["handle"] == "118A"
 
     def test_threshold_override_silences_small_offsets(self) -> None:
+        # Tight cluster + one entity 150 m away from origin.
         records = [
             _block_record((0.0, 0.0, 0.0), handle=f"H{i}") for i in range(5)
         ]
         records.append(_block_record((150_000.0, 0.0, 0.0), handle="MID"))
-        # Default 100 m → flagged
+        # IQR-based default flags it (distance >> 50 m floor).
         assert any(
             w["handle"] == "MID" for w in find_geometric_outliers(records)
         )
-        # Raise to 200 m → silent
+        # Explicit threshold above the offset silences it.
         assert (
             find_geometric_outliers(records, threshold_mm=200_000.0) == []
         )
 
-    def test_default_threshold_constant(self) -> None:
-        assert DEFAULT_OUTLIER_THRESHOLD_MM == 100_000.0
+    def test_default_constants(self) -> None:
+        assert OUTLIER_FLOOR_MM == 50_000.0
+        assert OUTLIER_IQR_MULTIPLIER == 3.0
+
+    def test_floor_prevents_iqr_false_positives(self) -> None:
+        # Tight 1 m × 1 m cluster — IQR is tiny, but the 50 m floor
+        # prevents anything from being flagged as outlier.
+        records = [
+            _block_record((float(i * 100), float(i * 100), 0.0), handle=f"H{i}")
+            for i in range(20)
+        ]
+        # One entity 30 m off — close, but not stray.
+        records.append(_block_record((30_000.0, 0.0, 0.0), handle="NEAR"))
+        assert find_geometric_outliers(records) == []
+
+    def test_iqr_adapts_to_wide_models(self) -> None:
+        # Large building: 100 m × 60 m × 10 m envelope. With the old
+        # fixed 100 m threshold every corner element would have flagged.
+        # IQR adapts so only a true stray triggers.
+        records = []
+        for x in range(0, 100_000, 5_000):  # 0..95_000 mm step 5_000
+            for y in range(0, 60_000, 5_000):
+                records.append(
+                    _block_record(
+                        (float(x), float(y), 5_000.0), handle=f"H{x}-{y}"
+                    )
+                )
+        # Stray a long way out
+        records.append(_block_record((1_000_000.0, 0.0, 0.0), handle="STRAY"))
+        warnings = find_geometric_outliers(records)
+        assert len(warnings) == 1
+        assert warnings[0]["handle"] == "STRAY"
 
     def test_unsupported_geometry_skipped_silently(self) -> None:
         # An EntityRecord with a None-ish geometry shouldn't crash the scan.

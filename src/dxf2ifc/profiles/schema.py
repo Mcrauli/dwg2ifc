@@ -129,11 +129,15 @@ class Rule(BaseModel):
     predefined_type: str | None = Field(
         default=None, description="IFC PredefinedType enumeration value, if applicable."
     )
-    domain: Literal["ARK", "TATE"] = Field(
+    domain: Literal["ARK", "TATE", "KYL"] = Field(
         default="ARK",
         description=(
-            "Discipline domain: ARK uses Talo2000 classification, TATE uses RAVA "
-            "(LVI-TUOTEOSA or TALOTEKNIIKKA-TUOTEOSA)."
+            "Discipline (suunnitteluala) — written into the IFC as the "
+            "'suunnittelualat' classification reference. ARK uses Talo2000 "
+            "(architect), TATE uses RAVA (general talotekniikka), KYL uses "
+            "RAVA but tags the discipline as kylmälaitesuunnittelu — the "
+            "default for refrigeration projects so Solibri shows 'KYL' "
+            "instead of 'Talotekniikka'."
         ),
     )
     talo2000_code: str | None = Field(
@@ -146,11 +150,11 @@ class Rule(BaseModel):
     )
     lvi_code: str | None = Field(
         default=None,
-        description="RAVA LVI-TUOTEOSA code (T-LVI-…), used when domain == 'TATE'.",
+        description="RAVA LVI-TUOTEOSA code (T-LVI-…), used when domain in ('TATE', 'KYL').",
     )
     talotekniikka_code: str | None = Field(
         default=None,
-        description="RAVA TALOTEKNIIKKA-TUOTEOSA code (T-TATE-…), used when domain == 'TATE'.",
+        description="RAVA TALOTEKNIIKKA-TUOTEOSA code (T-TATE-…), used when domain in ('TATE', 'KYL').",
     )
 
     default_height_mm: float | None = Field(
@@ -225,14 +229,16 @@ class Rule(BaseModel):
                 raise ValueError(
                     "lvi_code and talotekniikka_code must be empty when domain == 'ARK'"
                 )
-        else:  # TATE
+        else:  # TATE or KYL — both share the RAVA classification rules
             if self.talo2000_code:
-                raise ValueError("talo2000_code must be empty when domain == 'TATE'")
+                raise ValueError(
+                    f"talo2000_code must be empty when domain == {self.domain!r}"
+                )
             filled = [c for c in (self.lvi_code, self.talotekniikka_code) if c]
             if len(filled) != 1:
                 raise ValueError(
                     "exactly one of lvi_code or talotekniikka_code must be set "
-                    "when domain == 'TATE'"
+                    f"when domain == {self.domain!r}"
                 )
         return self
 
