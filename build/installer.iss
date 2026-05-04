@@ -67,7 +67,8 @@ VersionInfoVersion={#AppNumericVersion}
 VersionInfoCompany=Radika Oy
 VersionInfoDescription=dxf2ifc DXF to IFC 4 converter installer
 VersionInfoProductName=dxf2ifc
-VersionInfoProductVersion={#AppVersion}
+VersionInfoProductVersion={#AppNumericVersion}
+VersionInfoProductTextVersion={#AppVersion}
 VersionInfoCopyright=(c) 2026 Lauri Rekola, Radika Oy. MIT licence.
 #ifdef IconFile
 SetupIconFile={#IconFile}
