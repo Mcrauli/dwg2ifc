@@ -90,8 +90,9 @@ def test_version_info_file_carries_company_and_version() -> None:
 
 
 def test_spec_icon_is_ico_or_none() -> None:
-    """Icon line must be either icon=None or reference a .ico file
-    (whether as a literal string path or via ``os.path.join(...)``)."""
+    """Icon line must be either icon=None, reference a .ico file directly
+    (literal string OR ``os.path.join(...)``), or use a variable whose
+    definition resolves to a .ico path."""
     import re
 
     text = _spec_text()
@@ -104,7 +105,21 @@ def test_spec_icon_is_ico_or_none() -> None:
         )
         return
     join_match = re.search(r"icon\s*=\s*os\.path\.join\([^)]+\)", text)
-    assert join_match, "spec missing an icon= directive (or a placeholder None)"
-    assert ".ico" in join_match.group(0), (
-        f"os.path.join expression must reference a .ico file, got: {join_match.group(0)}"
+    if join_match:
+        assert ".ico" in join_match.group(0), (
+            f"os.path.join expression must reference a .ico file, got: {join_match.group(0)}"
+        )
+        return
+    # Variable form: icon=<identifier>. The variable must be assigned
+    # somewhere above with a value containing ".ico".
+    var_match = re.search(r"icon\s*=\s*([A-Za-z_][\w]*)\s*,?", text)
+    assert var_match, "spec missing an icon= directive (or a placeholder None)"
+    var_name = var_match.group(1)
+    assignment = re.search(
+        rf"^{re.escape(var_name)}\s*=\s*(.+)$", text, re.MULTILINE
+    )
+    assert assignment, f"icon variable {var_name!r} has no top-level assignment in spec"
+    assert ".ico" in assignment.group(1), (
+        f"icon variable {var_name!r} assignment does not reference a .ico file: "
+        f"{assignment.group(1)!r}"
     )

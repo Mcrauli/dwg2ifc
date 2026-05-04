@@ -6,6 +6,24 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.6-alpha1 — 2026-05-04
+
+**Added**:
+- **Inno Setup -installeri** (`dxf2ifc-Setup-0.1.6a1.exe`): oikea Windows-
+  asennusohjelma jonka kautta sovellus saa Start-menu -merkinnän, Apps &
+  Features -uninstallerin ja version-info-resurssit. Asennus per-user
+  `%LOCALAPPDATA%\Programs\dxf2ifc`:iin, ei UAC-promptia. SmartScreen-
+  kitka pienempi kuin paljaalla `.exe`:llä koska installer näyttää
+  oikealta Windows-asennusohjelmalta.
+- Stable AppId GUID upgrade/uninstall-identiteettiä varten — sama GUID
+  läpi versioiden, joten installer päivittää aiemman dxf2ifc-asennuksen
+  oikein.
+- Suomi + englanti -kielet wizardissa.
+- `lzma2/max` -kompressio: installer ~40-60% pienempi kuin paljas exe.
+
+Raw exe (`dxf2ifc-0.1.6a1.exe`) toimitetaan edelleen rinnalla — sitä
+käyttävä auto-update-banneri jatkaa toimintaansa.
+
 ## v0.1.5-alpha1 — 2026-05-04
 
 **Fixed (CRITICAL — v0.1.4 was broken)**:

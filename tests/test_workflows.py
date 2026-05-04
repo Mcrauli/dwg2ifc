@@ -48,8 +48,16 @@ def test_build_workflow_runs_on_windows_runner():
 
 
 def test_build_workflow_invokes_build_exe_script():
+    """The build workflow must invoke either build_exe.ps1 (raw exe-only
+    pipeline) or build_installer.ps1 (which delegates to build_exe.ps1
+    internally before compiling the Inno Setup installer)."""
     text = WORKFLOW_PATH.read_text(encoding="utf-8")
-    assert "scripts/build_exe.ps1" in text or "scripts\\build_exe.ps1" in text
+    assert (
+        "scripts/build_exe.ps1" in text
+        or "scripts\\build_exe.ps1" in text
+        or "scripts/build_installer.ps1" in text
+        or "scripts\\build_installer.ps1" in text
+    )
 
 
 def test_build_workflow_uploads_dxf2ifc_windows_artifact():
