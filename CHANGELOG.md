@@ -6,6 +6,20 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.9-alpha1 — 2026-05-04
+
+**Changed**:
+- **About-dialogi**: poistettu "MIT-licensed." -rivi (LICENSE-tiedosto
+  repon juuressa pysyy lain mukaan ennallaan). Tilalle linkki
+  käyttöohjeisiin osoitteessa
+  <https://mcrauli.github.io/autocad-lisp-ohjeet/dxf2ifc.html>.
+- **Help → Käyttöohjeet (selain)**: uusi menu-action joka avaa
+  käyttöohjeet selaimessa (F1-pikanäppäin). About siirtyi separatorin
+  alapuolelle.
+- **Binary copyright -metatieto** lyhennetty: `(c) 2026 Lauri Rekola`
+  (poistettu ". MIT licence." -loppu installerin VersionInfoCopyright-
+  ja exe:n LegalCopyright-kentistä).
+
 ## v0.1.8-alpha1 — 2026-05-04
 
 **Changed**:

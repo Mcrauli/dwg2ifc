@@ -17,9 +17,8 @@ class AboutDialog(QtWidgets.QDialog):
             f"<h1>dxf2ifc {version}</h1>"
             "<p>AutoCAD DXF → IFC 4 -konvertteri suomalaiseen "
             "kylmäsuunnitteluun (RAVA3Pro).</p>"
-            "<p>MIT-licensed.</p>"
-            '<p><a href="https://github.com/Mcrauli/dxf2ifc">'
-            "https://github.com/Mcrauli/dxf2ifc</a></p>"
+            '<p><a href="https://mcrauli.github.io/autocad-lisp-ohjeet/dxf2ifc.html">'
+            "Käyttöohjeet ja lataukset</a></p>"
         )
 
         layout = QtWidgets.QVBoxLayout(self)

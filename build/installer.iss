@@ -69,7 +69,7 @@ VersionInfoDescription=dxf2ifc DXF to IFC 4 converter installer
 VersionInfoProductName=dxf2ifc
 VersionInfoProductVersion={#AppNumericVersion}
 VersionInfoProductTextVersion={#AppVersion}
-VersionInfoCopyright=(c) 2026 Lauri Rekola. MIT licence.
+VersionInfoCopyright=(c) 2026 Lauri Rekola
 #ifdef IconFile
 SetupIconFile={#IconFile}
 #endif

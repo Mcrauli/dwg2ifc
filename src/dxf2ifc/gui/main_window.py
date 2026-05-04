@@ -102,6 +102,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self._reset_profile_action.triggered.connect(self._on_reset_profile)
         profile_menu.addAction(self._reset_profile_action)
         help_menu = menubar.addMenu("Help")
+        self._docs_action = QtGui.QAction("Käyttöohjeet (selain)", self)
+        self._docs_action.setShortcut(QtGui.QKeySequence.StandardKey.HelpContents)
+        self._docs_action.triggered.connect(self._on_open_docs)
+        help_menu.addAction(self._docs_action)
+        help_menu.addSeparator()
         self._about_action = QtGui.QAction("About", self)
         self._about_action.triggered.connect(self._on_about)
         help_menu.addAction(self._about_action)
@@ -206,6 +211,11 @@ class MainWindow(QtWidgets.QMainWindow):
         for error in getattr(report, "errors", []) or []:
             message = error.get("message") if isinstance(error, dict) else str(error)
             self.preview_log.append_error(f"ERROR: {message}")
+
+    def _on_open_docs(self) -> None:
+        QtGui.QDesktopServices.openUrl(
+            QtCore.QUrl("https://mcrauli.github.io/autocad-lisp-ohjeet/dxf2ifc.html")
+        )
 
     def _on_about(self) -> None:
         from dxf2ifc.gui.about import show_about
