@@ -6,6 +6,52 @@ project uses semantic versioning.
 
 ## Unreleased
 
+**Removed**:
+- **Pre-conversion geometric outlier scan** (`core/outliers.py`,
+  `convert_dxf(detect_outliers=...)` kwargs). The scan produced false
+  positives on real refrigeration models with multi-storey equipment
+  spread; Solibri's own "Mallit hajallaan" rule covers the same check
+  natively when the file is opened. Removing the feature drops one
+  false-warning source and ~150 lines of code.
+
+**Added**:
+- **Solibri discipline auto-detect via `Pset_Project`**: every IFC
+  project now carries `Pset_Project.Authorization = "Kylmäsuunnittelu"`,
+  matching the Granlund/RAVA3Pro reference convention Solibri reads
+  for role auto-selection. Plus the producing IfcApplication is now
+  tagged `ApplicationIdentifier = "dxf2ifc-kylmalaite"` (was generic
+  IfcOpenShell). A synthetic IfcOwnerHistory is propagated to every
+  IfcRoot in the file at write-time so consumers can branch on the
+  producing tool reliably.
+- **Energy-spec diagnostics**: when `convert_dxf` runs with an
+  `energy_specs_path`, the GUI preview-log / stderr now reports
+  loaded row count, parsed headers per sheet, matched/total
+  refrigeration devices, and the first 10 skip reasons (POSITIO
+  missing or row not in spreadsheet). Earlier the lookup failed
+  silently and the user could not tell why FI_Tekninen stayed empty.
+- **Multi-sheet Excel support**: `load_energy_specs` now reads every
+  sheet of an `.xlsx` workbook (was: active sheet only). Lauri's
+  RefDesign teholuettelo splits frozen + chilled across `Pakasteet`
+  and `Kylmät` sheets — both flow through. Sheets without a
+  recognisable Koneikko + Laitetunnus header are skipped.
+- **Excel column aliases**: `"REV."` is now recognised as a koneikko
+  column (RefDesign convention where the "Revision" column actually
+  carries the koneikkotunnus). New canonical FI_Tekninen fields
+  `Vastusteho`, `Jännite`, and `Jäähdyttävä vaikutus` with their
+  Finnish/English aliases.
+- New helper `load_energy_specs_with_headers(path)` returns
+  `(specs, {sheet_name: [header strings]})` so callers can quote the
+  parsed headers back to the user when no rows matched.
+- IfcEvaporator + IfcCondenser FI_Tekninen default templates now
+  include Vastusteho + Jännite (+ Jäähdyttävä vaikutus on Evaporator)
+  so Solibri shows those rows even when an Excel hasn't been picked.
+
+**Changed**:
+- Excel field-alias matching now requires an exact match for tokens
+  ≤3 characters long. `"Te"` (an evaporation-temperature shorthand)
+  no longer false-matches inside `"Vastusteho"`, `"u_v"` no longer
+  leaks into voltage-adjacent headers, etc.
+
 **Changed**:
 - **Discipline name in the IFC is now "Jäähdytys" (was "KYL")** — Solibri
   uses "Jäähdytys" as the canonical refrigeration discipline label, so

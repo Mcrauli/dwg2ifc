@@ -93,6 +93,73 @@ def test_project_long_name_set_to_discipline(tmp_path: Path) -> None:
     assert project.LongName == "Jäähdytys"
 
 
+def test_project_pset_authorization_kylmasuunnittelu(tmp_path: Path) -> None:
+    """Pset_Project / Authorization='Kylmäsuunnittelu' on IfcProject —
+    the actual mechanism Solibri reads when deciding which role to
+    auto-load. Without it the file shows up as Architectural."""
+    import ifcopenshell
+
+    dxf = tmp_path / "in.dxf"
+    ifc_path = tmp_path / "out.ifc"
+    _write_minimal_dxf(dxf)
+    convert_dxf(
+        dxf_path=dxf,
+        output_path=ifc_path,
+        profile=load_default_profile(),
+        preprocess_acis=False,
+    )
+    ifc = ifcopenshell.open(str(ifc_path))
+    project = ifc.by_type("IfcProject")[0]
+    rels = [
+        rel for rel in ifc.by_type("IfcRelDefinesByProperties")
+        if project in (rel.RelatedObjects or [])
+    ]
+    pset_project = next(
+        (
+            rel.RelatingPropertyDefinition for rel in rels
+            if rel.RelatingPropertyDefinition is not None
+            and rel.RelatingPropertyDefinition.is_a("IfcPropertySet")
+            and rel.RelatingPropertyDefinition.Name == "Pset_Project"
+        ),
+        None,
+    )
+    assert pset_project is not None, "Pset_Project missing on IfcProject"
+    auth = next(
+        (
+            p for p in (pset_project.HasProperties or ())
+            if p.Name == "Authorization"
+        ),
+        None,
+    )
+    assert auth is not None
+    assert auth.NominalValue.wrappedValue == "Kylmäsuunnittelu"
+
+
+def test_application_identifier_tagged_dxf2ifc(tmp_path: Path) -> None:
+    """IfcApplication.ApplicationIdentifier is "dxf2ifc-kylmalaite".
+
+    Solibri uses the producing application as one of the discipline
+    auto-detect signals; a generic 'IfcOpenShell' identifier nudges it
+    toward the Architectural default."""
+    import ifcopenshell
+
+    dxf = tmp_path / "in.dxf"
+    ifc_path = tmp_path / "out.ifc"
+    _write_minimal_dxf(dxf)
+    convert_dxf(
+        dxf_path=dxf,
+        output_path=ifc_path,
+        profile=load_default_profile(),
+        preprocess_acis=False,
+    )
+    ifc = ifcopenshell.open(str(ifc_path))
+    apps = ifc.by_type("IfcApplication")
+    assert apps, "no IfcApplication in file"
+    for app in apps:
+        assert app.ApplicationIdentifier == "dxf2ifc-kylmalaite"
+        assert "dxf2ifc" in (app.ApplicationFullName or "").lower()
+
+
 def test_project_level_classification_present(tmp_path: Path) -> None:
     import ifcopenshell
 

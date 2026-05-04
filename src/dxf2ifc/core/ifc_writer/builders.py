@@ -41,7 +41,21 @@ from dxf2ifc.core.types import (
 
 
 def write_ifc(ifc: ifcopenshell.file, output_path: str | Path) -> None:
-    """Write the IFC file to disk."""
+    """Write the IFC file to disk.
+
+    Final pass before write: stamp every IfcRoot created after the
+    project skeleton (walls, slabs, pipes, classification rels, psets,
+    systems, …) with the project's OwnerHistory so consumers like
+    Solibri can read the producing IfcApplication. A first pass
+    happens inside ``build_ifc_project_skeleton``; this catches
+    everything added by the per-element builders in between.
+    """
+    owner_histories = ifc.by_type("IfcOwnerHistory")
+    if owner_histories:
+        oh = owner_histories[0]
+        for root in ifc.by_type("IfcRoot"):
+            if getattr(root, "OwnerHistory", None) is None:
+                root.OwnerHistory = oh
     ifc.write(str(output_path))
 
 

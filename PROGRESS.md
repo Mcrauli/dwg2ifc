@@ -5,6 +5,25 @@ bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
 ## Latest
 
+**Build #35** (2026-05-04) — Solibri auto-detect + energiateho-diagnostiikka + outlier-poisto
+
+- **Solibri auto-detect**: lisätty `Pset_Project` `Authorization=
+  "Kylmäsuunnittelu"` IfcProjectille (Granlund-konventio Solibrille).
+  Lisäksi customoitu IfcApplication: `ApplicationIdentifier=
+  "dxf2ifc-kylmalaite"`, ja synteettinen IfcOwnerHistory leviää
+  kaikille IfcRoot-entiteeteille `write_ifc`-vaiheessa.
+- **Energiateho**: full diagnostics + multi-sheet xlsx + REV. alias.
+  GUI:n preview-loki näyttää nyt ladatut rivit, tunnistetut headerit,
+  M/K osumat, ja ohitettujen syyt. Lauri'n RefDesign-luettelot toimivat
+  out-of-the-box (Pakasteet+Kylmät+Yleiset sheetit, REV.→koneikko,
+  POS.→laitetunnus, Kylmäteho/Sähköteho/Vastusteho/Jännite/Jäähdyttävä
+  vaikutus -kentät).
+- **Outlier-feature poistettu kokonaan** (`core/outliers.py` +
+  `tests/test_outliers.py`). False positiveja Lauri'n oikealla datalla;
+  Solibri tekee saman tarkistuksen omalla "Mallit hajallaan"-säännöllä.
+- 496/496 testiä passes (-16 outlier-testit, +13 uutta energy_specs +
+  discipline-testit).
+
 **Build #34** (2026-05-04) — suunnitteluala = Jäähdytys + Solibri auto-rooli
 
 - IFC:n `suunnittelualat`-luokitus näyttää nyt **"Jäähdytys"**

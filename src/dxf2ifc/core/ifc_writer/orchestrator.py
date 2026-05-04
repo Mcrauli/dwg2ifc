@@ -12,8 +12,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from dxf2ifc.core.quality import ValidationReport
 
 from dxf2ifc.core.dxf_reader import read_dxf
-from dxf2ifc.core.energy_specs import load_energy_specs, lookup_spec
-from dxf2ifc.core.outliers import find_geometric_outliers
+from dxf2ifc.core.energy_specs import (
+    load_energy_specs_with_headers,
+    lookup_spec,
+)
 from dxf2ifc.core.ifc_writer.builders import (
     _COOLING_EQUIPMENT_CLASSES,
     add_building_element_proxy,
@@ -46,6 +48,110 @@ from dxf2ifc.core.types import BlockInstance, LineGeometry, MappedEntity, MeshGe
 from dxf2ifc.profiles.schema import Profile
 
 
+def _emit(progress: object | None, message: str) -> None:
+    """Write a status line to stderr + optional progress callback.
+    Never raises; callback exceptions are swallowed so a faulty UI
+    handler cannot abort the conversion."""
+    print(message, file=sys.stderr)
+    if callable(progress):
+        try:
+            progress(message)
+        except Exception:  # noqa: BLE001 — UI errors must not propagate
+            pass
+
+
+def _run_energy_spec_lookup(
+    mapped: list,
+    energy_specs_path: str | Path,
+    *,
+    profile: Profile,
+    progress: object | None,
+) -> None:
+    """Load the external energy-spec table and merge matching rows into
+    each refrigeration MappedEntity's fi_tekninen.
+
+    Diagnostics emitted via :func:`_emit`:
+      - file load failure (with exception class + message)
+      - per-sheet header summary
+      - "ladattu N riviä" + "M/K kylmälaitetta sai tehotiedot"
+      - per-device skip reasons (POSITIO puuttuu / ei riviä Excelissä)
+
+    The function never raises; lookups missing from the spreadsheet
+    silently leave the rule-level fi_tekninen template in place.
+    """
+    try:
+        specs, headers_per_sheet = load_energy_specs_with_headers(energy_specs_path)
+    except Exception as exc:  # noqa: BLE001 — never abort convert
+        _emit(
+            progress,
+            f"Energiateho: tiedoston luku ei onnistunut "
+            f"({type(exc).__name__}: {exc})",
+        )
+        return
+
+    if not specs:
+        if not headers_per_sheet:
+            _emit(
+                progress,
+                "Energiateho: tiedostosta ei löytynyt yhtään käyttökelpoista "
+                "taulukkoa (Koneikko + Laitetunnus -sarakkeet puuttuvat)",
+            )
+        else:
+            sheets_summary = "; ".join(
+                f"{name}={hdrs}" for name, hdrs in headers_per_sheet.items()
+            )
+            _emit(
+                progress,
+                f"Energiateho: 0 riviä mätsäsi. Tunnistetut headerit: "
+                f"{sheets_summary}",
+            )
+        return
+
+    _emit(
+        progress,
+        f"Energiateho: ladattu {len(specs)} riviä "
+        f"({len(headers_per_sheet)} sheettiä)",
+    )
+
+    scope: set[str] = set()
+    if profile.positio is not None:
+        scope = set(profile.positio.apply_to)
+    candidates = [m for m in mapped if m.ifc_type in scope]
+
+    matched = 0
+    skipped: list[tuple[object, str]] = []
+    for m in candidates:
+        ko = (m.extra_props or {}).get("koneikko") if m.extra_props else None
+        la = (m.extra_props or {}).get("laitetunnus") if m.extra_props else None
+        if not ko or not la:
+            skipped.append((m, "POSITIO-merkki puuttuu DXF:stä"))
+            continue
+        spec = lookup_spec(specs, koneikko=ko, laitetunnus=la)
+        if spec is None:
+            skipped.append((m, f"ei riviä Excelissä avaimelle {ko}/{la}"))
+            continue
+        merged: dict[str, str] = {}
+        if m.fi_tekninen:
+            merged.update(m.fi_tekninen)
+        merged.update(spec.fields)
+        m.fi_tekninen = merged
+        matched += 1
+
+    _emit(
+        progress,
+        f"Energiateho: {matched}/{len(candidates)} kylmälaitetta "
+        f"sai tehotiedot",
+    )
+    # Surface the first 10 skip reasons so the user can spot
+    # systematic problems (whole sheet missing, one koneikko misnamed
+    # etc.) without drowning the log on a 100-device project.
+    for m, reason in skipped[:10]:
+        layer = getattr(m, "layer", "?")
+        _emit(progress, f"  ohi: {layer} → {reason}")
+    if len(skipped) > 10:
+        _emit(progress, f"  …ja {len(skipped) - 10} muuta ohitettua")
+
+
 def convert_dxf(
     *,
     dxf_path: str | Path,
@@ -56,8 +162,6 @@ def convert_dxf(
     schema: str = "IFC4",
     preprocess_acis: bool = True,
     progress: object | None = None,
-    detect_outliers: bool = True,
-    outlier_threshold_mm: float | None = None,
     energy_specs_path: str | Path | None = None,
 ) -> tuple[dict[str, list], ValidationReport | None]:
     """Orchestrate DXF -> IFC conversion end-to-end.
@@ -87,38 +191,6 @@ def convert_dxf(
         acis_meshes = extract_acis_meshes(dxf_path, progress=progress)  # type: ignore[arg-type,assignment]
 
     entities = read_dxf(dxf_path, acis_meshes=acis_meshes)
-
-    # Pre-conversion outlier scan: adaptive Tukey-fence detection over
-    # the per-entity centroid distance distribution. Catches stray xref
-    # leftovers BEFORE the user opens Solibri's generic "Mallit
-    # hajallaan" warning. Output goes to stderr + progress callback.
-    # ``detect_outliers=False`` short-circuits when the user knows the
-    # model is intentionally wide.
-    outlier_warnings: list[dict] = []
-    if detect_outliers:
-        outlier_warnings = find_geometric_outliers(
-            entities, threshold_mm=outlier_threshold_mm
-        )
-        if outlier_warnings:
-            summary = (
-                f"Outlier-varoitus: {len(outlier_warnings)} entiteetti(ä) "
-                "kaukana muusta mallista — tarkista AutoCADissa"
-            )
-            print(summary, file=sys.stderr)
-            if callable(progress):
-                try:
-                    progress(summary)
-                except Exception:  # noqa: BLE001 — never block convert on UI errors
-                    pass
-            for warning in outlier_warnings:
-                line = f"  • {warning['message']}"
-                print(line, file=sys.stderr)
-                if callable(progress):
-                    try:
-                        progress(line)
-                    except Exception:  # noqa: BLE001
-                        pass
-
     mapped = apply_profile(entities, profile)
 
     # POSITIO-block linkage. Index every numbering INSERT once, then
@@ -181,57 +253,15 @@ def convert_dxf(
                 if marker.numero:
                     m.extra_props["laitetunnus"] = marker.numero
 
-    # Energy-spec lookup. Once each refrigeration MappedEntity has its
-    # (koneikko, laitetunnus) populated by the POSITIO step above, we
-    # match against an external Excel/CSV — Lauri's energy list — and
-    # merge the resulting Jäähdytysteho / Sähköteho / Kylmäaine etc.
-    # into FI_Tekninen. Lookups missing in the spreadsheet pass through
-    # silently; counts are reported via the progress callback so the
-    # user sees how many devices got matched.
+    # Energy-spec lookup with full diagnostics. The previous version
+    # silently skipped if specs was empty or a lookup missed, so the
+    # user could not tell why FI_Tekninen stayed blank in Solibri.
+    # Now every code path emits a status line so the GUI preview-log
+    # shows exactly what happened.
     if energy_specs_path is not None:
-        try:
-            specs = load_energy_specs(energy_specs_path)
-        except Exception as exc:  # noqa: BLE001 — never abort convert
-            specs = {}
-            warning = (
-                f"Energy spec file not loaded: {type(exc).__name__}: {exc}"
-            )
-            print(warning, file=sys.stderr)
-            if callable(progress):
-                try:
-                    progress(warning)
-                except Exception:  # noqa: BLE001
-                    pass
-        if specs:
-            matched = 0
-            for m in mapped:
-                koneikko = (m.extra_props or {}).get("koneikko") if m.extra_props else None
-                laitetunnus = (m.extra_props or {}).get("laitetunnus") if m.extra_props else None
-                spec = lookup_spec(
-                    specs, koneikko=koneikko, laitetunnus=laitetunnus
-                )
-                if spec is None:
-                    continue
-                # Merge spec.fields onto the rule-level fi_tekninen so
-                # default labels survive when the spreadsheet only fills
-                # a subset of the FI_Tekninen template.
-                merged: dict[str, str] = {}
-                if m.fi_tekninen:
-                    merged.update(m.fi_tekninen)
-                merged.update(spec.fields)
-                m.fi_tekninen = merged
-                matched += 1
-            if matched:
-                summary = (
-                    f"Energiateho-listalta luettu {matched}/{len(mapped)} "
-                    "laitetta"
-                )
-                print(summary, file=sys.stderr)
-                if callable(progress):
-                    try:
-                        progress(summary)
-                    except Exception:  # noqa: BLE001
-                        pass
+        _run_energy_spec_lookup(
+            mapped, energy_specs_path, profile=profile, progress=progress
+        )
 
     # Determine the dominant discipline so Solibri can auto-detect the
     # role when the file is opened. A unanimous mapped-rule domain
@@ -412,10 +442,6 @@ def convert_dxf(
             from dxf2ifc.core.quality import validate_ifc as _validate_ifc
 
             report = _validate_ifc(output_path)
-            # Surface the pre-conversion outlier warnings through the
-            # same channel as the post-conversion IFC checks.
-            if outlier_warnings:
-                report.warnings.extend(outlier_warnings)
         return systems, report
     finally:
         # Always clean up the preprocessing temp DXF, no matter where in

@@ -126,6 +126,11 @@ def build_ifc_project_skeleton(
     if discipline_label:
         _attach_project_discipline(ifc, project, discipline_label)
 
+    # Application stamping comes last so every IfcRoot created above
+    # (project, site, building, storeys, classification rels, psets…)
+    # picks up the same OwnerHistory in one sweep.
+    _customize_application(ifc)
+
     return IfcSkeleton(
         file=ifc,
         project=project,
@@ -139,19 +144,20 @@ def build_ifc_project_skeleton(
 def _attach_project_discipline(
     ifc: ifcopenshell.file, project: object, label: str
 ) -> None:
-    """Attach a ``suunnittelualat`` classification reference to the
-    IfcProject itself, in addition to the per-product references.
+    """Attach a ``suunnittelualat`` classification reference AND a
+    Pset_Project Authorization to the IfcProject.
 
-    Solibri's role auto-selection inspects project-level metadata when
-    deciding which discipline profile to load — without this, every
-    product is tagged Jäähdytys but the project as a whole reads as
-    'unspecified' and Solibri prompts the user to choose. The
-    classification source is the same ``suunnittelualat`` that the
-    product-level helper creates, so deduplication via ``by_type``
-    keeps the file clean.
+    Granlund/RAVA3Pro reference IFC files (the kind Solibri's discipline
+    auto-detect was tuned against) carry ``Pset_Project.Authorization =
+    'Kylmäsuunnittelu'`` — without that property, Solibri cannot
+    distinguish a refrigeration model from a generic file and falls back
+    to the Architectural role. The ``suunnittelualat`` classification
+    on top is a defence-in-depth signal that's also visible in Solibri's
+    Luokittelusäännöistä tab.
     """
     import ifcopenshell.guid
 
+    # Discipline classification reference (same source as product level).
     existing = [
         c for c in ifc.by_type("IfcClassification") if c.Name == "suunnittelualat"
     ]
@@ -176,6 +182,86 @@ def _attach_project_discipline(
         RelatedObjects=[project],
         RelatingClassification=reference,
     )
+
+    # Pset_Project Authorization — the actual mechanism Solibri reads
+    # for role auto-detection. Always "Kylmäsuunnittelu" for refrigeration
+    # output regardless of the per-product discipline label, because
+    # Solibri's role list keys on this exact string.
+    pset = ifc.create_entity(
+        "IfcPropertySet",
+        GlobalId=ifcopenshell.guid.new(),
+        Name="Pset_Project",
+        HasProperties=[
+            ifc.create_entity(
+                "IfcPropertySingleValue",
+                Name="Authorization",
+                NominalValue=ifc.create_entity("IfcText", "Kylmäsuunnittelu"),
+            ),
+        ],
+    )
+    ifc.create_entity(
+        "IfcRelDefinesByProperties",
+        GlobalId=ifcopenshell.guid.new(),
+        RelatedObjects=[project],
+        RelatingPropertyDefinition=pset,
+    )
+
+
+def _customize_application(ifc: ifcopenshell.file) -> None:
+    """Create / re-tag the IfcApplication so Solibri identifies the
+    producer as a refrigeration tool.
+
+    Modern ``ifcopenshell.api.project.create_file`` does NOT auto-emit
+    an IfcApplication or IfcOwnerHistory chain. We synthesise the full
+    Person + Organization + Application + OwnerHistory chain ourselves
+    and attach OwnerHistory to every IfcRoot entity, so a downstream
+    consumer that branches on ApplicationIdentifier (Solibri's
+    discipline auto-detect, or any other RAVA3Pro-aware tool) sees
+    "dxf2ifc-kylmalaite" instead of an empty slot or a generic
+    IfcOpenShell stamp.
+    """
+    import time
+
+    from dxf2ifc import __version__
+
+    existing_apps = ifc.by_type("IfcApplication")
+    if existing_apps:
+        for app in existing_apps:
+            app.ApplicationIdentifier = "dxf2ifc-kylmalaite"
+            app.ApplicationFullName = "dxf2ifc — Kylmäsuunnittelu"
+            app.Version = __version__
+        return
+
+    organization = ifc.create_entity(
+        "IfcOrganization",
+        Name="dxf2ifc",
+    )
+    application = ifc.create_entity(
+        "IfcApplication",
+        ApplicationDeveloper=organization,
+        Version=__version__,
+        ApplicationFullName="dxf2ifc — Kylmäsuunnittelu",
+        ApplicationIdentifier="dxf2ifc-kylmalaite",
+    )
+    person = ifc.create_entity(
+        "IfcPerson",
+        FamilyName="dxf2ifc",
+    )
+    person_and_org = ifc.create_entity(
+        "IfcPersonAndOrganization",
+        ThePerson=person,
+        TheOrganization=organization,
+    )
+    owner_history = ifc.create_entity(
+        "IfcOwnerHistory",
+        OwningUser=person_and_org,
+        OwningApplication=application,
+        ChangeAction="ADDED",
+        CreationDate=int(time.time()),
+    )
+    for root in ifc.by_type("IfcRoot"):
+        if getattr(root, "OwnerHistory", None) is None:
+            root.OwnerHistory = owner_history
 
 
 def _make_origin_placement(
