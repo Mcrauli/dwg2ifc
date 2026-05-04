@@ -6,6 +6,12 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.1-alpha1 — 2026-05-04
+
+Toinen alpha — ensimmäinen release jossa GUI:n itsepäivitys-banneri
+voi tarjota latausta automaattisesti seuraavissa versioissa. Lataa
+tämä manuaalisesti kerran, sen jälkeen päivitykset hoituvat itsestään.
+
 **Removed**:
 - **Pre-conversion geometric outlier scan** (`core/outliers.py`,
   `convert_dxf(detect_outliers=...)` kwargs). The scan produced false
