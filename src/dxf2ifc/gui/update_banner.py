@@ -23,6 +23,7 @@ from dxf2ifc.core.updater import (
     UpdateInfo,
     check_for_update,
     download_asset,
+    fetch_expected_sha256,
     is_running_bundled,
     schedule_replace_and_restart,
 )
@@ -174,11 +175,18 @@ class _DownloadRunnable(QtCore.QRunnable):
                 raise RuntimeError("cancelled")
             self._owner.report_progress(downloaded, total)
 
+        # Fetch the .sha256 sidecar before the main download so a
+        # truncated/corrupted asset is detected before swap. Returns
+        # None silently when the sidecar is missing or malformed — in
+        # that case we skip verification rather than block the update.
+        expected_sha256 = fetch_expected_sha256(info.download_url)
+
         try:
             download_asset(
                 info.download_url,
                 self._target_path,
                 progress_cb=progress_cb,
+                expected_sha256=expected_sha256,
             )
         except RuntimeError:
             # User cancellation — leave a partial file behind for cleanup;
@@ -219,14 +227,15 @@ def perform_update(
                 f"Lataa manuaalisesti: {info.release_url}",
             )
             return
-        # Skip Qt's normal cleanup chain — PyInstaller's bootloader pops
-        # a "Failed to remove temporary directory" warning when the
-        # outgoing exe's _MEI*** dir is still mapped by the OS while a
-        # newly-spawned child reads from it. ``os._exit`` returns to the
-        # OS without running atexit hooks or the bootloader's cleanup;
-        # Windows reclaims the temp dir naturally on next reboot, and
-        # the new exe's first run sweeps stale dirs (see
-        # ``cleanup_stale_meipass_dirs`` in dxf2ifc.gui.app).
+        # Skip Qt's normal cleanup chain — the PyInstaller bootloader's
+        # _MEI*** cleanup races against the about-to-launch new process
+        # and pops a "Failed to remove temporary directory" warning if
+        # left to its atexit hooks. ``os._exit`` returns to the OS
+        # immediately; Windows reclaims our %TEMP%\\_MEI*** naturally
+        # the next time it sweeps the temp dir. The launcher spawned
+        # by ``schedule_replace_and_restart`` waits a few seconds before
+        # invoking the new exe, so by the time its bootloader extracts
+        # we are fully gone and Defender has finished scanning.
         os._exit(0)
 
     def on_fail(message: str) -> None:

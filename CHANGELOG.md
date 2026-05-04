@@ -6,6 +6,28 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.10-alpha1 — 2026-05-04
+
+**Fixed**:
+- **Itsepäivityksen "Failed to start embedded python interpreter" -virhe**:
+  uusi exe käynnistetään nyt **3 sekunnin viiveellä** piilotetun
+  PowerShell-launcherin kautta. Antaa vanhan prosessin vapauttaa
+  ``.old``-exen handle ja Windows Defenderin viimeistellä reaaliaikaskannauksen
+  ennen kuin uuden exen PyInstaller-bootloader yrittää purkaa tiedostoja
+  ``%TEMP%``:iin. Aiemmin OLD ``os._exit(0)`` ja NEW spawn osuivat
+  millisekuntien päähän toisistaan ja törmäsivät satunnaisesti.
+- **SHA-256-verifiointi ladattuun assettiin**: päivittäjä hakee nyt
+  GitHub Releases ``.sha256``-sidecarin ja vertaa downloadatun exen
+  hashin streamatessa. Mismatch → ``.part``-tiedosto poistetaan ja
+  vaihto keskeytetään ennen swapia. Estää korruptoituneen / katkenneen
+  latauksen pääsyn käynnistettäväksi, mikä on yksi mahdollinen
+  bootloader-virheen syy.
+
+**Removed**:
+- **Help-menun "Käyttöohjeet (selain)" -action**: About-dialogissa on
+  nyt linkki samaan käyttöohjeeseen, joten erillinen menu-action oli
+  duplikaatti.
+
 ## v0.1.9-alpha1 — 2026-05-04
 
 **Changed**:

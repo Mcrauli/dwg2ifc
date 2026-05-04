@@ -7,6 +7,7 @@ hermetic. The Windows-only swap helper is exercised via a fake
 
 from __future__ import annotations
 
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -246,6 +247,213 @@ class TestDownloadAsset:
                 progress_cb=lambda d, t: progress.append((d, t)),
             )
         assert progress == [(6, 10), (10, 10)]
+
+    def test_expected_sha256_matches_writes_file(self, tmp_path: Path) -> None:
+        target = tmp_path / "out.exe"
+        body = b"hello world"
+        expected = hashlib.sha256(body).hexdigest()
+        chunks = [body, b""]
+        index = {"i": 0}
+
+        class FakeResponse:
+            headers = {"Content-Length": str(len(body))}
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            def read(self, n: int) -> bytes:
+                i = index["i"]
+                index["i"] = i + 1
+                return chunks[min(i, len(chunks) - 1)]
+
+        with patch("urllib.request.urlopen", return_value=FakeResponse()):
+            updater.download_asset(
+                "http://x/a.exe", target, expected_sha256=expected
+            )
+        assert target.read_bytes() == body
+
+    def test_expected_sha256_mismatch_raises_and_cleans(self, tmp_path: Path) -> None:
+        target = tmp_path / "out.exe"
+        chunks = [b"hello world", b""]
+        index = {"i": 0}
+        wrong_hash = "0" * 64
+
+        class FakeResponse:
+            headers = {"Content-Length": "11"}
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            def read(self, n: int) -> bytes:
+                i = index["i"]
+                index["i"] = i + 1
+                return chunks[min(i, len(chunks) - 1)]
+
+        with patch("urllib.request.urlopen", return_value=FakeResponse()):
+            with pytest.raises(ValueError, match="SHA-256 mismatch"):
+                updater.download_asset(
+                    "http://x/a.exe", target, expected_sha256=wrong_hash
+                )
+        # The .part scratch file must be cleaned so a retry starts fresh.
+        assert not target.exists()
+        assert not target.with_suffix(target.suffix + ".part").exists()
+
+    def test_expected_sha256_case_insensitive(self, tmp_path: Path) -> None:
+        target = tmp_path / "out.exe"
+        body = b"abc"
+        expected = hashlib.sha256(body).hexdigest().upper()  # uppercase hex
+        chunks = [body, b""]
+        index = {"i": 0}
+
+        class FakeResponse:
+            headers = {"Content-Length": "3"}
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            def read(self, n: int) -> bytes:
+                i = index["i"]
+                index["i"] = i + 1
+                return chunks[min(i, len(chunks) - 1)]
+
+        with patch("urllib.request.urlopen", return_value=FakeResponse()):
+            updater.download_asset(
+                "http://x/a.exe", target, expected_sha256=expected
+            )
+        assert target.read_bytes() == body
+
+
+class TestFetchExpectedSha256:
+    """Sidecar parser. GitHub Releases publishes ``<asset>.sha256``
+    payloads in sha256sum format: ``"<64-hex>  <filename>\\n"``."""
+
+    def _patched_response(self, payload: bytes):
+        class FakeResponse:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            def read(self):
+                return payload
+
+        return FakeResponse()
+
+    def test_parses_standard_sha256sum_format(self) -> None:
+        payload = (
+            b"CAD611CBFD6134AE80B5029D5F5AB62EAA52F07737B144B8D65B000197F19088"
+            b"  dxf2ifc-Setup-0.1.9a1.exe\n"
+        )
+        with patch(
+            "urllib.request.urlopen", return_value=self._patched_response(payload)
+        ):
+            digest = updater.fetch_expected_sha256("http://x/a.exe")
+        # Lowercased on return so the caller does not have to normalise.
+        assert digest == "cad611cbfd6134ae80b5029d5f5ab62eaa52f07737b144b8d65b000197f19088"
+
+    def test_returns_none_for_truncated_digest(self) -> None:
+        payload = b"deadbeef  short.exe\n"
+        with patch(
+            "urllib.request.urlopen", return_value=self._patched_response(payload)
+        ):
+            assert updater.fetch_expected_sha256("http://x/a.exe") is None
+
+    def test_returns_none_for_non_hex_digest(self) -> None:
+        # 64 chars but not all hex.
+        payload = b"z" * 64 + b"  bad.exe\n"
+        with patch(
+            "urllib.request.urlopen", return_value=self._patched_response(payload)
+        ):
+            assert updater.fetch_expected_sha256("http://x/a.exe") is None
+
+    def test_returns_none_on_network_error(self) -> None:
+        import urllib.error
+
+        with patch(
+            "urllib.request.urlopen",
+            side_effect=urllib.error.URLError("network down"),
+        ):
+            assert updater.fetch_expected_sha256("http://x/a.exe") is None
+
+
+class TestSpawnDelayedLauncher:
+    """The PowerShell launcher delays the new exe's start to side-step
+    "Failed to start embedded python interpreter" right after self-update
+    (Defender real-time scan + outgoing process not fully released)."""
+
+    def test_windows_invokes_powershell_with_hidden_window(
+        self, tmp_path: Path
+    ) -> None:
+        exe = tmp_path / "dxf2ifc.exe"
+        exe.write_bytes(b"x")
+        with patch("sys.platform", "win32"):
+            with patch("subprocess.Popen") as popen:
+                updater._spawn_delayed_launcher(exe, delay_seconds=3)
+        popen.assert_called_once()
+        args, kwargs = popen.call_args
+        cmd = args[0]
+        assert cmd[0] == "powershell.exe"
+        # WindowStyle Hidden + NonInteractive prevent a visible flash.
+        assert "-WindowStyle" in cmd and "Hidden" in cmd
+        assert "-NonInteractive" in cmd
+        assert "-NoProfile" in cmd
+        # Script body asks Start-Sleep with the requested delay and
+        # then Start-Process-launches the (single-quoted) exe path.
+        script = cmd[cmd.index("-Command") + 1]
+        assert "Start-Sleep -Seconds 3" in script
+        assert f"Start-Process -FilePath '{exe}'" in script
+
+    def test_windows_passes_delay_into_script(self, tmp_path: Path) -> None:
+        exe = tmp_path / "dxf2ifc.exe"
+        exe.write_bytes(b"x")
+        with patch("sys.platform", "win32"):
+            with patch("subprocess.Popen") as popen:
+                updater._spawn_delayed_launcher(exe, delay_seconds=7)
+        script = popen.call_args[0][0][popen.call_args[0][0].index("-Command") + 1]
+        assert "Start-Sleep -Seconds 7" in script
+
+    def test_windows_quotes_paths_with_apostrophe(self, tmp_path: Path) -> None:
+        # PowerShell single-quoted strings escape ' as ''.
+        exe = tmp_path / "wei'rd.exe"
+        exe.write_bytes(b"x")
+        with patch("sys.platform", "win32"):
+            with patch("subprocess.Popen") as popen:
+                updater._spawn_delayed_launcher(exe)
+        script = popen.call_args[0][0][popen.call_args[0][0].index("-Command") + 1]
+        assert "'" + str(exe).replace("'", "''") + "'" in script
+
+    def test_windows_includes_extra_args(self, tmp_path: Path) -> None:
+        exe = tmp_path / "dxf2ifc.exe"
+        exe.write_bytes(b"x")
+        with patch("sys.platform", "win32"):
+            with patch("subprocess.Popen") as popen:
+                updater._spawn_delayed_launcher(
+                    exe, extra_args=["convert", "in.dxf"]
+                )
+        script = popen.call_args[0][0][popen.call_args[0][0].index("-Command") + 1]
+        assert "-ArgumentList 'convert', 'in.dxf'" in script
+
+    def test_non_windows_spawns_directly_without_powershell(
+        self, tmp_path: Path
+    ) -> None:
+        exe = tmp_path / "dxf2ifc"
+        exe.write_bytes(b"x")
+        with patch("sys.platform", "linux"):
+            with patch("subprocess.Popen") as popen:
+                updater._spawn_delayed_launcher(exe, extra_args=["a", "b"])
+        popen.assert_called_once_with(
+            [str(exe), "a", "b"], start_new_session=True, close_fds=True
+        )
 
 
 class TestSwapHelpers:
