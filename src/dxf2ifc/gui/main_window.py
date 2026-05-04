@@ -14,6 +14,11 @@ from dxf2ifc.gui.file_panel import FilePanel
 from dxf2ifc.gui.layer_table import LayerTable
 from dxf2ifc.gui.preview_log import PreviewLogPanel
 from dxf2ifc.gui.recent_files import RecentFilesStore
+from dxf2ifc.gui.update_banner import (
+    UpdateBanner,
+    UpdateChecker,
+    perform_update,
+)
 from dxf2ifc.profiles.loader import load_default_profile, load_profile
 
 
@@ -52,6 +57,15 @@ class MainWindow(QtWidgets.QMainWindow):
         caption.setProperty("role", "caption")
         root.addWidget(title)
         root.addWidget(caption)
+
+        self._update_banner = UpdateBanner(self)
+        self._update_banner.update_requested.connect(self._on_update_requested)
+        root.addWidget(self._update_banner)
+        self._update_checker = UpdateChecker(self)
+        self._update_checker.result.connect(self._on_update_check_done)
+        # Defer the network call until the window is on screen — there's no
+        # value in slowing down first paint for a background poll.
+        QtCore.QTimer.singleShot(500, self._update_checker.start)
 
         splitter = QtWidgets.QSplitter(QtCore.Qt.Orientation.Horizontal)
         splitter.setObjectName("body_splitter")
@@ -187,6 +201,14 @@ class MainWindow(QtWidgets.QMainWindow):
         from dxf2ifc.gui.about import show_about
 
         show_about(self).exec()
+
+    def _on_update_check_done(self, info: object) -> None:
+        if info is None:
+            return  # no update or check failed silently
+        self._update_banner.show_for(info)  # type: ignore[arg-type]
+
+    def _on_update_requested(self, info: object) -> None:
+        perform_update(info, self)  # type: ignore[arg-type]
 
     def set_status(self, text: str, *, level: str = "info") -> None:
         bar = self.statusBar()

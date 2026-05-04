@@ -25,6 +25,7 @@ if getattr(sys, "frozen", False):
 
 from PySide6 import QtWidgets
 
+from dxf2ifc.core.updater import cleanup_old_exe
 from dxf2ifc.gui.main_window import MainWindow
 from dxf2ifc.gui.theme import apply_theme
 
@@ -52,6 +53,10 @@ def run(argv: list[str] | None = None) -> int:
         from dxf2ifc.cli import main as cli_main
 
         return cli_main(args[1:])
+
+    # Best-effort cleanup of the previous exe parked by self-update.
+    # Always safe to call: no-op when running from source.
+    cleanup_old_exe()
 
     app = QtWidgets.QApplication.instance() or QtWidgets.QApplication(args)
     apply_theme(app)

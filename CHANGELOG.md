@@ -7,6 +7,19 @@ project uses semantic versioning.
 ## Unreleased
 
 **Added**:
+- **In-app self-update**: GUI shows an amber banner at the top of the
+  main window when a newer dxf2ifc release is on GitHub. "Päivitä nyt"
+  downloads the bundled exe with progress, swaps the running exe via
+  the Windows rename-running-exe trick, and restarts. Pre-releases are
+  included by default. Silent on network failure. No-op when running
+  from source.
+- **Opt-in code signing in release.yml**: `signpath/github-action-submit-signing-request@v2`
+  is wired in but gated on four GitHub repo secrets/vars
+  (`SIGNPATH_API_TOKEN` + `SIGNPATH_ORGANIZATION_ID` +
+  `SIGNPATH_PROJECT_SLUG` + `SIGNPATH_SIGNING_POLICY_SLUG`). Activates
+  automatically once the SignPath.io OSS Foundation application is
+  approved; until then releases continue to ship unsigned without
+  failure.
 - Pre-conversion geometric outlier scan: flags DXF entities whose centroid
   is more than 100 m from the median centroid of the rest. Catches stray
   xref leftovers and accidental drag operations BEFORE Solibri's generic

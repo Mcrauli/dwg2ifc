@@ -5,6 +5,20 @@ bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
 ## Latest
 
+**Build #31** (2026-05-04) — itsepäivitys + SignPath code-signing -hookki
+
+- `core/updater.py`: GitHub Releases -polling + asset-lataus +
+  Windows-temppu (rename current.exe → .old, move new.exe → current.exe,
+  spawn detached, quit). Pre-release-tukinen, silent failure
+  verkkovirheillä. Cleanup `.old`-jäänteistä käynnistyksellä.
+- GUI banner (`gui/update_banner.py`): amber call-to-action ilmestyy
+  pääikkunan ylälaitaan kun uudempi versio löytyy. "Päivitä nyt" →
+  modaalinen progress dialog → swap → restart.
+- `release.yml`: opt-in SignPath.io OSS Foundation -allekirjoitus.
+  Aktivoituu kun 4 secret/var on asetettu repon settingseissä —
+  ennen sitä release shippailee allekirjoittamattomana ilman failia.
+- 26 uutta testiä `test_updater.py`. 480/480 passes.
+
 **Build #30** (2026-05-04) — geometric outlier -varoitus DXF-luennassa
 
 - Uusi `core/outliers.py`: `find_geometric_outliers(records, threshold_mm=100_000)`
