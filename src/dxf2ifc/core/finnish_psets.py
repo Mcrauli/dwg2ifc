@@ -306,10 +306,13 @@ _FI_TEKNINEN_DEFAULTS: dict[str, dict[str, str]] = {
         "Ääniteho": "",
     },
     "IfcCableCarrierSegment": {
-        "Kuormitus": "",
         "Materiaali": "",
         "Pinnoite": "",
-        "Korroosiosuojaus": "",
+        "Korroosioluokka": "",
+        "Paloturvallisuusluokka": "",
+        "Levypaksuus": "",
+        "Kuormitus": "",
+        "Paino": "",
     },
     "IfcPipeSegment": {
         "Materiaali": "",

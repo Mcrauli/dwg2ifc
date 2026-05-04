@@ -6,6 +6,27 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.7-alpha1 — 2026-05-04
+
+**Added**:
+- **MEKA-spec FI_Tekninen + FI_Tuote KYL-TIKASHYLLY ja KYL-LEVYHYLLY -säännöille**.
+  Default-profiili kirjoittaa nyt nämä Solibrin Asennushyllyjärjestelmälle:
+  - **Tikashylly** (KS20-500 K L=6000 PG): Materiaali Teräs, Pinnoite
+    Kuumasinkitty (EN 10346), Korroosioluokka C1-C2,
+    Paloturvallisuusluokka E90, Levypaksuus 0,75 mm, Paino 10,68 kg/6 m.
+    FI_Tuote: Valmistaja MEKA + linkki tuotesivulle.
+  - **Levyhylly** (KRA-60-500 L=3000 M): Materiaali Teräs, Pinnoite
+    Valkoinen RAL 9010 polyesterimaali, Korroosioluokka C1-C2,
+    Paloturvallisuusluokka E90, Levypaksuus 1,25 mm, Paino 19,09 kg/3 m.
+    FI_Tuote: Valmistaja MEKA + linkki tuotesivulle.
+- **`_FI_TEKNINEN_DEFAULTS["IfcCableCarrierSegment"]`** laajennettu:
+  Materiaali, Pinnoite, Korroosioluokka, Paloturvallisuusluokka,
+  Levypaksuus, Kuormitus, Paino. (Nimi `Korroosiosuojaus` →
+  `Korroosioluokka` RAVA-konvention mukaan.)
+
+Käyttäjä voi ylikirjoittaa fi_tekninen / fi_tuote oman profiilin TOML:n
+kautta jos käytössä on eri valmistaja tai mitoitus.
+
 ## v0.1.6-alpha1 — 2026-05-04
 
 **Added**:
