@@ -10,14 +10,35 @@ if (-not $env:DXF2IFC_VERSION) {
 
 Write-Host "Building dxf2ifc.exe version $($env:DXF2IFC_VERSION)..."
 
-uv sync --extra dev --extra gui
-uv run pyinstaller build/dxf2ifc.spec --clean --noconfirm
-
+# Native commands do not trip $ErrorActionPreference; check $LASTEXITCODE
+# explicitly so a uv/pyinstaller failure cannot silently fall through to
+# the Copy-Item step and ship a stale binary.
 $source = "dist/dxf2ifc.exe"
 $target = "dist/dxf2ifc-$($env:DXF2IFC_VERSION).exe"
 
+# Stamp the source with mtime BEFORE the build so we can detect whether
+# PyInstaller actually rebuilt it (vs. silently using a previous output).
+$preBuildMtime = if (Test-Path $source) { (Get-Item $source).LastWriteTime } else { [datetime]::MinValue }
+
+uv sync --extra dev --extra gui
+if ($LASTEXITCODE -ne 0) {
+    throw "uv sync failed with exit code $LASTEXITCODE"
+}
+
+uv run pyinstaller build/dxf2ifc.spec --clean --noconfirm
+if ($LASTEXITCODE -ne 0) {
+    throw "pyinstaller failed with exit code $LASTEXITCODE"
+}
+
 if (-not (Test-Path $source)) {
     throw "PyInstaller did not produce $source"
+}
+
+# Defence-in-depth: even if both commands returned 0, verify the source
+# was actually rewritten — protects against the edge case where the spec
+# file silently emits to a different output path.
+if ((Get-Item $source).LastWriteTime -le $preBuildMtime) {
+    throw "PyInstaller output $source was not refreshed (still $preBuildMtime). Build did not actually run."
 }
 
 Copy-Item -Path $source -Destination $target -Force
