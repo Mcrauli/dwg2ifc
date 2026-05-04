@@ -1,5 +1,23 @@
 name: release
 
+# Code-signing setup (SignPath.io OSS Foundation, free for OSS projects):
+#
+# 1. Sign up at https://signpath.io with the GitHub account that owns this
+#    repo (Mcrauli). Apply for the OSS Foundation tier — free, ~1–2 weeks
+#    to approve.
+# 2. After approval, in the SignPath UI:
+#       a. Connect this GitHub repo as a "trusted build system"
+#       b. Note the organization-id (UUID), project-slug, and create
+#          a signing-policy-slug (e.g. "release-signing")
+#       c. Issue an API token with submit-signing-request permission
+# 3. In the GitHub repo settings → Secrets and variables → Actions:
+#       - Secret:    SIGNPATH_API_TOKEN
+#       - Variable:  SIGNPATH_ORGANIZATION_ID
+#       - Variable:  SIGNPATH_PROJECT_SLUG
+#       - Variable:  SIGNPATH_SIGNING_POLICY_SLUG
+# 4. Tag a release. The "Sign with SignPath" step auto-enables when all
+#    four are present; until then releases ship unsigned (no failure).
+
 on:
   push:
     tags:
@@ -7,6 +25,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write  # required by SignPath GitHub Actions connector (OIDC)
 
 jobs:
   windows:
@@ -35,10 +54,70 @@ jobs:
           # The bundled exe is windowed (console=False), so `--version`
           # cannot write to stdout reliably under PyInstaller. We simply
           # verify the artifact exists and has plausible size (> 50 MB).
-          $exe = Get-ChildItem dist/dxf2ifc-*.exe | Select-Object -First 1
+          $exe = Get-ChildItem dist/dxf2ifc-*.exe | Where-Object { $_.Name -notmatch '\.sha256$' } | Select-Object -First 1
           if (-not $exe) { throw "No dxf2ifc-*.exe in dist/" }
           if ($exe.Length -lt 50MB) { throw "exe smaller than 50 MB: $($exe.Length)" }
           Write-Host "Smoke OK: $($exe.Name) ($([int]($exe.Length/1MB)) MB)"
+
+      # ────── Code signing ──────────────────────────────────────────────
+      # SignPath consumes a GitHub Actions artifact, signs it, and
+      # publishes the signed bytes back. The unsigned artifact upload
+      # below is separate from the release-asset upload further down.
+
+      - name: Upload unsigned exe for SignPath
+        id: upload-unsigned
+        uses: actions/upload-artifact@v4
+        with:
+          name: dxf2ifc-unsigned
+          path: dist/dxf2ifc-*.exe
+          if-no-files-found: error
+
+      - name: Check SignPath configuration
+        id: signpath-check
+        shell: bash
+        env:
+          TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+          ORG_ID: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          PROJECT: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          POLICY: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+        run: |
+          if [ -n "$TOKEN" ] && [ -n "$ORG_ID" ] && [ -n "$PROJECT" ] && [ -n "$POLICY" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::SignPath signing enabled — release exe will be code-signed"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::SignPath secrets/vars missing — release will be UNSIGNED. To enable: set secrets.SIGNPATH_API_TOKEN + vars.SIGNPATH_ORGANIZATION_ID + vars.SIGNPATH_PROJECT_SLUG + vars.SIGNPATH_SIGNING_POLICY_SLUG (see comment block at top of release.yml)"
+          fi
+
+      - name: Sign with SignPath
+        if: steps.signpath-check.outputs.enabled == 'true'
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.upload-unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: dist/
+
+      - name: Regenerate SHA256 sidecar after signing
+        if: steps.signpath-check.outputs.enabled == 'true'
+        shell: pwsh
+        run: |
+          # Signing changes the exe bytes (Authenticode signature appended),
+          # so the .sha256 produced by build_exe.ps1 is now stale.
+          $exe = Get-ChildItem dist/dxf2ifc-*.exe | Where-Object { $_.Name -notmatch '\.sha256$' } | Select-Object -First 1
+          if (-not $exe) { throw "No signed exe in dist/ after SignPath step" }
+          $h = (Get-FileHash -Algorithm SHA256 -Path $exe.FullName).Hash
+          Set-Content -Path "$($exe.FullName).sha256" -Value "$h  $($exe.Name)"
+          # Verify the exe is actually signed
+          $sig = Get-AuthenticodeSignature $exe.FullName
+          if ($sig.Status -ne "Valid") {
+            throw "Signed exe failed Authenticode verification: $($sig.Status) — $($sig.StatusMessage)"
+          }
+          Write-Host "Signed by: $($sig.SignerCertificate.Subject)"
+          Write-Host "New SHA256: $h  $($exe.Name)"
 
       - name: Bundle LICENSES.md
         shell: pwsh
@@ -85,7 +164,7 @@ jobs:
         run: |
           $tag = "${env:GITHUB_REF_NAME}"
           $assets = @(
-            (Get-ChildItem dist/dxf2ifc-*.exe).FullName,
+            (Get-ChildItem dist/dxf2ifc-*.exe | Where-Object { $_.Name -notmatch '\.sha256$' }).FullName,
             (Get-ChildItem dist/dxf2ifc-*.exe.sha256).FullName,
             "dist/LICENSES.md"
           )
