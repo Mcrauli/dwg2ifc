@@ -3,7 +3,50 @@
 Volatile state — current build + open todos. Aiempi Plan-historia (A–H) +
 bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
+## Onboarding fresh Claude — TL;DR
+
+Tuorein julkaisu: **v0.1.7-alpha1** (2026-05-04). Lauri ajaa Inno Setup
+-installerilla asennettuna `%LOCALAPPDATA%\Programs\dxf2ifc\dxf2ifc.exe`.
+GUI:n itsepäivitys-banneri tarjoaa uudet tagit automaattisesti — kun
+tagaat seuraavan version, banneri ilmestyy Lauri'n softassa itsestään.
+
+**Älä rakenna seuraavalla iteraatiolla** Solibrin discipline-auto-detectiä
+(per-installation-asetus Solibri-puolella, ei IFC-kenttä — Lauri:n
+Solibrissa edes Granlund-referenssi ei tunnistu automaattisesti).
+Hyväksytty: yksi manuaalinen klikkaus suunnittelualan valintaan.
+
+**SignPath OSS Foundation -hakemus lähetetty 2026-05-04**, odottaa
+1-2 viikon hyväksyntää sähköpostilla. `release.yml` on jo opt-in
+muodossa — aktivoituu 4 secret/var:lla
+(`SIGNPATH_API_TOKEN` + `SIGNPATH_ORGANIZATION_ID` +
+`SIGNPATH_PROJECT_SLUG` + `SIGNPATH_SIGNING_POLICY_SLUG`) kun cert
+myönnetään. Trial app.signpath.io-tilillä on auki — ÄLÄ luo CSR sinne,
+se on maksullinen reitti. Foundation tulee erikseen.
+
+Releases: <https://github.com/Mcrauli/dxf2ifc/releases>
+
 ## Latest
+
+**v0.1.7-alpha1** (2026-05-04, `d7fa86b`) — MEKA-spec FI_Tekninen
++ FI_Tuote tikashylly/levyhyllylle:
+- Tikashylly: KS20-500 K L=6000 PG (Kuumasinkitty EN 10346)
+- Levyhylly: KRA-60-500 L=3000 M (RAL 9010)
+- Materiaali, Pinnoite, Korroosioluokka, Paloturvallisuusluokka,
+  Levypaksuus, Paino + valmistaja-linkki näkyvät Solibrissa
+- `_FI_TEKNINEN_DEFAULTS["IfcCableCarrierSegment"]` laajennettu
+
+**v0.1.6-alpha1** (2026-05-04, `82287f7`) — Inno Setup installer:
+- `build/installer.iss` + `scripts/build_installer.ps1` ketju
+- Per-user `%LOCALAPPDATA%\Programs\dxf2ifc`, ei UAC
+- `dxf2ifc-Setup-X.Y.Z.exe` rinnalla `dxf2ifc-X.Y.Z.exe`:n
+- Inno Setup VersionInfoVersion+ProductVersion vaativat puhtaan
+  `X.Y.Z.W`-numeron — PowerShell strippaa PEP 440 alpha-suffix:n
+
+**v0.1.5-alpha1** (2026-05-04, `241ac8c`) — KRIITTINEN bugifix:
+- v0.1.4:n `cleanup_stale_meipass_dirs` poisti exe:n oman _MEI:n
+  → "Failed to execute pyi_rth_inspect" seuraavalla käynnistyksellä
+- Bug Windows-polun short-form vs long-form -vertailussa
+- Cleanup-funktio poistettu, Windows %TEMP% siivoaa itse
 
 **Inno Setup -installeri** (branch `claude/parser-installer-setup-3kPsS`)
 
