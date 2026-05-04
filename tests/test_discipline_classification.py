@@ -135,6 +135,53 @@ def test_project_pset_authorization_kylmasuunnittelu(tmp_path: Path) -> None:
     assert auth.NominalValue.wrappedValue == "Kylmäsuunnittelu"
 
 
+def test_step_header_carries_authorization_kylmasuunnittelu(tmp_path: Path) -> None:
+    """STEP physical FILE_NAME's 7th param (authorization) must be
+    'Kylmäsuunnittelu' — Solibri reads this header field as one of
+    its discipline auto-detect signals (Granlund/RAVA3Pro convention)."""
+    import ifcopenshell
+
+    dxf = tmp_path / "in.dxf"
+    ifc_path = tmp_path / "out.ifc"
+    _write_minimal_dxf(dxf)
+    convert_dxf(
+        dxf_path=dxf,
+        output_path=ifc_path,
+        profile=load_default_profile(),
+        preprocess_acis=False,
+    )
+    ifc = ifcopenshell.open(str(ifc_path))
+    fn = ifc.wrapped_data.header().file_name_py()
+    assert fn.get_attribute_value(6) == "Kylmäsuunnittelu"
+    # preprocessor_version + originating_system must identify dxf2ifc
+    assert "dxf2ifc" in fn.get_attribute_value(4).lower()
+    assert "dxf2ifc" in fn.get_attribute_value(5).lower()
+
+
+def test_step_header_lists_building_service_exchange_requirement(
+    tmp_path: Path,
+) -> None:
+    """FILE_DESCRIPTION.description must list ExchangeRequirement[BuildingService]
+    so Solibri picks up the file as a building-services exchange."""
+    import ifcopenshell
+
+    dxf = tmp_path / "in.dxf"
+    ifc_path = tmp_path / "out.ifc"
+    _write_minimal_dxf(dxf)
+    convert_dxf(
+        dxf_path=dxf,
+        output_path=ifc_path,
+        profile=load_default_profile(),
+        preprocess_acis=False,
+    )
+    ifc = ifcopenshell.open(str(ifc_path))
+    description = ifc.wrapped_data.header().file_description_py().get_attribute_value(0)
+    assert any(
+        "ExchangeRequirement[BuildingService]" in (s or "")
+        for s in description
+    ), description
+
+
 def test_application_identifier_tagged_dxf2ifc(tmp_path: Path) -> None:
     """IfcApplication.ApplicationIdentifier is "dxf2ifc-kylmalaite".
 

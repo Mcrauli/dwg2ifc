@@ -130,6 +130,7 @@ def build_ifc_project_skeleton(
     # (project, site, building, storeys, classification rels, psets…)
     # picks up the same OwnerHistory in one sweep.
     _customize_application(ifc)
+    _customize_file_header(ifc, output_name=project_name)
 
     return IfcSkeleton(
         file=ifc,
@@ -205,6 +206,49 @@ def _attach_project_discipline(
         RelatedObjects=[project],
         RelatingPropertyDefinition=pset,
     )
+
+
+def _customize_file_header(ifc: ifcopenshell.file, *, output_name: str) -> None:
+    """Stamp the STEP physical file HEADER with refrigeration metadata.
+
+    The Granlund/RAVA3Pro reference IFC carries ``Kylmäsuunnittelu`` in
+    FILE_NAME's 7th parameter (authorization) and lists
+    ``ExchangeRequirement[BuildingService]`` alongside the
+    ViewDefinition in FILE_DESCRIPTION. Solibri's role auto-detect
+    inspects both — IfcApplication + Pset_Project alone are not
+    enough. By matching the reference convention here we close that
+    last gap.
+
+    All access goes through ``ifcopenshell.wrapped_data`` because the
+    standard ifcopenshell API does not expose header attributes
+    directly.
+    """
+    from dxf2ifc import __version__
+
+    # Attribute indices, per ISO-10303-21 STEP physical file syntax.
+    # FILE_NAME(name, time_stamp, author, organization,
+    #           preprocessor_version, originating_system, authorization)
+    # FILE_DESCRIPTION(description[], implementation_level)
+
+    header = ifc.wrapped_data.header()
+    fn = header.file_name_py()
+    fd = header.file_description_py()
+
+    fn.setArgumentAsString(0, output_name)
+    fn.setArgumentAsString(4, f"dxf2ifc {__version__}")
+    fn.setArgumentAsString(5, "dxf2ifc-kylmalaite")
+    fn.setArgumentAsString(6, "Kylmäsuunnittelu")
+
+    # FILE_DESCRIPTION.description: keep the existing ViewDefinition
+    # value but add the BuildingService ExchangeRequirement that
+    # Solibri's discipline auto-detect treats as a strong signal.
+    description: tuple[str, ...] = tuple(fd.get_attribute_value(0) or ())
+    has_building_service = any(
+        "buildingservice" in (s or "").lower() for s in description
+    )
+    if not has_building_service:
+        description = (*description, "ExchangeRequirement[BuildingService]")
+    fd.setArgumentAsAggregateOfString(0, list(description))
 
 
 def _customize_application(ifc: ifcopenshell.file) -> None:
