@@ -99,6 +99,7 @@ def read_dxf(
                     dxf_type="3DSOLID",
                     geometry=MeshGeometry(vertices=vertices, faces=faces),
                     attributes={},
+                    handle=handle,
                 )
             )
             continue
@@ -111,6 +112,7 @@ def read_dxf(
                     dxf_type="LINE",
                     geometry=LineGeometry(start=start, end=end),
                     attributes={},
+                    handle=str(entity.dxf.handle).upper(),
                 )
             )
         elif dxftype == "LWPOLYLINE" and entity.closed:
@@ -126,6 +128,7 @@ def read_dxf(
                     dxf_type="LWPOLYLINE",
                     geometry=PolygonGeometry(vertices=tuple(world_vertices), closed=True),
                     attributes={},
+                    handle=str(entity.dxf.handle).upper(),
                 )
             )
         elif dxftype == "INSERT":
@@ -149,6 +152,7 @@ def read_dxf(
                             geometry=MeshGeometry(vertices=vertices, faces=faces),
                             attributes={},
                             block_name=entity.dxf.name,
+                            handle=handle,
                         )
                     )
                     continue
@@ -171,6 +175,7 @@ def read_dxf(
                     geometry=block_instance,
                     attributes={},
                     block_name=entity.dxf.name,
+                    handle=str(entity.dxf.handle).upper(),
                 )
             )
         elif dxftype == "MESH":
@@ -190,6 +195,7 @@ def read_dxf(
                     dxf_type="MESH",
                     geometry=MeshGeometry(vertices=vertices, faces=faces),
                     attributes={},
+                    handle=str(entity.dxf.handle).upper(),
                 )
             )
     return records

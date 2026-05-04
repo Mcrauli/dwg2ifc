@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -11,6 +12,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from dxf2ifc.core.quality import ValidationReport
 
 from dxf2ifc.core.dxf_reader import read_dxf
+from dxf2ifc.core.outliers import (
+    DEFAULT_OUTLIER_THRESHOLD_MM,
+    find_geometric_outliers,
+)
 from dxf2ifc.core.ifc_writer.builders import (
     _COOLING_EQUIPMENT_CLASSES,
     add_building_element_proxy,
@@ -52,6 +57,7 @@ def convert_dxf(
     schema: str = "IFC4",
     preprocess_acis: bool = True,
     progress: object | None = None,
+    outlier_threshold_mm: float = DEFAULT_OUTLIER_THRESHOLD_MM,
 ) -> tuple[dict[str, list], ValidationReport | None]:
     """Orchestrate DXF -> IFC conversion end-to-end.
 
@@ -80,6 +86,26 @@ def convert_dxf(
         acis_meshes = extract_acis_meshes(dxf_path, progress=progress)  # type: ignore[arg-type,assignment]
 
     entities = read_dxf(dxf_path, acis_meshes=acis_meshes)
+
+    # Pre-conversion outlier scan: flag entities whose centroid is more
+    # than ``outlier_threshold_mm`` from the median centroid of the rest.
+    # Catches stray xref leftovers and accidental drag operations BEFORE
+    # the user opens Solibri and sees the generic "Mallit hajallaan"
+    # warning. Always emitted to stderr; routed through the progress
+    # callback when GUI is the caller; stashed for ValidationReport when
+    # validate=True.
+    outlier_warnings = find_geometric_outliers(
+        entities, threshold_mm=outlier_threshold_mm
+    )
+    for warning in outlier_warnings:
+        message = f"WARNING [geometric_outlier]: {warning['message']}"
+        print(message, file=sys.stderr)
+        if callable(progress):
+            try:
+                progress(message)
+            except Exception:  # noqa: BLE001 — never block convert on UI errors
+                pass
+
     mapped = apply_profile(entities, profile)
 
     # POSITIO-block linkage. Index every numbering INSERT once, then
@@ -307,6 +333,10 @@ def convert_dxf(
             from dxf2ifc.core.quality import validate_ifc as _validate_ifc
 
             report = _validate_ifc(output_path)
+            # Surface the pre-conversion outlier warnings through the
+            # same channel as the post-conversion IFC checks.
+            if outlier_warnings:
+                report.warnings.extend(outlier_warnings)
         return systems, report
     finally:
         # Always clean up the preprocessing temp DXF, no matter where in

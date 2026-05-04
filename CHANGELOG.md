@@ -4,6 +4,18 @@ All notable user-facing changes to dxf2ifc are documented here. The format
 loosely follows [Keep a Changelog](https://keepachangelog.com/), and the
 project uses semantic versioning.
 
+## Unreleased
+
+**Added**:
+- Pre-conversion geometric outlier scan: flags DXF entities whose centroid
+  is more than 100 m from the median centroid of the rest. Catches stray
+  xref leftovers and accidental drag operations BEFORE Solibri's generic
+  "Mallit laajasti hajallaan" warning fires. Threshold configurable via
+  `convert_dxf(outlier_threshold_mm=…)`. Warnings include layer + DXF
+  handle so the user can find the offending entity in AutoCAD.
+- `EntityRecord.handle` field carries the DXF entity handle through the
+  pipeline for diagnostics.
+
 ## v0.1.0-alpha — 2026-04-30
 
 Ensimmäinen julkinen alpha-release. Build #29 (SHA `76A4F5CB606034E0`) —

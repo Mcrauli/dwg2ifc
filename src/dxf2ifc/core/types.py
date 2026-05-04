@@ -76,6 +76,8 @@ class EntityRecord:
     (LineGeometry, PolygonGeometry, BlockInstance, MeshGeometry).
     `attributes` carries DXF-specific extras (color, linetype, thickness).
     `block_name` and `xform` are only populated for INSERT entities.
+    `handle` is the upper-cased DXF entity handle (hex string), used in
+    diagnostics so the user can find the offending entity in AutoCAD.
     """
 
     layer: str
@@ -84,6 +86,7 @@ class EntityRecord:
     attributes: dict[str, Any] = field(default_factory=dict)
     block_name: str | None = None
     xform: Any | None = None
+    handle: str | None = None
 
 
 @dataclass

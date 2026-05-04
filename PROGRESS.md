@@ -5,6 +5,18 @@ bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
 ## Latest
 
+**Build #30** (2026-05-04) — geometric outlier -varoitus DXF-luennassa
+
+- Uusi `core/outliers.py`: `find_geometric_outliers(records, threshold_mm=100_000)`
+  flagaa entiteetit joiden keskipiste on yli 100 m mediaani-keskipisteestä.
+  Robusti modelin ETRS-TM35FIN-koordinaateille (median, ei origo).
+- `EntityRecord.handle` läpi pipelinen → varoitus näyttää AutoCAD-handlen.
+- Wirattu `convert_dxf` orchestratoriin: aina stderriin, GUI:n
+  progress-callbackin kautta, ja `report.warnings`:iin kun `--validate`.
+- Ehkäisee Solibrin "Mallit laajasti hajallaan" -varoituksen jo
+  konversiovaiheessa — käyttäjä korjaa AutoCADissa ennen IFC-uudelleenajoa.
+- 14 uutta testiä `tests/test_outliers.py`. 454/454 testiä passes.
+
 **v0.1.0-alpha** (2026-04-30) — ensimmäinen julkinen pre-release Build
 #29:n pohjalta. Asennettavissa:
 <https://github.com/Mcrauli/dxf2ifc/releases/tag/v0.1.0-alpha>
@@ -48,16 +60,16 @@ hyväksyttävät).
 ## Open todos
 
 - [ ] **DXF data quality**: 1× KYL-TIKASHYLLY 3DSOLID handle `118A` outlier-paikassa
-  (X=1056k, Z=828k vs muu malli X≈730k, Z≈97k). Solibri varoittaa
-  "Mallit laajasti hajallaan". Joko Lauri korjaa AutoCADissa tai konvertteri
-  voisi flagata outlierit.
+  (X=1056k, Z=828k vs muu malli X≈730k, Z≈97k). Konvertteri flagaa nyt
+  Build #30:sta lähtien — Lauri voi korjata AutoCADissa kun varoitus näkyy.
 - [ ] **GUI Profile Editor** ei näytä FI_*-kenttiä (TOML-edit toimii käsin)
 - [ ] **POSITIO-block-pattern** laajempi kattaus jos blokin nimi
   vaihtelee (nyt `positiov2*`)
-- [ ] **`ifc_writer.py` (1908 riviä)** — split into add_*.py modules
+- [ ] **`builders.py` (1146 riviä)** — split into add_*.py modules
   for readability (cleanup task, plan-mode)
-- [ ] **Outlier-warning** convertterissa (vaihtoehtoinen täydennys
-  Solibrin omalle "Mallit hajallaan" -tarkastukselle)
+- [ ] **Code signing**: SmartScreen + Defender warningit asennuksessa.
+  Vaihtoehdot: SignPath.io OSS-ohjelma (ilmainen), Azure Trusted Signing
+  (~€9/kk), EV-cert (€300+/v).
 
 ## Roadmap (delivered)
 
