@@ -52,7 +52,7 @@ def _set_app_user_model_id() -> None:
         return
     try:
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
-            "Radika.dxf2ifc.kylmalaite.1"
+            "Mcrauli.dxf2ifc.kylmalaite.1"
         )
     except (AttributeError, OSError):
         pass

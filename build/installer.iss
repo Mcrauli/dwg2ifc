@@ -42,7 +42,7 @@ AppId={{B1F1E1E2-3A8C-4F7D-9C61-2A6F1E5F3B2A}
 AppName=dxf2ifc
 AppVersion={#AppVersion}
 AppVerName=dxf2ifc {#AppVersion}
-AppPublisher=Radika Oy
+AppPublisher=Lauri Rekola
 AppPublisherURL=https://github.com/Mcrauli/dxf2ifc
 AppSupportURL=https://github.com/Mcrauli/dxf2ifc/issues
 AppUpdatesURL=https://github.com/Mcrauli/dxf2ifc/releases
@@ -64,12 +64,12 @@ ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayName=dxf2ifc {#AppVersion}
 UninstallDisplayIcon={app}\dxf2ifc.exe
 VersionInfoVersion={#AppNumericVersion}
-VersionInfoCompany=Radika Oy
+VersionInfoCompany=Lauri Rekola
 VersionInfoDescription=dxf2ifc DXF to IFC 4 converter installer
 VersionInfoProductName=dxf2ifc
 VersionInfoProductVersion={#AppNumericVersion}
 VersionInfoProductTextVersion={#AppVersion}
-VersionInfoCopyright=(c) 2026 Lauri Rekola, Radika Oy. MIT licence.
+VersionInfoCopyright=(c) 2026 Lauri Rekola. MIT licence.
 #ifdef IconFile
 SetupIconFile={#IconFile}
 #endif

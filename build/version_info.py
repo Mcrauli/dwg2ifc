@@ -4,8 +4,8 @@
 
 VSVersionInfo(
     ffi=FixedFileInfo(
-        filevers=(0, 1, 7, 0),
-        prodvers=(0, 1, 7, 0),
+        filevers=(0, 1, 8, 0),
+        prodvers=(0, 1, 8, 0),
         mask=0x3F,
         flags=0x0,
         OS=0x40004,
@@ -19,16 +19,16 @@ VSVersionInfo(
                 StringTable(
                     "040904B0",
                     [
-                        StringStruct("CompanyName", "Radika Oy"),
+                        StringStruct("CompanyName", "Lauri Rekola"),
                         StringStruct("FileDescription", "dxf2ifc DXF to IFC 4 converter"),
-                        StringStruct("FileVersion", "0.1.7a1"),
+                        StringStruct("FileVersion", "0.1.8a1"),
                         StringStruct("InternalName", "dxf2ifc"),
                         StringStruct(
-                            "LegalCopyright", "(c) 2026 Lauri Rekola, Radika Oy. MIT licence."
+                            "LegalCopyright", "(c) 2026 Lauri Rekola. MIT licence."
                         ),
                         StringStruct("OriginalFilename", "dxf2ifc.exe"),
                         StringStruct("ProductName", "dxf2ifc"),
-                        StringStruct("ProductVersion", "0.1.7a1"),
+                        StringStruct("ProductVersion", "0.1.8a1"),
                     ],
                 )
             ]

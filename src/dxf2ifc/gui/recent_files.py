@@ -13,7 +13,7 @@ class RecentFilesStore:
     """Store the most-recently-opened DXF paths via QSettings."""
 
     def __init__(self, *, settings: QtCore.QSettings | None = None) -> None:
-        self._settings = settings or QtCore.QSettings("Radika", "dxf2ifc")
+        self._settings = settings or QtCore.QSettings("Mcrauli", "dxf2ifc")
 
     def list(self) -> list[str]:
         raw = self._settings.value(_KEY, [], type=list)

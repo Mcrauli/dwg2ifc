@@ -82,7 +82,7 @@ def test_version_info_file_carries_company_and_version() -> None:
     assert VERSION_INFO_PATH.exists(), f"missing {VERSION_INFO_PATH}"
     text = VERSION_INFO_PATH.read_text(encoding="utf-8")
     assert "VSVersionInfo" in text
-    assert "Radika Oy" in text
+    assert "Lauri Rekola" in text
     assert "dxf2ifc" in text
     from dxf2ifc._version import __version__
 

@@ -6,6 +6,22 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.8-alpha1 — 2026-05-04
+
+**Changed**:
+- **Brand metadata**: poistettu "Radika Oy" -maininta installerista, exe:n
+  Win32-resource-blokista ja LICENSE-tiedostosta. Publisher / CompanyName
+  / LegalCopyright / Copyright on nyt **"Lauri Rekola"** ilman
+  yritysmainintaa — dxf2ifc on Lauri'n henkilökohtainen projekti, ei
+  työnantaja-integroitu.
+- **Sisäiset Windows-tunnisteet** vaihdettu `Mcrauli`-namespaceen:
+  - AppUserModelID `Radika.dxf2ifc.kylmalaite.1` → `Mcrauli.dxf2ifc.kylmalaite.1`
+  - QSettings-organisaatio `Radika` → `Mcrauli` (recent-files-rekisteri
+    siirtyy `HKCU\Software\Mcrauli\dxf2ifc`-polkuun, vanhat
+    recent-files-listaukset eivät säily yli päivityksen).
+
+Toiminnallisuus identtinen v0.1.7-alpha1:n kanssa.
+
 ## v0.1.7-alpha1 — 2026-05-04
 
 **Added**:
