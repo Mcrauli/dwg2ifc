@@ -1,6 +1,6 @@
 [project]
 name = "dxf2ifc"
-version = "0.1.1a1"
+version = "0.1.2a1"
 description = "AutoCAD DXF to IFC 4 converter for Finnish refrigeration design (Talo2000 classification)"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -41,6 +41,8 @@ packages = ["src/dxf2ifc"]
 [tool.hatch.build.targets.wheel.force-include]
 "src/dxf2ifc/profiles/default_kylmalaite.toml" = "dxf2ifc/profiles/default_kylmalaite.toml"
 "src/dxf2ifc/gui/style.qss" = "dxf2ifc/gui/style.qss"
+"assets/dxf2ifc.ico" = "dxf2ifc/gui/dxf2ifc.ico"
+"assets/dxf2ifc.png" = "dxf2ifc/gui/dxf2ifc.png"
 "assets/fonts/Inter-Regular.ttf" = "dxf2ifc/gui/fonts/Inter-Regular.ttf"
 "assets/fonts/Inter-Medium.ttf" = "dxf2ifc/gui/fonts/Inter-Medium.ttf"
 "assets/fonts/Inter-SemiBold.ttf" = "dxf2ifc/gui/fonts/Inter-SemiBold.ttf"

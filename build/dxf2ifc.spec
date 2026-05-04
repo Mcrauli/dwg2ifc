@@ -37,6 +37,8 @@ a = Analysis(
     datas=[
         (os.path.join(ROOT, 'src/dxf2ifc/profiles/default_kylmalaite.toml'), 'dxf2ifc/profiles'),
         (os.path.join(ROOT, 'src/dxf2ifc/gui/style.qss'), 'dxf2ifc/gui'),
+        (os.path.join(ROOT, 'assets/dxf2ifc.ico'), 'dxf2ifc/gui'),
+        (os.path.join(ROOT, 'assets/dxf2ifc.png'), 'dxf2ifc/gui'),
         (os.path.join(ROOT, 'assets/fonts/Inter-Regular.ttf'), 'dxf2ifc/gui/fonts'),
         (os.path.join(ROOT, 'assets/fonts/Inter-Medium.ttf'), 'dxf2ifc/gui/fonts'),
         (os.path.join(ROOT, 'assets/fonts/Inter-SemiBold.ttf'), 'dxf2ifc/gui/fonts'),
@@ -95,7 +97,5 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     version=os.path.join(SPECPATH, 'version_info.py'),
-    # TODO: replace with assets/dxf2ifc.ico once the brand icon ships.
-    # See docs/packaging.md "Icon TODO" for the design brief.
-    icon=None,
+    icon=os.path.join(SPECPATH, '..', 'assets', 'dxf2ifc.ico'),
 )

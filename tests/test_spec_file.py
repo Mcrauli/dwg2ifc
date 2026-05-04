@@ -90,12 +90,21 @@ def test_version_info_file_carries_company_and_version() -> None:
 
 
 def test_spec_icon_is_ico_or_none() -> None:
-    """Icon line must be either icon=None or end with `.ico`."""
+    """Icon line must be either icon=None or reference a .ico file
+    (whether as a literal string path or via ``os.path.join(...)``)."""
     import re
 
     text = _spec_text()
     if "icon=None" in text:
         return
-    match = re.search(r"icon\s*=\s*['\"]([^'\"]+)['\"]", text)
-    assert match, "spec missing an icon= directive (or a placeholder None)"
-    assert match.group(1).endswith(".ico"), f"icon path must end with .ico, got: {match.group(1)}"
+    string_match = re.search(r"icon\s*=\s*['\"]([^'\"]+)['\"]", text)
+    if string_match:
+        assert string_match.group(1).endswith(".ico"), (
+            f"icon path must end with .ico, got: {string_match.group(1)}"
+        )
+        return
+    join_match = re.search(r"icon\s*=\s*os\.path\.join\([^)]+\)", text)
+    assert join_match, "spec missing an icon= directive (or a placeholder None)"
+    assert ".ico" in join_match.group(0), (
+        f"os.path.join expression must reference a .ico file, got: {join_match.group(0)}"
+    )

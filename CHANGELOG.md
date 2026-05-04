@@ -6,6 +6,15 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.2-alpha1 — 2026-05-04
+
+**Added**:
+- **Brand-ikoni**: Lauri'n suunnittelema kuvake (DXF-viiva → 3D-render)
+  exe-tiedostolle, GUI-ikkunan title-baariin, taskbar-näkymälle ja
+  Alt+Tab-vaihtajalle. Multi-resolution `.ico` (16/32/48/64/128/256 px)
+  generoitu lähde-PNG:stä. Asetettu sekä PyInstallerin EXE-iconiksi
+  että Qt:n WindowIcon-asetuksena.
+
 ## v0.1.1-alpha1 — 2026-05-04
 
 Toinen alpha — ensimmäinen release jossa GUI:n itsepäivitys-banneri

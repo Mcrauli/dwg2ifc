@@ -23,7 +23,9 @@ if getattr(sys, "frozen", False):
         except OSError:
             pass
 
-from PySide6 import QtWidgets
+from importlib import resources
+
+from PySide6 import QtGui, QtWidgets
 
 from dxf2ifc.core.updater import cleanup_old_exe
 from dxf2ifc.gui.main_window import MainWindow
@@ -33,6 +35,28 @@ __all__ = ["MainWindow", "run"]
 
 
 _CLI_SUBCOMMANDS = {"convert", "validate"}
+
+
+def _load_app_icon() -> QtGui.QIcon | None:
+    """Return the dxf2ifc application icon as a QIcon.
+
+    Loads from the bundled package resource so the same call works in
+    both the frozen exe (``dxf2ifc.gui/dxf2ifc.ico`` inside _MEIPASS)
+    and a source checkout (``assets/dxf2ifc.ico`` via importlib).
+    Falls back to the PNG when the .ico is unavailable. Returns
+    ``None`` and lets Qt use the default if neither asset is present.
+    """
+    for filename in ("dxf2ifc.ico", "dxf2ifc.png"):
+        try:
+            ref = resources.files("dxf2ifc.gui").joinpath(filename)
+            if ref.is_file():
+                with resources.as_file(ref) as path:
+                    icon = QtGui.QIcon(str(path))
+                if not icon.isNull():
+                    return icon
+        except (FileNotFoundError, ModuleNotFoundError, OSError):
+            continue
+    return None
 
 
 def run(argv: list[str] | None = None) -> int:
@@ -59,7 +83,12 @@ def run(argv: list[str] | None = None) -> int:
     cleanup_old_exe()
 
     app = QtWidgets.QApplication.instance() or QtWidgets.QApplication(args)
+    icon = _load_app_icon()
+    if icon is not None:
+        app.setWindowIcon(icon)
     apply_theme(app)
     window = MainWindow()
+    if icon is not None:
+        window.setWindowIcon(icon)
     window.show()
     return app.exec()
