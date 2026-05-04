@@ -28,6 +28,14 @@
   #define OutputDir "..\dist"
 #endif
 
+#ifndef AppNumericVersion
+  ; VersionInfoVersion requires pure-numeric X.Y.Z.W. Default is the
+  ; placeholder used when ISCC runs without /DAppNumericVersion (manual
+  ; runs); build_installer.ps1 always passes the real value derived
+  ; from AppVersion stripped of its PEP 440 alpha suffix.
+  #define AppNumericVersion "0.0.0.0"
+#endif
+
 [Setup]
 ; Stable AppId — required for upgrade/uninstall identity. Do not change.
 AppId={{B1F1E1E2-3A8C-4F7D-9C61-2A6F1E5F3B2A}
@@ -55,7 +63,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayName=dxf2ifc {#AppVersion}
 UninstallDisplayIcon={app}\dxf2ifc.exe
-VersionInfoVersion={#AppVersion}.0
+VersionInfoVersion={#AppNumericVersion}
 VersionInfoCompany=Radika Oy
 VersionInfoDescription=dxf2ifc DXF to IFC 4 converter installer
 VersionInfoProductName=dxf2ifc

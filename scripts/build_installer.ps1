@@ -57,10 +57,20 @@ if (-not $iscc) {
 $iconFile = Join-Path $root "assets\dxf2ifc.ico"
 $hasIcon = Test-Path $iconFile
 
+# Inno Setup's VersionInfoVersion accepts only pure-numeric X.Y.Z.W —
+# strip the PEP 440 pre-release suffix (e.g. "0.1.6a1" → "0.1.6") and
+# pad with zeroes to four components so the .iss can plug it directly
+# into the [Setup] VersionInfoVersion line.
+$numericVersion = $version -replace '[A-Za-z].*$', ''
+$parts = @($numericVersion -split '\.' | Where-Object { $_ -ne '' })
+while ($parts.Count -lt 4) { $parts += '0' }
+$numericVersion = ($parts[0..3] -join '.')
+
 $issPath = Join-Path $root "build\installer.iss"
 $isccArgs = @(
     "/Qp",
     "/DAppVersion=$version",
+    "/DAppNumericVersion=$numericVersion",
     "/DSourceExe=$sourceExe",
     "/DLicensesFile=$licensesFile",
     "/DOutputDir=$dist"
