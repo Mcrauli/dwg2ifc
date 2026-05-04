@@ -15,7 +15,8 @@ class AboutDialog(QtWidgets.QDialog):
         version = importlib.metadata.version("dxf2ifc")
         self._summary = (
             f"<h1>dxf2ifc {version}</h1>"
-            "<p>AutoCAD DXF → IFC 4 converter for Finnish refrigeration design.</p>"
+            "<p>AutoCAD DXF → IFC 4 -konvertteri suomalaiseen "
+            "kylmäsuunnitteluun (RAVA3Pro).</p>"
             "<p>MIT-licensed.</p>"
             '<p><a href="https://github.com/Mcrauli/dxf2ifc">'
             "https://github.com/Mcrauli/dxf2ifc</a></p>"

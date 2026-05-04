@@ -6,6 +6,17 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.4-alpha1 — 2026-05-04
+
+**Fixed**:
+- GUI:n alaotsikko luki "AutoCAD DXF → IFC 4 with Talo2000 classification"
+  vaikka projekti on alusta asti ollut RAVA3Pro-pohjainen kylmäsuunnittelu.
+  Korjattu sekä GUI-kuvateksti, About-dialogi, CLI `--help`-kuvaus ja
+  pyproject.toml description-kenttä mainitsemaan **RAVA3Pro** ja
+  **kylmäsuunnittelu**. Talo2000 säilyy tekstissä paikoissa joissa se on
+  teknisesti oikein (ARK-domain-validointisäännöt, profiili-skeeman
+  `talo2000_code`-kenttä).
+
 ## v0.1.3-alpha1 — 2026-05-04
 
 **Fixed**:

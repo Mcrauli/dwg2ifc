@@ -16,7 +16,7 @@ from dxf2ifc.profiles.schema import CRSConfig
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="dxf2ifc",
-        description="Convert AutoCAD DXF drawings to IFC 4 with Talo2000 classification.",
+        description="Convert AutoCAD DXF drawings to IFC 4 for refrigeration design (RAVA3Pro classification).",
     )
     parser.add_argument("--version", action="version", version=f"dxf2ifc {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)

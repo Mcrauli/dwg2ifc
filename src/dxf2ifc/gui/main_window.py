@@ -53,7 +53,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         title = QtWidgets.QLabel("dxf2ifc")
         title.setProperty("role", "h1")
-        caption = QtWidgets.QLabel("AutoCAD DXF → IFC 4 with Talo2000 classification")
+        caption = QtWidgets.QLabel("AutoCAD DXF → IFC 4 kylmäsuunnitteluun (RAVA3Pro)")
         caption.setProperty("role", "caption")
         root.addWidget(title)
         root.addWidget(caption)
