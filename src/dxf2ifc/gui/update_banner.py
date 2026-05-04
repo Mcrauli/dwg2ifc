@@ -11,6 +11,7 @@ The banner is wired by :class:`MainWindow` to:
 
 from __future__ import annotations
 
+import os
 import sys
 import tempfile
 from pathlib import Path
@@ -218,7 +219,15 @@ def perform_update(
                 f"Lataa manuaalisesti: {info.release_url}",
             )
             return
-        QtWidgets.QApplication.instance().quit()
+        # Skip Qt's normal cleanup chain — PyInstaller's bootloader pops
+        # a "Failed to remove temporary directory" warning when the
+        # outgoing exe's _MEI*** dir is still mapped by the OS while a
+        # newly-spawned child reads from it. ``os._exit`` returns to the
+        # OS without running atexit hooks or the bootloader's cleanup;
+        # Windows reclaims the temp dir naturally on next reboot, and
+        # the new exe's first run sweeps stale dirs (see
+        # ``cleanup_stale_meipass_dirs`` in dxf2ifc.gui.app).
+        os._exit(0)
 
     def on_fail(message: str) -> None:
         dialog.close()

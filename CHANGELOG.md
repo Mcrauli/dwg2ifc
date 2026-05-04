@@ -6,6 +6,24 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.3-alpha1 — 2026-05-04
+
+**Fixed**:
+- **"Failed to remove temporary directory" -popup itsepäivityksen jälkeen**.
+  PyInstaller-bootloader yrittää siivota `_MEI***`-temp-kansion vanhasta
+  exestä swap-hetkellä mutta tiedostot ovat lukittuna kunnes Windows on
+  ehtinyt vapauttaa ne. Itsepäivitysflow käyttää nyt `os._exit(0)`:ia
+  joka skippaa bootloaderin siivouksen kokonaan; uusi exe sweeppaa
+  vanhentuneet `_MEI*`-kansiot käynnistyessään.
+- **Custom-ikoni näkyy nyt taskbarissa, Alt+Tab:ssä ja desktop-pikakuvakkeessa**.
+  Lisätty Windows AppUserModelID (`Radika.dxf2ifc.kylmalaite.1`) ennen
+  QApplicationia — ilman tätä Windows ryhmittelee sovelluksen
+  PyInstaller-bootloaderin yleiseksi exeksi ja taskbar käytti
+  generic-ikonia.
+- EXE-icon-polku spec-tiedostossa muutettu absoluuttiseksi
+  (`ROOT/assets/dxf2ifc.ico` SPECPATH-relatiivisen sijaan) — varmistaa
+  että PyInstaller löytää ikonin.
+
 ## v0.1.2-alpha1 — 2026-05-04
 
 **Added**:
