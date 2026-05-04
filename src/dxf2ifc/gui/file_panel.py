@@ -6,7 +6,9 @@ from PySide6 import QtCore, QtWidgets
 
 
 class FilePanel(QtWidgets.QWidget):
-    convert_requested = QtCore.Signal(str, str)
+    # Emits (dxf_path, ifc_path, energy_specs_path). The third value
+    # is empty string when the user has not picked a spec file.
+    convert_requested = QtCore.Signal(str, str, str)
 
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
         super().__init__(parent)
@@ -33,10 +35,21 @@ class FilePanel(QtWidgets.QWidget):
         self.browse_output_button.clicked.connect(self._on_browse_output)
         layout.addWidget(self.browse_output_button, 1, 2)
 
+        layout.addWidget(self._caption("Energiateho-listasta"), 2, 0)
+        self.energy_edit = QtWidgets.QLineEdit()
+        self.energy_edit.setPlaceholderText(
+            "Valinnainen .xlsx tai .csv jossa Koneikko, Laitetunnus + tehot"
+        )
+        layout.addWidget(self.energy_edit, 2, 1)
+        self.browse_energy_button = QtWidgets.QPushButton("Browse…")
+        self.browse_energy_button.setProperty("secondary", "true")
+        self.browse_energy_button.clicked.connect(self._on_browse_energy)
+        layout.addWidget(self.browse_energy_button, 2, 2)
+
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setProperty("primary", "true")
         self.convert_button.clicked.connect(self._on_convert)
-        layout.addWidget(self.convert_button, 2, 1, 1, 2)
+        layout.addWidget(self.convert_button, 3, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
 
@@ -55,5 +68,19 @@ class FilePanel(QtWidgets.QWidget):
         if path:
             self.output_edit.setText(path)
 
+    def _on_browse_energy(self) -> None:
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            "Avaa energiateho-lista",
+            "",
+            "Excel & CSV (*.xlsx *.xlsm *.csv *.tsv);;All files (*)",
+        )
+        if path:
+            self.energy_edit.setText(path)
+
     def _on_convert(self) -> None:
-        self.convert_requested.emit(self.input_edit.text(), self.output_edit.text())
+        self.convert_requested.emit(
+            self.input_edit.text(),
+            self.output_edit.text(),
+            self.energy_edit.text(),
+        )

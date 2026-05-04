@@ -5,6 +5,18 @@ bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
 ## Latest
 
+**Build #33** (2026-05-04) — energiateho-listan lukeminen (Excel/CSV)
+
+- `core/energy_specs.py`: lukee Excel/CSV jossa Koneikko + Laitetunnus +
+  tehot. Joustava sarake-mätsäys (`Jäähdytysteho [kW]` / `Q_kW` /
+  `Cooling capacity` → `Jäähdytysteho`).
+- POSITIO-linkityksen jälkeen orchestrator hakee jokaisen kylmälaitteen
+  rivin (koneikko, laitetunnus) ja mergaa tehot **FI_Tekninen**:iin.
+- GUI: kolmas tiedostonvalitsin "Energiateho-listasta" (xlsx/csv).
+- CLI: `--energy-specs <path>` flag.
+- 12 uutta testiä `test_energy_specs.py`. 496/496 passes.
+- Lisätty `openpyxl` runtime-dep.
+
 **Build #32** (2026-05-04) — outlier IQR + suunnitteluala KYL
 
 - `core/outliers.py`: Tukey-IQR-pohjainen kynnys (`max(50 m, Q3+3·IQR)`)

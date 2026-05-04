@@ -157,7 +157,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._refresh_layer_table()
         self.set_status(f"Profile loaded: {path}", level="success")
 
-    def _on_convert_requested(self, dxf: str, out: str) -> None:
+    def _on_convert_requested(self, dxf: str, out: str, energy_specs: str = "") -> None:
         if not dxf or not out:
             self.set_status("Pick both a DXF input and an IFC output first", level="error")
             self.preview_log.append_error("Pick both a DXF input and an IFC output first")
@@ -165,7 +165,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.file_panel.convert_button.setEnabled(False)
         self.set_status(f"Converting {dxf}…")
         self.preview_log.append_info(f"Converting {Path(dxf).name} -> {Path(out).name}")
-        self._worker.run(dxf=dxf, out=out, profile=self._profile, validate=True)
+        if energy_specs:
+            self.preview_log.append_info(
+                f"Energiateho-listasta: {Path(energy_specs).name}"
+            )
+        self._worker.run(
+            dxf=dxf,
+            out=out,
+            profile=self._profile,
+            validate=True,
+            energy_specs=energy_specs or None,
+        )
 
     def _on_convert_finished(self, out: str) -> None:
         self.file_panel.convert_button.setEnabled(True)

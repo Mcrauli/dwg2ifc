@@ -6,6 +6,18 @@ project uses semantic versioning.
 
 ## Unreleased
 
+**Added**:
+- **Energy-spec Excel/CSV import** — convert_dxf accepts an optional
+  energy-spec file path (CLI `--energy-specs`, GUI third file picker)
+  with rows keyed by Koneikko + Laitetunnus. After POSITIO linkage
+  every refrigeration device's row is looked up and the Jäähdytysteho /
+  Sähköteho / Kylmäaine / Ilmavirta / Ääniteho / Käyttölämpötila fields
+  flow into FI_Tekninen automatically — no more hand-typing the energy
+  list into the IFC. Column header matching is forgiving (`Q_kW`,
+  `Cooling capacity [kW]`, `Jäähdytysteho [kW]` all map to the same
+  canonical FI_Tekninen field). Adds openpyxl as runtime dep for .xlsx
+  reading; .csv reading uses the stdlib.
+
 **Changed**:
 - **Outlier detection now adaptive (Tukey IQR)** — replaces the fixed
   100 m threshold that flagged whole models in wide buildings. Threshold

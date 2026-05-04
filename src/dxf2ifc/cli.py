@@ -62,6 +62,17 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Orthogonal height (mm) for IfcMapConversion (default: profile value or 0).",
     )
+    convert.add_argument(
+        "--energy-specs",
+        type=Path,
+        default=None,
+        help=(
+            "Optional .xlsx / .csv with refrigeration-equipment energy "
+            "specs. Rows are matched against POSITIO-resolved "
+            "(koneikko, laitetunnus) pairs and the resulting fields are "
+            "merged into FI_Tekninen."
+        ),
+    )
     return parser
 
 
@@ -95,6 +106,7 @@ def main(argv: list[str] | None = None) -> int:
             output_path=args.output,
             profile=profile,
             schema=args.schema.upper(),
+            energy_specs_path=args.energy_specs,
         )
         print(f"Wrote {args.output}", file=sys.stderr)
         if args.validate:

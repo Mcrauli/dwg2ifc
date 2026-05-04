@@ -48,4 +48,43 @@ def test_file_panel_convert_button_emits_signal_with_paths(qtbot, tmp_path):
 
     with qtbot.waitSignal(panel.convert_requested, timeout=500) as sig:
         panel.convert_button.click()
-    assert sig.args == [str(tmp_path / "in.dxf"), str(tmp_path / "out.ifc")]
+    # Energy-spec path is the third element; empty when not picked.
+    assert sig.args == [
+        str(tmp_path / "in.dxf"),
+        str(tmp_path / "out.ifc"),
+        "",
+    ]
+
+
+def test_file_panel_browse_energy_fills_line_edit(qtbot, tmp_path):
+    from dxf2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+
+    fake_path = str(tmp_path / "energy.xlsx")
+    with patch(
+        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileName",
+        return_value=(fake_path, "Excel & CSV (*.xlsx *.xlsm *.csv *.tsv)"),
+    ):
+        panel.browse_energy_button.click()
+
+    assert panel.energy_edit.text() == fake_path
+
+
+def test_file_panel_convert_with_energy_specs_path(qtbot, tmp_path):
+    from dxf2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+    panel.input_edit.setText(str(tmp_path / "in.dxf"))
+    panel.output_edit.setText(str(tmp_path / "out.ifc"))
+    panel.energy_edit.setText(str(tmp_path / "energy.xlsx"))
+
+    with qtbot.waitSignal(panel.convert_requested, timeout=500) as sig:
+        panel.convert_button.click()
+    assert sig.args == [
+        str(tmp_path / "in.dxf"),
+        str(tmp_path / "out.ifc"),
+        str(tmp_path / "energy.xlsx"),
+    ]

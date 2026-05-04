@@ -12,6 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from dxf2ifc.core.quality import ValidationReport
 
 from dxf2ifc.core.dxf_reader import read_dxf
+from dxf2ifc.core.energy_specs import load_energy_specs, lookup_spec
 from dxf2ifc.core.outliers import find_geometric_outliers
 from dxf2ifc.core.ifc_writer.builders import (
     _COOLING_EQUIPMENT_CLASSES,
@@ -56,6 +57,7 @@ def convert_dxf(
     progress: object | None = None,
     detect_outliers: bool = True,
     outlier_threshold_mm: float | None = None,
+    energy_specs_path: str | Path | None = None,
 ) -> tuple[dict[str, list], ValidationReport | None]:
     """Orchestrate DXF -> IFC conversion end-to-end.
 
@@ -177,6 +179,59 @@ def convert_dxf(
                     m.extra_props["koneikko"] = marker.teksti
                 if marker.numero:
                     m.extra_props["laitetunnus"] = marker.numero
+
+    # Energy-spec lookup. Once each refrigeration MappedEntity has its
+    # (koneikko, laitetunnus) populated by the POSITIO step above, we
+    # match against an external Excel/CSV — Lauri's energy list — and
+    # merge the resulting Jäähdytysteho / Sähköteho / Kylmäaine etc.
+    # into FI_Tekninen. Lookups missing in the spreadsheet pass through
+    # silently; counts are reported via the progress callback so the
+    # user sees how many devices got matched.
+    if energy_specs_path is not None:
+        try:
+            specs = load_energy_specs(energy_specs_path)
+        except Exception as exc:  # noqa: BLE001 — never abort convert
+            specs = {}
+            warning = (
+                f"Energy spec file not loaded: {type(exc).__name__}: {exc}"
+            )
+            print(warning, file=sys.stderr)
+            if callable(progress):
+                try:
+                    progress(warning)
+                except Exception:  # noqa: BLE001
+                    pass
+        if specs:
+            matched = 0
+            for m in mapped:
+                koneikko = (m.extra_props or {}).get("koneikko") if m.extra_props else None
+                laitetunnus = (m.extra_props or {}).get("laitetunnus") if m.extra_props else None
+                spec = lookup_spec(
+                    specs, koneikko=koneikko, laitetunnus=laitetunnus
+                )
+                if spec is None:
+                    continue
+                # Merge spec.fields onto the rule-level fi_tekninen so
+                # default labels survive when the spreadsheet only fills
+                # a subset of the FI_Tekninen template.
+                merged: dict[str, str] = {}
+                if m.fi_tekninen:
+                    merged.update(m.fi_tekninen)
+                merged.update(spec.fields)
+                m.fi_tekninen = merged
+                matched += 1
+            if matched:
+                summary = (
+                    f"Energiateho-listalta luettu {matched}/{len(mapped)} "
+                    "laitetta"
+                )
+                print(summary, file=sys.stderr)
+                if callable(progress):
+                    try:
+                        progress(summary)
+                    except Exception:  # noqa: BLE001
+                        pass
+
     skeleton = build_ifc_project_skeleton(
         project_name=name,
         schema=schema,
