@@ -5,6 +5,18 @@ bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
 ## Latest
 
+**Build #34** (2026-05-04) — suunnitteluala = Jäähdytys + Solibri auto-rooli
+
+- IFC:n `suunnittelualat`-luokitus näyttää nyt **"Jäähdytys"**
+  (ei "KYL"). Solibrin oma terminologia.
+- Project-tason metatieto Solibrin roolin auto-tunnistamista varten:
+  - `IfcProject.LongName = "Jäähdytys"` (kun kaikki säännöt KYL-domainissa)
+  - `IfcRelAssociatesClassification` IfcProjectille (sama
+    `suunnittelualat`-luokitus)
+- `domain="KYL"` säilyy profiili-skeeman sisäisenä enum-arvona; vain
+  IFC-output muuttui. `discipline_label()`-helper käännös KYL → Jäähdytys.
+- 5 uutta testiä `test_discipline_classification.py`. 501/501 passes.
+
 **Build #33** (2026-05-04) — energiateho-listan lukeminen (Excel/CSV)
 
 - `core/energy_specs.py`: lukee Excel/CSV jossa Koneikko + Laitetunnus +

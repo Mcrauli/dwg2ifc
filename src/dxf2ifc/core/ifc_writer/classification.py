@@ -70,6 +70,22 @@ def add_classification(
     return reference
 
 
+# Discipline (suunnitteluala) labels written into the IFC. Solibri's
+# Luokittelusäännöistä / Disciplines view reads these strings; using
+# the Solibri-native term makes the role auto-detect cleanly.
+DISCIPLINE_LABELS: dict[str, str] = {
+    "ARK": "ARK",
+    "TATE": "Talotekniikka",
+    "KYL": "Jäähdytys",
+}
+
+
+def discipline_label(domain: str) -> str | None:
+    """Map an internal domain enum to the human-facing suunnitteluala
+    string. Returns ``None`` for unrecognised domains."""
+    return DISCIPLINE_LABELS.get(domain)
+
+
 def add_discipline_classification(
     ifc, product, *, domain: str
 ) -> object | None:
@@ -78,17 +94,21 @@ def add_discipline_classification(
     Solibri's rule engine otherwise infers every product as ARK from
     its IFC entity type (yes, even IfcEvaporator), which is wrong for
     refrigeration products. By emitting an explicit ``IfcClassification``
-    named ``suunnittelualat`` with reference ``ARK`` / ``TATE`` / ``KYL``,
-    the discipline appears in the "Luokittelusäännöistä" tab as
-    authoritative and Solibri's heuristic no longer overrides it.
+    named ``suunnittelualat`` with reference ``ARK`` / ``Talotekniikka`` /
+    ``Jäähdytys``, the discipline appears in Solibri's Luokittelusäännöistä
+    tab as authoritative and Solibri's heuristic no longer overrides it —
+    plus the Solibri "Roles" auto-detect picks the Jäähdytys role
+    without prompting.
 
-    Refrigeration items use ``KYL`` rather than the more generic ``TATE``
-    so cold-room equipment shows up under the right design discipline.
+    Refrigeration rows in the profile use ``domain="KYL"`` internally;
+    the IFC reference is "Jäähdytys" because that is the name Solibri's
+    discipline switcher displays.
 
     The IfcClassification entity is created once per file and reused
     across products (same dedup pattern as :func:`add_classification`).
     """
-    if domain not in ("ARK", "TATE", "KYL"):
+    label = discipline_label(domain)
+    if label is None:
         return None
     existing = [c for c in ifc.by_type("IfcClassification") if c.Name == "suunnittelualat"]
     if existing:
@@ -102,8 +122,8 @@ def add_discipline_classification(
         )
     reference = ifc.create_entity(
         "IfcClassificationReference",
-        Identification=domain,
-        Name=domain,
+        Identification=label,
+        Name=label,
         ReferencedSource=classification,
     )
     ifc.create_entity(

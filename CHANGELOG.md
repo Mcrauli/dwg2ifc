@@ -6,6 +6,20 @@ project uses semantic versioning.
 
 ## Unreleased
 
+**Changed**:
+- **Discipline name in the IFC is now "Jäähdytys" (was "KYL")** — Solibri
+  uses "Jäähdytys" as the canonical refrigeration discipline label, so
+  the IFC matches the role names Solibri's UI presents. The internal
+  `domain="KYL"` value in the profile schema is unchanged; only the
+  string emitted in the `suunnittelualat` IfcClassificationReference
+  was renamed.
+- **Project-level discipline metadata for Solibri auto-role detection**:
+  when every rule in the active profile shares one domain, the IFC now
+  embeds the discipline label in `IfcProject.LongName` plus an
+  `IfcRelAssociatesClassification` linking the project to the
+  `suunnittelualat` classification. Solibri picks the Jäähdytys role
+  automatically on file open, no prompt.
+
 **Added**:
 - **Energy-spec Excel/CSV import** — convert_dxf accepts an optional
   energy-spec file path (CLI `--energy-specs`, GUI third file picker)

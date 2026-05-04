@@ -33,6 +33,7 @@ from dxf2ifc.core.ifc_writer.builders import (
 from dxf2ifc.core.ifc_writer.classification import (
     add_classification,
     add_discipline_classification,
+    discipline_label,
 )
 from dxf2ifc.core.ifc_writer.skeleton import (
     IfcSkeleton,
@@ -232,11 +233,21 @@ def convert_dxf(
                     except Exception:  # noqa: BLE001
                         pass
 
+    # Determine the dominant discipline so Solibri can auto-detect the
+    # role when the file is opened. A unanimous mapped-rule domain
+    # (e.g. every rule is KYL → Jäähdytys) wins; mixed-discipline files
+    # leave the marker unset rather than picking a misleading role.
+    domains = {m.domain for m in mapped if m.domain}
+    project_discipline = (
+        discipline_label(next(iter(domains))) if len(domains) == 1 else None
+    )
+
     skeleton = build_ifc_project_skeleton(
         project_name=name,
         schema=schema,
         crs=profile.crs,
         storey_z_levels_mm=list(profile.storey_z_levels_mm),
+        discipline_label=project_discipline,
     )
 
     def _cleanup_temp() -> None:

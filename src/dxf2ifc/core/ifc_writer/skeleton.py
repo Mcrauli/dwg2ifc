@@ -44,6 +44,7 @@ def build_ifc_project_skeleton(
     schema: str = "IFC4",
     crs: CRSConfig | None = None,
     storey_z_levels_mm: list[float] | None = None,
+    discipline_label: str | None = None,
 ) -> IfcSkeleton:
     """Create a minimal IFC project file with the requested ``schema``
     (``"IFC4"`` or ``"IFC4X3"``) and the IfcProject → Site → Building →
@@ -70,6 +71,12 @@ def build_ifc_project_skeleton(
     project = ifcopenshell.api.run(
         "root.create_entity", ifc, ifc_class="IfcProject", name=project_name
     )
+
+    if discipline_label:
+        # Solibri reads IfcProject.LongName when auto-detecting the role
+        # for an opened file — placing "Jäähdytys" here lets Solibri pick
+        # the refrigeration profile without prompting the user.
+        project.LongName = discipline_label
 
     ifcopenshell.api.run(
         "unit.assign_unit",
@@ -116,6 +123,9 @@ def build_ifc_project_skeleton(
     if crs is not None:
         _attach_projected_crs(ifc, crs)
 
+    if discipline_label:
+        _attach_project_discipline(ifc, project, discipline_label)
+
     return IfcSkeleton(
         file=ifc,
         project=project,
@@ -123,6 +133,48 @@ def build_ifc_project_skeleton(
         building=building,
         storeys=storeys,
         contexts={"Model": model_context, "Body": body_context},
+    )
+
+
+def _attach_project_discipline(
+    ifc: ifcopenshell.file, project: object, label: str
+) -> None:
+    """Attach a ``suunnittelualat`` classification reference to the
+    IfcProject itself, in addition to the per-product references.
+
+    Solibri's role auto-selection inspects project-level metadata when
+    deciding which discipline profile to load — without this, every
+    product is tagged Jäähdytys but the project as a whole reads as
+    'unspecified' and Solibri prompts the user to choose. The
+    classification source is the same ``suunnittelualat`` that the
+    product-level helper creates, so deduplication via ``by_type``
+    keeps the file clean.
+    """
+    import ifcopenshell.guid
+
+    existing = [
+        c for c in ifc.by_type("IfcClassification") if c.Name == "suunnittelualat"
+    ]
+    if existing:
+        classification = existing[0]
+    else:
+        classification = ifc.create_entity(
+            "IfcClassification",
+            Source="dxf2ifc",
+            Edition="1.0",
+            Name="suunnittelualat",
+        )
+    reference = ifc.create_entity(
+        "IfcClassificationReference",
+        Identification=label,
+        Name=label,
+        ReferencedSource=classification,
+    )
+    ifc.create_entity(
+        "IfcRelAssociatesClassification",
+        GlobalId=ifcopenshell.guid.new(),
+        RelatedObjects=[project],
+        RelatingClassification=reference,
     )
 
 
