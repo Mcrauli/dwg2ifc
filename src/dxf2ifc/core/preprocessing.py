@@ -239,22 +239,46 @@ _LISP_BODY = (
     '(setq newents (ssget "_P")) '
     '(if newents '
     '(progn '
-    '(setq j 0 nn (sslength newents) ctr 0) '
+    '(setq j 0 nn (sslength newents) ctr 0 toconv (ssadd)) '
+    # First pass: STLOUT existing 3DSOLID children, collect LWPOLYLINEs
+    # with thickness for CONVTOSOLID. KLHYLLY-LEVY / KLHYLLY-TIKAS blocks
+    # contain LWPOLYLINEs with thickness (extruded vertically) instead of
+    # 3DSOLIDs — dynamic-block stretch action does not work on 3D solids
+    # reliably, so the block library uses 2D polylines + thickness for
+    # geometry (see autocad-lisp-ohjeet/tools/build-klhylly-blocks.lsp).
+    # MESH children (in Lauri's evaporator blocks) are read natively by
+    # ezdxf in Python — see :func:`_inject_block_meshes`.
     '(while (< j nn) '
     '(setq ent (ssname newents j)) '
-    '(setq etype (cdr (assoc 0 (entget ent)))) '
-    # Only 3DSOLID children get STLOUTed. MESH children (in Lauri's
-    # evaporator blocks: the mounting brackets, ~72 faces each at the
-    # control cage but AutoCAD's STLOUT applies subdivision smoothing
-    # to MESH that explodes triangle count by ~1000×) are read
-    # natively by ezdxf in Python — see :func:`_inject_block_meshes`
-    # which transforms block-local MESH vertices by each INSERT's
-    # placement and merges the result into the per-handle bundle.
-    '(if (eq etype "3DSOLID") '
+    '(setq el (entget ent)) '
+    '(setq etype (cdr (assoc 0 el))) '
+    '(setq ethick (cdr (assoc 39 el))) '
+    '(cond '
+    '((eq etype "3DSOLID") '
+    '(command "_.STLOUT" ent "" "Y" (strcat insert_out ih "_" (itoa ctr) ".stl")) '
+    '(setq ctr (1+ ctr))) '
+    '((and (eq etype "LWPOLYLINE") ethick (> ethick 0.0)) '
+    '(setq toconv (ssadd ent toconv)))) '
+    '(setq j (1+ j))) '
+    # Second pass: convert collected LWPOLYLINEs to 3D solids in bulk,
+    # then STLOUT the resulting solids. CONVTOSOLID promotes a closed
+    # polyline with thickness into a solid prism. ssget "_P" after the
+    # command returns the new 3DSOLIDs.
+    '(if (> (sslength toconv) 0) '
+    '(progn '
+    '(command "_.CONVTOSOLID" toconv "") '
+    '(setq postents (ssget "_P")) '
+    '(if postents '
+    '(progn '
+    '(setq j 0 nn2 (sslength postents)) '
+    '(while (< j nn2) '
+    '(setq ent (ssname postents j)) '
+    '(setq el (entget ent)) '
+    '(if (eq (cdr (assoc 0 el)) "3DSOLID") '
     '(progn '
     '(command "_.STLOUT" ent "" "Y" (strcat insert_out ih "_" (itoa ctr) ".stl")) '
     '(setq ctr (1+ ctr)))) '
-    '(setq j (1+ j))))) '
+    '(setq j (1+ j))))))))) '
     '(setq k (1+ k))))) '
     '(write-line "done" logf) '
     '(close logf) '

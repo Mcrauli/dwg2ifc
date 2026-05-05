@@ -198,3 +198,24 @@ domain = "KYL"
 lvi_code = "T-LVI-01-01-017"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kompressori", yleistunnus = "KOMP" }
+
+# -----------------------------------------------------------------------------
+# Section 6: Miscellaneous parts (KYL-MUUT_OSAT) — IfcBuildingElementProxy.
+# Catch-all for refrigeration components that are not specifically
+# evaporators / condensers / compressors / shelves / pipes — supports,
+# brackets, valves, sensors. PolygonGeometry is expected: builders'
+# add_building_element_proxy extrudes a closed polygon into a 120 mm
+# panel by default. The proxy is typed as USERDEFINED with ElementType
+# = predefined_type so MagiCAD's "Convert to MagiCAD object" can pick
+# it up via Pset_BuildingElementProxyTypeCommon (Reference).
+# -----------------------------------------------------------------------------
+
+[[rules]]
+layer_pattern = "MUUT_OSAT*"
+ifc_type = "IfcBuildingElementProxy"
+predefined_type = "MUUT_OSAT"
+domain = "KYL"
+talotekniikka_code = "T-TATE-01-01-099"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "MUUT OSAT", yleisnimi = "Muut osat", yleistunnus = "MUU" }
+fi_sijainti = { jarjestelmien_nimet = "Kylmäkoneistot", jarjestelmien_tunnukset = "KYL" }

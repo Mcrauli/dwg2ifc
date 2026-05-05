@@ -42,14 +42,18 @@ def test_load_default_profile_returns_profile():
 
 def test_load_default_profile_excludes_architectural_rules():
     """Bugfix 12 narrowed the default profile to refrigeration-only scope.
-    Walls, slabs, doors, windows, and cold-room panels are out of scope —
-    they belong to the architect, not the refrigeration designer."""
+    Walls, slabs, doors, windows are out of scope — they belong to the
+    architect, not the refrigeration designer.
+
+    ``IfcBuildingElementProxy`` is intentionally NOT excluded: it is
+    the catch-all for the KYL-side "muut osat" layer (supports,
+    brackets, valves) added in v0.1.14 for MagiCAD round-tripping.
+    """
     profile = load_default_profile()
     ifc_types = {r.ifc_type for r in profile.rules}
     architectural_only = {
         "IfcWall", "IfcSlab", "IfcDoor", "IfcWindow",
         "IfcColumn", "IfcRailing", "IfcStair", "IfcLightFixture",
-        "IfcBuildingElementProxy",
     }
     assert ifc_types.isdisjoint(architectural_only), (
         f"default profile leaked architectural types: {ifc_types & architectural_only}"

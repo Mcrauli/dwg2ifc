@@ -923,12 +923,20 @@ def add_building_element_proxy(
     thickness = float(mapped.extra_props.get("default_thickness_mm", 120.0))
     panel = panel_to_proxy_solid(mapped.geometry, thickness_mm=thickness)
 
+    # Use the rule's predefined_type as the proxy's ElementType /
+    # MagiCAD reference token (e.g. "MUUT_OSAT", "KYL-LEVY"). Falls
+    # back to the layer name when the rule did not specify one.
+    element_type = mapped.predefined_type or mapped.layer
+    proxy_type = _ensure_proxy_type(ifc, element_type=element_type)
+
     proxy = ifcopenshell.api.run(
         "root.create_entity",
         ifc,
         ifc_class="IfcBuildingElementProxy",
         name=mapped.layer,
+        predefined_type="USERDEFINED",
     )
+    proxy.ObjectType = element_type
 
     matrix = _z_rotation_matrix(0.0, 0.0, panel.base_z, 0.0)
     ifcopenshell.api.run(
@@ -980,6 +988,9 @@ def add_building_element_proxy(
         products=[proxy],
         relating_structure=parent_storey,
     )
+    ifcopenshell.api.run(
+        "type.assign_type", ifc, related_objects=[proxy], relating_type=proxy_type
+    )
     return proxy
 
 
@@ -1004,13 +1015,18 @@ def add_cooling_equipment(
             f"add_cooling_equipment requires ifc_type in {sorted(_COOLING_EQUIPMENT_CLASSES)}, "
             f"got {mapped.ifc_type!r}"
         )
+    cooling_type = _ensure_cooling_equipment_type(ifc, mapped.ifc_type)
     if isinstance(mapped.geometry, MeshGeometry):
-        return _add_mesh_product(
+        product = _add_mesh_product(
             ifc,
             mapped,
             ifc_class=mapped.ifc_type,
             parent_storey=parent_storey,
         )
+        ifcopenshell.api.run(
+            "type.assign_type", ifc, related_objects=[product], relating_type=cooling_type
+        )
+        return product
     if not isinstance(mapped.geometry, BlockInstance):
         raise TypeError(
             f"add_cooling_equipment expects BlockInstance or MeshGeometry, "
@@ -1081,6 +1097,9 @@ def add_cooling_equipment(
         ifc,
         products=[product],
         relating_structure=parent_storey,
+    )
+    ifcopenshell.api.run(
+        "type.assign_type", ifc, related_objects=[product], relating_type=cooling_type
     )
     return product
 
@@ -1160,6 +1179,68 @@ def _ensure_cable_carrier_segment_type(ifc, requested_type: str, enum_value: str
         ifc, seg_type, "Pset_CableCarrierSegmentTypeCommon", requested_type
     )
     return seg_type
+
+
+def _ensure_cooling_equipment_type(
+    ifc, mapped_ifc_class: str, *, predefined: str = "USERDEFINED", element_type: str | None = None
+) -> object:
+    """Return (creating once per file) an Ifc(Evaporator|Condenser|Compressor)Type
+    with the matching ``Pset_*TypeCommon`` attached.
+
+    MagiCAD's "Convert to MagiCAD object" command needs both the type
+    object AND the type-level common PSet — without the PSet the type
+    is treated as a generic proxy and the convert silently skips. We
+    populate ``Reference`` with ``element_type`` (defaults to the IFC
+    occurrence class name, e.g. "IfcEvaporator") so the PSet is
+    non-empty.
+    """
+    type_class = mapped_ifc_class + "Type"
+    ref = element_type or mapped_ifc_class
+    for t in ifc.by_type(type_class):
+        if predefined == "USERDEFINED":
+            if t.PredefinedType == "USERDEFINED" and t.ElementType == ref:
+                return t
+        elif t.PredefinedType == predefined:
+            return t
+
+    type_obj = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class=type_class,
+        name=f"{type_class}_{ref}",
+        predefined_type=predefined,
+    )
+    if predefined == "USERDEFINED":
+        type_obj.ElementType = ref
+    pset_name = f"Pset_{mapped_ifc_class[3:]}TypeCommon"  # IfcEvaporator -> Pset_EvaporatorTypeCommon
+    _attach_type_common_pset(ifc, type_obj, pset_name, ref)
+    return type_obj
+
+
+def _ensure_proxy_type(ifc, *, element_type: str) -> object:
+    """Return (creating once per element_type) an IfcBuildingElementProxyType
+    with Pset_BuildingElementProxyTypeCommon attached.
+
+    Same MagiCAD-recognition trick as for pipes / cable carriers /
+    cooling equipment: a proxy without a typed Pset_*TypeCommon falls
+    through MagiCAD's import filter as "unknown geometry".
+    """
+    for t in ifc.by_type("IfcBuildingElementProxyType"):
+        if t.PredefinedType == "USERDEFINED" and t.ElementType == element_type:
+            return t
+
+    type_obj = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class="IfcBuildingElementProxyType",
+        name=f"BuildingElementProxyType_{element_type}",
+        predefined_type="USERDEFINED",
+    )
+    type_obj.ElementType = element_type
+    _attach_type_common_pset(
+        ifc, type_obj, "Pset_BuildingElementProxyTypeCommon", element_type
+    )
+    return type_obj
 
 
 def _ensure_pipe_segment_type(ifc, requested_type: str, enum_value: str) -> object:

@@ -6,6 +6,27 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.14-alpha1 — 2026-05-05
+
+**Lisätty**:
+
+- **MagiCAD-yhteensopivuus laajennettu**: höyrystimet, lauhduttimet ja
+  kompressorit (``IfcEvaporator`` / ``IfcCondenser`` / ``IfcCompressor``)
+  saavat nyt Type-objektit + ``Pset_*TypeCommon``-PSetin, joten MagiCAD:n
+  "Convert to MagiCAD object" tunnistaa myös koneikot. Aiemmin tämä toimi
+  vain hyllyille ja putkille.
+- **MUUT_OSAT-layer** lisätty default-profiiliin: yleiset kylmälaitteen
+  osat (kannakkeet, tukirakenteet, venttiilit, anturit) joilla ei ole
+  spesifiä IFC-tyyppiä. Mappaus → ``IfcBuildingElementProxy`` +
+  ``USERDEFINED`` + ``ElementType="MUUT_OSAT"`` +
+  ``Pset_BuildingElementProxyTypeCommon`` Reference="MUUT_OSAT".
+
+**Sisäinen**:
+
+- 490 passed, 1 skipped, 1 deselected (test_extract_acis_meshes_round_trip
+  on lokaali ympäristötesti joka tarvitsee Lauri'n DXF + accoreconsole;
+  ei regression v0.1.14-koodin lisäyksistä).
+
 ## v0.1.13-alpha1 — 2026-05-05
 
 **Lisätty**:
