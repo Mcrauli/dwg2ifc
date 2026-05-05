@@ -48,11 +48,39 @@ def test_file_panel_convert_button_emits_signal_with_paths(qtbot, tmp_path):
 
     with qtbot.waitSignal(panel.convert_requested, timeout=500) as sig:
         panel.convert_button.click()
-    # Energy-spec path is the third element; empty when not picked.
+    # (dxf, ifc, energy_specs="" empty when not picked, floor_elevation_mm=0.0)
     assert sig.args == [
         str(tmp_path / "in.dxf"),
         str(tmp_path / "out.ifc"),
         "",
+        0.0,
+    ]
+
+
+def test_file_panel_floor_elevation_default_is_zero(qtbot):
+    from dxf2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+    assert panel.floor_elevation_edit.value() == 0.0
+
+
+def test_file_panel_emits_floor_elevation_with_convert(qtbot, tmp_path):
+    from dxf2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+    panel.input_edit.setText(str(tmp_path / "in.dxf"))
+    panel.output_edit.setText(str(tmp_path / "out.ifc"))
+    panel.floor_elevation_edit.setValue(12000.0)
+
+    with qtbot.waitSignal(panel.convert_requested, timeout=500) as sig:
+        panel.convert_button.click()
+    assert sig.args == [
+        str(tmp_path / "in.dxf"),
+        str(tmp_path / "out.ifc"),
+        "",
+        12000.0,
     ]
 
 
@@ -87,4 +115,5 @@ def test_file_panel_convert_with_energy_specs_path(qtbot, tmp_path):
         str(tmp_path / "in.dxf"),
         str(tmp_path / "out.ifc"),
         str(tmp_path / "energy.xlsx"),
+        0.0,
     ]

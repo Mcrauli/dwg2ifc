@@ -6,6 +6,31 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.11-alpha1 — 2026-05-05
+
+**Added**:
+- **1.krs korko -input** GUI:hin Excel-rivin alle ja CLI:lle
+  ``--floor-elevation MM``. AutoCAD piirretään 1.krs Z=0:lla; tämä arvo
+  lisätään jokaiseen ``IfcBuildingStorey.Elevation``-arvoon, jotta
+  rakennus tulee absoluuttiseen korkoon koko projektin
+  koordinaatistossa (esim. 1.krs korko 12000 mm + hylly Z=3000 mm
+  → IFC:ssä Z=15000 mm). Arvo persistoituu QSettings:iin (``Mcrauli/
+  dxf2ifc/floor_elevation_mm``) ja täyttyy automaattisesti seuraavalla
+  käynnistyksellä.
+- **Versionumero status-rivin oikeassa reunassa**: ohjelman versio
+  näkyy jatkuvasti ilman About-dialogin avaamista.
+
+**Removed**:
+- **CRS / ETRS-TM35FIN georeferensointi** kokonaisuudessaan: pois
+  Profile-skeemasta, GUI:n "Set CRS…" -dialogi, CLI:n
+  ``--eastings`` / ``--northings`` / ``--orthogonal-height``
+  -argumentit, ``IfcProjectedCRS`` + ``IfcMapConversion``
+  -kirjoitus, ``--validate`` ``expect_crs``-kytkin sekä
+  Solibri-rule-set:n CRS-coverage-rule. Käyttäjäkohtainen palaute:
+  feature ei tuonut työnkulkuun lisäarvoa, ja 1.krs korko-input
+  vastaa todelliseen tarpeeseen rakennuksen sijoittamisesta
+  absoluuttiseen koordinaatistoon ilman GIS-monimutkaisuutta.
+
 ## v0.1.10-alpha1 — 2026-05-04
 
 **Fixed**:

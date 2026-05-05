@@ -6,6 +6,7 @@ from PySide6 import QtCore
 
 _KEY = "recent_files"
 _LAST_PROFILE_KEY = "last_profile_path"
+_FLOOR_ELEVATION_KEY = "floor_elevation_mm"
 _MAX_ENTRIES = 5
 
 
@@ -40,4 +41,26 @@ class RecentFilesStore:
             self._settings.remove(_LAST_PROFILE_KEY)
         else:
             self._settings.setValue(_LAST_PROFILE_KEY, path)
+        self._settings.sync()
+
+    @property
+    def floor_elevation_mm(self) -> float:
+        """Last-entered absolute Z elevation of 1.krs (mm).
+
+        Used to pre-fill the FilePanel input on the next session so the
+        user does not retype the same building elevation per conversion.
+        Defaults to 0.0 (no offset) when no value has ever been set.
+        """
+        raw = self._settings.value(_FLOOR_ELEVATION_KEY, 0.0)
+        try:
+            return float(raw) if raw is not None else 0.0
+        except (TypeError, ValueError):
+            return 0.0
+
+    @floor_elevation_mm.setter
+    def floor_elevation_mm(self, value: float) -> None:
+        # Always store as float — QSettings round-trips Python floats
+        # through Qt's variant system, which on Windows can return them
+        # as str. The getter coerces back, so we just store float here.
+        self._settings.setValue(_FLOOR_ELEVATION_KEY, float(value))
         self._settings.sync()

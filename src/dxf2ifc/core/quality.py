@@ -114,74 +114,12 @@ def _check_rava_classification(ifc: ifcopenshell.file) -> list[dict[str, Any]]:
     return warnings
 
 
-def _check_crs_coverage(
-    ifc: ifcopenshell.file, *, expect_crs: bool
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Plan G Task 16 CRS gates:
-    (a) MapConversion without ProjectedCRS → error,
-    (b) expect_crs=True but no MapConversion → error,
-    (c) any IfcCartesianPoint farther than 1 km from origin → warning.
-    """
-    errors: list[dict[str, Any]] = []
-    warnings: list[dict[str, Any]] = []
-
-    map_conversions = ifc.by_type("IfcMapConversion")
-    projected_crs = ifc.by_type("IfcProjectedCRS")
-
-    if map_conversions and not projected_crs:
-        errors.append(
-            {
-                "level": "ERROR",
-                "type": "crs_orphan_map_conversion",
-                "message": (
-                    "IfcMapConversion present but no IfcProjectedCRS in the file "
-                    "— the MapConversion's TargetCRS is dangling."
-                ),
-            }
-        )
-
-    if expect_crs and not map_conversions:
-        errors.append(
-            {
-                "level": "ERROR",
-                "type": "crs_missing_map_conversion",
-                "message": (
-                    "Profile declares a CRS but the IFC has no IfcMapConversion. "
-                    "The model is not georeferenced."
-                ),
-            }
-        )
-
-    threshold_mm = 1_000_000.0  # 1 km
-    for point in ifc.by_type("IfcCartesianPoint"):
-        for component in point.Coordinates:
-            if abs(component) > threshold_mm:
-                warnings.append(
-                    {
-                        "level": "WARNING",
-                        "type": "crs_possible_double_transform",
-                        "message": (
-                            f"IfcCartesianPoint coordinate {component:.0f} mm exceeds "
-                            f"{threshold_mm:.0f} mm — geometry may be in WORLD coords "
-                            "(possible MapConversion double-transform)."
-                        ),
-                    }
-                )
-                break  # one warning per point is enough
-    return errors, warnings
-
-
-def validate_ifc(path: str | Path, *, expect_crs: bool = False) -> ValidationReport:
+def validate_ifc(path: str | Path) -> ValidationReport:
     """Validate an IFC file on disk and return a structured report.
 
     Errors and warnings are extracted from the json_logger statements
-    emitted by :func:`ifcopenshell.validate.validate`. YTV 2012 -specific
-    Talo2000 classification checks are appended to ``warnings``, and Plan
-    G CRS-coverage checks are appended to both ``errors`` and ``warnings``.
-
-    When ``expect_crs=True`` an extra error is raised if the IFC lacks an
-    IfcMapConversion — used by callers that know the profile declared a
-    CRS but the resulting file is missing it.
+    emitted by :func:`ifcopenshell.validate.validate`. YTV 2012-specific
+    Talo2000 + RAVA classification checks are appended to ``warnings``.
     """
     ifc_path = Path(path)
     ifc = ifcopenshell.open(str(ifc_path))
@@ -200,10 +138,6 @@ def validate_ifc(path: str | Path, *, expect_crs: bool = False) -> ValidationRep
 
     warnings.extend(_check_talo2000_classification(ifc))
     warnings.extend(_check_rava_classification(ifc))
-
-    crs_errors, crs_warnings = _check_crs_coverage(ifc, expect_crs=expect_crs)
-    errors.extend(crs_errors)
-    warnings.extend(crs_warnings)
 
     summary = f"{ifc.schema}: {len(errors)} errors, {len(warnings)} warnings ({ifc_path.name})"
     return ValidationReport(errors=errors, warnings=warnings, summary=summary)

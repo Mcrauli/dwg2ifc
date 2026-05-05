@@ -56,3 +56,32 @@ def test_recent_files_last_profile_path_clears_on_none(qtbot, tmp_path):
     store.last_profile_path = None
     fresh = _make_store(tmp_path)
     assert fresh.last_profile_path is None
+
+
+def test_recent_files_floor_elevation_default_is_zero(qtbot, tmp_path):
+    store = _make_store(tmp_path)
+    assert store.floor_elevation_mm == 0.0
+
+
+def test_recent_files_floor_elevation_round_trips(qtbot, tmp_path):
+    store = _make_store(tmp_path)
+    store.floor_elevation_mm = 12000.0
+    fresh = _make_store(tmp_path)
+    assert fresh.floor_elevation_mm == 12000.0
+
+
+def test_recent_files_floor_elevation_negative_round_trips(qtbot, tmp_path):
+    """Below-grade reference points (basements, sloped sites) need
+    negative offsets — the QSettings round-trip must preserve sign."""
+    store = _make_store(tmp_path)
+    store.floor_elevation_mm = -2500.0
+    fresh = _make_store(tmp_path)
+    assert fresh.floor_elevation_mm == -2500.0
+
+
+def test_recent_files_floor_elevation_handles_string_storage(qtbot, tmp_path):
+    """QSettings on Windows can return floats stored as strings depending
+    on the backend; the getter coerces back to float."""
+    store = _make_store(tmp_path)
+    store._settings.setValue("floor_elevation_mm", "15000")
+    assert store.floor_elevation_mm == 15000.0

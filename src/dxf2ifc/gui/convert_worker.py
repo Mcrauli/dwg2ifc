@@ -26,6 +26,7 @@ class ConvertWorker(QtCore.QObject):
         validate: bool = False,
         preprocess_acis: bool = True,
         energy_specs: str | None = None,
+        floor_elevation_mm: float = 0.0,
     ) -> None:
         runnable = _ConvertRunnable(
             self,
@@ -35,6 +36,7 @@ class ConvertWorker(QtCore.QObject):
             validate=validate,
             preprocess_acis=preprocess_acis,
             energy_specs=energy_specs,
+            floor_elevation_mm=floor_elevation_mm,
         )
         QtCore.QThreadPool.globalInstance().start(runnable)
 
@@ -50,6 +52,7 @@ class _ConvertRunnable(QtCore.QRunnable):
         validate: bool,
         preprocess_acis: bool,
         energy_specs: str | None,
+        floor_elevation_mm: float = 0.0,
     ) -> None:
         super().__init__()
         self._worker = worker
@@ -59,6 +62,7 @@ class _ConvertRunnable(QtCore.QRunnable):
         self._validate = validate
         self._preprocess_acis = preprocess_acis
         self._energy_specs = energy_specs
+        self._floor_elevation_mm = floor_elevation_mm
 
     def run(self) -> None:  # type: ignore[override]
         try:
@@ -70,6 +74,7 @@ class _ConvertRunnable(QtCore.QRunnable):
                 preprocess_acis=self._preprocess_acis,
                 progress=self._worker.progress.emit,
                 energy_specs_path=self._energy_specs or None,
+                floor_elevation_mm=self._floor_elevation_mm,
             )
         except Exception as exc:  # noqa: BLE001 — surface every failure to the GUI
             self._worker.failed.emit(f"{type(exc).__name__}: {exc}")

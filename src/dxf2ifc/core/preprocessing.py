@@ -216,14 +216,18 @@ _LISP_BODY = (
     '(command "_.STLOUT" obj "" "Y" (strcat solid_out h ".stl")) '
     '(setq i (1+ i))))) '
     # ----- Phase 2: explode equipment INSERTs and STLOUT children -----
-    # Block-name filter restricts to refrigeration EQUIPMENT blocks only.
+    # Block-name filter restricts to:
+    #  - refrigeration EQUIPMENT blocks (*yrystin* / *ahdutin* / *pressori*)
+    #  - parametric cable carrier shelves authored in autocad-lisp-ohjeet
+    #    (KLHYLLY-LEVY, KLHYLLY-TIKAS — see files/klhylly.lsp + klhylly.dwg)
     # Annotation blocks (e.g. "positiov2" position bubbles, 76 instances
     # in Lauri's reference DXF) on KYL-* layers must NOT be EXPLODEd —
     # they triple the conversion time AND inflate the IFC with thousands
     # of triangles for nothing. Ascii-only substring patterns avoid the
     # umlaut codepage issue (LISP `H*yrystin*` matches Höyrystin /
-    # Hoyrystin alike via the leading `*`).
-    '(setq inserts (ssget "_X" \'((0 . "INSERT") (2 . "*yrystin*,*ahdutin*,*pressori*")))) '
+    # Hoyrystin alike via the leading `*`). KLHYLLY-* matches both
+    # KLHYLLY-LEVY and KLHYLLY-TIKAS instances.
+    '(setq inserts (ssget "_X" \'((0 . "INSERT") (2 . "*yrystin*,*ahdutin*,*pressori*,KLHYLLY-*")))) '
     '(write-line (strcat "phase2_inserts=" (if inserts (itoa (sslength inserts)) "0")) logf) '
     '(if inserts '
     '(progn '

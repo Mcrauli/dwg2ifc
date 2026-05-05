@@ -8,6 +8,7 @@ from pathlib import Path
 
 from collections import Counter
 
+from dxf2ifc import __version__
 from dxf2ifc.core.dxf_reader import list_layers
 from dxf2ifc.gui.convert_worker import ConvertWorker
 from dxf2ifc.gui.file_panel import FilePanel
@@ -77,6 +78,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setCentralWidget(central)
         self.setStatusBar(QtWidgets.QStatusBar(self))
+        self._version_label = QtWidgets.QLabel(f"v{__version__}")
+        self._version_label.setProperty("role", "version_badge")
+        self.statusBar().addPermanentWidget(self._version_label)
         self._build_menubar()
         self.set_status("Ready")
 
@@ -94,9 +98,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self._edit_profile_action = QtGui.QAction("Edit profile…", self)
         self._edit_profile_action.triggered.connect(self._on_edit_profile)
         profile_menu.addAction(self._edit_profile_action)
-        self._set_crs_action = QtGui.QAction("Set CRS…", self)
-        self._set_crs_action.triggered.connect(self._on_set_crs)
-        profile_menu.addAction(self._set_crs_action)
         profile_menu.addSeparator()
         self._reset_profile_action = QtGui.QAction("Reset to bundled default", self)
         self._reset_profile_action.triggered.connect(self._on_reset_profile)
@@ -126,20 +127,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self._refresh_layer_table()
         self.set_status("Profile reset to bundled default", level="success")
 
-    def _on_set_crs(self) -> None:
-        from dxf2ifc.gui.crs_dialog import CRSDialog
-
-        dialog = CRSDialog(self._profile.crs, parent=self)
-        dialog.crs_accepted.connect(self._on_crs_accepted)
-        dialog.exec()
-
-    def _on_crs_accepted(self, crs) -> None:
-        self._profile = self._profile.model_copy(update={"crs": crs})
-        self.set_status(
-            f"CRS set: {crs.epsg_code} eastings={crs.eastings_mm} northings={crs.northings_mm}",
-            level="success",
-        )
-
     def _load_initial_profile(self):
         """Always start with the bundled default profile.
 
@@ -157,11 +144,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self._refresh_layer_table()
         self.set_status(f"Profile loaded: {path}", level="success")
 
-    def _on_convert_requested(self, dxf: str, out: str, energy_specs: str = "") -> None:
+    def _on_convert_requested(
+        self,
+        dxf: str,
+        out: str,
+        energy_specs: str = "",
+        floor_elevation_mm: float = 0.0,
+    ) -> None:
         if not dxf or not out:
             self.set_status("Pick both a DXF input and an IFC output first", level="error")
             self.preview_log.append_error("Pick both a DXF input and an IFC output first")
             return
+        # Persist the latest floor elevation so it pre-fills next session.
+        self._recent_files.floor_elevation_mm = float(floor_elevation_mm)
         self.file_panel.convert_button.setEnabled(False)
         self.set_status(f"Converting {dxf}…")
         self.preview_log.append_info(f"Converting {Path(dxf).name} -> {Path(out).name}")
@@ -169,12 +164,17 @@ class MainWindow(QtWidgets.QMainWindow):
             self.preview_log.append_info(
                 f"Energiateho-listasta: {Path(energy_specs).name}"
             )
+        if floor_elevation_mm:
+            self.preview_log.append_info(
+                f"1.krs korko: +{int(floor_elevation_mm)} mm"
+            )
         self._worker.run(
             dxf=dxf,
             out=out,
             profile=self._profile,
             validate=True,
             energy_specs=energy_specs or None,
+            floor_elevation_mm=float(floor_elevation_mm),
         )
 
     def _on_convert_finished(self, out: str) -> None:
@@ -235,6 +235,12 @@ class MainWindow(QtWidgets.QMainWindow):
         heading.setProperty("role", "h2")
         layout.addWidget(heading)
         self.file_panel = FilePanel()
+        # Pre-fill 1.krs korko with the value used in the previous
+        # session so the user does not retype their building elevation
+        # for every conversion of the same project.
+        self.file_panel.floor_elevation_edit.setValue(
+            self._recent_files.floor_elevation_mm
+        )
         self.file_panel.convert_requested.connect(self._on_convert_requested)
         self.file_panel.input_edit.editingFinished.connect(self._refresh_layer_table)
         # editingFinished only fires on manual edit-and-Enter — not when

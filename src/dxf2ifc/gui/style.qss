@@ -86,6 +86,13 @@ QStatusBar[level="error"] {
     color: #fca5a5;
 }
 
+QLabel[role="version_badge"] {
+    font-family: "JetBrains Mono";
+    font-size: 11px;
+    color: #64748b;
+    padding: 0 8px;
+}
+
 QLineEdit, QTableWidget, QTableView, QListWidget {
     background-color: rgba(15, 23, 42, 0.6);
     color: #e2e8f0;

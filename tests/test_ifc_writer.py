@@ -47,100 +47,48 @@ def test_build_project_creates_ifc4_file_with_hierarchy(tmp_path: Path):
     assert len(ifc.by_type("IfcBuildingStorey")) == 1
 
 
-def test_build_project_without_crs_emits_no_projected_crs():
-    ifc = build_ifc_project_skeleton(project_name="No CRS", crs=None)
+def test_build_project_emits_no_projected_crs():
+    """CRS feature was removed in v0.1.11 — no IfcProjectedCRS or
+    IfcMapConversion entities should be produced."""
+    ifc = build_ifc_project_skeleton(project_name="No CRS")
     assert ifc.by_type("IfcProjectedCRS") == []
     assert ifc.by_type("IfcMapConversion") == []
 
 
-def test_build_project_default_crs_kwarg_is_none():
-    ifc = build_ifc_project_skeleton(project_name="Default CRS")
-    assert ifc.by_type("IfcProjectedCRS") == []
-
-
-def test_build_project_with_crs_emits_projected_crs_and_map_conversion():
-    from dxf2ifc.profiles.schema import CRSConfig
-
-    crs = CRSConfig(eastings_mm=25496000.0, northings_mm=6672000.0)
-    ifc = build_ifc_project_skeleton(project_name="With CRS", crs=crs)
-
-    projected = ifc.by_type("IfcProjectedCRS")
-    assert len(projected) == 1
-    pcrs = projected[0]
-    assert pcrs.Name == "EPSG:3067"
-    assert pcrs.Description == "ETRS-TM35FIN"
-    assert pcrs.GeodeticDatum == "ETRS89"
-
-    conversions = ifc.by_type("IfcMapConversion")
-    assert len(conversions) == 1
-    mc = conversions[0]
-    assert mc.Eastings == 25496000.0
-    assert mc.Northings == 6672000.0
-    assert mc.OrthogonalHeight == 0.0
-    assert mc.Scale == 1.0
-    assert mc.XAxisAbscissa == 1.0
-    assert mc.XAxisOrdinate == 0.0
-    # SourceCRS = the model GeometricRepresentationContext, TargetCRS = projected
-    assert mc.TargetCRS == pcrs
-    assert mc.SourceCRS.is_a("IfcGeometricRepresentationContext")
-
-
-def test_build_project_with_crs_validates_clean(tmp_path: Path):
-    from dxf2ifc.core.quality import validate_ifc
-    from dxf2ifc.profiles.schema import CRSConfig
-
-    crs = CRSConfig(eastings_mm=25496000.0, northings_mm=6672000.0, scale=0.999)
-    ifc = build_ifc_project_skeleton(project_name="Validate", crs=crs)
-    out = tmp_path / "with_crs.ifc"
-    write_ifc(ifc, out)
-    report = validate_ifc(out)
-    assert report.errors == []
-
-
-def test_build_project_crs_orthogonal_height_round_trips():
-    from dxf2ifc.profiles.schema import CRSConfig
-
-    crs = CRSConfig(
-        eastings_mm=25496000.0,
-        northings_mm=6672000.0,
-        orthogonal_height_mm=15000.0,
+def test_build_project_floor_elevation_offsets_storey_elevation():
+    """floor_elevation_mm shifts every storey Elevation by the same
+    constant — DXF Z=0 = 1.krs, IFC Storey.Elevation = 1.krs absolute."""
+    ifc = build_ifc_project_skeleton(
+        project_name="Offset",
+        storey_z_levels_mm=[0.0, 3500.0, 7000.0],
+        floor_elevation_mm=12000.0,
     )
-    ifc = build_ifc_project_skeleton(project_name="High Roof", crs=crs)
-    mc = ifc.by_type("IfcMapConversion")[0]
-    assert mc.OrthogonalHeight == 15000.0
+    storeys = sorted(ifc.by_type("IfcBuildingStorey"), key=lambda s: s.Elevation)
+    assert [s.Elevation for s in storeys] == [12000.0, 15500.0, 19000.0]
 
 
-def test_build_project_crs_height_correction_scale_round_trips():
-    from dxf2ifc.profiles.schema import CRSConfig
-
-    crs = CRSConfig(
-        eastings_mm=25496000.0,
-        northings_mm=6672000.0,
-        scale=0.9996,
+def test_build_project_floor_elevation_offsets_object_placement_z():
+    """The Z component of each storey's IfcLocalPlacement must match
+    its Elevation so storey-aware element placement projects correctly."""
+    ifc = build_ifc_project_skeleton(
+        project_name="Offset Placement",
+        storey_z_levels_mm=[0.0, 3500.0],
+        floor_elevation_mm=12000.0,
     )
-    ifc = build_ifc_project_skeleton(project_name="Scale", crs=crs)
-    mc = ifc.by_type("IfcMapConversion")[0]
-    assert mc.Scale == 0.9996
+    storeys = sorted(ifc.by_type("IfcBuildingStorey"), key=lambda s: s.Elevation)
+    for storey, expected_z in zip(storeys, [12000.0, 15500.0]):
+        rel = storey.ObjectPlacement.RelativePlacement
+        assert rel.Location.Coordinates[2] == expected_z
 
 
-def test_build_project_crs_rotation_round_trips():
-    """Rotated CRS (X axis points along bearing 30°) should round-trip via
-    XAxisAbscissa / XAxisOrdinate."""
-    import math
-
-    from dxf2ifc.profiles.schema import CRSConfig
-
-    angle = math.radians(30.0)
-    crs = CRSConfig(
-        eastings_mm=25496000.0,
-        northings_mm=6672000.0,
-        x_axis_abscissa=math.cos(angle),
-        x_axis_ordinate=math.sin(angle),
+def test_build_project_floor_elevation_default_zero_preserves_old_behavior():
+    """Omitting floor_elevation_mm leaves the storey at its profile-level
+    Z; this is the no-offset path we ship as default."""
+    ifc = build_ifc_project_skeleton(
+        project_name="Default", storey_z_levels_mm=[0.0, 3500.0]
     )
-    ifc = build_ifc_project_skeleton(project_name="Rotation", crs=crs)
-    mc = ifc.by_type("IfcMapConversion")[0]
-    assert mc.XAxisAbscissa == pytest.approx(math.cos(angle))
-    assert mc.XAxisOrdinate == pytest.approx(math.sin(angle))
+    storeys = sorted(ifc.by_type("IfcBuildingStorey"), key=lambda s: s.Elevation)
+    assert [s.Elevation for s in storeys] == [0.0, 3500.0]
 
 
 def test_build_project_uses_millimetres():

@@ -35,20 +35,6 @@ block_pattern = "positiov2*"
 max_distance_mm = 3000.0
 apply_to = ["IfcEvaporator", "IfcCondenser", "IfcCompressor"]
 
-# Optional projected CRS + IfcMapConversion (Plan G).
-# Uncomment + adjust when site coordinates are known.
-#
-# [profile.crs]
-# epsg_code = "EPSG:3067"
-# name = "ETRS-TM35FIN"
-# geodetic_datum = "ETRS89"
-# eastings_mm = 25496000.0
-# northings_mm = 6672000.0
-# orthogonal_height_mm = 0.0
-# x_axis_abscissa = 1.0
-# x_axis_ordinate = 0.0
-# scale = 1.0
-
 # -----------------------------------------------------------------------------
 # Section 1: Refrigerant pipes — RAVA LVI-TUOTEOSA T-LVI-02 (general).
 # LT = low temperature (frozen), MT = medium temperature (chilled).

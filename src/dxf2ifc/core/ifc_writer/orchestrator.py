@@ -163,6 +163,7 @@ def convert_dxf(
     preprocess_acis: bool = True,
     progress: object | None = None,
     energy_specs_path: str | Path | None = None,
+    floor_elevation_mm: float = 0.0,
 ) -> tuple[dict[str, list], ValidationReport | None]:
     """Orchestrate DXF -> IFC conversion end-to-end.
 
@@ -275,7 +276,7 @@ def convert_dxf(
     skeleton = build_ifc_project_skeleton(
         project_name=name,
         schema=schema,
-        crs=profile.crs,
+        floor_elevation_mm=floor_elevation_mm,
         storey_z_levels_mm=list(profile.storey_z_levels_mm),
         discipline_label=project_discipline,
     )

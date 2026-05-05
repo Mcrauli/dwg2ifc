@@ -1,4 +1,4 @@
-"""IFC project skeleton, storey resolution, CRS attachment, file I/O.
+"""IFC project skeleton, storey resolution, file I/O.
 
 Cohesion: everything related to the spatial container (IfcProject -> Site
 -> Building -> Storeys) plus shared helpers for placement / extent
@@ -16,7 +16,6 @@ import ifcopenshell
 import ifcopenshell.api
 
 from dxf2ifc.core.types import BlockInstance, LineGeometry, PolygonGeometry
-from dxf2ifc.profiles.schema import CRSConfig
 
 
 @dataclass
@@ -42,8 +41,8 @@ def build_ifc_project_skeleton(
     site_name: str = "Default Site",
     building_name: str = "Default Building",
     schema: str = "IFC4",
-    crs: CRSConfig | None = None,
     storey_z_levels_mm: list[float] | None = None,
+    floor_elevation_mm: float = 0.0,
     discipline_label: str | None = None,
 ) -> IfcSkeleton:
     """Create a minimal IFC project file with the requested ``schema``
@@ -55,13 +54,16 @@ def build_ifc_project_skeleton(
     ``IfcBuildingStorey`` per entry, named ``"Kerros 1"``, ``"Kerros 2"``…
     Defaults to ``[0.0]`` (single ground-level storey). Each storey gets an
     ``IfcLocalPlacement`` whose ``RelativePlacement`` puts the origin at
-    ``(0, 0, z_mm)`` and whose ``PlacementRelTo`` chains to the building.
-    Site→Building placements use the same chain with ``z=0``.
+    ``(0, 0, z_mm + floor_elevation_mm)`` and whose ``PlacementRelTo``
+    chains to the building. Site→Building placements use the same chain
+    with ``z=0``.
 
-    When ``crs`` is provided, an ``IfcProjectedCRS`` and ``IfcMapConversion``
-    are written linking the model context to a real-world projected CRS
-    (Plan G Section 2). When ``crs`` is ``None`` (the default), no
-    georeferencing entities are emitted.
+    ``floor_elevation_mm`` is a project-level offset added to every
+    storey elevation. Use case: AutoCAD draws with the ground floor
+    at Z=0; if the absolute height of 1.krs is e.g. 12000 mm, pass
+    ``floor_elevation_mm=12000`` so a shelf drawn at Z=3000 in the DXF
+    lands at Z=15000 in the IFC's absolute coordinate space. Default 0.0
+    (no offset) preserves backward compatibility.
     """
     if storey_z_levels_mm is None:
         storey_z_levels_mm = [0.0]
@@ -104,6 +106,7 @@ def build_ifc_project_skeleton(
 
     storeys = []
     for index, z_mm in enumerate(storey_z_levels_mm, start=1):
+        absolute_z = float(z_mm) + float(floor_elevation_mm)
         storey = ifcopenshell.api.run(
             "root.create_entity",
             ifc,
@@ -111,17 +114,14 @@ def build_ifc_project_skeleton(
             name=f"Kerros {index}",
         )
         storey.ObjectPlacement = _make_origin_placement(
-            ifc, parent=building.ObjectPlacement, z_mm=float(z_mm)
+            ifc, parent=building.ObjectPlacement, z_mm=absolute_z
         )
-        storey.Elevation = float(z_mm)
+        storey.Elevation = absolute_z
         storeys.append(storey)
 
     ifcopenshell.api.run("aggregate.assign_object", ifc, products=[site], relating_object=project)
     ifcopenshell.api.run("aggregate.assign_object", ifc, products=[building], relating_object=site)
     ifcopenshell.api.run("aggregate.assign_object", ifc, products=storeys, relating_object=building)
-
-    if crs is not None:
-        _attach_projected_crs(ifc, crs)
 
     if discipline_label:
         _attach_project_discipline(ifc, project, discipline_label)
@@ -325,44 +325,6 @@ def _make_origin_placement(
     )
 
 
-def _attach_projected_crs(ifc: ifcopenshell.file, crs: CRSConfig) -> None:
-    """Write IfcProjectedCRS + IfcMapConversion linked to the model context.
-
-    The MapConversion's SourceCRS is the IfcGeometricRepresentationContext for
-    the "Model" (created in ``build_ifc_project_skeleton``). Geometry stays in
-    LOCAL coordinates; the MapConversion expresses how to project those local
-    coordinates into the real-world projected CRS.
-    """
-    model_context = next(
-        (
-            ctx
-            for ctx in ifc.by_type("IfcGeometricRepresentationContext", include_subtypes=False)
-            if ctx.ContextType == "Model"
-        ),
-        None,
-    )
-    if model_context is None:  # pragma: no cover - skeleton always has Model context
-        raise RuntimeError("IfcGeometricRepresentationContext 'Model' missing — cannot attach CRS")
-
-    projected = ifc.create_entity(
-        "IfcProjectedCRS",
-        Name=crs.epsg_code,
-        Description=crs.name,
-        GeodeticDatum=crs.geodetic_datum,
-    )
-    ifc.create_entity(
-        "IfcMapConversion",
-        SourceCRS=model_context,
-        TargetCRS=projected,
-        Eastings=crs.eastings_mm,
-        Northings=crs.northings_mm,
-        OrthogonalHeight=crs.orthogonal_height_mm,
-        XAxisAbscissa=crs.x_axis_abscissa,
-        XAxisOrdinate=crs.x_axis_ordinate,
-        Scale=crs.scale,
-    )
-
-
 def write_ifc(ifc: ifcopenshell.file, output_path: str | Path) -> None:
     """Write the IFC file to disk."""
     ifc.write(str(output_path))
@@ -373,11 +335,12 @@ def validate_local_extent(skeleton: object, *, max_extent_mm: float = 5_000_000.
     in the file and raises ``RuntimeError`` if any coordinate component
     exceeds ``max_extent_mm`` (default 5 000 000 mm = 5 km).
 
-    Geometry must stay in LOCAL coordinates; the MapConversion linking
-    the model to a real-world projected CRS does the LOCAL→WORLD
-    projection at view time. A vertex at e.g. 25 496 000 mm (ETRS-TM35FIN
-    easting magnitude) is a clear signal that the MapConversion was
-    applied twice — once into the geometry and once again at view time.
+    Geometry should stay in LOCAL coordinates within a few kilometres
+    of the building origin; the storey ``Elevation`` and
+    ``ObjectPlacement`` carry the floor-elevation offset. A vertex at
+    e.g. 25 496 000 mm (ETRS-TM35FIN easting magnitude) signals that
+    real-world projected coordinates leaked into LOCAL geometry —
+    either from a double transform or a misconfigured DXF unit.
     """
     ifc = skeleton.file if hasattr(skeleton, "file") else skeleton
     for point in ifc.by_type("IfcCartesianPoint"):
@@ -385,8 +348,8 @@ def validate_local_extent(skeleton: object, *, max_extent_mm: float = 5_000_000.
             if abs(component) > max_extent_mm:
                 raise RuntimeError(
                     f"Local coordinate {component} exceeds max_extent_mm="
-                    f"{max_extent_mm} on {point} — possible double-transform "
-                    f"(CRS world coordinates leaked into LOCAL geometry)."
+                    f"{max_extent_mm} on {point} — possible projected "
+                    f"world coordinates leaking into LOCAL geometry."
                 )
 
 

@@ -6,9 +6,12 @@ from PySide6 import QtCore, QtWidgets
 
 
 class FilePanel(QtWidgets.QWidget):
-    # Emits (dxf_path, ifc_path, energy_specs_path). The third value
-    # is empty string when the user has not picked a spec file.
-    convert_requested = QtCore.Signal(str, str, str)
+    # Emits (dxf_path, ifc_path, energy_specs_path, floor_elevation_mm).
+    # ``energy_specs_path`` is empty string when the user has not picked
+    # a spec file. ``floor_elevation_mm`` is the absolute Z elevation of
+    # 1.krs (mm) — added to every IfcBuildingStorey.Elevation in the
+    # output IFC. Default 0 = no offset.
+    convert_requested = QtCore.Signal(str, str, str, float)
 
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
         super().__init__(parent)
@@ -46,10 +49,26 @@ class FilePanel(QtWidgets.QWidget):
         self.browse_energy_button.clicked.connect(self._on_browse_energy)
         layout.addWidget(self.browse_energy_button, 2, 2)
 
+        layout.addWidget(self._caption("1.krs korko (mm)"), 3, 0)
+        self.floor_elevation_edit = QtWidgets.QDoubleSpinBox()
+        # AutoCAD drawings can place 1.krs anywhere on the absolute
+        # Finnish coordinate map — typical values 0…30000 mm but
+        # leave generous slack for unusual sites and below-grade refs.
+        self.floor_elevation_edit.setRange(-50_000.0, 500_000.0)
+        self.floor_elevation_edit.setDecimals(0)
+        self.floor_elevation_edit.setSingleStep(100.0)
+        self.floor_elevation_edit.setSuffix(" mm")
+        self.floor_elevation_edit.setToolTip(
+            "Absoluuttinen 1.krs korko (mm). "
+            "DXF:n Z=0 = 1.krs lattia. Tämä arvo lisätään jokaiseen "
+            "IfcBuildingStorey.Elevation-arvoon."
+        )
+        layout.addWidget(self.floor_elevation_edit, 3, 1, 1, 2)
+
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setProperty("primary", "true")
         self.convert_button.clicked.connect(self._on_convert)
-        layout.addWidget(self.convert_button, 3, 1, 1, 2)
+        layout.addWidget(self.convert_button, 4, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
 
@@ -83,4 +102,5 @@ class FilePanel(QtWidgets.QWidget):
             self.input_edit.text(),
             self.output_edit.text(),
             self.energy_edit.text(),
+            float(self.floor_elevation_edit.value()),
         )
