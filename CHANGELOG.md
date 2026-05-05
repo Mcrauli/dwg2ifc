@@ -6,6 +6,29 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.15-alpha1 — 2026-05-05
+
+**Lisätty**:
+
+- **MagiCAD-proxy-objektien luku DXF:stä**: ``ACAD_PROXY_ENTITY``-tyyppiset
+  entityt (AutoCADin tapa tallentaa MagiCAD-objektien näytettävä geometria)
+  räjähtävät nyt ezdxf:n ``__virtual_entities__()``-API:n kautta
+  primitiiveiksi (LINE, LWPOLYLINE, POLYLINE, MESH) jotka prosessoidaan
+  saman dispatch:n läpi kuin natiivit DXF-entityt. Aiemmin MagiCAD-piirretyt
+  putket / venttiilit / laitteet katosivat hiljaa konversiossa. Layer:n
+  perii proxyn alkuperäinen authored layer kun virtual-entity ei sitä
+  itse kantaa, joten profile-mappaus toimii tutuilla layer-pattern:eillä.
+- **POLYLINE (closed)** -tuki, jota MagiCAD-proxy graphics tyypillisesti
+  käyttää LWPOLYLINE:n sijaan vanhemmissa DXF-formaateissa.
+
+**Sisäinen**:
+
+- ``dxf_reader.py``: dispatch-loop refaktoroitu ``_record_from_entity``
+  -helperiksi joka tukee ``layer_override`` + ``handle_override`` -optoreja
+  proxy-rekursiota varten.
+- 496 passed, 1 skipped, 1 deselected (test_extract_acis_meshes_round_trip
+  on edelleen Lauri:n DXF + accoreconsole -ympäristötesti).
+
 ## v0.1.14-alpha1 — 2026-05-05
 
 **Lisätty**:
