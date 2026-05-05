@@ -79,7 +79,11 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "finnish"; MessagesFile: "compiler:Languages\Finnish.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+; Desktop icon checkbox is ticked by default — colleague-feedback
+; (2026-05-05) showed that the previous opt-in flow left users with no
+; quick launcher and they assumed the install had failed. Users who
+; don't want the icon can still untick during setup.
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
 Source: "{#SourceExe}"; DestDir: "{app}"; DestName: "dxf2ifc.exe"; Flags: ignoreversion

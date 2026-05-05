@@ -381,6 +381,15 @@ def convert_dxf(
             _attach_fi_psets(product, m)
         except Exception:  # noqa: BLE001 — never block convert
             pass
+        # Uniform AutoCAD ACI-175 surface style for every product so the
+        # cooling network reads consistently in Solibri / MagiCAD. Same
+        # defensive try as the PSet attach above — a styling glitch
+        # never aborts the export.
+        try:
+            from dxf2ifc.core.ifc_writer.styling import apply_color_to_product
+            apply_color_to_product(ifc, product)
+        except Exception:  # noqa: BLE001 — never block convert
+            pass
 
     def _classify(product: object, m: object) -> None:
         if m.domain == "ARK":

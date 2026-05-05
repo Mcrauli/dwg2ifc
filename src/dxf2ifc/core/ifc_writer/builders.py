@@ -1114,6 +1114,30 @@ def assign_to_system(ifc, *, products: list, system) -> object:
     )
 
 
+def _attach_type_common_pset(ifc, type_object, pset_name: str, reference: str) -> None:
+    """Attach a buildingSMART standard ``Pset_*TypeCommon`` to a type object.
+
+    MagiCAD's "Convert to MagiCAD object" command requires the
+    type-level ``Pset_*TypeCommon`` to recognise an IFC element as a
+    real MEP component — without it, even a correctly-classified
+    IfcCableCarrierSegmentType is treated as a generic proxy and the
+    convert command silently skips it.
+
+    We populate ``Reference`` (the only field strictly required by the
+    type-detection heuristic) with the predefined-type token so the
+    PSet carries a non-null payload. Other optional fields
+    (``Status``, ``WorkingTemperatureRange``, ``HeightExternal``,
+    ``WidthExternal``) are left unset; downstream tools fill those
+    when more detail is available.
+    """
+    pset = ifcopenshell.api.run(
+        "pset.add_pset", ifc, product=type_object, name=pset_name
+    )
+    ifcopenshell.api.run(
+        "pset.edit_pset", ifc, pset=pset, properties={"Reference": reference}
+    )
+
+
 def _ensure_cable_carrier_segment_type(ifc, requested_type: str, enum_value: str) -> object:
     """Return (creating once per file) an IfcCableCarrierSegmentType."""
     for t in ifc.by_type("IfcCableCarrierSegmentType"):
@@ -1132,6 +1156,9 @@ def _ensure_cable_carrier_segment_type(ifc, requested_type: str, enum_value: str
     )
     if enum_value == "USERDEFINED":
         seg_type.ElementType = requested_type
+    _attach_type_common_pset(
+        ifc, seg_type, "Pset_CableCarrierSegmentTypeCommon", requested_type
+    )
     return seg_type
 
 
@@ -1157,4 +1184,7 @@ def _ensure_pipe_segment_type(ifc, requested_type: str, enum_value: str) -> obje
     )
     if enum_value == "USERDEFINED":
         pipe_type.ElementType = requested_type
+    _attach_type_common_pset(
+        ifc, pipe_type, "Pset_PipeSegmentTypeCommon", requested_type
+    )
     return pipe_type

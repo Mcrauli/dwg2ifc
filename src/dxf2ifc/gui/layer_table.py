@@ -8,18 +8,24 @@ from dxf2ifc.core.mapper import layer_matches
 from dxf2ifc.profiles.schema import Profile, Rule
 
 _PLACEHOLDER = "—"
-_HEADERS = ("Layer", "IFC type", "Domain", "Code", "System")
+_HEADERS = ("Layer", "IFC type", "Luokitus", "Koodi", "System")
 
 
-def _domain_code(rule: Rule) -> tuple[str, str]:
-    """Return (codeset_label, code_value) for the rule's active classification."""
-    if rule.domain == "ARK":
-        return "Talo2000", rule.talo2000_code or _PLACEHOLDER
+def _classification(rule: Rule) -> tuple[str, str]:
+    """Return (codeset_label, code_value) for the rule's active classification.
+
+    KYL/TATE rules use RAVA-LVI or RAVA-TATE codes; ARK rules use
+    Talo2000. The header column reads "Luokitus" so the displayed
+    codeset name (RAVA-LVI / RAVA-TATE / Talo2000) does not look like
+    a domain literal — those are hidden away in the rule editor.
+    """
     if rule.lvi_code:
         return "RAVA-LVI", rule.lvi_code
     if rule.talotekniikka_code:
         return "RAVA-TATE", rule.talotekniikka_code
-    return rule.domain, _PLACEHOLDER
+    if rule.domain == "ARK" and rule.talo2000_code:
+        return "Talo2000", rule.talo2000_code
+    return _PLACEHOLDER, _PLACEHOLDER
 
 
 class LayerTable(QtWidgets.QTableWidget):
@@ -40,7 +46,7 @@ class LayerTable(QtWidgets.QTableWidget):
             if rule is None:
                 cells = [layer, _PLACEHOLDER, _PLACEHOLDER, _PLACEHOLDER, _PLACEHOLDER]
             else:
-                domain_label, code_text = _domain_code(rule)
+                domain_label, code_text = _classification(rule)
                 cells = [
                     layer,
                     rule.ifc_type,

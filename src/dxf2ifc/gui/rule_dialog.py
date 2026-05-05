@@ -22,7 +22,10 @@ _IFC_TYPES = (
     "IfcCompressor",
 )
 _ENTITY_KINDS = ("LINE", "POLYLINE", "CIRCLE", "INSERT")
-_DOMAINS = ("ARK", "TATE")
+# KYL first so that "Add rule" defaults to refrigeration (this app's
+# primary domain) and the Talo2000 fields stay hidden — those are only
+# relevant when the user explicitly switches to ARK.
+_DOMAINS = ("KYL", "TATE", "ARK")
 _BLANK = ""
 
 
@@ -53,9 +56,16 @@ class RuleEditDialog(QtWidgets.QDialog):
         self.domain_combo.addItems(_DOMAINS)
         self.talo2000_code_edit = QtWidgets.QLineEdit()
         self.talo2000_name_edit = QtWidgets.QLineEdit()
+        # setEditable(True) lets the user type a custom RAVA code that
+        # is not in the bundled codeset (e.g. a recent addition not yet
+        # synced to ``profiles/rava/``). The combo still surfaces the
+        # known choices via the dropdown, but the line edit accepts free
+        # text. ``Rule.model_validate`` then does the canonical check.
         self.lvi_code_combo = QtWidgets.QComboBox()
+        self.lvi_code_combo.setEditable(True)
         self.lvi_code_combo.addItems(_rava_choices("LVI-TUOTEOSA"))
         self.talotekniikka_code_combo = QtWidgets.QComboBox()
+        self.talotekniikka_code_combo.setEditable(True)
         self.talotekniikka_code_combo.addItems(_rava_choices("TALOTEKNIIKKA-TUOTEOSA"))
         self.system_name_edit = QtWidgets.QLineEdit()
 

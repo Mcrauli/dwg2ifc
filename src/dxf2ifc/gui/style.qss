@@ -93,13 +93,102 @@ QLabel[role="version_badge"] {
     padding: 0 8px;
 }
 
-QLineEdit, QTableWidget, QTableView, QListWidget {
+QLineEdit, QTableWidget, QTableView, QListWidget,
+QTextEdit, QPlainTextEdit, QComboBox, QSpinBox, QDoubleSpinBox {
     background-color: rgba(15, 23, 42, 0.6);
     color: #e2e8f0;
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 4px;
     padding: 6px 8px;
     selection-background-color: rgba(245, 158, 11, 0.4);
+}
+
+/* Combo dropdown popup — without an explicit rule the popup inherits
+   the OS theme (white on light Windows) and the QSS-styled trigger
+   looks disconnected from its menu. */
+QComboBox QAbstractItemView {
+    background-color: #020617;
+    color: #cbd5f5;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    selection-background-color: rgba(245, 158, 11, 0.18);
+    selection-color: #f59e0b;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 20px;
+}
+
+/* Read-only QTextEdit (the preview log) keeps the same dark surface
+   so it does not flash white between updates on light-theme Windows. */
+QTextEdit[readOnly="true"] {
+    background-color: rgba(2, 6, 23, 0.55);
+}
+
+/* Dialog backdrop matches the main window so the rule editor /
+   profile editor / CRS dialog inherit the brand instead of falling
+   back to system grey. */
+QDialog {
+    background-color: #0f172a;
+    color: #e2e8f0;
+}
+
+/* Form-row labels inside dialogs lean on the JetBrains Mono caption
+   colour pattern from the file panel — without this rule QFormLayout
+   labels render in default Qt slate-on-grey and the form looks
+   half-themed. */
+QDialog QLabel {
+    color: #cbd5f5;
+}
+
+QDialog QLabel[level="error"] {
+    color: #fca5a5;
+    font-size: 12px;
+}
+
+/* QGroupBox (used inside Profile Editor) — borderless tinted surface
+   so nested dialogs inherit the brand. */
+QGroupBox {
+    background-color: rgba(15, 23, 42, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    margin-top: 12px;
+    padding: 14px 12px 8px 12px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    color: #f59e0b;
+    font-family: "Space Grotesk";
+    font-weight: 600;
+    padding: 0 6px;
+}
+
+QCheckBox, QRadioButton {
+    color: #cbd5f5;
+    spacing: 6px;
+}
+
+QToolTip {
+    background-color: #020617;
+    color: #cbd5f5;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    padding: 4px 6px;
+}
+
+QScrollBar:vertical, QScrollBar:horizontal {
+    background-color: rgba(15, 23, 42, 0.4);
+    border: none;
+}
+
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background-color: rgba(148, 163, 184, 0.3);
+    border-radius: 3px;
+}
+
+QScrollBar::handle:vertical:hover, QScrollBar::handle:horizontal:hover {
+    background-color: rgba(245, 158, 11, 0.4);
 }
 
 QHeaderView::section {

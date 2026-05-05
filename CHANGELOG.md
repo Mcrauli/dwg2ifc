@@ -6,6 +6,37 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.13-alpha1 — 2026-05-05
+
+**Lisätty**:
+- **IFC-värit**: kaikki konvertoidut elementit saavat AutoCAD ACI 175
+  -värin (slate-purppura) jaetun ``IfcSurfaceStyle`` + ``IfcStyledItem``
+  -ketjun kautta. Refrigeration-malli lukeutuu visuaalisesti yhtenäisenä
+  Solibrissä ja MagiCAD:ssä.
+- **MagiCAD-yhteensopivuus**: ``IfcCableCarrierSegmentType`` ja
+  ``IfcPipeSegmentType`` saavat nyt ``Pset_*TypeCommon``-PSetin
+  Reference-kentällä — ilman tätä MagiCAD:n "Convert to MagiCAD object"
+  -komento ei tunnistanut LEVYHYLLY-elementtejä.
+- **DOMAIN-valikkoon KYL** Profile Editorin Edit-dialogissa
+  (oli vain ARK + TATE), KYL on uusi default kun "Add rule".
+- **RAVA-koodien vapaateksti**: Edit-dialogin LVI / TALOTEKNIIKKA-combot
+  ovat nyt editable — voit kirjoittaa oman koodin jota ei ole
+  bundlatussa codesetissä.
+
+**Korjattu**:
+- **Layer-tableisiin selvempi otsikko**: "Domain" → **"Luokitus"**
+  (sarake näyttää codeset-nimen kuten RAVA-LVI, ei domain-arvoa).
+- **Installer luo työpöytäkuvakkeen** oletuksena (oli opt-in).
+  Käyttäjä voi yhä disabloida asennuksen aikana.
+- **Sovelluksen värit pysyvät tummina** myös light-themalla Windows
+  -koneilla. Style.qss kattaa nyt QTextEdit, QComboBox-popup, QSpinBox,
+  QDialog, QGroupBox, QToolTip ja scrollbar-elementit, jotka aiemmin
+  fallbackasivat OS-defaulttiin (valkoinen pohja).
+
+**Sisäinen**:
+- 491 passed, 1 skipped (4 olemassa olevaa rule_dialog-testiä päivitetty
+  uuteen KYL-default-tilaan).
+
 ## v0.1.12-alpha1 — 2026-05-05
 
 **Fixed**:
