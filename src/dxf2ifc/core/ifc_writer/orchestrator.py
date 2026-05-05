@@ -44,8 +44,71 @@ from dxf2ifc.core.ifc_writer.skeleton import (
     resolve_storey,
 )
 from dxf2ifc.core.mapper import apply_profile
-from dxf2ifc.core.types import BlockInstance, LineGeometry, MappedEntity, MeshGeometry
+from dxf2ifc.core.types import (
+    BlockInstance,
+    LineGeometry,
+    MappedEntity,
+    MeshGeometry,
+    Point3D,
+    PolygonGeometry,
+)
 from dxf2ifc.profiles.schema import Profile
+
+
+def _shift_point(p: Point3D, dz: float) -> Point3D:
+    return Point3D(p.x, p.y, p.z + dz)
+
+
+def _shift_geometry(geometry: object, dz: float) -> object:
+    """Return a copy of ``geometry`` with every Z component offset by ``dz``.
+
+    Geometry dataclasses are frozen, so each variant rebuilds via its
+    constructor with the shifted Point3D fields. Unknown geometry types
+    are returned as-is — defensive against forward-compatible additions.
+    """
+    if isinstance(geometry, LineGeometry):
+        return LineGeometry(
+            start=_shift_point(geometry.start, dz),
+            end=_shift_point(geometry.end, dz),
+        )
+    if isinstance(geometry, PolygonGeometry):
+        return PolygonGeometry(
+            vertices=tuple(_shift_point(v, dz) for v in geometry.vertices),
+            closed=geometry.closed,
+        )
+    if isinstance(geometry, BlockInstance):
+        return BlockInstance(
+            insertion_point=_shift_point(geometry.insertion_point, dz),
+            rotation_rad=geometry.rotation_rad,
+            scale_x=geometry.scale_x,
+            scale_y=geometry.scale_y,
+            scale_z=geometry.scale_z,
+        )
+    if isinstance(geometry, MeshGeometry):
+        return MeshGeometry(
+            vertices=tuple(_shift_point(v, dz) for v in geometry.vertices),
+            faces=geometry.faces,
+        )
+    return geometry
+
+
+def _apply_floor_elevation_offset(mapped: list[MappedEntity], dz: float) -> None:
+    """Mutate every ``MappedEntity.geometry`` in place to add ``dz`` to
+    its Z component(s).
+
+    The ``ObjectPlacement`` matrix the IFC builders feed into
+    ``geometry.edit_object_placement`` is built from the entity's anchor
+    Z directly — the placement chain in this writer does NOT cascade
+    storey-level shifts into element coordinates, so the offset must be
+    applied in the geometry itself for elements to land at the absolute
+    Z the user requested. ``IfcBuildingStorey.Elevation`` is shifted
+    separately in ``build_ifc_project_skeleton`` so storey labels and
+    element placements match.
+    """
+    if dz == 0.0:
+        return
+    for m in mapped:
+        m.geometry = _shift_geometry(m.geometry, dz)
 
 
 def _emit(progress: object | None, message: str) -> None:
@@ -263,6 +326,16 @@ def convert_dxf(
         _run_energy_spec_lookup(
             mapped, energy_specs_path, profile=profile, progress=progress
         )
+
+    # Floor-elevation Z-offset: shift every entity's geometry up by
+    # ``floor_elevation_mm`` BEFORE the builders consume it, since the
+    # builders pass the entity's anchor Z into ``geometry.edit_object_placement``
+    # as an absolute world-space matrix that does not chain through the
+    # storey's IfcLocalPlacement. Without this pass, Storey.Elevation
+    # shifts but the elements stay at their DXF Z. Run AFTER POSITIO
+    # (XY-only matching, unaffected by Z) and energy-spec (no geometry
+    # access) so neither is perturbed.
+    _apply_floor_elevation_offset(mapped, floor_elevation_mm)
 
     # Determine the dominant discipline so Solibri can auto-detect the
     # role when the file is opened. A unanimous mapped-rule domain

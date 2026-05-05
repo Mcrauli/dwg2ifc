@@ -6,6 +6,20 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.12-alpha1 — 2026-05-05
+
+**Fixed**:
+
+- **1.krs korko vaikuttaa nyt myös elementtien Z-koordinaattiin**: v0.1.11
+  siirsi vain ``IfcBuildingStorey.Elevation``-arvoa, mutta itse hyllyt /
+  putket / höyrystimet jäivät DXF:n Z-tasolle. Syy: builders kirjoittavat
+  ``IfcLocalPlacement``-matriisin elementin omasta anchor-Z:stä, eikä
+  storey-tason siirto kaskadoidu ``edit_object_placement``-API:n kautta.
+  Korjaus: orchestrator siirtää nyt jokaisen ``MappedEntity.geometry``
+  Z-komponentteja ``floor_elevation_mm``-verran ENNEN builders-vaihetta.
+  Nyt 1.krs korolla 12000 mm hylly Z=3000 → IFC absoluuttinen Z=15000
+  (storey 12000 + storey-relative 3000), kuten oletettua.
+
 ## v0.1.11-alpha1 — 2026-05-05
 
 **Added**:
