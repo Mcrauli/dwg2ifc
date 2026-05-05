@@ -23,9 +23,19 @@ from dxf2ifc.core.types import (
 
 
 def list_layers(path: str | Path) -> list[str]:
-    """Return the unique layer names referenced by model-space entities, sorted."""
+    """Return the unique layer names referenced by model-space entities, sorted.
+
+    Defensive against non-graphical entities (e.g. MagiCAD's MAGIFLOORORIGO
+    proxy control object) which raise on ``entity.dxf.layer`` — those are
+    silently skipped.
+    """
     doc = ezdxf.readfile(str(path))
-    layers = {entity.dxf.layer for entity in doc.modelspace()}
+    layers: set[str] = set()
+    for entity in doc.modelspace():
+        try:
+            layers.add(entity.dxf.layer)
+        except Exception:  # noqa: BLE001 — non-graphical custom entity
+            continue
     return sorted(layers)
 
 
@@ -68,7 +78,10 @@ def read_dxf(
 
     records: list[EntityRecord] = []
     for entity in msp:
-        dxftype = entity.dxftype()
+        try:
+            dxftype = entity.dxftype()
+        except Exception:  # noqa: BLE001 — fully unsupported entity classes
+            continue
         if dxftype == "ACAD_PROXY_ENTITY":
             # MagiCAD (and some other AutoCAD add-ons) store their objects
             # as proxy entities — graphics-only stand-ins that survive
@@ -80,11 +93,16 @@ def read_dxf(
             # MagiCAD-drawn pipe centreline lands as a real LineGeometry
             # record, available to the profile mapper just like a native
             # AutoCAD LINE.
-            proxy_layer = entity.dxf.layer
-            proxy_handle = str(entity.dxf.handle).upper()
+            #
+            # Defensive: some MagiCAD-managed proxies (e.g. MAGIFLOORORIGO,
+            # the floor-origin marker) are non-graphical control objects
+            # and raise on `entity.dxf.layer` / `entity.dxf.handle`. Silent
+            # skip — they have nothing to render in IFC anyway.
             try:
+                proxy_layer = entity.dxf.layer
+                proxy_handle = str(entity.dxf.handle).upper()
                 virtual_iter = entity.__virtual_entities__()
-            except Exception:  # noqa: BLE001 — malformed proxy graphics → drop silently
+            except Exception:  # noqa: BLE001 — non-graphical proxy / malformed
                 continue
             for virtual in virtual_iter:
                 v_layer = getattr(virtual.dxf, "layer", "0") or "0"
@@ -94,23 +112,32 @@ def read_dxf(
                 # the user authored under (MagiCAD typically places its
                 # proxies on a distinct layer like MAG_PIPE_*).
                 effective_layer = proxy_layer if v_layer == "0" else v_layer
-                sub_record = _record_from_entity(
-                    virtual,
-                    layer_override=effective_layer,
-                    handle_override=proxy_handle,
-                    mesh_priority_layers=mesh_priority_layers,
-                    acis_meshes=acis_meshes,
-                )
+                try:
+                    sub_record = _record_from_entity(
+                        virtual,
+                        layer_override=effective_layer,
+                        handle_override=proxy_handle,
+                        mesh_priority_layers=mesh_priority_layers,
+                        acis_meshes=acis_meshes,
+                    )
+                except Exception:  # noqa: BLE001 — virtual subentity broke
+                    continue
                 if sub_record is not None:
                     records.append(sub_record)
             continue
-        record = _record_from_entity(
-            entity,
-            layer_override=None,
-            handle_override=None,
-            mesh_priority_layers=mesh_priority_layers,
-            acis_meshes=acis_meshes,
-        )
+        # Defensive: even native entity types may raise on missing dxf
+        # attributes (custom CAD objects from third-party add-ons). One
+        # bad entity must not abort the whole DXF read.
+        try:
+            record = _record_from_entity(
+                entity,
+                layer_override=None,
+                handle_override=None,
+                mesh_priority_layers=mesh_priority_layers,
+                acis_meshes=acis_meshes,
+            )
+        except Exception:  # noqa: BLE001
+            continue
         if record is not None:
             records.append(record)
     return records

@@ -6,12 +6,16 @@ from PySide6 import QtCore, QtWidgets
 
 
 class FilePanel(QtWidgets.QWidget):
-    # Emits (dxf_path, ifc_path, energy_specs_path, floor_elevation_mm).
+    # Emits (dxf_path, ifc_path, energy_specs_path, floor_elevation_mm,
+    # quick_convert).
     # ``energy_specs_path`` is empty string when the user has not picked
     # a spec file. ``floor_elevation_mm`` is the absolute Z elevation of
     # 1.krs (mm) — added to every IfcBuildingStorey.Elevation in the
-    # output IFC. Default 0 = no offset.
-    convert_requested = QtCore.Signal(str, str, str, float)
+    # output IFC. ``quick_convert`` skips the accoreconsole 3D-tessellation
+    # pass when True, which trades faceted 3DSOLID bodies for a much faster
+    # convert (typically 5–10x) — useful when the user only needs the layer
+    # mapping + 2D geometry to validate setup.
+    convert_requested = QtCore.Signal(str, str, str, float, bool)
 
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
         super().__init__(parent)
@@ -65,10 +69,22 @@ class FilePanel(QtWidgets.QWidget):
         )
         layout.addWidget(self.floor_elevation_edit, 3, 1, 1, 2)
 
+        self.quick_convert_checkbox = QtWidgets.QCheckBox(
+            "Pikakonversio (ohita 3D-tessellaatio)"
+        )
+        self.quick_convert_checkbox.setToolTip(
+            "Ohita accoreconsole-vaihe joka tessellöi 3DSOLID-bodyt "
+            "(höyrystinten kotelot, hyllyt). 2D-geometria ja INSERT-blokit "
+            "konvertoidaan normaalisti. Käytä kun haluat nopean tarkistuksen "
+            "että layer-mappaus toimii — käytännössä 5–10× nopeampi raskailla "
+            "DXF-tiedostoilla."
+        )
+        layout.addWidget(self.quick_convert_checkbox, 4, 1, 1, 2)
+
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setProperty("primary", "true")
         self.convert_button.clicked.connect(self._on_convert)
-        layout.addWidget(self.convert_button, 4, 1, 1, 2)
+        layout.addWidget(self.convert_button, 5, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
 
@@ -103,4 +119,5 @@ class FilePanel(QtWidgets.QWidget):
             self.output_edit.text(),
             self.energy_edit.text(),
             float(self.floor_elevation_edit.value()),
+            bool(self.quick_convert_checkbox.isChecked()),
         )

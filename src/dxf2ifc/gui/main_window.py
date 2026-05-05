@@ -150,13 +150,15 @@ class MainWindow(QtWidgets.QMainWindow):
         out: str,
         energy_specs: str = "",
         floor_elevation_mm: float = 0.0,
+        quick_convert: bool = False,
     ) -> None:
         if not dxf or not out:
             self.set_status("Pick both a DXF input and an IFC output first", level="error")
             self.preview_log.append_error("Pick both a DXF input and an IFC output first")
             return
-        # Persist the latest floor elevation so it pre-fills next session.
+        # Persist the latest values so they pre-fill next session.
         self._recent_files.floor_elevation_mm = float(floor_elevation_mm)
+        self._recent_files.quick_convert = bool(quick_convert)
         self.file_panel.convert_button.setEnabled(False)
         self.set_status(f"Converting {dxf}…")
         self.preview_log.append_info(f"Converting {Path(dxf).name} -> {Path(out).name}")
@@ -168,6 +170,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.preview_log.append_info(
                 f"1.krs korko: +{int(floor_elevation_mm)} mm"
             )
+        if quick_convert:
+            self.preview_log.append_info(
+                "Pikakonversio: 3D-tessellaatio (accoreconsole) ohitettu"
+            )
         self._worker.run(
             dxf=dxf,
             out=out,
@@ -175,6 +181,7 @@ class MainWindow(QtWidgets.QMainWindow):
             validate=True,
             energy_specs=energy_specs or None,
             floor_elevation_mm=float(floor_elevation_mm),
+            quick_convert=bool(quick_convert),
         )
 
     def _on_convert_finished(self, out: str) -> None:
@@ -240,6 +247,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # for every conversion of the same project.
         self.file_panel.floor_elevation_edit.setValue(
             self._recent_files.floor_elevation_mm
+        )
+        self.file_panel.quick_convert_checkbox.setChecked(
+            self._recent_files.quick_convert
         )
         self.file_panel.convert_requested.connect(self._on_convert_requested)
         self.file_panel.input_edit.editingFinished.connect(self._refresh_layer_table)

@@ -27,7 +27,13 @@ class ConvertWorker(QtCore.QObject):
         preprocess_acis: bool = True,
         energy_specs: str | None = None,
         floor_elevation_mm: float = 0.0,
+        quick_convert: bool = False,
     ) -> None:
+        # quick_convert is the user-facing knob; it overrides
+        # preprocess_acis when True so the orchestrator skips the
+        # accoreconsole step (typically 5–10× faster).
+        if quick_convert:
+            preprocess_acis = False
         runnable = _ConvertRunnable(
             self,
             dxf=dxf,

@@ -7,6 +7,7 @@ from PySide6 import QtCore
 _KEY = "recent_files"
 _LAST_PROFILE_KEY = "last_profile_path"
 _FLOOR_ELEVATION_KEY = "floor_elevation_mm"
+_QUICK_CONVERT_KEY = "quick_convert"
 _MAX_ENTRIES = 5
 
 
@@ -63,4 +64,27 @@ class RecentFilesStore:
         # through Qt's variant system, which on Windows can return them
         # as str. The getter coerces back, so we just store float here.
         self._settings.setValue(_FLOOR_ELEVATION_KEY, float(value))
+        self._settings.sync()
+
+    @property
+    def quick_convert(self) -> bool:
+        """Whether the user prefers the fast path that skips accoreconsole.
+
+        Persisted across sessions so a user who works mainly with
+        2D-mapping verification doesn't have to re-tick the checkbox
+        every time. Defaults to False (full 3D pipeline) — same as the
+        pre-checkbox behaviour.
+        """
+        raw = self._settings.value(_QUICK_CONVERT_KEY, False)
+        # QSettings on Windows returns bool-as-string ("true" / "false");
+        # normalise both forms.
+        if isinstance(raw, bool):
+            return raw
+        if isinstance(raw, str):
+            return raw.strip().lower() in ("true", "1", "yes")
+        return bool(raw)
+
+    @quick_convert.setter
+    def quick_convert(self, value: bool) -> None:
+        self._settings.setValue(_QUICK_CONVERT_KEY, bool(value))
         self._settings.sync()

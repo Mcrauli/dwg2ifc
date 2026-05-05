@@ -1,6 +1,6 @@
 [project]
 name = "dxf2ifc"
-version = "0.1.15a1"
+version = "0.1.16a1"
 description = "AutoCAD DXF to IFC 4 converter for Finnish refrigeration design (RAVA3Pro classification)"
 readme = "README.md"
 requires-python = ">=3.12"

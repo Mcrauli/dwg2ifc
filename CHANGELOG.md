@@ -6,6 +6,31 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.16-alpha1 — 2026-05-05
+
+**Korjattu**:
+
+- **MAGIFLOORORIGO + muut MagiCAD:in non-graphical proxyt** eivät enää
+  kaatu konversiota. Aiemmin yritys lukea ``entity.dxf.layer`` tällaisesta
+  control-objektista raise-asi ``Invalid DXF attribute``-virheen ja koko
+  read-vaihe pysähtyi. Nyt lukijassa on defensive try/except jokaisen
+  entity:n attribuutti-luvun ympärillä — ei-graafisten entityjen kanssa
+  silent skip, todelliset geometria-entityt käsitellään normaalisti.
+
+**Lisätty**:
+
+- **GUI-checkbox "Pikakonversio (ohita 3D-tessellaatio)"** Convert-napin
+  yläpuolelle. Kun valittu, accoreconsole-vaihe (joka tessellöi
+  3DSOLID-bodyt) ohitetaan kokonaan. Käytännössä **5–10× nopeampi**
+  raskaalle DXF:lle — käytä kun haluat nopean tarkistuksen että
+  layer-mappaus + 2D-geometria mappautuu oikein. Valinta persistoituu
+  QSettings:iin (``Mcrauli/dxf2ifc/quick_convert``) ja täyttyy
+  automaattisesti seuraavalla käynnistyksellä.
+
+**Sisäinen**:
+
+- 496 passed, 1 skipped, 1 deselected.
+
 ## v0.1.15-alpha1 — 2026-05-05
 
 **Lisätty**:
