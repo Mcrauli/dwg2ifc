@@ -6,6 +6,23 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.17-alpha1 — 2026-05-06
+
+**Korjattu (KRIITTINEN)**:
+
+- **Tikashyllyt, levyhyllyt ja höyrystimet eivät enää puutu IFC:stä.**
+  v0.1.14:n LWPOLYLINE→CONVTOSOLID-laajennus puski LISP-bodyn 1818 → 1868
+  merkkiin, joka tempdir-polkujen substituution jälkeen ylitti
+  ``accoreconsole.exe``:n hard-cap 2048-merkin .scr-rivipuskurin (~2065
+  merkkiä). Form katkesi kesken Phase 1:n, parser jäi ``((_>``
+  multi-paren-prompt:iin ikuisesti, **0 STL-tiedostoa kirjoitettiin** ja
+  3DSOLID-bodyt tippuivat hiljaa pois. Korjaus: `_LISP_BODY` jaettu
+  neljäksi top-level-formiksi (SETUP / PHASE1 / PHASE2 / CLEANUP),
+  jokainen oma rivi ``.scr``:ssä, setq-globaalit pysyvät yli rivien.
+  Verifioitu Lauri:n ``4001_1krs.dxf``:llä: 9 KYL-TIKASHYLLY +
+  12 KYL-LEVYHYLLY + 15 KYL-HÖYRYSTIMET → IFC:hen täysillä
+  IfcFacetedBrep-meshillä. Bisektio: 2048 OK, 2092 jumissa.
+
 ## v0.1.16-alpha1 — 2026-05-05
 
 **Korjattu**:

@@ -167,44 +167,52 @@ def _parse_stl_ascii(text: str) -> AcisMeshData:
 # ---------------------------------------------------------------------------
 
 
-# The LISP body executed inside accoreconsole. Single-line so the .scr
-# parser sees it as one Enter-terminated command. Placeholders ``{out}``
-# and ``{filter}`` are substituted before write.
+# The LISP body executed inside accoreconsole, split into four
+# top-level forms so each .scr line stays under accoreconsole's hard
+# 2048-char line buffer (verified by bisection: 2048 → OK, 2092 →
+# parser hangs in "((_>" multi-paren prompt forever). When the body
+# was a single (progn ...) form it formatted to ~2065 chars after
+# tempdir paths substituted in, silently truncating mid-Phase-1 and
+# leaving zero STLs written. Each form below is independently
+# balanced; setq globals (logf, solid_out, insert_out) persist across
+# forms because they share one accoreconsole LISP environment.
 #
 # Two extraction phases:
 #   Phase 1 — raw ACIS bodies on the matching layer get STLOUTed directly,
-#     filename = ``{handle}_0.stl``.
+#     filename = ``{handle}.stl``.
 #   Phase 2 — INSERT block references on the matching layer are EXPLODEd,
-#     each resulting 3DSOLID / MESH child entity gets STLOUTed under the
-#     SOURCE INSERT's handle, filename = ``{insert_handle}_{counter}.stl``.
-#     Python then aggregates ``*_0.stl, *_1.stl, …`` per handle into one
-#     :class:`AcisMeshData`. Children inherit the INSERT's world placement
-#     (EXPLODE applies the block transform), so the meshes are already in
-#     world coordinates and need no additional reposition.
+#     each resulting 3DSOLID child gets STLOUTed under the SOURCE INSERT's
+#     handle, filename = ``{insert_handle}_{counter}.stl``. KLHYLLY-LEVY/
+#     KLHYLLY-TIKAS blocks store geometry as LWPOLYLINE+thickness, which
+#     CONVTOSOLID promotes to 3DSOLID before STLOUT. Python aggregates
+#     ``*_0.stl, *_1.stl, …`` per handle into one :class:`AcisMeshData`.
+#     Children inherit the INSERT's world placement (EXPLODE applies the
+#     block transform), so the meshes are already in world coordinates.
 #
-# Termination strategy: the .scr file ends right after this single LISP
-# form (no explicit ``_QUIT``). When accoreconsole hits EOF on the
-# script it exits cleanly without prompting for save — STLOUT writes
-# external files only, the in-memory drawing is never persisted, and
-# the EXPLODEs we run only mutate the throwaway in-memory copy.
-_LISP_BODY = (
+# Termination strategy: the .scr file ends right after the cleanup form
+# (no explicit ``_QUIT``). When accoreconsole hits EOF on the script it
+# exits cleanly without prompting for save — STLOUT writes external
+# files only, the in-memory drawing is never persisted, and the EXPLODEs
+# we run only mutate the throwaway in-memory copy.
+#
+# FACETRES 0.1 — the lowest non-trivial value. Curved surfaces
+# (evaporator fans, hoses) tessellate coarsely; planar faces (cable
+# carrier panels, ladder rails) are unaffected. Higher values explode
+# triangle count: FACETRES 0.5 → 50k tri/evaporator; FACETRES 10 →
+# 800k tri/body (~12 GB IFC). 0.1 is the sweet spot.
+_LISP_SETUP = (
     '(progn '
     '(setvar "FILEDIA" 0) '
     '(setvar "CMDDIA" 0) '
-    # FACETRES 0.1 — the lowest non-trivial value. Curved surfaces
-    # (evaporator fans, hoses) tessellate VERY coarsely (chunky
-    # silhouette) but planar faces (cable carrier panels, ladder rails)
-    # are unaffected — they always emit minimum-triangle representations.
-    # Higher values explode triangle count: at FACETRES 0.5 a single
-    # evaporator weighed in at ~50k tri (15 × that = 750k tri = 600 MB
-    # IFC); at FACETRES 10 it was ~800k tri / body (~12 GB IFC).
-    # 0.1 is the sweet spot for "recognisable equipment shape, no GB
-    # files".
     '(setvar "FACETRES" 0.1) '
     '(setq solid_out "{solid_out}") '
     '(setq insert_out "{insert_out}") '
-    '(setq logf (open (strcat "{log_out}" "extract.log") "w")) '
-    # ----- Phase 1: raw ACIS bodies on the layer filter ---------------
+    '(setq logf (open (strcat "{log_out}" "extract.log") "w")))'
+)
+
+# Phase 1: raw ACIS bodies on the layer filter.
+_LISP_PHASE1 = (
+    '(progn '
     '(setq ss (ssget "_X" \'((0 . "3DSOLID,SURFACE,REGION,BODY,PLANESURFACE,EXTRUDEDSURFACE,REVOLVEDSURFACE,SWEPTSURFACE,LOFTEDSURFACE,NURBSURFACE") (8 . "{filter}")))) '
     '(write-line (strcat "phase1_solids=" (if ss (itoa (sslength ss)) "0")) logf) '
     '(if ss '
@@ -214,19 +222,23 @@ _LISP_BODY = (
     '(setq obj (ssname ss i)) '
     '(setq h (cdr (assoc 5 (entget obj)))) '
     '(command "_.STLOUT" obj "" "Y" (strcat solid_out h ".stl")) '
-    '(setq i (1+ i))))) '
-    # ----- Phase 2: explode equipment INSERTs and STLOUT children -----
-    # Block-name filter restricts to:
-    #  - refrigeration EQUIPMENT blocks (*yrystin* / *ahdutin* / *pressori*)
-    #  - parametric cable carrier shelves authored in autocad-lisp-ohjeet
-    #    (KLHYLLY-LEVY, KLHYLLY-TIKAS — see files/klhylly.lsp + klhylly.dwg)
-    # Annotation blocks (e.g. "positiov2" position bubbles, 76 instances
-    # in Lauri's reference DXF) on KYL-* layers must NOT be EXPLODEd —
-    # they triple the conversion time AND inflate the IFC with thousands
-    # of triangles for nothing. Ascii-only substring patterns avoid the
-    # umlaut codepage issue (LISP `H*yrystin*` matches Höyrystin /
-    # Hoyrystin alike via the leading `*`). KLHYLLY-* matches both
-    # KLHYLLY-LEVY and KLHYLLY-TIKAS instances.
+    '(setq i (1+ i))))))'
+)
+
+# Phase 2: explode equipment INSERTs and STLOUT children.
+# Block-name filter restricts to:
+#  - refrigeration EQUIPMENT blocks (*yrystin* / *ahdutin* / *pressori*)
+#  - parametric cable carrier shelves (KLHYLLY-LEVY, KLHYLLY-TIKAS —
+#    see autocad-lisp-ohjeet/files/klhylly.lsp).
+# Ascii-only substring patterns avoid the umlaut codepage issue:
+# leading `*` matches both Höyrystin and Hoyrystin. KLHYLLY-LEVY blocks
+# carry LWPOLYLINE+thickness instead of 3DSOLID (dynamic-block stretch
+# does not work reliably on 3DSOLIDs); CONVTOSOLID promotes them so the
+# Phase 2 STLOUT step can tessellate them like any other 3DSOLID.
+# Annotation blocks (positiov2 bubbles) on KYL-* layers must NOT be
+# EXPLODEd — they triple conversion time and inflate the IFC.
+_LISP_PHASE2 = (
+    '(progn '
     '(setq inserts (ssget "_X" \'((0 . "INSERT") (2 . "*yrystin*,*ahdutin*,*pressori*,KLHYLLY-*")))) '
     '(write-line (strcat "phase2_inserts=" (if inserts (itoa (sslength inserts)) "0")) logf) '
     '(if inserts '
@@ -240,14 +252,6 @@ _LISP_BODY = (
     '(if newents '
     '(progn '
     '(setq j 0 nn (sslength newents) ctr 0 toconv (ssadd)) '
-    # First pass: STLOUT existing 3DSOLID children, collect LWPOLYLINEs
-    # with thickness for CONVTOSOLID. KLHYLLY-LEVY / KLHYLLY-TIKAS blocks
-    # contain LWPOLYLINEs with thickness (extruded vertically) instead of
-    # 3DSOLIDs — dynamic-block stretch action does not work on 3D solids
-    # reliably, so the block library uses 2D polylines + thickness for
-    # geometry (see autocad-lisp-ohjeet/tools/build-klhylly-blocks.lsp).
-    # MESH children (in Lauri's evaporator blocks) are read natively by
-    # ezdxf in Python — see :func:`_inject_block_meshes`.
     '(while (< j nn) '
     '(setq ent (ssname newents j)) '
     '(setq el (entget ent)) '
@@ -260,10 +264,6 @@ _LISP_BODY = (
     '((and (eq etype "LWPOLYLINE") ethick (> ethick 0.0)) '
     '(setq toconv (ssadd ent toconv)))) '
     '(setq j (1+ j))) '
-    # Second pass: convert collected LWPOLYLINEs to 3D solids in bulk,
-    # then STLOUT the resulting solids. CONVTOSOLID promotes a closed
-    # polyline with thickness into a solid prism. ssget "_P" after the
-    # command returns the new 3DSOLIDs.
     '(if (> (sslength toconv) 0) '
     '(progn '
     '(command "_.CONVTOSOLID" toconv "") '
@@ -279,7 +279,11 @@ _LISP_BODY = (
     '(command "_.STLOUT" ent "" "Y" (strcat insert_out ih "_" (itoa ctr) ".stl")) '
     '(setq ctr (1+ ctr)))) '
     '(setq j (1+ j))))))))) '
-    '(setq k (1+ k))))) '
+    '(setq k (1+ k))))))'
+)
+
+_LISP_CLEANUP = (
+    '(progn '
     '(write-line "done" logf) '
     '(close logf) '
     '(princ))'
@@ -335,17 +339,28 @@ def extract_acis_meshes(
         insert_posix = insert_dir.as_posix() + "/"
         out_posix = out_dir.as_posix() + "/"  # for extract.log only
 
+        # accoreconsole's .scr line buffer is hard-capped at 2048 chars
+        # per Enter-terminated input line (verified by bisection: 2048 →
+        # OK, 2092 → parser hangs in "((_>" multi-paren prompt forever).
+        # The LISP body grew past 2048 once tempdir paths substituted in.
+        # Solution: write each phase as its own line. setq globals
+        # (``logf``, ``solid_out``, ``insert_out``) persist across forms
+        # because they share one accoreconsole LISP environment.
+        # ``(load …)`` from a single big .lsp file is NOT an option:
+        # accoreconsole's SECURELOAD policy auto-cancels LSP loads from
+        # %TEMP% with "; error: File load canceled".
         scr_path = workdir / "extract.scr"
-        scr_content = (
-            _LISP_BODY.format(
+        forms = [
+            _LISP_SETUP.format(
                 solid_out=solid_posix,
                 insert_out=insert_posix,
                 log_out=out_posix,
-                filter=layer_filter,
-            )
-            + "\r\n"
-        )
-        scr_path.write_text(scr_content, encoding="utf-8")
+            ),
+            _LISP_PHASE1.format(filter=layer_filter),
+            _LISP_PHASE2,
+            _LISP_CLEANUP,
+        ]
+        scr_path.write_text("\r\n".join(forms) + "\r\n", encoding="utf-8")
 
         if progress is not None:
             progress("Triangulating ACIS bodies via accoreconsole…")

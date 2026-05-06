@@ -3,10 +3,32 @@
 Volatile state — current build + open todos. Aiempi Plan-historia (A–H) +
 bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
-## Onboarding fresh Claude — TL;DR
+## Onboarding fresh Claude — TL;DR (2026-05-06)
 
-Tuorein julkaisu: **v0.1.7-alpha1** (2026-05-04). Lauri ajaa Inno Setup
--installerilla asennettuna `%LOCALAPPDATA%\Programs\dxf2ifc\dxf2ifc.exe`.
+**Tuorein julkaisu**: **v0.1.17-alpha1** (2026-05-06) — kriittinen
+geometriafix: tikashyllyt/levyhyllyt/höyrystimet ovat taas IFC:ssä.
+Sivuston lataus pinnattu: <https://mcrauli.github.io/autocad-lisp-ohjeet/dxf2ifc.html>.
+
+**Avoimet ongelmat 2026-05-06**:
+
+1. ~~**Tikashyllyt (KYL-TIKASHYLLY) puuttuvat IFC:stä**~~ → **RATKAISTU
+   v0.1.17:ssä**. Root cause: ``accoreconsole``:n .scr-rivipuskuri on
+   hard-cap 2048 merkkiä; v0.1.14:n LISP-laajennus puski formin yli
+   tempdir-polkusubstituution jälkeen → form katkesi → 0 STL:ää. Korjaus:
+   LISP jaettu neljäksi top-level-formiksi.
+2. **MagiCAD-proxy-objektit eivät vielä näy IFC:ssä** (tunnettu rajoitus).
+   ezdxf:n ProxyGraphic-parser ei tunnista MagiCAD:in propietaarista
+   encoding:ia → 145 proxya tuottaa 0 virtual_entity. Korjaus suunniteltu
+   v0.1.18:aan via accoreconsole-LISP Phase 0 EXPLODE.
+
+**Test-DXF MagiCAD-proxyilla**:
+`C:\Users\LauriRekola\Downloads\suunnittelutyokalut\magicad_1krs.dxf`
+(298 entityä, 145 ACAD_PROXY_ENTITY: MUUT_OSAT 64, KYL-JV1 39,
+KYL-JV1-LAITE 36, TEKSTIT- 5, KERROS_ORIGO 1).
+
+**Jatkosuunnitelma yksityiskohdissa**:
+`~/.claude/plans/tota-voitais-alkaa-miettim-sequential-brooks.md`.
+
 GUI:n itsepäivitys-banneri tarjoaa uudet tagit automaattisesti — kun
 tagaat seuraavan version, banneri ilmestyy Lauri'n softassa itsestään.
 
@@ -26,6 +48,31 @@ se on maksullinen reitti. Foundation tulee erikseen.
 Releases: <https://github.com/Mcrauli/dxf2ifc/releases>
 
 ## Latest
+
+**v0.1.8 → v0.1.16** (2026-05-04 → 05): yksityiskohtainen historia
+`CHANGELOG.md`:ssä. Lyhyt yhteenveto:
+- **v0.1.16** (2026-05-05) — defensive try/except `dxf_reader`:ssä
+  (MAGIFLOORORIGO ei kaada), GUI-checkbox "Pikakonversio (ohita 3D-
+  tessellaatio)" Convert-napin yläpuolella.
+- **v0.1.15** — ACAD_PROXY_ENTITY → __virtual_entities__() expansion
+  (LINE/LWPOLYLINE/POLYLINE/MESH). Toimii standardi-proxyille mutta EI
+  MagiCAD:in propietaariselle formaatille.
+- **v0.1.14** — Höyrystin/Lauhdutin/Kompressori type+PSet, MUUT_OSAT-
+  rule (IfcBuildingElementProxy + USERDEFINED).
+- **v0.1.13** — ACI 175 -värit kaikille elementeille, MagiCAD type-
+  PSet:it CableCarrier+Pipe:lle, KYL-domain valikkoon, layer-table
+  "Luokitus", installer desktop icon default päälle, style.qss
+  laajennus.
+- **v0.1.12** — Z-offset siirtyy myös elementtien geometriaan, ei vain
+  storey-Elevation.
+- **v0.1.11** — CRS-feature poistettu, 1.krs korko -input GUI:hin,
+  status-rivin versio-badge.
+- **v0.1.10** — Itsepäivityksen "Failed to start embedded python
+  interpreter" -bug korjattu (3 s viive PowerShell-launcher + SHA-256-
+  verifiointi).
+- **v0.1.9** — Help → Käyttöohjeet -menu (sittemmin v0.1.10:ssä
+  poistettu duplikaattina), MIT-licensed-rivi pois About-dialogista.
+- **v0.1.8** — Radika Oy -maininnat poistettu installerin metatiedoista.
 
 **v0.1.7-alpha1** (2026-05-04, `d7fa86b`) — MEKA-spec FI_Tekninen
 + FI_Tuote tikashylly/levyhyllylle:
