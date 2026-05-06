@@ -7,6 +7,7 @@ from PySide6 import QtCore
 _KEY = "recent_files"
 _LAST_PROFILE_KEY = "last_profile_path"
 _FLOOR_ELEVATION_KEY = "floor_elevation_mm"
+_FLOOR_ELEVATION_ENABLED_KEY = "floor_elevation_enabled"
 _QUICK_CONVERT_KEY = "quick_convert"
 _MAX_ENTRIES = 5
 
@@ -64,6 +65,28 @@ class RecentFilesStore:
         # through Qt's variant system, which on Windows can return them
         # as str. The getter coerces back, so we just store float here.
         self._settings.setValue(_FLOOR_ELEVATION_KEY, float(value))
+        self._settings.sync()
+
+    @property
+    def floor_elevation_enabled(self) -> bool:
+        """Whether the user wants the 1.krs absolute Z offset applied.
+
+        Default ``True`` because most Finnish refrigeration designers draw
+        floor-relative (DXF Z=0 at slab) and rely on this offset to land
+        the IFC at the project's absolute Finnish elevation. Designers who
+        already draw in absolute coords (Lauri's own workflow) untick the
+        checkbox once and the choice persists per machine.
+        """
+        raw = self._settings.value(_FLOOR_ELEVATION_ENABLED_KEY, True)
+        if isinstance(raw, bool):
+            return raw
+        if isinstance(raw, str):
+            return raw.strip().lower() in ("true", "1", "yes")
+        return bool(raw)
+
+    @floor_elevation_enabled.setter
+    def floor_elevation_enabled(self, value: bool) -> None:
+        self._settings.setValue(_FLOOR_ELEVATION_ENABLED_KEY, bool(value))
         self._settings.sync()
 
     @property

@@ -67,6 +67,51 @@ def test_file_panel_floor_elevation_default_is_zero(qtbot):
     assert panel.floor_elevation_edit.value() == 0.0
 
 
+def test_file_panel_floor_elevation_checkbox_default_is_checked(qtbot):
+    """Default-on because the floor-relative drawing workflow is the
+    common case in Finnish refrigeration design — Lauri's absolute-coord
+    workflow is the minority and is opted into by unticking once."""
+    from dxf2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+    assert panel.floor_elevation_enabled_checkbox.isChecked() is True
+    assert panel.floor_elevation_edit.isEnabled() is True
+
+
+def test_file_panel_unchecking_disables_spinbox(qtbot):
+    from dxf2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+    panel.floor_elevation_enabled_checkbox.setChecked(False)
+    assert panel.floor_elevation_edit.isEnabled() is False
+
+
+def test_file_panel_emits_zero_when_checkbox_unchecked(qtbot, tmp_path):
+    """When the user unticks 1.krs korko, DXF Z passes through to IFC
+    unchanged — the panel must emit 0.0 regardless of the spinbox value
+    (which we keep around so re-enabling restores the last typed number)."""
+    from dxf2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+    panel.input_edit.setText(str(tmp_path / "in.dxf"))
+    panel.output_edit.setText(str(tmp_path / "out.ifc"))
+    panel.floor_elevation_edit.setValue(12000.0)
+    panel.floor_elevation_enabled_checkbox.setChecked(False)
+
+    with qtbot.waitSignal(panel.convert_requested, timeout=500) as sig:
+        panel.convert_button.click()
+    assert sig.args == [
+        str(tmp_path / "in.dxf"),
+        str(tmp_path / "out.ifc"),
+        "",
+        0.0,
+        False,
+    ]
+
+
 def test_file_panel_emits_floor_elevation_with_convert(qtbot, tmp_path):
     from dxf2ifc.gui.file_panel import FilePanel
 

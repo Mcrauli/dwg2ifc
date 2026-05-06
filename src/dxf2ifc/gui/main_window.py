@@ -157,7 +157,14 @@ class MainWindow(QtWidgets.QMainWindow):
             self.preview_log.append_error("Pick both a DXF input and an IFC output first")
             return
         # Persist the latest values so they pre-fill next session.
-        self._recent_files.floor_elevation_mm = float(floor_elevation_mm)
+        # Save the spinbox value separately from the enabled-flag so an
+        # enabled→disabled toggle doesn't wipe the last typed elevation.
+        self._recent_files.floor_elevation_mm = float(
+            self.file_panel.floor_elevation_edit.value()
+        )
+        self._recent_files.floor_elevation_enabled = bool(
+            self.file_panel.floor_elevation_enabled_checkbox.isChecked()
+        )
         self._recent_files.quick_convert = bool(quick_convert)
         self.file_panel.convert_button.setEnabled(False)
         self.set_status(f"Converting {dxf}…")
@@ -244,7 +251,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.file_panel = FilePanel()
         # Pre-fill 1.krs korko with the value used in the previous
         # session so the user does not retype their building elevation
-        # for every conversion of the same project.
+        # for every conversion of the same project. The enabled-flag
+        # also persists — Lauri's "draw in absolute coords" workflow
+        # ticks this off once and stays off; coworkers who draw
+        # floor-relative leave it on.
+        self.file_panel.floor_elevation_enabled_checkbox.setChecked(
+            self._recent_files.floor_elevation_enabled
+        )
+        self.file_panel.floor_elevation_edit.setEnabled(
+            self._recent_files.floor_elevation_enabled
+        )
         self.file_panel.floor_elevation_edit.setValue(
             self._recent_files.floor_elevation_mm
         )

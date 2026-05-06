@@ -6,6 +6,21 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.18-alpha1 — 2026-05-06
+
+**Lisätty**:
+
+- **Checkbox "Lisää 1.krs absoluuttinen korko"** ennen korko-kenttää.
+  Päällä (default): nykyinen offset-käyttäytyminen — DXF:n Z=0 tulkitaan
+  1.krs lattiaksi ja annettu korko lisätään jokaiseen
+  IfcBuildingStorey.Elevation- ja elementti-Z-arvoon. Pois: DXF:n
+  Z-koordinaatit menevät IFC:hen sellaisinaan, ei mitään offsettia.
+  Tila persistoituu QSettings:iin (``Mcrauli/dxf2ifc/
+  floor_elevation_enabled``), eli kerran valittu työtapa pysyy
+  käynnistyskerrasta toiseen. Sopii suunnittelijalle joka piirtää
+  AutoCADissa suoraan absoluuttisilla koordinaateilla — ei tarvitse
+  muistaa nollata kenttää joka konversiolla.
+
 ## v0.1.17-alpha1 — 2026-05-06
 
 **Korjattu (KRIITTINEN)**:

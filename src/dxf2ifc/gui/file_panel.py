@@ -11,10 +11,16 @@ class FilePanel(QtWidgets.QWidget):
     # ``energy_specs_path`` is empty string when the user has not picked
     # a spec file. ``floor_elevation_mm`` is the absolute Z elevation of
     # 1.krs (mm) — added to every IfcBuildingStorey.Elevation in the
-    # output IFC. ``quick_convert`` skips the accoreconsole 3D-tessellation
-    # pass when True, which trades faceted 3DSOLID bodies for a much faster
-    # convert (typically 5–10x) — useful when the user only needs the layer
-    # mapping + 2D geometry to validate setup.
+    # output IFC. When the "Lisää 1.krs absoluuttinen korko" checkbox is
+    # unchecked, the panel emits 0.0 here regardless of the spinbox
+    # value, so DXF Z coordinates pass through to IFC unchanged. That
+    # is the right mode when the source DXF is already drawn in
+    # absolute Finnish coordinates; the offset path is for the more
+    # common case where designers draw entities relative to floor Z=0.
+    # ``quick_convert`` skips the accoreconsole 3D-tessellation pass
+    # when True, which trades faceted 3DSOLID bodies for a much faster
+    # convert (typically 5–10x) — useful when the user only needs the
+    # layer mapping + 2D geometry to validate setup.
     convert_requested = QtCore.Signal(str, str, str, float, bool)
 
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
@@ -53,7 +59,19 @@ class FilePanel(QtWidgets.QWidget):
         self.browse_energy_button.clicked.connect(self._on_browse_energy)
         layout.addWidget(self.browse_energy_button, 2, 2)
 
-        layout.addWidget(self._caption("1.krs korko (mm)"), 3, 0)
+        self.floor_elevation_enabled_checkbox = QtWidgets.QCheckBox(
+            "Lisää 1.krs absoluuttinen korko"
+        )
+        self.floor_elevation_enabled_checkbox.setChecked(True)
+        self.floor_elevation_enabled_checkbox.setToolTip(
+            "Päällä: DXF:n Z=0 tulkitaan 1.krs lattiaksi ja alla annettu "
+            "korko lisätään jokaiseen IfcBuildingStorey.Elevation- ja "
+            "elementti-Z-arvoon. Pois: DXF:n Z-koordinaatit menevät IFC:hen "
+            "sellaisinaan (käytä jos piirrät suoraan absoluuttiseen korkoon)."
+        )
+        layout.addWidget(self.floor_elevation_enabled_checkbox, 3, 0, 1, 3)
+
+        layout.addWidget(self._caption("1.krs korko (mm)"), 4, 0)
         self.floor_elevation_edit = QtWidgets.QDoubleSpinBox()
         # AutoCAD drawings can place 1.krs anywhere on the absolute
         # Finnish coordinate map — typical values 0…30000 mm but
@@ -67,7 +85,10 @@ class FilePanel(QtWidgets.QWidget):
             "DXF:n Z=0 = 1.krs lattia. Tämä arvo lisätään jokaiseen "
             "IfcBuildingStorey.Elevation-arvoon."
         )
-        layout.addWidget(self.floor_elevation_edit, 3, 1, 1, 2)
+        layout.addWidget(self.floor_elevation_edit, 4, 1, 1, 2)
+        self.floor_elevation_enabled_checkbox.toggled.connect(
+            self.floor_elevation_edit.setEnabled
+        )
 
         self.quick_convert_checkbox = QtWidgets.QCheckBox(
             "Pikakonversio (ohita 3D-tessellaatio)"
@@ -79,12 +100,12 @@ class FilePanel(QtWidgets.QWidget):
             "että layer-mappaus toimii — käytännössä 5–10× nopeampi raskailla "
             "DXF-tiedostoilla."
         )
-        layout.addWidget(self.quick_convert_checkbox, 4, 1, 1, 2)
+        layout.addWidget(self.quick_convert_checkbox, 5, 1, 1, 2)
 
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setProperty("primary", "true")
         self.convert_button.clicked.connect(self._on_convert)
-        layout.addWidget(self.convert_button, 5, 1, 1, 2)
+        layout.addWidget(self.convert_button, 6, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
 
@@ -114,10 +135,15 @@ class FilePanel(QtWidgets.QWidget):
             self.energy_edit.setText(path)
 
     def _on_convert(self) -> None:
+        floor_elev = (
+            float(self.floor_elevation_edit.value())
+            if self.floor_elevation_enabled_checkbox.isChecked()
+            else 0.0
+        )
         self.convert_requested.emit(
             self.input_edit.text(),
             self.output_edit.text(),
             self.energy_edit.text(),
-            float(self.floor_elevation_edit.value()),
+            floor_elev,
             bool(self.quick_convert_checkbox.isChecked()),
         )

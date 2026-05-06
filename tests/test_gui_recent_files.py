@@ -85,3 +85,27 @@ def test_recent_files_floor_elevation_handles_string_storage(qtbot, tmp_path):
     store = _make_store(tmp_path)
     store._settings.setValue("floor_elevation_mm", "15000")
     assert store.floor_elevation_mm == 15000.0
+
+
+def test_recent_files_floor_elevation_enabled_default_is_true(qtbot, tmp_path):
+    """First-launch default — most refrigeration designers draw floor-
+    relative and benefit from the offset. Lauri's absolute-coord
+    workflow opts out by unticking once."""
+    store = _make_store(tmp_path)
+    assert store.floor_elevation_enabled is True
+
+
+def test_recent_files_floor_elevation_enabled_round_trips(qtbot, tmp_path):
+    store = _make_store(tmp_path)
+    store.floor_elevation_enabled = False
+    fresh = _make_store(tmp_path)
+    assert fresh.floor_elevation_enabled is False
+
+
+def test_recent_files_floor_elevation_enabled_handles_string_storage(qtbot, tmp_path):
+    """QSettings on Windows returns booleans as 'true'/'false' strings."""
+    store = _make_store(tmp_path)
+    store._settings.setValue("floor_elevation_enabled", "false")
+    assert store.floor_elevation_enabled is False
+    store._settings.setValue("floor_elevation_enabled", "true")
+    assert store.floor_elevation_enabled is True

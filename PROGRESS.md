@@ -5,8 +5,10 @@ bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
 ## Onboarding fresh Claude — TL;DR (2026-05-06)
 
-**Tuorein julkaisu**: **v0.1.17-alpha1** (2026-05-06) — kriittinen
-geometriafix: tikashyllyt/levyhyllyt/höyrystimet ovat taas IFC:ssä.
+**Tuorein julkaisu**: **v0.1.18-alpha1** (2026-05-06) — checkbox
+"Lisää 1.krs absoluuttinen korko" + persistoituu per kone.
+Edellinen v0.1.17-alpha1 (sama päivä): kriittinen geometriafix
+(tikashyllyt/levyhyllyt/höyrystimet ovat taas IFC:ssä).
 Sivuston lataus pinnattu: <https://mcrauli.github.io/autocad-lisp-ohjeet/dxf2ifc.html>.
 
 **Avoimet ongelmat 2026-05-06**:
