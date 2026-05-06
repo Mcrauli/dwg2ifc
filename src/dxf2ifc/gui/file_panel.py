@@ -7,7 +7,7 @@ from PySide6 import QtCore, QtWidgets
 
 class FilePanel(QtWidgets.QWidget):
     # Emits (dxf_path, ifc_path, energy_specs_path, floor_elevation_mm,
-    # quick_convert).
+    # quick_convert, preprocess_proxies).
     # ``energy_specs_path`` is empty string when the user has not picked
     # a spec file. ``floor_elevation_mm`` is the absolute Z elevation of
     # 1.krs (mm) — added to every IfcBuildingStorey.Elevation in the
@@ -21,7 +21,12 @@ class FilePanel(QtWidgets.QWidget):
     # when True, which trades faceted 3DSOLID bodies for a much faster
     # convert (typically 5–10x) — useful when the user only needs the
     # layer mapping + 2D geometry to validate setup.
-    convert_requested = QtCore.Signal(str, str, str, float, bool)
+    # ``preprocess_proxies`` toggles the MagiCAD/ACAD_PROXY_ENTITY
+    # geometry pipeline (default True). Off mode skips the proxy
+    # bbox-cuboid fallback + accoreconsole EXPLODE for proxies whose
+    # graphics ezdxf cannot decode — useful only when proxies are
+    # known not to carry geometry.
+    convert_requested = QtCore.Signal(str, str, str, float, bool, bool)
 
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
         super().__init__(parent)
@@ -102,10 +107,24 @@ class FilePanel(QtWidgets.QWidget):
         )
         layout.addWidget(self.quick_convert_checkbox, 5, 1, 1, 2)
 
+        self.preprocess_proxies_checkbox = QtWidgets.QCheckBox(
+            "MagiCAD/proxy-objektien geometria"
+        )
+        self.preprocess_proxies_checkbox.setChecked(True)
+        self.preprocess_proxies_checkbox.setToolTip(
+            "Päällä (default): MagiCAD- ja muut ACAD_PROXY_ENTITY-objektit "
+            "luetaan IFC:hen — open-polylinet (putket, detaljit) tarkana, "
+            "ja jos MagiCAD:in ilmainen Object Enabler on asennettu "
+            "(https://www.magicad.com/object-enabler/) niin myös "
+            "monimutkaiset 3D-objektit. Ilman Object Enableria nämä saavat "
+            "bbox-cuboid-fallbackin. Pois: skip kokonaan."
+        )
+        layout.addWidget(self.preprocess_proxies_checkbox, 6, 1, 1, 2)
+
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setProperty("primary", "true")
         self.convert_button.clicked.connect(self._on_convert)
-        layout.addWidget(self.convert_button, 6, 1, 1, 2)
+        layout.addWidget(self.convert_button, 7, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
 
@@ -146,4 +165,5 @@ class FilePanel(QtWidgets.QWidget):
             self.energy_edit.text(),
             floor_elev,
             bool(self.quick_convert_checkbox.isChecked()),
+            bool(self.preprocess_proxies_checkbox.isChecked()),
         )

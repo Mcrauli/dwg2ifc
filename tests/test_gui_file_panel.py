@@ -56,6 +56,7 @@ def test_file_panel_convert_button_emits_signal_with_paths(qtbot, tmp_path):
         "",
         0.0,
         False,
+        True,
     ]
 
 
@@ -109,6 +110,7 @@ def test_file_panel_emits_zero_when_checkbox_unchecked(qtbot, tmp_path):
         "",
         0.0,
         False,
+        True,
     ]
 
 
@@ -129,6 +131,7 @@ def test_file_panel_emits_floor_elevation_with_convert(qtbot, tmp_path):
         "",
         12000.0,
         False,
+        True,
     ]
 
 
@@ -165,4 +168,5 @@ def test_file_panel_convert_with_energy_specs_path(qtbot, tmp_path):
         str(tmp_path / "energy.xlsx"),
         0.0,
         False,
+        True,
     ]

@@ -23,10 +23,12 @@ from dxf2ifc.core.ifc_writer.builders import (
     add_cable_carrier_segment,
     add_cooling_equipment,
     add_door,
+    add_flow_controller,
     add_furniture,
     add_pipe_segment,
     add_slab,
     add_system,
+    add_tank,
     add_wall,
     add_window,
     assign_to_system,
@@ -224,6 +226,7 @@ def convert_dxf(
     validate: bool = False,
     schema: str = "IFC4",
     preprocess_acis: bool = True,
+    preprocess_proxies: bool = True,
     progress: object | None = None,
     energy_specs_path: str | Path | None = None,
     floor_elevation_mm: float = 0.0,
@@ -244,6 +247,16 @@ def convert_dxf(
     :func:`read_dxf` as a side-channel keyed by DXF handle. If
     accoreconsole is missing (LT-only or no AutoCAD on host), ACIS bodies
     are skipped silently and the validation report flags the gap.
+
+    When ``preprocess_proxies`` is ``True`` (default) and the DXF
+    contains ACAD_PROXY_ENTITY records (MagiCAD pipes/devices, custom
+    block entities), :func:`extract_proxy_geometry` enriches the
+    side-channel with per-handle meshes — either real geometry from
+    ``EXPLODE`` + ``STLOUT`` when MagiCAD's free Object Enabler is
+    installed, or 12-triangle bbox cuboid fallbacks for the rest.
+    The 75% of MagiCAD proxies whose ``proxy_graphic`` ezdxf already
+    decodes are handled by :func:`read_dxf` directly (open polylines
+    accepted in v0.1.19+) and need no extra preprocessing.
     """
     name = project_name or Path(dxf_path).stem
     acis_meshes: dict[str, object] = {}
@@ -253,6 +266,21 @@ def convert_dxf(
         # that case after calling find_accoreconsole().
         from dxf2ifc.core.preprocessing import extract_acis_meshes
         acis_meshes = extract_acis_meshes(dxf_path, progress=progress)  # type: ignore[arg-type,assignment]
+
+    if preprocess_proxies:
+        # Same lazy-import pattern; ``extract_proxy_geometry`` returns
+        # an empty bundle when no proxies, no accoreconsole, or no
+        # Object Enabler (it never raises). Proxy meshes are merged
+        # into the same ``acis_meshes`` channel under the original
+        # proxy handle, so the existing 3DSOLID/INSERT branch in
+        # ``read_dxf`` resolves them transparently.
+        from dxf2ifc.core.proxy_preprocessing import extract_proxy_geometry
+        proxy_artifacts = extract_proxy_geometry(dxf_path, progress=progress)  # type: ignore[arg-type]
+        for h, mesh in proxy_artifacts.meshes.items():
+            # Don't overwrite an ACIS-side mesh for the same handle —
+            # that path is more authoritative (real 3DSOLID body
+            # tessellation vs proxy bbox cuboid).
+            acis_meshes.setdefault(h, mesh)
 
     entities = read_dxf(dxf_path, acis_meshes=acis_meshes)
     mapped = apply_profile(entities, profile)
@@ -506,6 +534,19 @@ def convert_dxf(
                 _classify(seg, m)
                 _record(m, seg)
             elif m.ifc_type == "IfcBuildingElementProxy":
+                # add_building_element_proxy expects PolygonGeometry
+                # (closed outline → extruded panel) or MeshGeometry
+                # (faceted Brep — used by proxy_preprocessing's bbox
+                # cuboid fallback). Open-polyline LineGeometry records
+                # — emitted by dxf_reader for MagiCAD proxy graphics
+                # whose virtual entities are 2D detail primitives —
+                # cannot be meaningfully extruded into a 3D proxy
+                # body, so skip them rather than crashing or
+                # synthesising a dubious shape. The MeshGeometry path
+                # still covers the proxies that produced no virtual
+                # entities (bbox cuboid).
+                if isinstance(m.geometry, LineGeometry):
+                    continue
                 proxy = add_building_element_proxy(ifc, m, parent_storey=_storey_for(m))
                 _classify(proxy, m)
                 _record(m, proxy)
@@ -513,6 +554,22 @@ def convert_dxf(
                 equipment = add_cooling_equipment(ifc, m, parent_storey=_storey_for(m))
                 _classify(equipment, m)
                 _record(m, equipment)
+            elif m.ifc_type == "IfcTank":
+                # Skip LineGeometry siblings emitted from MagiCAD proxy
+                # virtual_entities — the proxy's MeshGeometry record
+                # (cuboid fallback or real EXPLODE result) carries the
+                # actual tank body for the same handle.
+                if isinstance(m.geometry, LineGeometry):
+                    continue
+                tank = add_tank(ifc, m, parent_storey=_storey_for(m))
+                _classify(tank, m)
+                _record(m, tank)
+            elif m.ifc_type == "IfcFlowController":
+                if isinstance(m.geometry, LineGeometry):
+                    continue
+                ctrl = add_flow_controller(ifc, m, parent_storey=_storey_for(m))
+                _classify(ctrl, m)
+                _record(m, ctrl)
 
         for system_name, products in systems.items():
             system = add_system(ifc, name=system_name)

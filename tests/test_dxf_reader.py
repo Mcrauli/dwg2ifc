@@ -92,7 +92,14 @@ def test_read_insert_returns_block_instance(tmp_path: Path):
     assert rec.geometry.scale_x == 1.0
 
 
-def test_read_skips_open_lwpolyline(tmp_path: Path):
+def test_read_open_lwpolyline_yields_line_segments(tmp_path: Path):
+    """v0.1.19+: open LWPOLYLINEs (common in MagiCAD proxy graphics for
+    pipe centrelines and detail outlines) are no longer dropped — they
+    fan out to one LineGeometry record per consecutive vertex pair so
+    the profile mapper can route them through the LineGeometry-only
+    builders (add_pipe_segment, add_cable_carrier_segment)."""
+    from dxf2ifc.core.types import LineGeometry
+
     dxf = tmp_path / "open.dxf"
     pts = [(0.0, 0.0), (1000.0, 0.0), (1000.0, 1000.0)]
     doc = ezdxf.new("R2010")
@@ -100,7 +107,10 @@ def test_read_skips_open_lwpolyline(tmp_path: Path):
     doc.modelspace().add_lwpolyline(pts, close=False, dxfattribs={"layer": "KYL-ALAPOHJA"})
     doc.saveas(str(dxf))
     records = read_dxf(dxf)
-    assert records == []
+    assert len(records) == 2
+    assert all(r.dxf_type == "LWPOLYLINE" for r in records)
+    assert all(isinstance(r.geometry, LineGeometry) for r in records)
+    assert all(r.layer == "KYL-ALAPOHJA" for r in records)
 
 
 def test_list_layers_returns_unique_sorted_names_from_modelspace(tmp_path: Path):

@@ -6,6 +6,59 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.1.19-alpha1 — 2026-05-06
+
+**Lisätty — MagiCAD/proxy-objektien geometria**:
+
+- **Avoimet polyline:t** (LWPOLYLINE/POLYLINE ilman ``closed``-flagia)
+  hyväksytään ``dxf_reader``-tasolla LineGeometry-segmentteinä — yksi
+  per peräkkäinen vertex-pari. Ratkaisee MagiCAD ACAD_PROXY_ENTITY-
+  putkien (KYL-JV1) + detail-viivojen näkyvyyden, jotka v0.1.18:ssa
+  putosivat hiljaa pois ``is_closed=True``-tarkistuksessa.
+- **Uusi moduuli** ``core/proxy_preprocessing.py``: jokaiselle
+  ACAD_PROXY_ENTITYlle joko bbox-cuboid-fallback (kun ezdxf:n
+  proxy_graphic-parser ei pysty purkamaan eikä Object Enableria ole)
+  tai täydellinen accoreconsole-EXPLODE+STLOUT (kun MagiCAD:in ilmainen
+  Object Enabler on asennettu).
+- **Object Enabler -tunnistus**: Windowsin rekisterihakemisto
+  ``HKLM\\SOFTWARE\\Autodesk\\ObjectDBX`` etsitään tunnetuille MagiCAD-
+  luokille. Jos puuttuu, progress-logiin tulee tarkka asennusohje:
+  https://www.magicad.com/object-enabler/
+- **Profile-säännöt** ``default_kylmalaite.toml``:
+  - KYL-JV1 → IfcPipeSegment (CHILLEDWATER)
+  - KYL-JV1-LAITE → IfcFlowController (USERDEFINED)
+  - KYL-KONDENSSIASTIAT → IfcTank (BASIN)
+- **Uudet builders**: ``add_tank``, ``add_flow_controller`` (mesh-
+  pohjaisia, hyödyntävät ``_add_mesh_product``-helperä).
+- **CLI flag** ``--no-preprocess-proxies`` opt-out:in tueksi.
+- **GUI checkbox** "MagiCAD/proxy-objektien geometria" oletus päällä,
+  persistoituu ``QSettings:Mcrauli/dxf2ifc/preprocess_proxies``.
+  Pikakonversio-tila kytkee sen pois automaattisesti.
+
+**Verifioitu**:
+
+- ``4001_1krs.dxf`` (ei MagiCAD:ia): ei regressiota (9 + 12 + 15 entityä
+  kuten v0.1.18:ssa).
+- ``magicad_1krs.dxf`` (145 ACAD_PROXY_ENTITYä): 39 IfcPipeSegment
+  (KYL-JV1) + 13 IfcBuildingElementProxy (MUUT_OSAT) + 3
+  IfcCableCarrierSegment näkyy IFC:ssä. KYL-JV1-LAITE (36) ja
+  KYL-KONDENSSIASTIAT (18) tulevat näkyviin sen jälkeen kun Object
+  Enabler on asennettu.
+
+**Sisäinen**:
+
+- ``_record_from_entity`` palauttaa nyt ``list[EntityRecord]`` (0/1/N)
+  yksittäisen ``EntityRecord | None`` sijaan — yksinkertaistaa
+  segment-fan-out-logiikkaa proxy-graphics:eille.
+- ``add_building_element_proxy`` hyväksyy nyt sekä PolygonGeometryn
+  (suljettu paneeli) että MeshGeometryn (faceted Brep proxy-cuboid-
+  fallbackista).
+- Open-polyline-segmentit IfcBuildingElementProxy / IfcTank /
+  IfcFlowController -säännöille hylätään hiljaa orchestrator-
+  dispatchissä — ne ovat MagiCAD:in 2D-detail-renderiä, ei pää-
+  geometriaa.
+- 516 / 516 pytest passes (+10 uutta v0.1.18:n 502:sta).
+
 ## v0.1.18-alpha1 — 2026-05-06
 
 **Lisätty**:

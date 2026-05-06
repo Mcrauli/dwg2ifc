@@ -66,6 +66,19 @@ def build_parser() -> argparse.ArgumentParser:
             "merged into FI_Tekninen."
         ),
     )
+    convert.add_argument(
+        "--no-preprocess-proxies",
+        dest="preprocess_proxies",
+        action="store_false",
+        help=(
+            "Skip MagiCAD/ACAD_PROXY_ENTITY preprocessing. By default "
+            "dxf2ifc inspects every proxy in the DXF, falls back to a "
+            "bbox cuboid for proxies whose geometry it cannot decode, "
+            "and (when MagiCAD's free Object Enabler is installed) runs "
+            "accoreconsole EXPLODE for full geometry."
+        ),
+    )
+    convert.set_defaults(preprocess_proxies=True)
     return parser
 
 
@@ -81,6 +94,7 @@ def main(argv: list[str] | None = None) -> int:
             schema=args.schema.upper(),
             energy_specs_path=args.energy_specs,
             floor_elevation_mm=args.floor_elevation,
+            preprocess_proxies=args.preprocess_proxies,
         )
         print(f"Wrote {args.output}", file=sys.stderr)
         if args.validate:

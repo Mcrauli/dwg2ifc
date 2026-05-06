@@ -104,7 +104,9 @@ def read_dxf(
                 virtual_iter = entity.__virtual_entities__()
             except Exception:  # noqa: BLE001 — non-graphical proxy / malformed
                 continue
+            virtual_yielded = False
             for virtual in virtual_iter:
+                virtual_yielded = True
                 v_layer = getattr(virtual.dxf, "layer", "0") or "0"
                 # Virtual entities often inherit layer "0" from the
                 # proxy stream. Fall back to the proxy's layer so the
@@ -113,7 +115,7 @@ def read_dxf(
                 # proxies on a distinct layer like MAG_PIPE_*).
                 effective_layer = proxy_layer if v_layer == "0" else v_layer
                 try:
-                    sub_record = _record_from_entity(
+                    sub_records = _record_from_entity(
                         virtual,
                         layer_override=effective_layer,
                         handle_override=proxy_handle,
@@ -122,14 +124,38 @@ def read_dxf(
                     )
                 except Exception:  # noqa: BLE001 — virtual subentity broke
                     continue
-                if sub_record is not None:
-                    records.append(sub_record)
+                records.extend(sub_records)
+            # When ezdxf could not decode the proxy's graphics stream
+            # (yield 0 virtual entities — typical for the ~25% of
+            # MagiCAD proxies whose proprietary encoding ezdxf doesn't
+            # understand) AND ``proxy_preprocessing`` produced a mesh
+            # for this handle (real EXPLODE+STLOUT result with Object
+            # Enabler present, or a bbox cuboid fallback otherwise),
+            # emit a single mesh-bearing record on the proxy's authored
+            # layer so the profile mapper can route it like any other
+            # 3D body.
+            if not virtual_yielded:
+                mesh_data = acis_meshes.get(proxy_handle)
+                if mesh_data is not None:
+                    vertices = tuple(
+                        Point3D(float(v[0]), float(v[1]), float(v[2]))
+                        for v in mesh_data.vertices
+                    )
+                    faces = tuple(tuple(int(i) for i in f) for f in mesh_data.faces)
+                    if vertices and faces:
+                        records.append(EntityRecord(
+                            layer=proxy_layer,
+                            dxf_type="ACAD_PROXY_ENTITY",
+                            geometry=MeshGeometry(vertices=vertices, faces=faces),
+                            attributes={},
+                            handle=proxy_handle,
+                        ))
             continue
         # Defensive: even native entity types may raise on missing dxf
         # attributes (custom CAD objects from third-party add-ons). One
         # bad entity must not abort the whole DXF read.
         try:
-            record = _record_from_entity(
+            new_records = _record_from_entity(
                 entity,
                 layer_override=None,
                 handle_override=None,
@@ -138,8 +164,7 @@ def read_dxf(
             )
         except Exception:  # noqa: BLE001
             continue
-        if record is not None:
-            records.append(record)
+        records.extend(new_records)
     return records
 
 
@@ -150,14 +175,24 @@ def _record_from_entity(
     handle_override: str | None,
     mesh_priority_layers: set[str],
     acis_meshes: Mapping[str, object],
-) -> EntityRecord | None:
-    """Map a single ezdxf DXFGraphic entity to an EntityRecord.
+) -> list[EntityRecord]:
+    """Map a single ezdxf DXFGraphic entity to zero or more EntityRecords.
 
     Used for both top-level model-space iteration and recursive proxy
-    expansion (``ACAD_PROXY_ENTITY.__virtual_entities__()``). Returns
-    ``None`` when the entity is not a supported geometry kind, when its
+    expansion (``ACAD_PROXY_ENTITY.__virtual_entities__()``). Returns an
+    empty list when the entity is not a supported geometry kind, when its
     body is empty, or when it is shadowed by a higher-priority mesh on
     the same layer (Plan-A double-publish guard).
+
+    Most dxftypes (LINE, MESH, INSERT, 3DSOLID, closed LWPOLYLINE/POLYLINE)
+    yield exactly one record. **Open** LWPOLYLINE/POLYLINE — common in
+    MagiCAD proxy graphics where pipe centrelines and outlines are
+    emitted as N-vertex open polylines — fan out to N-1 LineGeometry
+    records, one per consecutive vertex pair. This lets the profile
+    mapper route them through ``add_pipe_segment`` /
+    ``add_cable_carrier_segment`` (LineGeometry-only builders) instead
+    of silently dropping them. Layer + handle propagate identically to
+    every segment.
 
     ``layer_override`` lets the caller force a layer (used for proxy
     virtual entities that inherit "0" instead of the proxy's authored
@@ -177,79 +212,111 @@ def _record_from_entity(
         dxftype in ("LINE", "LWPOLYLINE", "POLYLINE")
         and layer in mesh_priority_layers
     ):
-        return None
+        return []
 
     if dxftype == "3DSOLID":
         handle = _handle()
         mesh_data = acis_meshes.get(handle)
         if mesh_data is None:
-            return None
+            return []
         vertices = tuple(
             Point3D(float(v[0]), float(v[1]), float(v[2]))
             for v in mesh_data.vertices
         )
         faces = tuple(tuple(int(i) for i in f) for f in mesh_data.faces)
         if not vertices or not faces:
-            return None
-        return EntityRecord(
+            return []
+        return [EntityRecord(
             layer=layer,
             dxf_type="3DSOLID",
             geometry=MeshGeometry(vertices=vertices, faces=faces),
             attributes={},
             handle=handle,
-        )
+        )]
 
     if dxftype == "LINE":
         start = Point3D(*entity.dxf.start)
         end = Point3D(*entity.dxf.end)
-        return EntityRecord(
+        return [EntityRecord(
             layer=layer,
             dxf_type="LINE",
             geometry=LineGeometry(start=start, end=end),
             attributes={},
             handle=_handle(),
-        )
+        )]
 
-    if dxftype == "LWPOLYLINE" and entity.closed:
+    if dxftype == "LWPOLYLINE":
         elevation = float(entity.dxf.elevation or 0.0)
         ocs = entity.ocs()
         world_vertices: list[Point3D] = []
         for x, y, *_ in entity.get_points():
             wx, wy, wz = ocs.to_wcs((float(x), float(y), elevation))
             world_vertices.append(Point3D(float(wx), float(wy), float(wz)))
-        return EntityRecord(
-            layer=layer,
-            dxf_type="LWPOLYLINE",
-            geometry=PolygonGeometry(vertices=tuple(world_vertices), closed=True),
-            attributes={},
-            handle=_handle(),
-        )
+        if entity.closed:
+            return [EntityRecord(
+                layer=layer,
+                dxf_type="LWPOLYLINE",
+                geometry=PolygonGeometry(vertices=tuple(world_vertices), closed=True),
+                attributes={},
+                handle=_handle(),
+            )]
+        # Open polyline: emit one LineGeometry per consecutive vertex pair.
+        # Common shape in MagiCAD proxy graphics (pipe centrelines, detail
+        # outlines). Single-vertex degenerate polylines drop silently.
+        if len(world_vertices) < 2:
+            return []
+        h = _handle()
+        return [
+            EntityRecord(
+                layer=layer,
+                dxf_type="LWPOLYLINE",
+                geometry=LineGeometry(start=v0, end=v1),
+                attributes={},
+                handle=h,
+            )
+            for v0, v1 in zip(world_vertices, world_vertices[1:])
+        ]
 
-    if dxftype == "POLYLINE" and getattr(entity, "is_closed", False):
-        # Proxy-graphics streams emit POLYLINE for closed n-gons (older
-        # DXF format) instead of LWPOLYLINE. Vertices are AcDbVertex
+    if dxftype == "POLYLINE":
+        # Proxy-graphics streams emit POLYLINE for n-gons in the older
+        # DXF format instead of LWPOLYLINE. Vertices are AcDbVertex
         # subentities reachable via .points() — same WCS coordinates as
         # LWPOLYLINE but no OCS round-trip needed because the stream
         # already publishes 3D points.
         try:
             verts = list(entity.points())
         except AttributeError:
-            return None
+            return []
         if not verts:
-            return None
-        return EntityRecord(
-            layer=layer,
-            dxf_type="POLYLINE",
-            geometry=PolygonGeometry(
-                vertices=tuple(
-                    Point3D(float(v[0]), float(v[1]), float(v[2]) if len(v) > 2 else 0.0)
-                    for v in verts
+            return []
+        world_vertices = [
+            Point3D(float(v[0]), float(v[1]), float(v[2]) if len(v) > 2 else 0.0)
+            for v in verts
+        ]
+        if getattr(entity, "is_closed", False):
+            return [EntityRecord(
+                layer=layer,
+                dxf_type="POLYLINE",
+                geometry=PolygonGeometry(
+                    vertices=tuple(world_vertices),
+                    closed=True,
                 ),
-                closed=True,
-            ),
-            attributes={},
-            handle=_handle(),
-        )
+                attributes={},
+                handle=_handle(),
+            )]
+        if len(world_vertices) < 2:
+            return []
+        h = _handle()
+        return [
+            EntityRecord(
+                layer=layer,
+                dxf_type="POLYLINE",
+                geometry=LineGeometry(start=v0, end=v1),
+                attributes={},
+                handle=h,
+            )
+            for v0, v1 in zip(world_vertices, world_vertices[1:])
+        ]
 
     if dxftype == "INSERT":
         handle = _handle()
@@ -265,14 +332,14 @@ def _record_from_entity(
             )
             faces = tuple(tuple(int(i) for i in f) for f in mesh_data.faces)
             if vertices and faces:
-                return EntityRecord(
+                return [EntityRecord(
                     layer=layer,
                     dxf_type="INSERT",
                     geometry=MeshGeometry(vertices=vertices, faces=faces),
                     attributes={},
                     block_name=entity.dxf.name,
                     handle=handle,
-                )
+                )]
         insert = Point3D(
             float(entity.dxf.insert.x),
             float(entity.dxf.insert.y),
@@ -285,14 +352,14 @@ def _record_from_entity(
             scale_y=float(entity.dxf.yscale or 1.0),
             scale_z=float(entity.dxf.zscale or 1.0),
         )
-        return EntityRecord(
+        return [EntityRecord(
             layer=layer,
             dxf_type="INSERT",
             geometry=block_instance,
             attributes={},
             block_name=entity.dxf.name,
             handle=handle,
-        )
+        )]
 
     if dxftype == "MESH":
         # accoreconsole.exe -MESHSMOOTH preprocesses 3DSOLIDs into MESH.
@@ -304,13 +371,13 @@ def _record_from_entity(
         )
         faces = tuple(tuple(int(i) for i in f) for f in mb.faces)
         if not vertices or not faces:
-            return None
-        return EntityRecord(
+            return []
+        return [EntityRecord(
             layer=layer,
             dxf_type="MESH",
             geometry=MeshGeometry(vertices=vertices, faces=faces),
             attributes={},
             handle=_handle(),
-        )
+        )]
 
-    return None
+    return []

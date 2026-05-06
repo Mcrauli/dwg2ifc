@@ -909,25 +909,39 @@ def add_building_element_proxy(
     *,
     parent_storey,
 ) -> object:
-    """Create an IfcBuildingElementProxy from a PolygonGeometry-bearing
-    MappedEntity. Used for cold-room panels (KYL-LEVY) and corner pieces
-    (KYL-NURKKA): a closed polygon outline extruded upwards by
-    extra_props['default_thickness_mm'] (default 120 mm).
+    """Create an IfcBuildingElementProxy from a PolygonGeometry- or
+    MeshGeometry-bearing MappedEntity. PolygonGeometry → 2D outline
+    extruded upwards by extra_props['default_thickness_mm'] (default
+    120 mm) — used for cold-room panels (KYL-LEVY) and corner pieces.
+    MeshGeometry → faceted Brep — used in v0.1.19+ for MUUT_OSAT and
+    other proxy_preprocessing-fed proxies whose graphics ezdxf could
+    not decode (the bbox cuboid fallback path).
     """
+    element_type = mapped.predefined_type or mapped.layer
+    proxy_type = _ensure_proxy_type(ifc, element_type=element_type)
+
+    if isinstance(mapped.geometry, MeshGeometry):
+        product = _add_mesh_product(
+            ifc,
+            mapped,
+            ifc_class="IfcBuildingElementProxy",
+            parent_storey=parent_storey,
+            predefined_type="USERDEFINED",
+        )
+        product.ObjectType = element_type
+        ifcopenshell.api.run(
+            "type.assign_type", ifc, related_objects=[product], relating_type=proxy_type
+        )
+        return product
+
     if not isinstance(mapped.geometry, PolygonGeometry):
         raise TypeError(
-            "add_building_element_proxy expects PolygonGeometry, "
+            "add_building_element_proxy expects PolygonGeometry or MeshGeometry, "
             f"got {type(mapped.geometry).__name__}"
         )
 
     thickness = float(mapped.extra_props.get("default_thickness_mm", 120.0))
     panel = panel_to_proxy_solid(mapped.geometry, thickness_mm=thickness)
-
-    # Use the rule's predefined_type as the proxy's ElementType /
-    # MagiCAD reference token (e.g. "MUUT_OSAT", "KYL-LEVY"). Falls
-    # back to the layer name when the rule did not specify one.
-    element_type = mapped.predefined_type or mapped.layer
-    proxy_type = _ensure_proxy_type(ifc, element_type=element_type)
 
     proxy = ifcopenshell.api.run(
         "root.create_entity",
@@ -1102,6 +1116,42 @@ def add_cooling_equipment(
         "type.assign_type", ifc, related_objects=[product], relating_type=cooling_type
     )
     return product
+
+
+def add_tank(ifc, mapped: MappedEntity, *, parent_storey) -> object:
+    """Create an IfcTank from a MeshGeometry-bearing MappedEntity.
+
+    Used in v0.1.19+ for KYL-KONDENSSIASTIAT (lauhdevesiastiat / condensate
+    basins) — typically MagiCAD ACAD_PROXY_ENTITY records that
+    :func:`dxf2ifc.core.proxy_preprocessing.extract_proxy_geometry` lifts
+    to either a real triangulated body (Object Enabler installed) or a
+    bbox cuboid fallback. Either way, a faceted Brep representation is
+    enough for Solibri to display the tank in the IFC.
+    """
+    return _add_mesh_product(
+        ifc,
+        mapped,
+        ifc_class="IfcTank",
+        parent_storey=parent_storey,
+        predefined_type=mapped.predefined_type or "BASIN",
+    )
+
+
+def add_flow_controller(ifc, mapped: MappedEntity, *, parent_storey) -> object:
+    """Create an IfcFlowController from a MeshGeometry-bearing MappedEntity.
+
+    Used in v0.1.19+ for KYL-JV1-LAITE (jäähdytysvesilaitteet — pumps,
+    valves, accessories) — MagiCAD ACAD_PROXY_ENTITY records that need
+    Object Enabler for full geometry; without enabler, a bbox cuboid is
+    emitted and the user is warned in the progress log.
+    """
+    return _add_mesh_product(
+        ifc,
+        mapped,
+        ifc_class="IfcFlowController",
+        parent_storey=parent_storey,
+        predefined_type=mapped.predefined_type or "USERDEFINED",
+    )
 
 
 def add_system(ifc, *, name: str) -> object:

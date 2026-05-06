@@ -87,6 +87,48 @@ pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 110.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Sulanapitoviemäri", yleistunnus = "SV" }
 
 # -----------------------------------------------------------------------------
+# Section 2b: MagiCAD-drawn refrigeration pipes + devices (v0.1.19+).
+#
+# These layers are populated by MagiCAD HP/Cooling, where most entities are
+# ACAD_PROXY_ENTITY records. dxf2ifc handles them in two ways:
+#  - The ~75% whose proxy_graphic stream ezdxf can decode produce open
+#    polylines (centrelines + outlines) that dxf_reader splits into
+#    LineGeometry segments — those land here for layer→IFC mapping.
+#  - The ~25% that need MagiCAD's free Object Enabler get either real
+#    geometry (Object Enabler installed → 3DSOLID via accoreconsole
+#    EXPLODE) or a bbox cuboid fallback (Object Enabler missing).
+# Either way, the IFC type comes from the layer rule below.
+# -----------------------------------------------------------------------------
+
+[[rules]]
+layer_pattern = "KYL-JV1"
+ifc_type = "IfcPipeSegment"
+predefined_type = "CHILLEDWATER"
+domain = "KYL"
+lvi_code = "T-LVI-02"
+system_name = "Refrigeration JV1"
+pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 28.0 } }
+fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "JÄÄHDYTYSVESIPUTKISTOT", yleisnimi = "Jäähdytysvesiputki", yleistunnus = "JV" }
+
+[[rules]]
+layer_pattern = "KYL-JV1-LAITE"
+ifc_type = "IfcFlowController"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+talotekniikka_code = "T-TATE-01-01-099"
+system_name = "Refrigeration JV1"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "JÄÄHDYTYSLAITTEET", yleisnimi = "Jäähdytysvesilaite", yleistunnus = "JVL" }
+
+[[rules]]
+layer_pattern = "KYL-KONDENSSIASTIAT"
+ifc_type = "IfcTank"
+predefined_type = "BASIN"
+domain = "KYL"
+lvi_code = "T-LVI-04-01-001"
+system_name = "Drainage"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Lauhdevesiastia", yleistunnus = "LVA" }
+
+# -----------------------------------------------------------------------------
 # Section 3: Cold-storage shelving — IfcCableCarrierSegment per Granlund
 # convention. Tikashylly = ladder rails (CABLELADDERSEGMENT), levyhylly =
 # sheet-metal tray shelf (CABLETRAYSEGMENT). RAVA TALOTEKNIIKKA-TUOTEOSA

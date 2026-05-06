@@ -109,3 +109,25 @@ def test_recent_files_floor_elevation_enabled_handles_string_storage(qtbot, tmp_
     assert store.floor_elevation_enabled is False
     store._settings.setValue("floor_elevation_enabled", "true")
     assert store.floor_elevation_enabled is True
+
+
+def test_recent_files_preprocess_proxies_default_is_true(qtbot, tmp_path):
+    """v0.1.19+: MagiCAD/proxy preprocessing on by default so MagiCAD
+    DXFs work out-of-the-box."""
+    store = _make_store(tmp_path)
+    assert store.preprocess_proxies is True
+
+
+def test_recent_files_preprocess_proxies_round_trips(qtbot, tmp_path):
+    store = _make_store(tmp_path)
+    store.preprocess_proxies = False
+    fresh = _make_store(tmp_path)
+    assert fresh.preprocess_proxies is False
+
+
+def test_recent_files_preprocess_proxies_handles_string_storage(qtbot, tmp_path):
+    store = _make_store(tmp_path)
+    store._settings.setValue("preprocess_proxies", "false")
+    assert store.preprocess_proxies is False
+    store._settings.setValue("preprocess_proxies", "true")
+    assert store.preprocess_proxies is True
