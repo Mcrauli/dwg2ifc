@@ -6,6 +6,35 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha5 — 2026-05-07 (LWPOLYLINE-extrusio = oikeat solidit)
+
+**Korjattu — alpha4:n hyllyt olivat pelkkiä yläpintoja, ei volyymiä**:
+
+Alpha4 luki vain block:n 3DFACE:t → yksittäiset litteät pinnat
+Solibrissa, ei oikeaa 3D-laatikkoa (vrt. Lauri:n AutoCAD-näkymä jossa
+sivupalkit + tikkapuut + levyt ovat oikeita box:eja).
+
+`_aggregate_3dface_from_insert` extrudoi nyt myös block:n closed
+LWPOLYLINE:t niiden `elevation`:ista → vastaavaan 3DFACE:n Z-arvoon.
+Top-Z päätellään: pienin 3DFACE jonka XY-bbox kattaa LWPOLYLINE:n
+bbox:n ja jonka Z on LWPOLYLINE-elevation:n yläpuolella. Fallback
+`base_z + 9 mm` jos pari ei löydy.
+
+Tikashyllyn rakenne IFC:ssä alpha5:ssä:
+- 2 sivupalkkia (closed LWPOLYLINE elev=0 → solid Z=0..60)
+- N tikkapuuta (closed LWPOLYLINE elev=10 → solid Z=10..25)
+- 3DFACE:t yläpinnat säilyvät (sileä yläpinta)
+
+Levyhyllyn rakenne:
+- Pohjalaatta + ohuet etu/takareunat (closed LWPOLYLINE elev=0)
+- Päätypalkit (closed LWPOLYLINE elev=58.75)
+- 3DFACE:t yläpinnat
+
+**Testattu**: Lauri:n `Drawing2.dxf` → 8 IfcCableCarrierSegment, joiden
+mesh sisältää nyt vertex/face-määrät 32-352 / 49-396 (vrt. alpha4:n
+1-44 face:n yläpinta-only). Z-range 0..60mm tikashyllyille ja
+0..67.8mm levyhyllyille — vastaa AutoCAD-näkymän mittoja.
+
 ## v0.2.0-alpha4 — 2026-05-07 (dynamic block hyllyt: 3DFACE-aggregaatio)
 
 **Korjattu — KYL-LISP-hyllyjen uusi dynamic-block-formaatti**:

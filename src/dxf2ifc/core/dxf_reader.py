@@ -41,62 +41,159 @@ def list_layers(path: str | Path) -> list[str]:
 
 def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
     """Walk an INSERT's ``virtual_entities()`` and aggregate every
-    contained 3DFACE into a single MeshGeometry. ezdxf applies the
-    INSERT's transform (insertion + rotation + scale) automatically
-    in ``virtual_entities()``, so the resulting face vertices are
-    already in world space.
+    block-level 3DFACE *plus* every closed LWPOLYLINE (extruded into
+    a solid box) into a single MeshGeometry. ezdxf applies the
+    INSERT's transform (insertion + rotation + scale) automatically,
+    so the resulting vertices are already in world space.
 
-    Returns ``None`` when the block has no 3DFACE entities (caller
-    falls back to the BlockInstance / bbox-cuboid path).
+    Returns ``None`` when the block has neither 3DFACEs nor closed
+    LWPOLYLINEs (caller falls back to the BlockInstance path).
 
-    Lauri's KYL-LISP refrigeration shelves used to emit native
-    3DSOLID bodies that needed accoreconsole+STLOUT tessellation. The
-    rewritten LISP now emits dynamic block references (anonymous
-    ``*U*`` blocks) that contain 3DFACE primitives directly — those
-    are faces, not solids, but they are real geometry with no need
-    for an external tessellation step. ezdxf reads them natively.
+    **Why both 3DFACE and LWPOLYLINE extrusion**
+
+    Lauri's rewritten KYL-LISP shelves (KLHYLLY-LEVY / KLHYLLY-TIKAS)
+    encode each shelf as:
+
+    * A closed LWPOLYLINE outlining each part footprint (rail rung,
+      side rail, deck) at its bottom Z (``dxf.elevation``)
+    * A 3DFACE covering that same footprint at its top Z
+
+    Reading only the 3DFACEs gave Solibri flat top surfaces with no
+    volume — visually broken. We now extrude every closed LWPOLYLINE
+    from its ``elevation`` up to the Z of the smallest 3DFACE whose
+    XY bounding box covers the polyline's XY bbox (the matching top
+    cap). That produces real 3D boxes for each rail rung / side rail /
+    deck. 3DFACEs whose footprint isn't covered by any polyline still
+    render as flat faces (cosmetic detail layers).
 
     Vertices are deduplicated at 4-decimal precision so adjacent
-    3DFACEs that share an edge produce a connected mesh rather than
-    one disjoint triangle pair per face.
+    parts that share an edge produce a connected mesh.
     """
     try:
         virt = list(insert_entity.virtual_entities())
     except Exception:  # noqa: BLE001 — malformed block, ezdxf can raise
         return None
 
+    # Separate 3DFACEs from closed LWPOLYLINEs so we can pair them up.
+    face_records: list[tuple[
+        tuple[float, float, float, float],  # (xmin, ymin, xmax, ymax)
+        float,  # face top Z
+        list[tuple[float, float, float]],  # vertices in world coords
+    ]] = []
+    polyline_records: list[tuple[
+        list[tuple[float, float]],  # XY vertices (closed, world)
+        float,  # base Z
+    ]] = []
+
+    for v_ent in virt:
+        t = v_ent.dxftype()
+        if t == "3DFACE":
+            try:
+                v0 = v_ent.dxf.vtx0
+                v1 = v_ent.dxf.vtx1
+                v2 = v_ent.dxf.vtx2
+                v3 = v_ent.dxf.vtx3
+            except AttributeError:
+                continue
+            pts = [
+                (float(v[0]), float(v[1]), float(v[2]) if len(v) > 2 else 0.0)
+                for v in (v0, v1, v2, v3)
+            ]
+            face_pts = pts[:3] if pts[2] == pts[3] else pts
+            xs = [p[0] for p in face_pts]
+            ys = [p[1] for p in face_pts]
+            zs = [p[2] for p in face_pts]
+            face_records.append((
+                (min(xs), min(ys), max(xs), max(ys)),
+                max(zs),
+                face_pts,
+            ))
+        elif t == "LWPOLYLINE":
+            if not getattr(v_ent, "is_closed", False):
+                continue
+            try:
+                pts2d = [
+                    (float(p[0]), float(p[1]))
+                    for p in v_ent.get_points("xy")
+                ]
+            except Exception:  # noqa: BLE001
+                continue
+            if len(pts2d) < 3:
+                continue
+            base_z = float(getattr(v_ent.dxf, "elevation", 0.0) or 0.0)
+            polyline_records.append((pts2d, base_z))
+
+    if not face_records and not polyline_records:
+        return None
+
     vertices: list[Point3D] = []
     faces: list[tuple[int, ...]] = []
     v_to_idx: dict[tuple[float, float, float], int] = {}
 
-    for v_ent in virt:
-        if v_ent.dxftype() != "3DFACE":
-            continue
-        try:
-            v0 = v_ent.dxf.vtx0
-            v1 = v_ent.dxf.vtx1
-            v2 = v_ent.dxf.vtx2
-            v3 = v_ent.dxf.vtx3
-        except AttributeError:
-            continue
-        pts: list[tuple[float, float, float]] = []
-        for v in (v0, v1, v2, v3):
-            x = float(v[0])
-            y = float(v[1])
-            z = float(v[2]) if len(v) > 2 else 0.0
-            pts.append((x, y, z))
-        # AutoCAD encodes a triangle as a quad with vtx2 == vtx3.
-        face_pts = pts[:3] if pts[2] == pts[3] else pts
-        face_idx: list[int] = []
-        for p in face_pts:
-            key = (round(p[0], 4), round(p[1], 4), round(p[2], 4))
-            idx = v_to_idx.get(key)
-            if idx is None:
-                idx = len(vertices)
-                v_to_idx[key] = idx
-                vertices.append(Point3D(p[0], p[1], p[2]))
-            face_idx.append(idx)
+    def add_vertex(x: float, y: float, z: float) -> int:
+        key = (round(x, 4), round(y, 4), round(z, 4))
+        idx = v_to_idx.get(key)
+        if idx is None:
+            idx = len(vertices)
+            v_to_idx[key] = idx
+            vertices.append(Point3D(x, y, z))
+        return idx
+
+    # 1) Emit 3DFACEs as flat polygons
+    for _, _, face_pts in face_records:
+        face_idx = [add_vertex(*p) for p in face_pts]
         faces.append(tuple(face_idx))
+
+    # 2) Extrude each closed LWPOLYLINE → solid box. Top Z is
+    #    inferred from the smallest 3DFACE whose XY bbox covers the
+    #    polyline's XY bbox (and is above the polyline's elevation).
+    DEFAULT_TOP_OFFSET_MM = 9.0
+    EPS = 1e-3
+    for pts2d, base_z in polyline_records:
+        xs = [p[0] for p in pts2d]
+        ys = [p[1] for p in pts2d]
+        poly_bbox = (min(xs), min(ys), max(xs), max(ys))
+        # Skip degenerate polylines (single-point loops).
+        if poly_bbox[2] - poly_bbox[0] < EPS or poly_bbox[3] - poly_bbox[1] < EPS:
+            continue
+        # Find the lowest 3DFACE that is above base_z and whose XY
+        # bbox covers (with small slack) the polyline's bbox.
+        best_top: float | None = None
+        for fbbox, fz, _ in face_records:
+            if fz <= base_z + EPS:
+                continue
+            if (
+                fbbox[0] <= poly_bbox[0] + EPS
+                and fbbox[1] <= poly_bbox[1] + EPS
+                and fbbox[2] >= poly_bbox[2] - EPS
+                and fbbox[3] >= poly_bbox[3] - EPS
+            ):
+                if best_top is None or fz < best_top:
+                    best_top = fz
+        top_z = best_top if best_top is not None else base_z + DEFAULT_TOP_OFFSET_MM
+        thickness = top_z - base_z
+        if thickness <= EPS:
+            continue
+        # Drop the redundant closing vertex if present (LWPOLYLINE
+        # closure is implicit; ezdxf may or may not duplicate the
+        # first point at the end).
+        if len(pts2d) > 1 and pts2d[0] == pts2d[-1]:
+            ring = pts2d[:-1]
+        else:
+            ring = pts2d
+        n = len(ring)
+        if n < 3:
+            continue
+        bottom = [add_vertex(p[0], p[1], base_z) for p in ring]
+        top = [add_vertex(p[0], p[1], top_z) for p in ring]
+        # Side quads, CCW seen from outside (assuming polyline is CCW)
+        for i in range(n):
+            j = (i + 1) % n
+            faces.append((bottom[i], bottom[j], top[j], top[i]))
+        # Caps via fan triangulation (n-gon → n-2 triangles)
+        for i in range(1, n - 1):
+            faces.append((top[0], top[i], top[i + 1]))
+            faces.append((bottom[0], bottom[i + 1], bottom[i]))  # reverse winding
 
     if not vertices or not faces:
         return None
