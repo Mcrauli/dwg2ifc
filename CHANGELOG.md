@@ -6,6 +6,31 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha6 — 2026-05-07 (levyhyllyn kyljet + peilatut INSERT:t)
+
+**Korjattu — kaksi alpha5:n jäljelle jäänyttä bugia**:
+
+1. **Levyhyllyn kyljet puuttuivat**: ohuet etu/takareunan LWPOLYLINE:t
+   (1.2 mm leveät) extrudoituivat alpha5:ssä vain pohjalaatan paksuuteen
+   (1.2 mm) eivätkä koko hyllyn korkeuteen. Heuristiikka: jos closed
+   LWPOLYLINE:n lyhempi sivu ≤ 5 mm (= "ohut sivurima"), extrudoidaan
+   block:n korkeimpaan top:iin sen sijaan että matchattaisiin lähimpään
+   3DFACE:hen. Tämä saa levyhyllyn 4 kyljen kiertämään hyllyn pohjasta
+   yläreunaan.
+
+2. **Peilattu INSERT (yscale=-1) tuotti negative-Z-meshin**: LWPOLYLINE
+   on 2D-entity OCS-tasolla; kun parent-INSERT:llä on yscale=-1 ezdxf
+   palauttaa virtual-LWPOLYLINE:n extrusion=(0,0,-1):lla mutta jättää
+   elevation:n ennalleen. Read elevation suoraan → block-level elev=10
+   landed at world Z=-10. Korjaus: muunnetaan LWPOLYLINE:n vertex:t
+   ja elevation OCS→WCS `entity.ocs().to_wcs(...)`-kutsulla — flip
+   hoidetaan transparenttisesti.
+
+**Lopputulos**: 8 hyllyä Lauri:n `Drawing2.dxf`:stä — 3 levyhyllyä
+Z=0..67.8mm (kyljet, pohja, päätypalkit), 5 tikashyllyä Z=0..60mm
+(sivupalkit + tikkapuut), kaikki yhdenmukaisesti world-koordinaatistossa
+ilman peilaus-artefakteja.
+
 ## v0.2.0-alpha5 — 2026-05-07 (LWPOLYLINE-extrusio = oikeat solidit)
 
 **Korjattu — alpha4:n hyllyt olivat pelkkiä yläpintoja, ei volyymiä**:

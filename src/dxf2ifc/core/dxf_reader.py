@@ -112,15 +112,30 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
             if not getattr(v_ent, "is_closed", False):
                 continue
             try:
-                pts2d = [
-                    (float(p[0]), float(p[1]))
-                    for p in v_ent.get_points("xy")
+                ocs_pts = list(v_ent.get_points("xy"))
+            except Exception:  # noqa: BLE001
+                continue
+            if len(ocs_pts) < 3:
+                continue
+            elev = float(getattr(v_ent.dxf, "elevation", 0.0) or 0.0)
+            # LWPOLYLINE vertices are 2D in OCS (Object Coordinate
+            # System). When the parent INSERT has a mirrored axis
+            # (e.g. yscale=-1) ezdxf produces a virtual LWPOLYLINE
+            # with extrusion=(0,0,-1) — the OCS Z axis points opposite
+            # to world Z, so a block-level elevation=10 lands at
+            # world Z=-10 if we read elevation directly. ``ocs.to_wcs``
+            # handles the flip transparently for both vertices and
+            # the elevation Z.
+            try:
+                ocs = v_ent.ocs()
+                wcs_pts = [
+                    ocs.to_wcs((float(p[0]), float(p[1]), elev))
+                    for p in ocs_pts
                 ]
             except Exception:  # noqa: BLE001
                 continue
-            if len(pts2d) < 3:
-                continue
-            base_z = float(getattr(v_ent.dxf, "elevation", 0.0) or 0.0)
+            pts2d = [(float(p.x), float(p.y)) for p in wcs_pts]
+            base_z = float(wcs_pts[0].z) if wcs_pts else 0.0
             polyline_records.append((pts2d, base_z))
 
     if not face_records and not polyline_records:
@@ -149,28 +164,56 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
     #    polyline's XY bbox (and is above the polyline's elevation).
     DEFAULT_TOP_OFFSET_MM = 9.0
     EPS = 1e-3
+    # Threshold: polylines whose shorter side is ≤5mm are
+    # "side rim" strips (e.g. levyhyllyn 1.2mm leveä etureunan kylki
+    # joka kiertää koko hyllyn pohjasta yläreunaan). Their proper
+    # extrusion top is NOT the matching 3DFACE Z (which gives only
+    # the deck thickness) but the highest top in the block — the
+    # rim wraps the entire shelf height.
+    THIN_RIM_THRESHOLD_MM = 5.0
+    block_max_top = max(
+        (fz for _, fz, _ in face_records),
+        default=0.0,
+    )
+    if polyline_records:
+        block_max_top = max(
+            block_max_top,
+            max(p[1] for p in polyline_records) + DEFAULT_TOP_OFFSET_MM,
+        )
     for pts2d, base_z in polyline_records:
         xs = [p[0] for p in pts2d]
         ys = [p[1] for p in pts2d]
         poly_bbox = (min(xs), min(ys), max(xs), max(ys))
+        poly_w = poly_bbox[2] - poly_bbox[0]
+        poly_h = poly_bbox[3] - poly_bbox[1]
         # Skip degenerate polylines (single-point loops).
-        if poly_bbox[2] - poly_bbox[0] < EPS or poly_bbox[3] - poly_bbox[1] < EPS:
+        if poly_w < EPS or poly_h < EPS:
             continue
-        # Find the lowest 3DFACE that is above base_z and whose XY
-        # bbox covers (with small slack) the polyline's bbox.
-        best_top: float | None = None
-        for fbbox, fz, _ in face_records:
-            if fz <= base_z + EPS:
-                continue
-            if (
-                fbbox[0] <= poly_bbox[0] + EPS
-                and fbbox[1] <= poly_bbox[1] + EPS
-                and fbbox[2] >= poly_bbox[2] - EPS
-                and fbbox[3] >= poly_bbox[3] - EPS
-            ):
-                if best_top is None or fz < best_top:
-                    best_top = fz
-        top_z = best_top if best_top is not None else base_z + DEFAULT_TOP_OFFSET_MM
+        is_thin_rim = min(poly_w, poly_h) <= THIN_RIM_THRESHOLD_MM
+        if is_thin_rim and block_max_top > base_z + EPS:
+            # Side rim: stretch from its base up to the entire block's
+            # top. This is the only way to recover the side wall of a
+            # shelf when the block-level encoding only contains the
+            # top-cap 3DFACE at deck height + the perimeter LWPOLYLINEs
+            # at elev=0 — without this the rim would render only as a
+            # 1.2mm-tall sliver coplanar with the deck.
+            top_z = block_max_top
+        else:
+            # Find the lowest 3DFACE that is above base_z and whose
+            # XY bbox covers (with small slack) the polyline's bbox.
+            best_top: float | None = None
+            for fbbox, fz, _ in face_records:
+                if fz <= base_z + EPS:
+                    continue
+                if (
+                    fbbox[0] <= poly_bbox[0] + EPS
+                    and fbbox[1] <= poly_bbox[1] + EPS
+                    and fbbox[2] >= poly_bbox[2] - EPS
+                    and fbbox[3] >= poly_bbox[3] - EPS
+                ):
+                    if best_top is None or fz < best_top:
+                        best_top = fz
+            top_z = best_top if best_top is not None else base_z + DEFAULT_TOP_OFFSET_MM
         thickness = top_z - base_z
         if thickness <= EPS:
             continue
