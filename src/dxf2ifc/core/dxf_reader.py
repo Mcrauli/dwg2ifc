@@ -39,6 +39,74 @@ def list_layers(path: str | Path) -> list[str]:
     return sorted(layers)
 
 
+def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
+    """Walk an INSERT's ``virtual_entities()`` and aggregate every
+    contained 3DFACE into a single MeshGeometry. ezdxf applies the
+    INSERT's transform (insertion + rotation + scale) automatically
+    in ``virtual_entities()``, so the resulting face vertices are
+    already in world space.
+
+    Returns ``None`` when the block has no 3DFACE entities (caller
+    falls back to the BlockInstance / bbox-cuboid path).
+
+    Lauri's KYL-LISP refrigeration shelves used to emit native
+    3DSOLID bodies that needed accoreconsole+STLOUT tessellation. The
+    rewritten LISP now emits dynamic block references (anonymous
+    ``*U*`` blocks) that contain 3DFACE primitives directly — those
+    are faces, not solids, but they are real geometry with no need
+    for an external tessellation step. ezdxf reads them natively.
+
+    Vertices are deduplicated at 4-decimal precision so adjacent
+    3DFACEs that share an edge produce a connected mesh rather than
+    one disjoint triangle pair per face.
+    """
+    try:
+        virt = list(insert_entity.virtual_entities())
+    except Exception:  # noqa: BLE001 — malformed block, ezdxf can raise
+        return None
+
+    vertices: list[Point3D] = []
+    faces: list[tuple[int, ...]] = []
+    v_to_idx: dict[tuple[float, float, float], int] = {}
+
+    for v_ent in virt:
+        if v_ent.dxftype() != "3DFACE":
+            continue
+        try:
+            v0 = v_ent.dxf.vtx0
+            v1 = v_ent.dxf.vtx1
+            v2 = v_ent.dxf.vtx2
+            v3 = v_ent.dxf.vtx3
+        except AttributeError:
+            continue
+        pts: list[tuple[float, float, float]] = []
+        for v in (v0, v1, v2, v3):
+            x = float(v[0])
+            y = float(v[1])
+            z = float(v[2]) if len(v) > 2 else 0.0
+            pts.append((x, y, z))
+        # AutoCAD encodes a triangle as a quad with vtx2 == vtx3.
+        face_pts = pts[:3] if pts[2] == pts[3] else pts
+        face_idx: list[int] = []
+        for p in face_pts:
+            key = (round(p[0], 4), round(p[1], 4), round(p[2], 4))
+            idx = v_to_idx.get(key)
+            if idx is None:
+                idx = len(vertices)
+                v_to_idx[key] = idx
+                vertices.append(Point3D(p[0], p[1], p[2]))
+            face_idx.append(idx)
+        faces.append(tuple(face_idx))
+
+    if not vertices or not faces:
+        return None
+    return MeshGeometry(
+        vertices=tuple(vertices),
+        faces=tuple(faces),
+        source="3dface",
+    )
+
+
 def read_dxf(
     path: str | Path,
     *,
@@ -453,6 +521,23 @@ def _record_from_entity(
                     block_name=entity.dxf.name,
                     handle=handle,
                 )]
+        # Try aggregating any 3DFACE entities the block carries —
+        # Lauri's KYL-LISP shelves now emit dynamic block references
+        # (anonymous *U* blocks) whose definition has 3DFACE faces in
+        # block coordinates. ezdxf's INSERT.virtual_entities() applies
+        # the INSERT transform (insertion, rotation, scale) so the
+        # 3DFACE vertices land in world space — no accoreconsole or
+        # AutoCAD COM needed.
+        face_mesh = _aggregate_3dface_from_insert(entity)
+        if face_mesh is not None:
+            return [EntityRecord(
+                layer=layer,
+                dxf_type="INSERT",
+                geometry=face_mesh,
+                attributes={},
+                block_name=entity.dxf.name,
+                handle=handle,
+            )]
         insert = Point3D(
             float(entity.dxf.insert.x),
             float(entity.dxf.insert.y),

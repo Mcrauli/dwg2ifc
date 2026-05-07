@@ -6,6 +6,31 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha4 — 2026-05-07 (dynamic block hyllyt: 3DFACE-aggregaatio)
+
+**Korjattu — KYL-LISP-hyllyjen uusi dynamic-block-formaatti**:
+
+- Lauri:n hylly-LISP tuottaa nyt blockreferenssejä joiden anonyymi
+  `*U*`-block-määritelmä sisältää 3DFACE-pintoja (aiemmin natiiveja
+  3DSOLID-bodyja). Pipeline ei aiemmin lukenut näitä → hyllyt eivät
+  tulleet IFC:hen.
+- `dxf_reader._aggregate_3dface_from_insert(insert)` käyttää
+  `INSERT.virtual_entities()`:tä joka soveltaa INSERT:in transformaation
+  (insertion + rotation + scale) automaattisesti, jolloin block-tason
+  3DFACE:t saadaan suoraan world space:hen ilman accoreconsole+STLOUT-
+  tessellaatio-vaihetta.
+- Vertex-deduplikointi 4-desimaalin tarkkuudella → adjacent face:t
+  jakavat vertex:t (Solibrissa pinta yhtenäinen).
+- **Ei AutoCAD COM:ia, ei accoreconsole:a, ei STLOUT:ia** — puhdas
+  ezdxf:n natiivi luenta.
+- Fallback BlockInstance:hin säilyy block:eille joissa ei ole 3DFACE:ja
+  (POSITIO-numerointiblokit, label-blokit jne).
+
+**Testattu**: 8 hyllyä Lauri:n `Drawing2.dxf`:stä (5 tikashyllyä +
+3 levyhyllyä) tulevat IFC:hen mesh-pohjaisesti, oikeilla
+`IfcCableCarrierSegment` / `CABLELADDERSEGMENT` / `CABLETRAYSEGMENT`-
+luokituksilla. 4 uutta yksikkötestiä syntetisoidulla DXF:llä.
+
 ## v0.2.0-alpha3 — 2026-05-07 (MagiCAD-IFC merge)
 
 **Lisätty — MAGIIFCEXPORT-tuotetun IFC:n yhdistäminen master-IFC:hen**:
