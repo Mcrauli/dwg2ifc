@@ -87,6 +87,22 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     convert.set_defaults(preprocess_proxies=True)
+    convert.add_argument(
+        "--magicad-ifc",
+        type=Path,
+        default=None,
+        help=(
+            "Optional IFC produced by MagiCAD's MAGIIFCEXPORT command "
+            "(or any other tool that writes per-MagiCAD-product IFC "
+            "with MagiCAD types/PSets). When supplied, MagiCAD parts "
+            "from the DWG (MAGI* native classes + ACAD_PROXY_ENTITY) "
+            "are skipped to avoid duplicates, and the supplied IFC's "
+            "products are appended into the master IFC under the "
+            "first IfcBuildingStorey. Use this to combine Lauri's "
+            "KYL-LISP refrigeration geometry with a colleague's "
+            "FULL-MagiCAD-licensed IFC export of the LVI design."
+        ),
+    )
     return parser
 
 
@@ -103,6 +119,7 @@ def main(argv: list[str] | None = None) -> int:
             energy_specs_path=args.energy_specs,
             floor_elevation_mm=args.floor_elevation,
             preprocess_proxies=args.preprocess_proxies,
+            magicad_ifc_path=args.magicad_ifc,
         )
         print(f"Wrote {args.output}", file=sys.stderr)
         if args.validate:

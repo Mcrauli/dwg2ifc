@@ -57,6 +57,7 @@ def test_file_panel_convert_button_emits_signal_with_paths(qtbot, tmp_path):
         0.0,
         False,
         True,
+        "",
     ]
 
 
@@ -111,6 +112,7 @@ def test_file_panel_emits_zero_when_checkbox_unchecked(qtbot, tmp_path):
         0.0,
         False,
         True,
+        "",
     ]
 
 
@@ -132,6 +134,7 @@ def test_file_panel_emits_floor_elevation_with_convert(qtbot, tmp_path):
         12000.0,
         False,
         True,
+        "",
     ]
 
 
@@ -169,4 +172,43 @@ def test_file_panel_convert_with_energy_specs_path(qtbot, tmp_path):
         0.0,
         False,
         True,
+        "",
+    ]
+
+
+def test_file_panel_browse_magicad_ifc_fills_line_edit(qtbot, tmp_path):
+    from dxf2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+
+    fake_path = str(tmp_path / "magicad.ifc")
+    with patch(
+        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileName",
+        return_value=(fake_path, "IFC-tiedostot (*.ifc)"),
+    ):
+        panel.browse_magicad_ifc_button.click()
+
+    assert panel.magicad_ifc_edit.text() == fake_path
+
+
+def test_file_panel_convert_emits_magicad_ifc_path(qtbot, tmp_path):
+    from dxf2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+    panel.input_edit.setText(str(tmp_path / "in.dxf"))
+    panel.output_edit.setText(str(tmp_path / "out.ifc"))
+    panel.magicad_ifc_edit.setText(str(tmp_path / "magicad.ifc"))
+
+    with qtbot.waitSignal(panel.convert_requested, timeout=500) as sig:
+        panel.convert_button.click()
+    assert sig.args == [
+        str(tmp_path / "in.dxf"),
+        str(tmp_path / "out.ifc"),
+        "",
+        0.0,
+        False,
+        True,
+        str(tmp_path / "magicad.ifc"),
     ]

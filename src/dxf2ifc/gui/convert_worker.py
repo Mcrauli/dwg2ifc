@@ -29,6 +29,7 @@ class ConvertWorker(QtCore.QObject):
         energy_specs: str | None = None,
         floor_elevation_mm: float = 0.0,
         quick_convert: bool = False,
+        magicad_ifc: str | None = None,
     ) -> None:
         # quick_convert is the user-facing knob; it overrides BOTH
         # preprocess_acis AND preprocess_proxies when True so the
@@ -47,6 +48,7 @@ class ConvertWorker(QtCore.QObject):
             preprocess_proxies=preprocess_proxies,
             energy_specs=energy_specs,
             floor_elevation_mm=floor_elevation_mm,
+            magicad_ifc=magicad_ifc,
         )
         QtCore.QThreadPool.globalInstance().start(runnable)
 
@@ -64,6 +66,7 @@ class _ConvertRunnable(QtCore.QRunnable):
         preprocess_proxies: bool,
         energy_specs: str | None,
         floor_elevation_mm: float = 0.0,
+        magicad_ifc: str | None = None,
     ) -> None:
         super().__init__()
         self._worker = worker
@@ -75,6 +78,7 @@ class _ConvertRunnable(QtCore.QRunnable):
         self._preprocess_proxies = preprocess_proxies
         self._energy_specs = energy_specs
         self._floor_elevation_mm = floor_elevation_mm
+        self._magicad_ifc = magicad_ifc
 
     def run(self) -> None:  # type: ignore[override]
         try:
@@ -88,6 +92,7 @@ class _ConvertRunnable(QtCore.QRunnable):
                 progress=self._worker.progress.emit,
                 energy_specs_path=self._energy_specs or None,
                 floor_elevation_mm=self._floor_elevation_mm,
+                magicad_ifc_path=self._magicad_ifc or None,
             )
         except Exception as exc:  # noqa: BLE001 — surface every failure to the GUI
             self._worker.failed.emit(f"{type(exc).__name__}: {exc}")

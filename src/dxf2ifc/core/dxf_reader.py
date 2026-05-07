@@ -44,6 +44,7 @@ def read_dxf(
     *,
     acis_meshes: Mapping[str, object] | None = None,
     proxy_layers: Mapping[str, str] | None = None,
+    skip_magicad: bool = False,
 ) -> list[EntityRecord]:
     """Parse a DXF and return every supported entity in model space.
 
@@ -62,6 +63,14 @@ def read_dxf(
     (MAGIPATHWAYDEVICE, MAGIACCESSORY, …) because ezdxf cannot read
     their ``.dxf.layer`` attribute. ACAD_PROXY_ENTITY records read
     their layer directly from ezdxf and ignore this mapping.
+
+    ``skip_magicad`` (default False): when True, every ``MAGI*`` native
+    class and every ``ACAD_PROXY_ENTITY`` (the wrapper MagiCAD uses
+    when its ARX isn't loaded) is dropped before mapping. The
+    orchestrator sets this to True when a separate MagiCAD-IFC export
+    is being merged in by :mod:`dxf2ifc.core.ifc_merger` so MagiCAD
+    parts don't appear twice (once as mesh-tessellated geometry, once
+    as proper IFC types from the MAGIIFCEXPORT side).
     """
     doc = ezdxf.readfile(str(path))
     msp = doc.modelspace()
@@ -100,6 +109,11 @@ def read_dxf(
         except Exception:  # noqa: BLE001 — fully unsupported entity classes
             continue
         if dxftype.startswith("MAGI"):
+            if skip_magicad:
+                # Caller will merge the MagiCAD products in from a
+                # separate MAGIIFCEXPORT-produced IFC; drop the
+                # mesh-tessellated copy here to avoid duplicates.
+                continue
             # Native MagiCAD entity (post-Object-Enabler-saved DXF).
             # ezdxf cannot read its ``.dxf.layer`` attribute, so the
             # only path to layer-based mapping is via the proxy_layers
@@ -133,6 +147,13 @@ def read_dxf(
                 ))
             continue
         if dxftype == "ACAD_PROXY_ENTITY":
+            if skip_magicad:
+                # Same rationale as the MAGI* skip above. Most proxies
+                # in a MagiCAD-bearing DWG ARE MagiCAD; the (rare)
+                # non-MagiCAD ARX proxies will also drop, which is OK
+                # because dxf2ifc only ships profiles for MagiCAD
+                # patterns anyway.
+                continue
             # MagiCAD (and some other AutoCAD add-ons) store their objects
             # as proxy entities — graphics-only stand-ins that survive
             # roundtripping when the original app is not loaded. ezdxf

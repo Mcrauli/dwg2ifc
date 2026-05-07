@@ -6,6 +6,37 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha3 — 2026-05-07 (MagiCAD-IFC merge)
+
+**Lisätty — MAGIIFCEXPORT-tuotetun IFC:n yhdistäminen master-IFC:hen**:
+
+- **Uusi GUI-filepicker "MagiCAD-IFC"** (valinnainen). Kun annettu, dxf2ifc
+  yhdistää sen tuotteet master-IFC:hen ensimmäisen `IfcBuildingStorey`:n alle.
+- **Uusi CLI-argumentti `--magicad-ifc PATH`** vastaavalla logiikalla.
+- **Uusi `dxf2ifc.core.ifc_merger`-moduuli** käyttää
+  `ifcopenshell.api.project.append_asset`:ia kopioimaan `IfcProduct`-johdannaiset
+  MagiCAD-IFC:stä master-IFC:hen yhdessä geometric context:ien, materiaalien,
+  styles:ien ja propertyset:ien kanssa. `IfcSite` / `IfcBuilding` / `IfcBuildingStorey`
+  / `IfcSpace` ohitetaan — master-IFC:n hierarkia pysyy kanonisena.
+- **Spatial container linkitys**: jokainen yhdistetty tuote sidotaan master-IFC:n
+  ensimmäiseen `IfcBuildingStorey`:hen `IfcRelContainedInSpatialStructure`:llä.
+- **DXF-puolen MagiCAD-skip kun MagiCAD-IFC annettu**: `read_dxf` saa
+  `skip_magicad`-lipun joka ohittaa `MAGI*`-natiivit luokat ja
+  `ACAD_PROXY_ENTITY`-tietueet jotta DXF-pohjainen mesh-tessellaatio ei
+  duplikoitu MagiCAD-IFC:n semanttisten tuotteiden kanssa.
+
+**Käyttötapaus**: kollegan FULL-MagiCAD-lisensoidun koneen `-MAGIIFCCD`-komento
+(command-line / dialog-vapaa variantti `MAGIIFCEXPORT`-perheestä) tuottaa
+korkeatasoisen MagiCAD-IFC:n (oikeat `IfcDuctSegment` / `IfcAirTerminal` /
+MagiCAD-PSet:t). Sen ja Lauri:n KYL-LISP-DXF:n yhdistäminen yhdeksi
+master-IFC:ksi onnistuu nyt yhdellä konversio-ajolla — DXF-syötteellä
+pipeline ei tarvitse AutoCAD COM:ia eikä `acad.exe`:tä lainkaan,
+ainoastaan `accoreconsole.exe`:n 3DSOLID-tessellaatioon.
+
+**Testit**: 7 uutta merger-testiä + 2 uutta GUI file_panel -testiä.
+Yhteensä 530 testiä passes (1 skipped, 3 pre-existing failures että master:in
+puolella).
+
 ## v0.2.0-alpha2 — 2026-05-07 (POC v4 -saagan tulos)
 
 **Muutettu — automaattinen MAGIEXPLODE+EXPLODE-keystroke**:

@@ -7,7 +7,7 @@ from PySide6 import QtCore, QtWidgets
 
 class FilePanel(QtWidgets.QWidget):
     # Emits (dxf_path, ifc_path, energy_specs_path, floor_elevation_mm,
-    # quick_convert, preprocess_proxies).
+    # quick_convert, preprocess_proxies, magicad_ifc_path).
     # ``energy_specs_path`` is empty string when the user has not picked
     # a spec file. ``floor_elevation_mm`` is the absolute Z elevation of
     # 1.krs (mm) — added to every IfcBuildingStorey.Elevation in the
@@ -26,7 +26,11 @@ class FilePanel(QtWidgets.QWidget):
     # bbox-cuboid fallback + accoreconsole EXPLODE for proxies whose
     # graphics ezdxf cannot decode — useful only when proxies are
     # known not to carry geometry.
-    convert_requested = QtCore.Signal(str, str, str, float, bool, bool)
+    # ``magicad_ifc_path`` is empty string when no MagiCAD-IFC has been
+    # picked. When non-empty, the converter merges that IFC (typically
+    # produced by a colleague's FULL-MagiCAD MAGIIFCEXPORT) into the
+    # master IFC and skips MagiCAD parts in the DWG to avoid duplicates.
+    convert_requested = QtCore.Signal(str, str, str, float, bool, bool, str)
 
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
         super().__init__(parent)
@@ -64,6 +68,24 @@ class FilePanel(QtWidgets.QWidget):
         self.browse_energy_button.clicked.connect(self._on_browse_energy)
         layout.addWidget(self.browse_energy_button, 2, 2)
 
+        layout.addWidget(self._caption("MagiCAD-IFC"), 3, 0)
+        self.magicad_ifc_edit = QtWidgets.QLineEdit()
+        self.magicad_ifc_edit.setPlaceholderText(
+            "Valinnainen MAGIIFCEXPORT-tuotos (LVI-puoli yhdistetään master-IFC:hen)"
+        )
+        self.magicad_ifc_edit.setToolTip(
+            "Valinnainen MagiCAD-IFC. Kun annettu, dxf2ifc skippaa "
+            "MagiCAD-objektit DWG:stä (MAGI*-luokat + ACAD_PROXY_ENTITY) "
+            "ja yhdistää tämän IFC:n IfcProduct:t master-IFC:hen ensimmäisen "
+            "IfcBuildingStoreyn alle. Tarkoitettu kollegan FULL-MagiCAD-"
+            "lisenssin koneella ajettavaa MAGIIFCEXPORT:in tuotosta varten."
+        )
+        layout.addWidget(self.magicad_ifc_edit, 3, 1)
+        self.browse_magicad_ifc_button = QtWidgets.QPushButton("Browse…")
+        self.browse_magicad_ifc_button.setProperty("secondary", "true")
+        self.browse_magicad_ifc_button.clicked.connect(self._on_browse_magicad_ifc)
+        layout.addWidget(self.browse_magicad_ifc_button, 3, 2)
+
         self.floor_elevation_enabled_checkbox = QtWidgets.QCheckBox(
             "Lisää 1.krs absoluuttinen korko"
         )
@@ -74,9 +96,9 @@ class FilePanel(QtWidgets.QWidget):
             "elementti-Z-arvoon. Pois: DXF:n Z-koordinaatit menevät IFC:hen "
             "sellaisinaan (käytä jos piirrät suoraan absoluuttiseen korkoon)."
         )
-        layout.addWidget(self.floor_elevation_enabled_checkbox, 3, 0, 1, 3)
+        layout.addWidget(self.floor_elevation_enabled_checkbox, 4, 0, 1, 3)
 
-        layout.addWidget(self._caption("1.krs korko (mm)"), 4, 0)
+        layout.addWidget(self._caption("1.krs korko (mm)"), 5, 0)
         self.floor_elevation_edit = QtWidgets.QDoubleSpinBox()
         # AutoCAD drawings can place 1.krs anywhere on the absolute
         # Finnish coordinate map — typical values 0…30000 mm but
@@ -90,7 +112,7 @@ class FilePanel(QtWidgets.QWidget):
             "DXF:n Z=0 = 1.krs lattia. Tämä arvo lisätään jokaiseen "
             "IfcBuildingStorey.Elevation-arvoon."
         )
-        layout.addWidget(self.floor_elevation_edit, 4, 1, 1, 2)
+        layout.addWidget(self.floor_elevation_edit, 5, 1, 1, 2)
         self.floor_elevation_enabled_checkbox.toggled.connect(
             self.floor_elevation_edit.setEnabled
         )
@@ -105,7 +127,7 @@ class FilePanel(QtWidgets.QWidget):
             "että layer-mappaus toimii — käytännössä 5–10× nopeampi raskailla "
             "DXF-tiedostoilla."
         )
-        layout.addWidget(self.quick_convert_checkbox, 5, 1, 1, 2)
+        layout.addWidget(self.quick_convert_checkbox, 6, 1, 1, 2)
 
         self.preprocess_proxies_checkbox = QtWidgets.QCheckBox(
             "MagiCAD/proxy-objektien geometria"
@@ -119,12 +141,12 @@ class FilePanel(QtWidgets.QWidget):
             "monimutkaiset 3D-objektit. Ilman Object Enableria nämä saavat "
             "bbox-cuboid-fallbackin. Pois: skip kokonaan."
         )
-        layout.addWidget(self.preprocess_proxies_checkbox, 6, 1, 1, 2)
+        layout.addWidget(self.preprocess_proxies_checkbox, 7, 1, 1, 2)
 
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setProperty("primary", "true")
         self.convert_button.clicked.connect(self._on_convert)
-        layout.addWidget(self.convert_button, 7, 1, 1, 2)
+        layout.addWidget(self.convert_button, 8, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
 
@@ -158,6 +180,16 @@ class FilePanel(QtWidgets.QWidget):
         if path:
             self.energy_edit.setText(path)
 
+    def _on_browse_magicad_ifc(self) -> None:
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            "Avaa MagiCAD-IFC (MAGIIFCEXPORT-tuotos)",
+            "",
+            "IFC-tiedostot (*.ifc);;All files (*)",
+        )
+        if path:
+            self.magicad_ifc_edit.setText(path)
+
     def _on_convert(self) -> None:
         floor_elev = (
             float(self.floor_elevation_edit.value())
@@ -171,4 +203,5 @@ class FilePanel(QtWidgets.QWidget):
             floor_elev,
             bool(self.quick_convert_checkbox.isChecked()),
             bool(self.preprocess_proxies_checkbox.isChecked()),
+            self.magicad_ifc_edit.text(),
         )

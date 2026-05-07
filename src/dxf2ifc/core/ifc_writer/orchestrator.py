@@ -231,6 +231,7 @@ def convert_dxf(
     progress: object | None = None,
     energy_specs_path: str | Path | None = None,
     floor_elevation_mm: float = 0.0,
+    magicad_ifc_path: str | Path | None = None,
 ) -> tuple[dict[str, list], ValidationReport | None]:
     """Orchestrate DXF -> IFC conversion end-to-end.
 
@@ -303,7 +304,15 @@ def convert_dxf(
         for h, mesh in last_explode_meshes().items():
             acis_meshes.setdefault(h, mesh)
 
-    entities = read_dxf(effective_input, acis_meshes=acis_meshes)
+    # When the caller supplied a MagiCAD-IFC for merge-in, drop MAGI*
+    # native classes and ACAD_PROXY_ENTITY records here so we don't
+    # produce duplicates (mesh-tessellated copy from STLOUT + properly-
+    # typed copy from MAGIIFCEXPORT). When no MagiCAD-IFC is supplied
+    # the legacy DXF-side MagiCAD path runs as before.
+    skip_magicad = magicad_ifc_path is not None
+    entities = read_dxf(
+        effective_input, acis_meshes=acis_meshes, skip_magicad=skip_magicad
+    )
 
     # POC diagnostics: count polyface / 3DFACE / MESH records read
     # from the intermediate DXF so we can see if MAGIEXPLODE+EXPLODE
@@ -677,6 +686,37 @@ def convert_dxf(
             assign_to_system(ifc, products=products, system=system)
 
         write_ifc(ifc, output_path)
+
+        # Merge in the colleague's MAGIIFCEXPORT-produced IFC, if one
+        # was provided. This must run AFTER write_ifc since the merger
+        # opens both files via ifcopenshell.open() and does its own
+        # save. The ``skip_magicad`` flag set on ``read_dxf`` above
+        # already prevented mesh-tessellated MagiCAD parts from being
+        # written, so the merge adds the proper-IFC-typed parts on top
+        # of Lauri's KYL-LISP refrigeration parts cleanly.
+        if magicad_ifc_path is not None:
+            from dxf2ifc.core.ifc_merger import merge_magicad_ifc
+
+            if progress is not None:
+                progress(f"Mergetään MagiCAD-IFC: {Path(magicad_ifc_path).name}")
+            merge_stats = merge_magicad_ifc(
+                output_path,
+                magicad_ifc_path,
+                progress=progress if progress is not None else None,  # type: ignore[arg-type]
+            )
+            if progress is not None:
+                top_types = sorted(
+                    merge_stats["ifc_types"].items(), key=lambda x: -x[1]
+                )[:5]
+                progress(
+                    f"MagiCAD-merge: {merge_stats['products_appended']} tuotetta "
+                    f"lisätty (epäonnistunut {merge_stats['products_skipped']})"
+                )
+                if top_types:
+                    progress(
+                        "MagiCAD-IFC-tyypit (top 5): "
+                        + ", ".join(f"{t}={n}" for t, n in top_types)
+                    )
 
         report: ValidationReport | None = None
         if validate:

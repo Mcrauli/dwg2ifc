@@ -152,6 +152,7 @@ class MainWindow(QtWidgets.QMainWindow):
         floor_elevation_mm: float = 0.0,
         quick_convert: bool = False,
         preprocess_proxies: bool = True,
+        magicad_ifc: str = "",
     ) -> None:
         if not dxf or not out:
             self.set_status("Pick both a DXF input and an IFC output first", level="error")
@@ -175,6 +176,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.preview_log.append_info(
                 f"Energiateho-listasta: {Path(energy_specs).name}"
             )
+        if magicad_ifc:
+            self.preview_log.append_info(
+                f"MagiCAD-IFC merge: {Path(magicad_ifc).name}"
+            )
         if floor_elevation_mm:
             self.preview_log.append_info(
                 f"1.krs korko: +{int(floor_elevation_mm)} mm"
@@ -196,6 +201,7 @@ class MainWindow(QtWidgets.QMainWindow):
             floor_elevation_mm=float(floor_elevation_mm),
             quick_convert=bool(quick_convert),
             preprocess_proxies=bool(preprocess_proxies),
+            magicad_ifc=magicad_ifc or None,
         )
 
     def _on_convert_finished(self, out: str) -> None:
