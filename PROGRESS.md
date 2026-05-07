@@ -5,11 +5,11 @@ bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
 ## Onboarding fresh Claude — TL;DR (2026-05-06)
 
-**Tuorein julkaisu**: **v0.1.19-alpha1** (2026-05-06) — MagiCAD /
-proxy-objektien geometriapolku: avoimet polylinet hyväksytään,
-proxy_preprocessing-moduuli + bbox-fallback, Object Enabler -tunnistus,
-profile-säännöt KYL-JV1 / KYL-JV1-LAITE / KYL-KONDENSSIASTIAT.
-Aiemmat saman päivän v0.1.17 (geometriafix) + v0.1.18 (korko-checkbox).
+**Tuorein julkaisu**: **v0.2.0-alpha1** (2026-05-06) — DWG-input-tuki +
+MagiCAD-objektien EXPLODE FULL-MagiCAD-koneella hidden-AutoCAD COM:lla
+(Visible=False). Avoimet polyline + profile-säännöt + GUI-checkbox
+v0.1.19:stä säilyvät. accoreconsole-pohjainen proxy_preprocessing
+poistettu (todistettu mahdottomaksi ARX-rajoitteen takia).
 Sivuston lataus pinnattu: <https://mcrauli.github.io/autocad-lisp-ohjeet/dxf2ifc.html>.
 
 **Avoimet ongelmat 2026-05-06**:

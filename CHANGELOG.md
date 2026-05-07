@@ -6,6 +6,57 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha1 — 2026-05-06
+
+**Lisätty — DWG-input + MagiCAD-tuki**:
+
+- **`.dwg`-tiedostot hyväksytään input:ina** — `dxf2ifc convert input.dwg
+  output.ifc` toimii samalla tavalla kuin DXF. GUI Browse-dialog filter
+  laajennettu `*.dxf;*.dwg`.
+- **MagiCAD-objektien EXPLODE FULL-MagiCAD-koneella**: DWG-input:lle
+  käynnistetään AutoCAD piilotettuna (`acad.exe` Visible=False
+  pywin32-COM:lla). MagiCAD ARX latautuu autoload-rekisteristä, ja
+  `(command "_.EXPLODE" ent)` tuottaa 3DSOLID-lapsia jotka STLOUT
+  tessellöi STL:ksi. Välitilanne-DXF kirjoitetaan DXFOUT:lla, jonka
+  jälkeen normaali pipeline (ezdxf + accoreconsole + IFC-tuotanto)
+  jatkaa siitä.
+- **Adaptiivinen käyttäytyminen**: Render-only Object Enabler -koneella
+  EXPLODE epäonnistuu hiljaa → MagiCAD-osat jäävät pois IFC:stä mutta
+  Lauri:n omat KYL-LISP-piirrokset toimivat ennallaan. FULL-MagiCAD-
+  koneella sama koodi tuottaa täydellisen 3D-geometrian.
+- **Singleton hidden AutoCAD**: COM-instanssi pidetään muistissa
+  konversioiden välillä. Cold-start ~14 s ekan kerran, seuraavat
+  ~3 s/konversio. Spike v3 vahvisti: ikkuna ei näy missään vaiheessa.
+- **Throwaway profile** `dxf2ifc_headless`: estää RECENTFILES-, FILEDIA-,
+  CMDDIA-, SDI-sysvar-saastumisen käyttäjän omasta AutoCAD-profiilista.
+
+**Riippuvuudet**:
+
+- `pywin32>=305` (Windows-only, sys_platform=='win32'). DWG-input vaatii
+  AutoCAD:in asennetuksi. DXF-input ei vaadi pywin32-tukea.
+
+**Sisäinen**:
+
+- Uusi moduuli `core/dwg_preconvert.py` (~270 riviä) — singleton COM
+  session, AutoLISP-pohjainen EXPLODE+STLOUT+DXFOUT, atexit-cleanup.
+- Poistettu `core/proxy_preprocessing.py` (v0.1.19-yritys
+  accoreconsole-EXPLODE-polulle, todistettu mahdottomaksi: accoreconsole
+  ei lataa ARX-moduuleja Autodesk-rajoitteen vuoksi).
+- Orchestrator detect:taa `.dwg`-suffix:in ja kutsuu DWG-pre-conversion:in
+  ennen muuta pipelineä.
+- Ei regressiota DXF-input:lle: 4001_1krs.dxf tuottaa täsmälleen
+  v0.1.18-baseline:n product-counts (9 + 12 + 15).
+- 512/512 pytest passes (+3 uutta `test_dwg_preconvert.py`-testiä).
+
+**Rajoitteet**:
+
+- MagiCAD-osien täysi 3D-geometria vaatii FULL MagiCAD-lisenssin
+  asennetuksi konversiokoneella. Render-only Object Enabler ei riitä —
+  Object Enabler ei tarjoa Explode-toiminnallisuutta MAGI*-luokille.
+  Empiirisesti vahvistettu 4 spike-iteraatiossa.
+- Rekisteröidyt accoreconsole-asetukset säilyvät (RECENTFILES jne.) vain
+  oman profiilin ulkopuolella `dxf2ifc_headless`-profiilissa.
+
 ## v0.1.19-alpha1 — 2026-05-06
 
 **Lisätty — MagiCAD/proxy-objektien geometria**:

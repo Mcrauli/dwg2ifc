@@ -43,6 +43,7 @@ def read_dxf(
     path: str | Path,
     *,
     acis_meshes: Mapping[str, object] | None = None,
+    proxy_layers: Mapping[str, str] | None = None,
 ) -> list[EntityRecord]:
     """Parse a DXF and return every supported entity in model space.
 
@@ -53,10 +54,19 @@ def read_dxf(
     handle is in this mapping, its triangulated mesh is yielded as a
     :class:`MeshGeometry`; when not, the body is silently skipped (ezdxf
     cannot parse the SAB-encoded body itself).
+
+    ``proxy_layers`` is the secondary side-channel produced by
+    :func:`dxf2ifc.core.proxy_preprocessing.extract_proxy_geometry` —
+    a ``{handle: layer}`` mapping captured from accoreconsole's LISP
+    manifest. Required for MAGI* native entity classes
+    (MAGIPATHWAYDEVICE, MAGIACCESSORY, …) because ezdxf cannot read
+    their ``.dxf.layer`` attribute. ACAD_PROXY_ENTITY records read
+    their layer directly from ezdxf and ignore this mapping.
     """
     doc = ezdxf.readfile(str(path))
     msp = doc.modelspace()
     acis_meshes = acis_meshes or {}
+    proxy_layers = proxy_layers or {}
 
     # Layers carrying at least one 3D mesh source — either a MESH entity
     # (manually MESHSMOOTHed by the user) or a 3DSOLID whose handle landed
@@ -82,6 +92,39 @@ def read_dxf(
             dxftype = entity.dxftype()
         except Exception:  # noqa: BLE001 — fully unsupported entity classes
             continue
+        if dxftype.startswith("MAGI"):
+            # Native MagiCAD entity (post-Object-Enabler-saved DXF).
+            # ezdxf cannot read its ``.dxf.layer`` attribute, so the
+            # only path to layer-based mapping is via the proxy_layers
+            # side-channel populated from accoreconsole's manifest.
+            # Geometry comes through ``acis_meshes`` (EXPLODE+STLOUT
+            # of 3DSOLID children) — for non-3DSOLID-yielding entity
+            # classes (MAGIDIMLINE annotations etc) the handle is
+            # absent from acis_meshes and we silently skip.
+            try:
+                handle = str(entity.dxf.handle).upper()
+            except Exception:  # noqa: BLE001
+                continue
+            layer = proxy_layers.get(handle)
+            if layer is None:
+                continue
+            mesh_data = acis_meshes.get(handle)
+            if mesh_data is None:
+                continue
+            vertices = tuple(
+                Point3D(float(v[0]), float(v[1]), float(v[2]))
+                for v in mesh_data.vertices
+            )
+            faces = tuple(tuple(int(i) for i in f) for f in mesh_data.faces)
+            if vertices and faces:
+                records.append(EntityRecord(
+                    layer=layer,
+                    dxf_type=dxftype,
+                    geometry=MeshGeometry(vertices=vertices, faces=faces),
+                    attributes={},
+                    handle=handle,
+                ))
+            continue
         if dxftype == "ACAD_PROXY_ENTITY":
             # MagiCAD (and some other AutoCAD add-ons) store their objects
             # as proxy entities — graphics-only stand-ins that survive
@@ -101,12 +144,42 @@ def read_dxf(
             try:
                 proxy_layer = entity.dxf.layer
                 proxy_handle = str(entity.dxf.handle).upper()
-                virtual_iter = entity.__virtual_entities__()
             except Exception:  # noqa: BLE001 — non-graphical proxy / malformed
                 continue
-            virtual_yielded = False
+            # Emit BOTH virtual-entity decode AND the preprocessing
+            # mesh when both are available — they share the proxy's
+            # handle/layer so the orchestrator's dispatch can pick the
+            # geometry that matches the rule's IFC type:
+            #   - IfcPipeSegment / IfcCableCarrierSegment / etc need
+            #     LineGeometry → use the virtual entities (KYL-JV1
+            #     pipe centrelines split into segments).
+            #   - IfcBuildingElementProxy / IfcTank / IfcFlowController
+            #     etc need Mesh → use the proxy_preprocessing cuboid
+            #     (MUUT_OSAT, KYL-JV1-LAITE, KYL-KONDENSSIASTIAT).
+            # The dispatcher in orchestrator.py skips records whose
+            # geometry the target builder doesn't accept.
+            mesh_data = acis_meshes.get(proxy_handle)
+            if mesh_data is not None:
+                vertices = tuple(
+                    Point3D(float(v[0]), float(v[1]), float(v[2]))
+                    for v in mesh_data.vertices
+                )
+                faces = tuple(tuple(int(i) for i in f) for f in mesh_data.faces)
+                if vertices and faces:
+                    records.append(EntityRecord(
+                        layer=proxy_layer,
+                        dxf_type="ACAD_PROXY_ENTITY",
+                        geometry=MeshGeometry(vertices=vertices, faces=faces),
+                        attributes={},
+                        handle=proxy_handle,
+                    ))
+            # virtual_entities decoding for ezdxf-readable proxies
+            # (~75% of MagiCAD proxies in a typical pre-save DXF).
+            try:
+                virtual_iter = entity.__virtual_entities__()
+            except Exception:  # noqa: BLE001
+                continue
             for virtual in virtual_iter:
-                virtual_yielded = True
                 v_layer = getattr(virtual.dxf, "layer", "0") or "0"
                 # Virtual entities often inherit layer "0" from the
                 # proxy stream. Fall back to the proxy's layer so the
@@ -125,31 +198,6 @@ def read_dxf(
                 except Exception:  # noqa: BLE001 — virtual subentity broke
                     continue
                 records.extend(sub_records)
-            # When ezdxf could not decode the proxy's graphics stream
-            # (yield 0 virtual entities — typical for the ~25% of
-            # MagiCAD proxies whose proprietary encoding ezdxf doesn't
-            # understand) AND ``proxy_preprocessing`` produced a mesh
-            # for this handle (real EXPLODE+STLOUT result with Object
-            # Enabler present, or a bbox cuboid fallback otherwise),
-            # emit a single mesh-bearing record on the proxy's authored
-            # layer so the profile mapper can route it like any other
-            # 3D body.
-            if not virtual_yielded:
-                mesh_data = acis_meshes.get(proxy_handle)
-                if mesh_data is not None:
-                    vertices = tuple(
-                        Point3D(float(v[0]), float(v[1]), float(v[2]))
-                        for v in mesh_data.vertices
-                    )
-                    faces = tuple(tuple(int(i) for i in f) for f in mesh_data.faces)
-                    if vertices and faces:
-                        records.append(EntityRecord(
-                            layer=proxy_layer,
-                            dxf_type="ACAD_PROXY_ENTITY",
-                            geometry=MeshGeometry(vertices=vertices, faces=faces),
-                            attributes={},
-                            handle=proxy_handle,
-                        ))
             continue
         # Defensive: even native entity types may raise on missing dxf
         # attributes (custom CAD objects from third-party add-ons). One

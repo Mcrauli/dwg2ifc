@@ -248,41 +248,47 @@ def convert_dxf(
     accoreconsole is missing (LT-only or no AutoCAD on host), ACIS bodies
     are skipped silently and the validation report flags the gap.
 
-    When ``preprocess_proxies`` is ``True`` (default) and the DXF
-    contains ACAD_PROXY_ENTITY records (MagiCAD pipes/devices, custom
-    block entities), :func:`extract_proxy_geometry` enriches the
-    side-channel with per-handle meshes — either real geometry from
-    ``EXPLODE`` + ``STLOUT`` when MagiCAD's free Object Enabler is
-    installed, or 12-triangle bbox cuboid fallbacks for the rest.
-    The 75% of MagiCAD proxies whose ``proxy_graphic`` ezdxf already
-    decodes are handled by :func:`read_dxf` directly (open polylines
-    accepted in v0.1.19+) and need no extra preprocessing.
+    When the input is a ``.dwg`` file, a hidden ``acad.exe`` (Visible=False
+    via COM) is launched as a singleton to ``EXPLODE`` MagiCAD/proxy
+    entities and ``DXFOUT`` an intermediate DXF — the rest of the
+    pipeline then runs on that intermediate. Object Enabler ARX loads
+    in ``acad.exe`` (unlike accoreconsole, which cannot load ARX),
+    so on a machine with FULL MagiCAD licensed the EXPLODE produces
+    real 3DSOLID children that flow through the same ``acis_meshes``
+    channel as native bodies. On a render-only-Object-Enabler machine,
+    EXPLODE silently no-ops and MagiCAD parts drop out — Lauri's own
+    KYL-LISP geometry still works.
     """
     name = project_name or Path(dxf_path).stem
+
+    # DWG → DXF preconversion via hidden acad.exe (Visible=False).
+    # accoreconsole cannot load MagiCAD ARX, so for DWG inputs we route
+    # through the full AutoCAD runtime to get MagiCAD EXPLODE working.
+    # The intermediate DXF then drops back into the v0.1.18 pipeline.
+    intermediate_dxf: Path | None = None
+    effective_input: str | Path = dxf_path
+    if preprocess_proxies and str(dxf_path).lower().endswith(".dwg"):
+        from dxf2ifc.core.dwg_preconvert import preconvert_dwg
+        intermediate_dxf = preconvert_dwg(dxf_path, progress=progress)
+        if intermediate_dxf is not None:
+            effective_input = intermediate_dxf
+
     acis_meshes: dict[str, object] = {}
     if preprocess_acis:
         # Lazy import keeps ifc_writer importable on hosts where AutoCAD
         # is not installed — extract_acis_meshes itself returns ``{}`` in
         # that case after calling find_accoreconsole().
         from dxf2ifc.core.preprocessing import extract_acis_meshes
-        acis_meshes = extract_acis_meshes(dxf_path, progress=progress)  # type: ignore[arg-type,assignment]
+        acis_meshes = extract_acis_meshes(effective_input, progress=progress)  # type: ignore[arg-type,assignment]
 
-    if preprocess_proxies:
-        # Same lazy-import pattern; ``extract_proxy_geometry`` returns
-        # an empty bundle when no proxies, no accoreconsole, or no
-        # Object Enabler (it never raises). Proxy meshes are merged
-        # into the same ``acis_meshes`` channel under the original
-        # proxy handle, so the existing 3DSOLID/INSERT branch in
-        # ``read_dxf`` resolves them transparently.
-        from dxf2ifc.core.proxy_preprocessing import extract_proxy_geometry
-        proxy_artifacts = extract_proxy_geometry(dxf_path, progress=progress)  # type: ignore[arg-type]
-        for h, mesh in proxy_artifacts.meshes.items():
-            # Don't overwrite an ACIS-side mesh for the same handle —
-            # that path is more authoritative (real 3DSOLID body
-            # tessellation vs proxy bbox cuboid).
+    # Merge any per-handle meshes the DWG preconvert produced (STLOUT
+    # output keyed by original proxy handle) into the same side channel.
+    if intermediate_dxf is not None:
+        from dxf2ifc.core.dwg_preconvert import last_explode_meshes
+        for h, mesh in last_explode_meshes().items():
             acis_meshes.setdefault(h, mesh)
 
-    entities = read_dxf(dxf_path, acis_meshes=acis_meshes)
+    entities = read_dxf(effective_input, acis_meshes=acis_meshes)
     mapped = apply_profile(entities, profile)
 
     # POSITIO-block linkage. Index every numbering INSERT once, then
@@ -297,7 +303,7 @@ def convert_dxf(
         )
 
         positio_markers = index_positio_markers(
-            dxf_path, block_pattern=profile.positio.block_pattern
+            effective_input, block_pattern=profile.positio.block_pattern
         )
         if positio_markers:
             scope = set(profile.positio.apply_to)

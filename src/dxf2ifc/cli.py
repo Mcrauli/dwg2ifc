@@ -21,7 +21,15 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     convert = subparsers.add_parser("convert", help="Convert a DXF file to IFC.")
-    convert.add_argument("input", type=Path, help="Path to the DXF input file.")
+    convert.add_argument(
+        "input",
+        type=Path,
+        help=(
+            "Path to the input drawing — .dxf or .dwg. DWG inputs require "
+            "AutoCAD installed (used in hidden Visible=False mode for "
+            "MagiCAD-EXPLODE preconversion)."
+        ),
+    )
     convert.add_argument("output", type=Path, help="Path for the IFC output file.")
     convert.add_argument(
         "--profile",
