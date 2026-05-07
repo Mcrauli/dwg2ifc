@@ -34,6 +34,7 @@ from dxf2ifc.core.ifc_writer.builders import (
     assign_to_system,
     write_ifc,
 )
+from dxf2ifc.core.ifc_writer.mesh import _add_mesh_product
 from dxf2ifc.core.ifc_writer.classification import (
     add_classification,
     add_discipline_classification,
@@ -268,10 +269,24 @@ def convert_dxf(
     intermediate_dxf: Path | None = None
     effective_input: str | Path = dxf_path
     if preprocess_proxies and str(dxf_path).lower().endswith(".dwg"):
+        # DWG inputs need a hidden-AutoCAD pre-pass to MAGIEXPLODE the
+        # MagiCAD-native parts and DXFOUT an intermediate DXF that
+        # ezdxf can parse. preconvert_dwg returns None when the COM
+        # session refused to start or DXFOUT failed — we cannot fall
+        # back to ezdxf.readfile on the raw .dwg (ezdxf only reads
+        # DXF), so surface a clear error instead of producing a
+        # cryptic IOError downstream.
         from dxf2ifc.core.dwg_preconvert import preconvert_dwg
         intermediate_dxf = preconvert_dwg(dxf_path, progress=progress)
-        if intermediate_dxf is not None:
-            effective_input = intermediate_dxf
+        if intermediate_dxf is None:
+            raise RuntimeError(
+                "DWG-preconvert epäonnistui — MAGIEXPLODE / DXFOUT ei "
+                "tuottanut välitilanne-DXF:ää. Tarkista että AutoCAD "
+                "on asennettu, ettei toinen dxf2ifc-konversio ole jo "
+                "käynnissä, ja ettei MagiCAD-popup keskeytä prosessia "
+                "(klikkaa OK jos näkyy)."
+            )
+        effective_input = intermediate_dxf
 
     acis_meshes: dict[str, object] = {}
     if preprocess_acis:
@@ -289,7 +304,56 @@ def convert_dxf(
             acis_meshes.setdefault(h, mesh)
 
     entities = read_dxf(effective_input, acis_meshes=acis_meshes)
+
+    # POC diagnostics: count polyface / 3DFACE / MESH records read
+    # from the intermediate DXF so we can see if MAGIEXPLODE+EXPLODE
+    # actually surfaced any MagiCAD geometry at this stage.
+    if progress is not None:
+        polyface_count = sum(
+            1 for e in entities
+            if isinstance(e.geometry, MeshGeometry)
+            and e.geometry.source in {"polyface", "3dface", "mesh"}
+        )
+        acis_count = sum(
+            1 for e in entities
+            if isinstance(e.geometry, MeshGeometry)
+            and e.geometry.source == "acis"
+        )
+        layers_with_mesh: dict[str, int] = {}
+        for e in entities:
+            if isinstance(e.geometry, MeshGeometry):
+                layers_with_mesh[e.layer] = layers_with_mesh.get(e.layer, 0) + 1
+        progress(
+            f"DXF-luettu: {polyface_count} polyface/3DFACE/MESH + "
+            f"{acis_count} ACIS-mesh (yhteensä {len(entities)} entiteettiä)"
+        )
+        if layers_with_mesh:
+            top = sorted(layers_with_mesh.items(), key=lambda x: -x[1])[:5]
+            progress(
+                "Mesh-layerit (top 5): "
+                + ", ".join(f"{lyr}={n}" for lyr, n in top)
+            )
+
     mapped = apply_profile(entities, profile)
+
+    if progress is not None:
+        mapped_mesh = sum(
+            1 for m in mapped if isinstance(m.geometry, MeshGeometry)
+        )
+        mapped_types: dict[str, int] = {}
+        for m in mapped:
+            if isinstance(m.geometry, MeshGeometry):
+                mapped_types[m.ifc_type] = mapped_types.get(m.ifc_type, 0) + 1
+        progress(
+            f"Profile-mappaus: {len(mapped)} entiteettiä, joista "
+            f"{mapped_mesh} mesh-pohjaisia"
+        )
+        if mapped_types:
+            top = sorted(mapped_types.items(), key=lambda x: -x[1])[:5]
+            progress(
+                "Mesh→IFC-tyypit: "
+                + ", ".join(f"{t}={n}" for t, n in top)
+            )
 
     # POSITIO-block linkage. Index every numbering INSERT once, then
     # per refrigeration-equipment MappedEntity find the closest one
@@ -506,15 +570,42 @@ def convert_dxf(
                 _classify(window, m)
                 _record(m, window)
             elif m.ifc_type == "IfcPipeSegment":
-                pipe = add_pipe_segment(
-                    ifc,
-                    m,
-                    parent_storey=_storey_for(m),
-                    predefined_type=m.predefined_type or "REFRIGERATION",
-                )
+                # Two valid geometry inputs:
+                # * LineGeometry → swept-solid via add_pipe_segment
+                #   (KYL-JV1 LWPOLYLINE centerlines).
+                # * MeshGeometry → IfcTriangulatedFaceSet via
+                #   _add_mesh_product (MagiCAD MAGIEXPLODE +
+                #   _.EXPLODE polyface mesh that lands on a pipe
+                #   layer like KYL-JV1).
+                # BlockInstance (raw INSERT) has no usable geometry —
+                # skip it and let any sibling Mesh/Line record on the
+                # same handle carry the body.
+                if isinstance(m.geometry, BlockInstance):
+                    continue
+                if isinstance(m.geometry, MeshGeometry):
+                    pipe = _add_mesh_product(
+                        ifc,
+                        m,
+                        ifc_class="IfcPipeSegment",
+                        parent_storey=_storey_for(m),
+                        predefined_type=m.predefined_type or "REFRIGERATION",
+                    )
+                else:
+                    pipe = add_pipe_segment(
+                        ifc,
+                        m,
+                        parent_storey=_storey_for(m),
+                        predefined_type=m.predefined_type or "REFRIGERATION",
+                    )
                 _classify(pipe, m)
                 _record(m, pipe)
             elif m.ifc_type == "IfcFurniture":
+                # add_furniture funnels MeshGeometry through
+                # _add_mesh_product; BlockInstance (raw INSERT) has no
+                # mesh body and would raise. Skip — a sibling MESH
+                # record on the same handle, if any, carries the body.
+                if isinstance(m.geometry, BlockInstance):
+                    continue
                 furniture = add_furniture(ifc, m, parent_storey=_storey_for(m))
                 _classify(furniture, m)
                 _record(m, furniture)
@@ -543,35 +634,39 @@ def convert_dxf(
                 # add_building_element_proxy expects PolygonGeometry
                 # (closed outline → extruded panel) or MeshGeometry
                 # (faceted Brep — used by proxy_preprocessing's bbox
-                # cuboid fallback). Open-polyline LineGeometry records
-                # — emitted by dxf_reader for MagiCAD proxy graphics
-                # whose virtual entities are 2D detail primitives —
-                # cannot be meaningfully extruded into a 3D proxy
-                # body, so skip them rather than crashing or
-                # synthesising a dubious shape. The MeshGeometry path
-                # still covers the proxies that produced no virtual
-                # entities (bbox cuboid).
-                if isinstance(m.geometry, LineGeometry):
+                # cuboid fallback). Skip records whose geometry is a
+                # raw INSERT placement (BlockInstance) or a 2D detail
+                # primitive (LineGeometry from MagiCAD proxy graphics)
+                # — neither can be meaningfully extruded into a 3D
+                # proxy body without a synthesised bbox guess. The
+                # MeshGeometry path still covers proxies with bbox
+                # cuboids and the MAGIEXPLODE-derived polyface meshes.
+                if isinstance(m.geometry, (LineGeometry, BlockInstance)):
                     continue
                 proxy = add_building_element_proxy(ifc, m, parent_storey=_storey_for(m))
                 _classify(proxy, m)
                 _record(m, proxy)
             elif m.ifc_type in _COOLING_EQUIPMENT_CLASSES:
+                # add_cooling_equipment / add_tank / add_flow_controller
+                # all funnel through ``_add_mesh_product`` which raises
+                # on non-MeshGeometry. Skip BlockInstance (raw INSERT
+                # placement without an STLOUT mesh) and LineGeometry
+                # (proxy virtual-entity 2D primitives) — neither has a
+                # 3D body to render. The MeshGeometry record for the
+                # same handle, if any, carries the actual geometry.
+                if isinstance(m.geometry, (LineGeometry, BlockInstance)):
+                    continue
                 equipment = add_cooling_equipment(ifc, m, parent_storey=_storey_for(m))
                 _classify(equipment, m)
                 _record(m, equipment)
             elif m.ifc_type == "IfcTank":
-                # Skip LineGeometry siblings emitted from MagiCAD proxy
-                # virtual_entities — the proxy's MeshGeometry record
-                # (cuboid fallback or real EXPLODE result) carries the
-                # actual tank body for the same handle.
-                if isinstance(m.geometry, LineGeometry):
+                if isinstance(m.geometry, (LineGeometry, BlockInstance)):
                     continue
                 tank = add_tank(ifc, m, parent_storey=_storey_for(m))
                 _classify(tank, m)
                 _record(m, tank)
             elif m.ifc_type == "IfcFlowController":
-                if isinstance(m.geometry, LineGeometry):
+                if isinstance(m.geometry, (LineGeometry, BlockInstance)):
                     continue
                 ctrl = add_flow_controller(ifc, m, parent_storey=_storey_for(m))
                 _classify(ctrl, m)

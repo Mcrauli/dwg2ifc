@@ -85,6 +85,13 @@ def read_dxf(
             and str(entity.dxf.handle).upper() in acis_meshes
         ):
             mesh_priority_layers.add(entity.dxf.layer)
+        elif dxftype == "POLYLINE" and getattr(entity, "is_poly_face_mesh", False):
+            # Polyface mesh from MAGIEXPLODE — same priority as MESH so
+            # any leftover line/wireframe artefacts on the same layer
+            # don't double-publish as IfcCableCarrierSegment etc.
+            mesh_priority_layers.add(entity.dxf.layer)
+        elif dxftype == "3DFACE":
+            mesh_priority_layers.add(entity.dxf.layer)
 
     records: list[EntityRecord] = []
     for entity in msp:
@@ -259,6 +266,9 @@ def _record_from_entity(
     if (
         dxftype in ("LINE", "LWPOLYLINE", "POLYLINE")
         and layer in mesh_priority_layers
+        # Polyface POLYLINEs ARE the mesh — don't drop them with the
+        # wireframe sibling clean-up below.
+        and not (dxftype == "POLYLINE" and getattr(entity, "is_poly_face_mesh", False))
     ):
         return []
 
@@ -326,6 +336,40 @@ def _record_from_entity(
         ]
 
     if dxftype == "POLYLINE":
+        # MAGIEXPLODE typically writes geometry as a POLYLINE polyface
+        # mesh (DXF flag bit 64) — vertex pool + face records (1-based
+        # indices, trailing zeros pad shorter faces to fixed width).
+        # Convert to MeshGeometry(source="polyface") so the IFC writer
+        # routes it through the IfcTriangulatedFaceSet path and Solibri
+        # renders surfaces, not lines.
+        if getattr(entity, "is_poly_face_mesh", False):
+            # MeshBuilder.from_polyface yields a deduplicated vertex pool
+            # and 0-based face index lists — same shape as the MESH
+            # branch below. ezdxf's polyface decoder already handles the
+            # 1-based / trailing-zero AutoCAD storage convention.
+            try:
+                mb = MeshBuilder.from_polyface(entity)
+            except Exception:  # noqa: BLE001 — malformed polyface
+                return []
+            pf_vertices = tuple(
+                Point3D(float(v.x), float(v.y), float(v.z)) for v in mb.vertices
+            )
+            pf_faces = tuple(
+                tuple(int(i) for i in f) for f in mb.faces if len(f) >= 3
+            )
+            if not pf_vertices or not pf_faces:
+                return []
+            return [EntityRecord(
+                layer=layer,
+                dxf_type="POLYFACE",
+                geometry=MeshGeometry(
+                    vertices=pf_vertices,
+                    faces=pf_faces,
+                    source="polyface",
+                ),
+                attributes={},
+                handle=_handle(),
+            )]
         # Proxy-graphics streams emit POLYLINE for n-gons in the older
         # DXF format instead of LWPOLYLINE. Vertices are AcDbVertex
         # subentities reachable via .points() — same WCS coordinates as
@@ -423,7 +467,45 @@ def _record_from_entity(
         return [EntityRecord(
             layer=layer,
             dxf_type="MESH",
-            geometry=MeshGeometry(vertices=vertices, faces=faces),
+            geometry=MeshGeometry(
+                vertices=vertices, faces=faces, source="mesh"
+            ),
+            attributes={},
+            handle=_handle(),
+        )]
+
+    if dxftype == "3DFACE":
+        # MAGIEXPLODE occasionally emits 3DFACE quads/triangles instead
+        # of polyface meshes — same flat-shaded surface, different DXF
+        # encoding. Each 3DFACE becomes one MeshGeometry with a single
+        # face (3 or 4 vertices). Stamping `source="3dface"` routes the
+        # writer to the IfcTriangulatedFaceSet path.
+        try:
+            v0 = entity.dxf.vtx0
+            v1 = entity.dxf.vtx1
+            v2 = entity.dxf.vtx2
+            v3 = entity.dxf.vtx3
+        except AttributeError:
+            return []
+        pts = [
+            Point3D(float(v0[0]), float(v0[1]), float(v0[2]) if len(v0) > 2 else 0.0),
+            Point3D(float(v1[0]), float(v1[1]), float(v1[2]) if len(v1) > 2 else 0.0),
+            Point3D(float(v2[0]), float(v2[1]), float(v2[2]) if len(v2) > 2 else 0.0),
+            Point3D(float(v3[0]), float(v3[1]), float(v3[2]) if len(v3) > 2 else 0.0),
+        ]
+        # AutoCAD encodes a triangle as a quad with vtx2 == vtx3.
+        if pts[2] == pts[3]:
+            verts = tuple(pts[:3])
+            faces = ((0, 1, 2),)
+        else:
+            verts = tuple(pts)
+            faces = ((0, 1, 2, 3),)
+        return [EntityRecord(
+            layer=layer,
+            dxf_type="3DFACE",
+            geometry=MeshGeometry(
+                vertices=verts, faces=faces, source="3dface"
+            ),
             attributes={},
             handle=_handle(),
         )]

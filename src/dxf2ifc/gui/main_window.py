@@ -310,8 +310,20 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             import ezdxf as _ezdxf
             _doc = _ezdxf.readfile(str(path))
+            # Defensive against non-graphical custom entities (e.g. the
+            # MagiCAD MAGIFLOORORIGO control object) which raise on
+            # ``entity.dxf.layer`` access — same skip pattern as
+            # core.dxf_reader.list_layers.
+            def _safe_layer(entity):
+                try:
+                    return entity.dxf.layer
+                except Exception:  # noqa: BLE001
+                    return None
             layer_counts: dict[str, int] = dict(
-                Counter(entity.dxf.layer for entity in _doc.modelspace())
+                Counter(
+                    layer for layer in (_safe_layer(e) for e in _doc.modelspace())
+                    if layer is not None
+                )
             )
             entity_count = sum(layer_counts.values())
         except Exception as exc:  # noqa: BLE001 — summary is best-effort

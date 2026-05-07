@@ -6,6 +6,61 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha2 — 2026-05-07 (POC v4 -saagan tulos)
+
+**Muutettu — automaattinen MAGIEXPLODE+EXPLODE-keystroke**:
+
+- **DWG-pipeline lähettää MagiCAD-räjäytyksen** Python-puolen `SendCommand`-
+  tekstillä (`MAGIEXPLODE\nALL\n\n` + `EXPLODE\nALL\n\n`) AutoCAD:in
+  command-lineen — sama tapa kuin oikea näppäimistö. Tämä toimii
+  render-only Object Enabler -tilassa silloin kun aiempi LISP-tason
+  `(command "MAGIEXPLODE" …)` rejekoitiin "Invalid selection":lla.
+- **AutoCAD näkyy konversion ajan** (Visible=True, ei enää piilossa) jotta
+  käyttäjä näkee MagiCAD-popup:t ja voi klikata OK. Yksi-kaksi popup:ia
+  per ajo, ei estoa.
+- **DXFOUT käyttää SendCommand-keystrokeja** (`FILEDIA 0 / DXFOUT path /
+  Enter / 8 / FILEDIA 1`) — luotettavampi kuin `vla-saveas` tai
+  `doc.SaveAs(path, fmt)` jotka palauttivat `Invalid argument` AutoCAD
+  2025:ssä.
+- **DWG-kopio temp-polkuun** `shutil.copy2`:lla ennen avaamista —
+  alkuperäinen DWG ei mutaatu vaikka MAGIEXPLODE+EXPLODE ajetaan.
+- **Sysvar SAVE+RESTORE** (FILEDIA, CMDDIA, FACETRES, EXPERT) — käyttäjän
+  AutoCAD-asetukset palautuvat aina, myös crash-tilanteessa.
+- **AutoCAD-ikkunan koon säätö POISTETTU** — POC v3.x:n
+  `WindowState/WindowLeft/Top/Width/Height` -mutaatiot mutaroivat
+  Lauri:n AutoCAD-profile:in command bar -kokoa. v0.2.0-alpha2 ei kosketa
+  ikkunaa. Aiemmin tallentunut profile-tila pitää resetoida käsin
+  AutoCAD:ssa: `OPTIONS` → Profiles → Reset.
+
+**Lisätty — diagnostiikka**:
+
+- Progress-loki näyttää: `DXF-luettu: N polyface/3DFACE/MESH + M ACIS`,
+  `Mesh-layerit (top 5)`, `Profile-mappaus: K mesh-pohjaisia`,
+  `Mesh→IFC-tyypit (top 5)` — diagnoosin nopeampi tunnistus.
+- LISP-loki:ssa: `MAGI_BEFORE/AFTER`, `INSERTS_REMAINING`,
+  `FINAL_3DSOLIDS`, `POLYFACE_AFTER`.
+
+**Korjattu — orchestrator**:
+
+- `BlockInstance` skipataan `IfcBuildingElementProxy`,
+  `IfcCooler/Condenser/Compressor`, `IfcTank`, `IfcFlowController`,
+  `IfcPipeSegment`, `IfcFurniture`-haaroissa — ei enää
+  `TypeError: expects MeshGeometry, got BlockInstance` -kaatumista.
+- `IfcPipeSegment` MeshGeometry-tapauksessa kirjoitetaan
+  `IfcTriangulatedFaceSet`-mesh:nä `_add_mesh_product`-helperin kautta —
+  MagiCAD-pipet eivät enää droppaudu pipelineesta.
+
+**Tunnetut rajoitukset**:
+
+- **Render-only Object Enabler** (Lauri:n kone) ei tuota 3D-pintoja
+  MagiCAD-objekteille edes manuaalisella MAGIEXPLODE+EXPLODE:lla.
+  Tupla-räjäytys tuottaa 2D-polylineja jotka eivät käännyksellä saada
+  3DSOLID:eiksi. **Vain Lauri:n KYL-LISP-osat tulevat IFC:hen**.
+- **FULL MagiCAD-lisenssin** koneella (esim. kollegan kone) sama
+  pipeline tuottaa todennäköisesti oikeat MagiCAD-pinnat IFC:hen ilman
+  koodimuutoksia — MagiCAD-ARX käsittelee EXPLODE:n eri tavalla.
+- Polyline-extrusion-strategia (POC v5) jatkossa render-only-tilassa.
+
 ## v0.2.0-alpha1 — 2026-05-06
 
 **Lisätty — DWG-input + MagiCAD-tuki**:

@@ -1,4 +1,19 @@
-"""Mesh -> IfcFacetedBrep conversion + bbox helpers."""
+"""Mesh -> IfcFacetedBrep / IfcTriangulatedFaceSet conversion + helpers.
+
+Two writers live here, picked by ``MeshGeometry.source``:
+
+* ``"acis"`` (default) → :func:`_mesh_to_brep` → ``IfcFacetedBrep``
+  (Body / Brep) — the historical path for 3DSOLIDs tessellated by
+  accoreconsole + STLOUT.
+* anything else (``"polyface"``, ``"mesh"``, ``"3dface"``) →
+  :func:`_mesh_to_triangulated_face_set` → ``IfcTriangulatedFaceSet``
+  (Body / Tessellation) — the MAGIEXPLODE path that flows through
+  :mod:`core.magicad_explode` + the direct DXF mesh readers.
+
+Solibri renders ``IfcTriangulatedFaceSet`` as a surface (visible in
+the 3D view) regardless of watertight-ness, so MagiCAD-derived meshes
+that are open shells stop showing as wireframe.
+"""
 
 from __future__ import annotations
 
@@ -6,7 +21,7 @@ import ifcopenshell
 import ifcopenshell.api
 
 from dxf2ifc.core.ifc_writer.transforms import _z_rotation_matrix
-from dxf2ifc.core.types import MeshGeometry, Point3D
+from dxf2ifc.core.types import MappedEntity, MeshGeometry, Point3D
 
 
 def _mesh_bbox_min(mesh: MeshGeometry) -> Point3D:
@@ -88,6 +103,59 @@ def _mesh_to_brep(ifc, mesh: MeshGeometry) -> object:
     return ifc.create_entity("IfcFacetedBrep", Outer=closed_shell)
 
 
+def _triangulate(face: tuple[int, ...]) -> list[tuple[int, int, int]]:
+    """Fan-triangulate an n-gon face. ``[A, B, C, D]`` becomes
+    ``[(A,B,C), (A,C,D)]``. Triangles pass through unchanged. Returns
+    an empty list for degenerate input (<3 vertices)."""
+    if len(face) < 3:
+        return []
+    if len(face) == 3:
+        return [(int(face[0]), int(face[1]), int(face[2]))]
+    out: list[tuple[int, int, int]] = []
+    a = int(face[0])
+    for i in range(1, len(face) - 1):
+        out.append((a, int(face[i]), int(face[i + 1])))
+    return out
+
+
+def _mesh_to_triangulated_face_set(ifc, mesh: MeshGeometry) -> object:
+    """Convert a :class:`MeshGeometry` into an ``IfcTriangulatedFaceSet``.
+
+    Vertices are emitted relative to the mesh's bbox-min anchor (same as
+    :func:`_mesh_to_brep`) so the geometry stays in LOCAL space and
+    upstream placement carries the world offset. ``CoordIndex`` uses
+    1-based indices per IFC4. ``Closed=False`` because MAGIEXPLODE
+    output is rarely watertight; Solibri renders both sides regardless.
+    """
+    if not mesh.faces or not mesh.vertices:
+        raise ValueError("MeshGeometry must have vertices and faces")
+
+    anchor = _mesh_bbox_min(mesh)
+    coords = [
+        (float(v.x) - anchor.x, float(v.y) - anchor.y, float(v.z) - anchor.z)
+        for v in mesh.vertices
+    ]
+    coord_list = ifc.create_entity(
+        "IfcCartesianPointList3D", CoordList=coords
+    )
+
+    triangles: list[tuple[int, int, int]] = []
+    for face in mesh.faces:
+        for tri in _triangulate(tuple(face)):
+            # IFC indices are 1-based and must reference into CoordList.
+            triangles.append((tri[0] + 1, tri[1] + 1, tri[2] + 1))
+
+    if not triangles:
+        raise ValueError("MeshGeometry produced no triangles after triangulation")
+
+    return ifc.create_entity(
+        "IfcTriangulatedFaceSet",
+        Coordinates=coord_list,
+        CoordIndex=triangles,
+        Closed=False,
+    )
+
+
 def _add_mesh_product(
     ifc,
     mapped: MappedEntity,
@@ -98,11 +166,16 @@ def _add_mesh_product(
 ) -> object:
     """Create an IFC product from a MESH-bearing MappedEntity.
 
-    Used by ``add_furniture``, ``add_cooling_equipment`` and
-    ``add_cable_carrier`` to emit a faceted Brep representation when the
-    DXF source is a MESH (post accoreconsole pre-processing) rather than
-    a 2D extrusion proxy. Placement is at the mesh's bbox-min so the
-    Brep stays in LOCAL coordinates.
+    Branches on ``mapped.geometry.source``:
+
+    * ``"acis"`` → ``IfcFacetedBrep`` (Body / Brep) — historical path
+      for 3DSOLIDs tessellated by accoreconsole + STLOUT.
+    * anything else → ``IfcTriangulatedFaceSet`` (Body / Tessellation) —
+      MAGIEXPLODE-derived polyface mesh / MESH / 3DFACE that ezdxf
+      reads natively.
+
+    Placement is at the mesh's bbox-min so the geometry stays in LOCAL
+    coordinates regardless of representation type.
     """
     if not isinstance(mapped.geometry, MeshGeometry):
         raise TypeError(
@@ -124,8 +197,13 @@ def _add_mesh_product(
         is_si=False,
     )
 
-    brep = _mesh_to_brep(ifc, mapped.geometry)
-    _attach_brep_representation(ifc, product, brep)
+    if mapped.geometry.source == "acis":
+        repr_item = _mesh_to_brep(ifc, mapped.geometry)
+        repr_type = "Brep"
+    else:
+        repr_item = _mesh_to_triangulated_face_set(ifc, mapped.geometry)
+        repr_type = "Tessellation"
+    _attach_representation(ifc, product, repr_item, representation_type=repr_type)
 
     ifcopenshell.api.run(
         "spatial.assign_container",
@@ -136,9 +214,16 @@ def _add_mesh_product(
     return product
 
 
-def _attach_brep_representation(ifc, product, brep) -> object:
-    """Wrap an IfcFacetedBrep in an IfcShapeRepresentation (RepresentationType
-    = "Brep") on the model's Body sub-context and assign it to ``product``."""
+def _attach_representation(
+    ifc,
+    product,
+    item,
+    *,
+    representation_type: str = "Brep",
+) -> object:
+    """Wrap a representation item (Brep or TriangulatedFaceSet) in an
+    ``IfcShapeRepresentation`` on the model's Body sub-context and
+    assign it to ``product``."""
     model_ctx = [
         c
         for c in ifc.by_type("IfcGeometricRepresentationSubContext")
@@ -148,10 +233,16 @@ def _attach_brep_representation(ifc, product, brep) -> object:
         "IfcShapeRepresentation",
         ContextOfItems=model_ctx,
         RepresentationIdentifier="Body",
-        RepresentationType="Brep",
-        Items=[brep],
+        RepresentationType=representation_type,
+        Items=[item],
     )
     product.Representation = ifc.create_entity(
         "IfcProductDefinitionShape", Representations=[shape]
     )
     return shape
+
+
+# Back-compat alias — older code in this package may still call the
+# Brep-specific name. Routes through the generalised helper.
+def _attach_brep_representation(ifc, product, brep) -> object:
+    return _attach_representation(ifc, product, brep, representation_type="Brep")

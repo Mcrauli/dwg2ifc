@@ -3,34 +3,81 @@
 Volatile state — current build + open todos. Aiempi Plan-historia (A–H) +
 bugfixit on arkistoitu `docs/PROGRESS-archive.md`:hen.
 
-## Onboarding fresh Claude — TL;DR (2026-05-06)
+## Onboarding fresh Claude — TL;DR (2026-05-07)
 
-**Tuorein julkaisu**: **v0.2.0-alpha1** (2026-05-06) — DWG-input-tuki +
-MagiCAD-objektien EXPLODE FULL-MagiCAD-koneella hidden-AutoCAD COM:lla
-(Visible=False). Avoimet polyline + profile-säännöt + GUI-checkbox
-v0.1.19:stä säilyvät. accoreconsole-pohjainen proxy_preprocessing
-poistettu (todistettu mahdottomaksi ARX-rajoitteen takia).
-Sivuston lataus pinnattu: <https://mcrauli.github.io/autocad-lisp-ohjeet/dxf2ifc.html>.
+**Tuorein julkaisu**: **v0.2.0-alpha1** (2026-05-07) — DWG-input-tuki +
+MagiCAD-objektien EXPLODE adaptiivisesti hidden-AutoCAD COM:lla
+(`Visible=False`). DXF-input toimii ennallaan accoreconsole+ezdxf-
+pipelineä. Sivuston lataus pinnattu: <https://mcrauli.github.io/autocad-lisp-ohjeet/dxf2ifc.html>.
 
-**Avoimet ongelmat 2026-05-06**:
+### Pipeline-arkkitehtuuri
 
-1. ~~**Tikashyllyt (KYL-TIKASHYLLY) puuttuvat IFC:stä**~~ → **RATKAISTU
-   v0.1.17:ssä**. Root cause: ``accoreconsole``:n .scr-rivipuskuri on
-   hard-cap 2048 merkkiä; v0.1.14:n LISP-laajennus puski formin yli
-   tempdir-polkusubstituution jälkeen → form katkesi → 0 STL:ää. Korjaus:
-   LISP jaettu neljäksi top-level-formiksi.
-2. **MagiCAD-proxy-objektit eivät vielä näy IFC:ssä** (tunnettu rajoitus).
-   ezdxf:n ProxyGraphic-parser ei tunnista MagiCAD:in propietaarista
-   encoding:ia → 145 proxya tuottaa 0 virtual_entity. Korjaus suunniteltu
-   v0.1.18:aan via accoreconsole-LISP Phase 0 EXPLODE.
+```
+INPUT
+  ├─ .dxf → accoreconsole+STLOUT (kuten v0.1.18) → ezdxf → IFC
+  └─ .dwg → hidden acad.exe COM → EXPLODE+STLOUT+DXFOUT välitilanne
+              ↓
+         loppupipeline ajaa välitilanne-DXF:llä, sama kuin DXF-input
+```
 
-**Test-DXF MagiCAD-proxyilla**:
-`C:\Users\LauriRekola\Downloads\suunnittelutyokalut\magicad_1krs.dxf`
-(298 entityä, 145 ACAD_PROXY_ENTITY: MUUT_OSAT 64, KYL-JV1 39,
-KYL-JV1-LAITE 36, TEKSTIT- 5, KERROS_ORIGO 1).
+### Mitä ARX-tasolla tapahtui (kriittinen tieto, älä keksi uudelleen)
 
-**Jatkosuunnitelma yksityiskohdissa**:
-`~/.claude/plans/tota-voitais-alkaa-miettim-sequential-brooks.md`.
+- **`accoreconsole.exe` EI VOI ladata `.arx`-moduuleja** — Autodesk-
+  rajoite, vahvistettu Autodesk-doc:eilla + 4 spike-iteraatiolla.
+  `(arxload "MagiCAD_r25x64.arx")` palauttaa `ARXLOAD failed`.
+  Sama rajoite koskee sekä DXF että DWG -formaattia — ei ratkea
+  tiedostomuodolla. Älä yritä accoreconsole+ARX uudelleen.
+- **`acad.exe` Visible=False (pywin32 COM `DispatchEx`) lataa ARX:n
+  normaalisti** autoload-rekisteristä. Spike v3 vahvisti: ikkuna ei
+  näy missään vaiheessa, cold-start ~14-18 s, MAGI*-luokat
+  tunnistuvat natiivinimillä.
+- **MagiCAD Object Enabler on render-only**: ARX latautuu mutta
+  `(command "_.EXPLODE" ent)` ei tuota 3DSOLID-lapsia
+  (`Explode() not exposed` MAGI*-luokille). MagiCAD-objektien
+  täysi 3D-geometria vaatii **FULL MagiCAD-lisenssin** — kollegan
+  koneella sama koodi tuottaa oikean geometrian, Lauri:n koneella
+  MagiCAD-osat jäävät pois.
+
+### Tärkeät tiedostot v0.2.0:ssa
+
+- `src/dxf2ifc/core/dwg_preconvert.py` (UUSI ~270 r) — singleton
+  hidden-AutoCAD COM session, AutoLISP EXPLODE+STLOUT+DXFOUT.
+- `src/dxf2ifc/core/preprocessing.py` (säilyy ennallaan) —
+  accoreconsole+STLOUT 3DSOLID-tessellaatio Lauri:n KYL-LISP-osille.
+- `src/dxf2ifc/core/dxf_reader.py` — avoin polyline acceptance
+  (LWPOLYLINE/POLYLINE → LineGeometry-segmentit) säilyy.
+- `src/dxf2ifc/core/proxy_preprocessing.py` POISTETTU v0.2.0:ssa
+  (oli v0.1.19:n epäonnistunut accoreconsole-EXPLODE-yritys).
+
+### Testi-DXF/DWG:t
+
+- `~/Downloads/suunnittelutyokalut/Drawing10.dxf` — 5 KYL-LEVYHYLLY
+  3DSOLIDia, regressio-testi
+- `~/OneDrive - RADIKA OY/Tiedostot/4001_1krs.dxf` — 9 TIKASHYLLY +
+  12 LEVYHYLLY + 15 HÖYRYSTIN, baseline-testi (ei MagiCAD)
+- `~/OneDrive - RADIKA OY/Tiedostot/testimagi.dwg` — MagiCAD-DWG
+  jonka Object Enabler tallensi natiiveiksi MAGI*-luokiksi
+  (MAGIPathwayDevice 64, MAGIAccessory 36, MAGIPathwayConnector 21,
+  MAGIPathwaySegment 18, MAGIDimLine 5, MAGIFloorOrigo 1) +
+  Lauri:n natiiveja (15 AcDb3dSolid, 48 AcDbLine jne)
+- ~~`magicad_1krs.dxf`~~ — vanha ACAD_PROXY_ENTITY-pohjainen DXF
+  jonka Object Enabler-AutoCAD:in tallennus mutatoi natiiveihin
+  MAGI*-tyyppeihin. Dokumentaatio mainitsee tämän mutta itse DXF
+  ei enää käytössä.
+
+### Spike-aikana opitut faktat (älä toista)
+
+- accoreconsole `.scr`-rivipuskuri on **hard-cap 2048 merkkiä**
+  (bisektoitu). LISP-bodyt jaetaan top-level-formeiksi.
+- `_.MAGIIFCEXPORT`-komento ei ole määritelty Object Enabler:llä
+  (`atoms-family` palauttaa nil:n MAGI*-prefix:lle).
+- `Explode()`-COM-metodi ei ole tarjolla MAGI*-luokille
+  (`AttributeError: <unknown>.Explode`).
+- `GetBoundingBox()`-COM-metodi palauttaa **placeholder-pisteen
+  20×20×0 mm** MAGI*-luokille render-only-tilassa (vs. natiivi
+  AcDb3dSolid saa oikean bbox:in 350×150×1900 mm).
+- ODA Teigha SDK / RealDWG / MagiCAD CLI -reitit eivät toimi
+  (ei MagiCAD-decoderia / ei voi ladata ARX:ää / ei ole olemassa).
 
 GUI:n itsepäivitys-banneri tarjoaa uudet tagit automaattisesti — kun
 tagaat seuraavan version, banneri ilmestyy Lauri'n softassa itsestään.

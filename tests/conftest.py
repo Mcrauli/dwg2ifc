@@ -39,6 +39,7 @@ def pytest_collection_modifyitems(config, items):
                 item.add_marker(skip_acc)
 
 
+
 @pytest.fixture
 def fixtures_dir() -> Path:
     """Absolute path to the tests/fixtures directory."""

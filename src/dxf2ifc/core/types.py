@@ -42,15 +42,27 @@ class PolygonGeometry:
 class MeshGeometry:
     """A faceted polyhedral mesh.
 
-    Used for DXF MESH entities. ``accoreconsole.exe -MESHSMOOTH`` converts
-    3DSOLIDs into MESH so we can read them without an ACIS parser.
-
     ``vertices`` is the deduplicated vertex pool. Each entry in ``faces``
     is a tuple of indices into ``vertices`` defining one (n>=3-gon) face.
+
+    ``source`` records where the geometry came from so the IFC writer can
+    pick the right representation:
+
+    * ``"acis"`` (default): tessellated from a 3DSOLID via accoreconsole +
+      STLOUT — written as ``IfcFacetedBrep``.
+    * ``"polyface"``: read directly from a DXF POLYLINE polyface mesh
+      (typical MAGIEXPLODE output).
+    * ``"mesh"``: read from a DXF MESH entity.
+    * ``"3dface"``: built from a DXF 3DFACE entity.
+
+    All non-``"acis"`` sources are written as ``IfcTriangulatedFaceSet``
+    (Body / Tessellation) so Solibri renders them as surfaces, not
+    wireframe.
     """
 
     vertices: tuple[Point3D, ...]
     faces: tuple[tuple[int, ...], ...]
+    source: str = "acis"
 
 
 @dataclass(frozen=True)
