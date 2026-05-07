@@ -6,6 +6,30 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha7 — 2026-05-07 (Excel-luenta: yhdistetyt otsikot + sektiot)
+
+**Lisätty — RefDesign Teholuettelo-pohjien tuki**:
+
+- **Slash-yhdistetyt otsikot**: ``KYLMÄ-/SÄHKÖ-/VASTUSTEHO [kW]`` -tyyppinen
+  yhdistetty Excel-otsikko jaetaan kolmeksi sarakkeeksi ja jokainen
+  token mätsätään erikseen kanonisiin kenttiin
+  (Jäähdytysteho/Sähköteho/Vastusteho). Auto-teho-suffix kun yksikkö on
+  ``[kW]`` / ``[W]``.
+- **Sektio-otsikko-tunnistus**: rivi jossa yksi solu sisältää
+  ``JK1``/``KK2``/``RK10``/``LA1`` -koodin (esim. ``"PAKASTEET JK1"``)
+  asettaa koneikon kaikkiin seuraaviin riveihin. RefDesign-konvention
+  mukaisesti yksi sektio yhdellä koneikolla, monta sektiota sheetissä.
+- **Forward-fill**: kun rivin ``REV.``-sarake on tyhjä, koneikko
+  periytyy edellisestä sektio-otsikosta. Ennen tätä useimmat data-
+  rivit jäivät pois koska niiden REV. oli blank.
+- **Robusti koneikko-validointi**: vapaa teksti REV.-sarakkeessa
+  (``"Sähköurakoitsija tuo syötöt…"``) EI enää nouse koneikoksi —
+  vain JKx/KKx/RKx/LAx-pattern hyväksytään, muutoin forward-fill.
+
+**Testattu**: Lauri:n ``teholuettelo 2.xlsx`` (KM Kolari) — 39 spec
+luetaan kahdesta koneikosta (JK1 + JK2), 3 tehoa per laite + jännite
++ jäähdyttävä vaikutus.
+
 ## v0.2.0-alpha6 — 2026-05-07 (levyhyllyn kyljet + peilatut INSERT:t)
 
 **Korjattu — kaksi alpha5:n jäljelle jäänyttä bugia**:

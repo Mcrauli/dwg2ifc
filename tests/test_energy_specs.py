@@ -330,3 +330,85 @@ class TestLookupSpec:
         assert lookup_spec(specs, koneikko="JK1", laitetunnus="9") is None
         assert lookup_spec(specs, koneikko=None, laitetunnus="5") is None
         assert lookup_spec(specs, koneikko="JK1", laitetunnus=None) is None
+
+
+class TestSlashSeparatedHeader:
+    def test_three_powers_in_one_header(self, tmp_path: Path) -> None:
+        """RefDesign template uses ``KYLMÄ-/SÄHKÖ-/VASTUSTEHO [kW]`` to
+        span three columns. Each token must resolve to its own canonical
+        FI_Tekninen field (Jäähdytysteho / Sähköteho / Vastusteho)."""
+        path = tmp_path / "specs.xlsx"
+        _write_xlsx(
+            path,
+            [
+                ["REV.", "POS.", "KYLMÄ-/SÄHKÖ-/VASTUSTEHO [kW]", None, None],
+                ["JK1", "5", 4.0, 0.3, 3.7],
+            ],
+        )
+        specs = load_energy_specs(path)
+        assert ("jk1", "5") in specs
+        spec = specs[("jk1", "5")]
+        assert spec.fields["Jäähdytysteho"] == "4"
+        assert spec.fields["Sähköteho"] == "0.3"
+        assert spec.fields["Vastusteho"] == "3.7"
+
+
+class TestSectionHeaderAndForwardFill:
+    def test_pakasteet_section_propagates_jk1(self, tmp_path: Path) -> None:
+        """``PAKASTEET JK1`` section row above the column headers must
+        propagate as the koneikko for every body row whose REV. column
+        is blank — RefDesign convention."""
+        path = tmp_path / "specs.xlsx"
+        _write_xlsx(
+            path,
+            [
+                ["", "PAKASTEET JK1", "", ""],
+                ["REV.", "POS.", "Jäähdytysteho [kW]", "Sähköteho [kW]"],
+                [None, "1", 4.0, 0.3],
+                [None, "2", 2.5, 0.2],
+            ],
+        )
+        specs = load_energy_specs(path)
+        assert ("jk1", "1") in specs
+        assert ("jk1", "2") in specs
+        assert specs[("jk1", "1")].koneikko == "JK1"
+
+    def test_section_change_switches_koneikko(self, tmp_path: Path) -> None:
+        """Two sections in one sheet (``PAKASTEET JK1`` + ``KYLMÄT JK2``)
+        must switch the active koneikko mid-table."""
+        path = tmp_path / "specs.xlsx"
+        _write_xlsx(
+            path,
+            [
+                ["", "PAKASTEET JK1", "", ""],
+                ["REV.", "POS.", "Jäähdytysteho [kW]", "Sähköteho [kW]"],
+                [None, "1", 4.0, 0.3],
+                ["", "KYLMÄT JK2", "", ""],
+                [None, "20", 5.0, 0.2],
+            ],
+        )
+        specs = load_energy_specs(path)
+        assert ("jk1", "1") in specs
+        assert ("jk2", "20") in specs
+
+    def test_random_text_in_koneikko_column_does_not_clobber(
+        self, tmp_path: Path
+    ) -> None:
+        """A free-text cell in the REV. column ('Sähköurakoitsija…')
+        must NOT become the koneikko — only JK/KK/RK/LA + digits are
+        accepted as valid koneikko codes."""
+        path = tmp_path / "specs.xlsx"
+        _write_xlsx(
+            path,
+            [
+                ["", "PAKASTEET JK1", "", ""],
+                ["REV.", "POS.", "Jäähdytysteho [kW]", "Sähköteho [kW]"],
+                [None, "1", 4.0, 0.3],
+                ["Sähköurakoitsija tuo syötöt", None, None, None],
+                [None, "2", 2.5, 0.2],
+            ],
+        )
+        specs = load_energy_specs(path)
+        assert specs[("jk1", "1")].koneikko == "JK1"
+        # Row 2 must stay JK1 — the free-text row didn't switch koneikko.
+        assert specs[("jk1", "2")].koneikko == "JK1"

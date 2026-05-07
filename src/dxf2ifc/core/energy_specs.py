@@ -13,11 +13,20 @@ listalta ja kirjoittaa ne IFC:n FI_Tekninen-PSetiin.
 Sarakeotsikoiden mätsäys on tarkoituksella laaja:
 ``Jäähdytysteho [kW]`` / ``Q_kW`` / ``Cooling capacity`` kaikki
 mappautuvat samaksi FI_Tekninen-kentäksi ``Jäähdytysteho``.
+Yhdistetyt otsikot kuten ``KYLMÄ-/SÄHKÖ-/VASTUSTEHO [kW]``
+laajennetaan kolmeksi sarakkeeksi (Jäähdytysteho/Sähköteho/Vastusteho).
+
+Lauri:n RefDesign-pohjat ryhmittelevät rivejä koneikon mukaan
+sektio-otsikoilla (esim. ``PAKASTEET JK1``) ja jättävät
+``REV.``-sarakkeen tyhjäksi useimmilla data-riveillä. Lukija
+forward-fillaa koneikon: viimeinen ei-tyhjä REV.-arvo TAI sektio-
+otsikon tunnistama JKx/RKx/KKx -koodi periytyy seuraaville riveille.
 """
 
 from __future__ import annotations
 
 import csv
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -219,6 +228,58 @@ def _resolve_field_name(header: str) -> str | None:
     return None
 
 
+def _expand_slash_header(header: str) -> list[str | None]:
+    """Expand a slash-separated combined header that spans multiple
+    data columns into one canonical field name per token.
+
+    Lauri's RefDesign Teholuettelo uses headers like
+    ``"KYLMÄ-/SÄHKÖ-/VASTUSTEHO [kW]"`` that span three Excel columns
+    via merged cells — one cell carries the header text, the two
+    following header cells are blank, and the data row carries three
+    numeric values (one per power type). Splitting the header on
+    ``/`` and matching each token gives us
+    ``["Jäähdytysteho", "Sähköteho", "Vastusteho"]``.
+
+    A token alone (e.g. ``"kylmä-"``) often won't match an alias on
+    its own — the unit annotation ``[kW]`` carries the implicit
+    ``-teho`` suffix. When the unit looks like a power unit and a
+    token doesn't already contain ``"teho"`` we retry with
+    ``token + "teho"`` appended.
+
+    Returns a list of canonical field names (or ``None`` for tokens
+    that didn't resolve). For headers without ``/`` the list has a
+    single element, matching the legacy single-column behaviour.
+    """
+    if "/" not in header:
+        return [_resolve_field_name(header)]
+
+    # Split off the unit annotation ("[kW]" / "(kW)" etc.) — we want
+    # to keep it for fallback matching but strip it from token text.
+    unit = ""
+    body = header
+    for bracket in ("[", "("):
+        idx = header.find(bracket)
+        if idx != -1:
+            unit = header[idx:]
+            body = header[:idx].rstrip()
+            break
+
+    raw_tokens = [t.strip().rstrip(" -") for t in body.split("/")]
+
+    is_power_unit = "w" in unit.lower()  # 'kW', 'W'
+
+    result: list[str | None] = []
+    for tok in raw_tokens:
+        if not tok:
+            result.append(None)
+            continue
+        canonical = _resolve_field_name(tok)
+        if canonical is None and is_power_unit and "teho" not in tok.lower():
+            canonical = _resolve_field_name(tok + "teho")
+        result.append(canonical)
+    return result
+
+
 def _resolve_key_columns(headers: list[str]) -> tuple[int, int] | None:
     """Find the column indices of the koneikko and laitetunnus headers.
     Returns ``None`` when either is missing."""
@@ -321,6 +382,13 @@ def _split_header_and_body(
     """Find the first row that looks like a header (has both a
     koneikko-like and a laitetunnus-like column) and split the table.
 
+    The pre-header rows are PREPENDED to the body so the section-
+    header detector (in :func:`_specs_from_table`) can see e.g.
+    ``"PAKASTEET JK1"`` that RefDesign templates place one row above
+    the column headers. Pre-header title rows are harmless on the
+    data side because they have no koneikko/laite columns populated
+    and get skipped naturally.
+
     Tolerates one or more title rows above the table — Lauri's xlsx
     has 6 title rows + a section heading + a unit row before the
     actual data starts.
@@ -332,7 +400,7 @@ def _split_header_and_body(
             header_idx = i
             break
     headers = [_stringify(c) for c in rows[header_idx]]
-    body = rows[header_idx + 1 :]
+    body = rows[:header_idx] + rows[header_idx + 1 :]
     return headers, body
 
 
@@ -351,17 +419,64 @@ def _specs_from_table(
     for i, h in enumerate(headers):
         if i in (koneikko_idx, laite_idx):
             continue
-        canonical = _resolve_field_name(h)
-        if canonical is not None:
-            field_map[i] = canonical
+        # A slash-separated combined header spans the next N columns.
+        # Each token resolves independently; we assign each token to
+        # the column at offset ``i + offset``. Skip tokens that don't
+        # resolve and skip offsets that would collide with the
+        # koneikko/laitetunnus columns or an already-claimed entry.
+        expanded = _expand_slash_header(h)
+        if len(expanded) > 1:
+            for offset, canonical in enumerate(expanded):
+                col_idx = i + offset
+                if canonical is None:
+                    continue
+                if col_idx in (koneikko_idx, laite_idx):
+                    continue
+                if col_idx in field_map:
+                    continue
+                field_map[col_idx] = canonical
+        else:
+            canonical = expanded[0]
+            if canonical is not None and i not in field_map:
+                field_map[i] = canonical
 
     specs: dict[tuple[str, str], EnergySpec] = {}
+    # Forward-filled koneikko: persists across rows where the koneikko
+    # cell is blank (Lauri:n RefDesign-pohja jättää REV.-sarakkeen
+    # tyhjäksi useimmille riveille; sektio-otsikko ``PAKASTEET JK1``
+    # antaa koneikon, ja seuraavien rivien REV. on blank — pitäisi
+    # periytyä).
+    current_koneikko: str = ""
+    current_koneikko_display: str = ""
     for raw_row in body:
         row = list(raw_row) + [None] * (max(len(headers), 0) - len(raw_row))
+        # Section-header detection: a row whose only non-empty cells
+        # are non-numeric and whose text contains a koneikko-shaped
+        # token (JK1, KK2, RK10 …) updates ``current_koneikko``. Such
+        # rows have no real laite_value so we move on after capturing.
+        section_koneikko = _detect_section_koneikko(row)
+        if section_koneikko is not None:
+            current_koneikko_display = section_koneikko
+            current_koneikko = _normalise_key(section_koneikko)
+            continue
+
         koneikko_value = row[koneikko_idx] if koneikko_idx < len(row) else None
         laite_value = row[laite_idx] if laite_idx < len(row) else None
-        koneikko_key = _normalise_key(koneikko_value)
         laite_key = _normalise_key(laite_value)
+
+        # The koneikko column often carries free text ("Sähköurakoitsija
+        # tuo syötöt…") instead of an actual koneikko code in Lauri:n
+        # RefDesign-pohjissa. Only update ``current_koneikko`` when the
+        # cell text contains a recognised koneikko token (JKx/KKx/RKx/
+        # LAx); otherwise forward-fill the section-header / previous
+        # value. Empty cells also forward-fill.
+        koneikko_text = _stringify(koneikko_value)
+        koneikko_match = _KONEIKKO_TOKEN_RE.search(koneikko_text)
+        if koneikko_match is not None:
+            current_koneikko_display = koneikko_match.group(1).upper()
+            current_koneikko = _normalise_key(current_koneikko_display)
+        koneikko_key = current_koneikko
+        koneikko_display = current_koneikko_display
         if not koneikko_key or not laite_key:
             continue
         fields: dict[str, str] = {}
@@ -374,11 +489,40 @@ def _specs_from_table(
         if not fields:
             continue
         specs[(koneikko_key, laite_key)] = EnergySpec(
-            koneikko=_stringify(koneikko_value),
+            koneikko=koneikko_display,
             laitetunnus=_stringify(laite_value),
             fields=fields,
         )
     return specs
+
+
+# Recognised koneikko-token shapes — RefDesign convention is JK + digits
+# (Jäähdytyskoneikko), KK (Kylmäkoneikko), RK (Ryhmäkeskus), LA (Laite).
+_KONEIKKO_TOKEN_RE = re.compile(r"\b((?:JK|KK|RK|LA)\d+)\b", re.IGNORECASE)
+
+
+def _detect_section_koneikko(row: list[Any]) -> str | None:
+    """If ``row`` looks like a section header carrying a koneikko code,
+    return that code. Otherwise return ``None``.
+
+    Lauri:n RefDesign-pohja merkitsee koneikko-sektioita riveillä jossa
+    yksi solu sisältää tekstin kuten ``"PAKASTEET JK1"`` ja muut solut
+    ovat tyhjiä. We require: exactly one non-empty cell, the cell is
+    text (not numeric/formula), and the text contains a JKx/KKx/RKx/LAx
+    token. A pure equipment row (``"KYL-KK-JK1-2"`` in column 1) won't
+    match because column-2 (``Koneikkokeskus``) is also populated.
+    """
+    populated = [c for c in row if c is not None and str(c).strip()]
+    if len(populated) != 1:
+        return None
+    cell = populated[0]
+    if isinstance(cell, (int, float)) and not isinstance(cell, bool):
+        return None
+    text = str(cell)
+    match = _KONEIKKO_TOKEN_RE.search(text)
+    if match is None:
+        return None
+    return match.group(1).upper()
 
 
 def _read_sheets(
