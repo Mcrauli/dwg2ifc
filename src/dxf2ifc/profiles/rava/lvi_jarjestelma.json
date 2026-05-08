@@ -1,5 +1,22 @@
 {
   "_origin": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/LVI-JARJESTELMA_Versio_1_0/codes",
-  "_note": "Plan H Task 6 stub. Replace with live sync_codes download.",
-  "results": []
+  "_note": "Stub-poiminta — viemäri-järjestelmäkoodit. Päivitä koko koodisto live-haulla 'python -m tools.rava.sync_codes' kun projekti online.",
+  "results": [
+    {"codeValue": "J-LVI-04-01", "prefLabel": {"fi": "Viemäri - jätevesi"}},
+    {"codeValue": "J-LVI-04-02", "prefLabel": {"fi": "Viemäri - sadevesi"}},
+    {"codeValue": "J-LVI-04-03", "prefLabel": {"fi": "Viemäri - tuuletus"}},
+    {"codeValue": "J-LVI-04-04", "prefLabel": {"fi": "Viemäri - kondenssi"}},
+    {"codeValue": "J-LVI-04-05", "prefLabel": {"fi": "Viemäri - rasva"}},
+    {"codeValue": "J-LVI-04-06", "prefLabel": {"fi": "Viemäri - öljy"}},
+    {"codeValue": "J-LVI-04-07", "prefLabel": {"fi": "Viemäri - erikois"}},
+    {"codeValue": "J-LVI-04-08", "prefLabel": {"fi": "Viemäri - salaoja"}},
+    {"codeValue": "J-LVI-04-09", "prefLabel": {"fi": "Viemäri - perusvesi"}},
+    {"codeValue": "J-LVI-04-10", "prefLabel": {"fi": "Viemäri - sekavesi"}},
+    {"codeValue": "J-LVI-04-11", "prefLabel": {"fi": "Viemäri - dialyysi"}},
+    {"codeValue": "J-LVI-04-12", "prefLabel": {"fi": "Paineviemäri - jätevesi"}},
+    {"codeValue": "J-LVI-04-13", "prefLabel": {"fi": "Paineviemäri - sadevesi"}},
+    {"codeValue": "J-LVI-04-14", "prefLabel": {"fi": "Paineviemäri - perusvesi"}},
+    {"codeValue": "J-LVI-04-15", "prefLabel": {"fi": "Paineviemäri - sekavesi"}},
+    {"codeValue": "J-LVI-04-99", "prefLabel": {"fi": "MUU - Viemärijärjestelmät"}}
+  ]
 }

@@ -6,6 +6,30 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha9 — 2026-05-08 (RAVA viemäri-koodit valmiina cache:hen)
+
+**Lisätty — RAVA-LVI viemärikoodit koodisto-cache:hen**:
+
+Lauri:n pyynnöstä haettiin valmiiksi viemäri-puolen RAVA3Pro-luokitukset
+jotta niille on tuki valmiina kun layer-mappausta laajennetaan. Itse
+mappauspatterneja ei vielä lisätty — Lauri päättää myöhemmin mitkä
+DXF-layerit ovat KYL-puolen kondenssiviemäri ja mitkä LVI-puolen
+jv/sv/tuuletus.
+
+- **`profiles/rava/lvi_tuoteosa.json`** laajennettu: kaikki T-LVI-04-*
+  (viemäriputket + varusteet + eristeet) + T-LVI-05-01-* (kaivot) +
+  T-LVI-01-03-* (pumppaamot).
+- **`profiles/rava/lvi_jarjestelma.json`** laajennettu: kaikki
+  J-LVI-04-* viemärijärjestelmät (jätevesi/sadevesi/tuuletus/kondenssi/
+  rasva/öljy/erikois/salaoja/perusvesi/sekavesi/dialyysi + paineviemärit).
+- **`docs/RAVA_DRAINAGE_CODES.md`** uusi pikamuisti — IFC-tyyppi-mappaus-
+  ehdotukset + esimerkki profile-säännöstä + mitä tehdä seuraavaksi.
+
+**Erityishuomio kylmälaitepuolelle**: höyrystinten sulatusvedet ja
+muut kylmälaitepuolen kondenssit kuuluvat järjestelmäkoodiin
+`J-LVI-04-04 Viemäri - kondenssi`. Tuoteosa-koodi runkoputkille on
+edelleen `T-LVI-04-01-001 Viemäriputki`.
+
 ## v0.2.0-alpha8 — 2026-05-08 (hyllyjen FI_Tekninen siivous)
 
 **Muutettu — `IfcCableCarrierSegment` (KYL-TIKASHYLLY / KYL-LEVYHYLLY)
