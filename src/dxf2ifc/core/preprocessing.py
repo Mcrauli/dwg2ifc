@@ -225,45 +225,75 @@ _LISP_PHASE1 = (
     '(setq i (1+ i))))))'
 )
 
-# Phase 2: explode equipment INSERTs and STLOUT children.
-# Block-name filter restricts to:
-#  - refrigeration EQUIPMENT blocks (*yrystin* / *ahdutin* / *pressori*)
-#  - parametric cable carrier shelves (KLHYLLY-LEVY, KLHYLLY-TIKAS —
-#    see autocad-lisp-ohjeet/files/klhylly.lsp).
-# Ascii-only substring patterns avoid the umlaut codepage issue:
-# leading `*` matches both Höyrystin and Hoyrystin. KLHYLLY-LEVY blocks
-# carry LWPOLYLINE+thickness instead of 3DSOLID (dynamic-block stretch
-# does not work reliably on 3DSOLIDs); CONVTOSOLID promotes them so the
-# Phase 2 STLOUT step can tessellate them like any other 3DSOLID.
-# Annotation blocks (positiov2 bubbles) on KYL-* layers must NOT be
-# EXPLODEd — they triple conversion time and inflate the IFC.
+# Phase 2: explode INSERT block references on the layer filter, walk
+# every nested INSERT recursively (depth-cap 1000 iterations), and STLOUT
+# every ACIS body the explosion uncovers. The previous version filtered
+# by hard-coded block name (*yrystin*,*ahdutin*,*pressori*,KLHYLLY-*,
+# VPUTKI-*) which silently dropped any new equipment block — KONEIKKO,
+# CHILLER, KOMPLAUH, KAASUNJAA, NESTEJAAHD, VARAAJA, PAKASTEKAAPPI etc.
+# Using the layer filter (same one Phase 1 uses) means every KYL-*
+# equipment block — including ones we have no knowledge of — gets
+# exploded and triangulated.
+#
+# POSITIO annotation bubbles share KYL-* layers in some drawings (the
+# autocad-lisp-ohjeet/files/positio.lsp tool puts them on each
+# device's own layer). Exploding those would triple conversion time
+# and bloat the IFC with letter-shaped meshes, so we skip blocks whose
+# name matches *POSITIO* before calling EXPLODE.
+#
+# Recursion handles compound blocks where the equipment is drawn as
+# nested sub-blocks (e.g. a koneikko block whose definition has child
+# INSERTs for compressor + condenser sub-assemblies). Without the
+# recursion the first EXPLODE would surface only the sub-INSERT
+# wrappers, never reaching the 3DSOLID children inside.
+#
+# ACIS types caught: 3DSOLID + SURFACE + REGION + BODY + *SURFACE
+# (PLANESURFACE / EXTRUDEDSURFACE / REVOLVEDSURFACE / SWEPTSURFACE /
+# LOFTEDSURFACE / NURBSURFACE). KLHYLLY-LEVY / VPUTKI-* still rely on
+# CONVTOSOLID promoting LWPOLYLINE+thickness to 3DSOLID first.
 _LISP_PHASE2 = (
     '(progn '
-    '(setq inserts (ssget "_X" \'((0 . "INSERT") (2 . "*yrystin*,*ahdutin*,*pressori*,KLHYLLY-*")))) '
+    '(setq inserts (ssget "_X" \'((0 . "INSERT") (8 . "{filter}")))) '
     '(write-line (strcat "phase2_inserts=" (if inserts (itoa (sslength inserts)) "0")) logf) '
     '(if inserts '
     '(progn '
     '(setq k 0 m (sslength inserts)) '
     '(while (< k m) '
     '(setq ins (ssname inserts k)) '
-    '(setq ih (cdr (assoc 5 (entget ins)))) '
-    '(command "_.EXPLODE" ins) '
-    '(setq newents (ssget "_P")) '
-    '(if newents '
+    '(setq insel (entget ins)) '
+    '(setq bname (cdr (assoc 2 insel))) '
+    '(if (and bname (not (wcmatch (strcase bname) "*POSITIO*"))) '
     '(progn '
-    '(setq j 0 nn (sslength newents) ctr 0 toconv (ssadd)) '
+    '(setq ih (cdr (assoc 5 insel))) '
+    '(setq ctr 0 toconv (ssadd) iter_cap 1000) '
+    '(command "_.EXPLODE" ins) '
+    '(setq queue (list (ssget "_P"))) '
+    '(while (and queue (> iter_cap 0)) '
+    '(setq curss (car queue)) '
+    '(setq queue (cdr queue)) '
+    '(setq iter_cap (1- iter_cap)) '
+    '(if curss '
+    '(progn '
+    '(setq j 0 nn (sslength curss)) '
     '(while (< j nn) '
-    '(setq ent (ssname newents j)) '
+    '(setq ent (ssname curss j)) '
     '(setq el (entget ent)) '
     '(setq etype (cdr (assoc 0 el))) '
     '(setq ethick (cdr (assoc 39 el))) '
     '(cond '
-    '((eq etype "3DSOLID") '
+    '((or (eq etype "3DSOLID") (eq etype "SURFACE") (eq etype "REGION") (eq etype "BODY") (eq etype "PLANESURFACE") (eq etype "EXTRUDEDSURFACE") (eq etype "REVOLVEDSURFACE") (eq etype "SWEPTSURFACE") (eq etype "LOFTEDSURFACE") (eq etype "NURBSURFACE")) '
     '(command "_.STLOUT" ent "" "Y" (strcat insert_out ih "_" (itoa ctr) ".stl")) '
     '(setq ctr (1+ ctr))) '
+    '((eq etype "INSERT") '
+    '(setq sbname (cdr (assoc 2 el))) '
+    '(if (and sbname (not (wcmatch (strcase sbname) "*POSITIO*"))) '
+    '(progn '
+    '(command "_.EXPLODE" ent) '
+    '(setq subss (ssget "_P")) '
+    '(if subss (setq queue (cons subss queue)))))) '
     '((and (eq etype "LWPOLYLINE") ethick (> ethick 0.0)) '
     '(setq toconv (ssadd ent toconv)))) '
-    '(setq j (1+ j))) '
+    '(setq j (1+ j)))))) '
     '(if (> (sslength toconv) 0) '
     '(progn '
     '(command "_.CONVTOSOLID" toconv "") '
@@ -357,7 +387,7 @@ def extract_acis_meshes(
                 log_out=out_posix,
             ),
             _LISP_PHASE1.format(filter=layer_filter),
-            _LISP_PHASE2,
+            _LISP_PHASE2.format(filter=layer_filter),
             _LISP_CLEANUP,
         ]
         scr_path.write_text("\r\n".join(forms) + "\r\n", encoding="utf-8")

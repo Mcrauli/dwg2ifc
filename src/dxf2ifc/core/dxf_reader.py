@@ -74,6 +74,31 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
     except Exception:  # noqa: BLE001 — malformed block, ezdxf can raise
         return None
 
+    # Recursively flatten nested INSERTs. ezdxf's INSERT.virtual_entities()
+    # applies the parent transform to direct block children but does NOT
+    # descend into block-level INSERTs — nested sub-blocks come back as
+    # INSERT entities that we must expand ourselves. Without this loop,
+    # equipment blocks built as compound assemblies (a koneikko block
+    # whose definition references a compressor sub-block + condenser
+    # sub-block) would surface no 3DFACE/LWPOLYLINE here and fall through
+    # to the geometryless BlockInstance path. depth_cap=8 catches any
+    # pathological circular nesting without crashing.
+    queue = list(virt)
+    flat: list = []
+    depth_cap = 1000
+    while queue and depth_cap > 0:
+        v_ent = queue.pop()
+        depth_cap -= 1
+        t = v_ent.dxftype() if hasattr(v_ent, "dxftype") else ""
+        if t == "INSERT":
+            try:
+                queue.extend(v_ent.virtual_entities())
+            except Exception:  # noqa: BLE001
+                continue
+            continue
+        flat.append(v_ent)
+    virt = flat
+
     # Separate 3DFACEs from closed LWPOLYLINEs so we can pair them up.
     face_records: list[tuple[
         tuple[float, float, float, float],  # (xmin, ymin, xmax, ymax)
