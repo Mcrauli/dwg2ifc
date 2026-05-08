@@ -6,6 +6,27 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha8 — 2026-05-08 (hyllyjen FI_Tekninen siivous)
+
+**Muutettu — `IfcCableCarrierSegment` (KYL-TIKASHYLLY / KYL-LEVYHYLLY)
+FI_Tekninen-defaultit minimoitu**:
+
+Lauri:n päätös 2026-05-08: hyllyille riittää matsku + pinnoite. Aiemmat
+laajat tekniset kentät (paloluokka, paino, kuormitus, levypaksuus,
+korroosioluokka, värit, valmistajan linkki) jäävät pois oletuksena.
+
+- **`_FI_TEKNINEN_DEFAULTS["IfcCableCarrierSegment"]`** sisältää nyt
+  vain `Materiaali` + `Pinnoite`.
+- **`default_kylmalaite.toml`** -hyllysäännöt päivitetty:
+  - Tikashylly: `Materiaali = "Teräs"`, `Pinnoite = "Kuumasinkitty"`
+  - Levyhylly: `Materiaali = "Teräs"`, `Pinnoite = "Polyesterimaalattu"`
+    (poistettu "Valkoinen RAL 9010" -värimerkintä)
+- **`fi_tuote.valmistajan_linkki`** poistettu hyllyiltä — ei tartte
+  laittaa linkkiä tuotteeseen oletuksena.
+
+Käyttäjä voi lisätä mitä tahansa kenttää takaisin custom profile:n
+kautta jos joku projekti vaatii esim. paloluokan tai kuormitustiedon.
+
 ## v0.2.0-alpha7 — 2026-05-07 (Excel-luenta: yhdistetyt otsikot + sektiot)
 
 **Lisätty — RefDesign Teholuettelo-pohjien tuki**:

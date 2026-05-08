@@ -221,8 +221,14 @@ def test_fi_tekninen_default_fields_per_ifc_type():
     assert "Kylmäaine" in evap
 
     shelf = fi_tekninen_default_fields("IfcCableCarrierSegment")
-    assert "Kuormitus" in shelf
+    # Hyllyt: vain matsku + pinnoite (Lauri 2026-05-08).
     assert "Materiaali" in shelf
+    assert "Pinnoite" in shelf
+    # Removed fields must not be in defaults — käyttäjä voi lisätä
+    # ne custom profile:n kautta jos tarvitsee.
+    assert "Paloturvallisuusluokka" not in shelf
+    assert "Paino" not in shelf
+    assert "Kuormitus" not in shelf
     # Refrigeration fields must NOT leak onto shelves.
     assert "Jäähdytysteho" not in shelf
 

@@ -306,13 +306,12 @@ _FI_TEKNINEN_DEFAULTS: dict[str, dict[str, str]] = {
         "Ääniteho": "",
     },
     "IfcCableCarrierSegment": {
+        # Hyllyt: Lauri:n päätös 2026-05-08 — vain matsku + pinnoite
+        # (esim. "Kuumasinkitty"). EI paloluokkaa, painoa, painokuormaa,
+        # väriä eikä levypaksuutta — käyttäjä voi lisätä tarvittaessa
+        # custom profile:n kautta.
         "Materiaali": "",
         "Pinnoite": "",
-        "Korroosioluokka": "",
-        "Paloturvallisuusluokka": "",
-        "Levypaksuus": "",
-        "Kuormitus": "",
-        "Paino": "",
     },
     "IfcPipeSegment": {
         "Materiaali": "",

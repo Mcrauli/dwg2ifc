@@ -138,13 +138,12 @@ fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT",
 # so the vertical variant resolves first under first-match-wins semantics.
 # -----------------------------------------------------------------------------
 
-# Default product specs are MEKA's KS20-500 K (kuumasinkitty teräs) for
-# tikashylly ja KRA-60-500 M (valkoinen polyesterimaali) levyhyllylle.
-# Lähteet:
-#   https://meka.eu/fi/tuote/ks20-500-k-l6000-pg/
-#   https://meka.eu/fi/tuote/kra-60-500-l3000-m/
-# Käyttäjä voi ylikirjoittaa fi_tekninen / fi_tuote oman profiilin
-# kautta jos käytössä on eri valmistaja tai mitoitus.
+# Default product specs are MEKA's KS20-500 K (kuumasinkitty teräs)
+# tikashyllylle ja KRA-60-500 M (polyesterimaalattu) levyhyllylle.
+# FI_Tekninen pidetään tarkoituksellisesti minimaalisena: vain
+# materiaali + pinnoite. Paloluokat, painot, kuormitus, värit ja
+# valmistajan linkit on jätetty pois — käyttäjä voi lisätä ne
+# tarvittaessa custom profile:n kautta.
 
 [[rules]]
 layer_pattern = "KYL-TIKASHYLLY-V*"
@@ -155,8 +154,8 @@ talotekniikka_code = "T-TATE-01-01-001"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Tikashylly (pystysuora)", yleistunnus = "AHJ.LVI" }
 fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjestelmien_tunnukset = "AHJ.LVI" }
-fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Kuumasinkitty (EN 10346)", Korroosioluokka = "C1-C2", Paloturvallisuusluokka = "E90", Levypaksuus = "0,75 mm", Paino = "10,68 kg/6 m" }
-fi_tuote = { nimi = "KS20-500 K L=6000 PG", valmistaja = "MEKA", valmistajan_linkki = "https://meka.eu/fi/tuote/ks20-500-k-l6000-pg/" }
+fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Kuumasinkitty" }
+fi_tuote = { nimi = "KS20-500 K L=6000 PG", valmistaja = "MEKA" }
 
 [[rules]]
 layer_pattern = "KYL-TIKASHYLLY*"
@@ -167,8 +166,8 @@ talotekniikka_code = "T-TATE-01-01-001"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Tikashylly", yleistunnus = "AHJ.LVI" }
 fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjestelmien_tunnukset = "AHJ.LVI" }
-fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Kuumasinkitty (EN 10346)", Korroosioluokka = "C1-C2", Paloturvallisuusluokka = "E90", Levypaksuus = "0,75 mm", Paino = "10,68 kg/6 m" }
-fi_tuote = { nimi = "KS20-500 K L=6000 PG", valmistaja = "MEKA", valmistajan_linkki = "https://meka.eu/fi/tuote/ks20-500-k-l6000-pg/" }
+fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Kuumasinkitty" }
+fi_tuote = { nimi = "KS20-500 K L=6000 PG", valmistaja = "MEKA" }
 
 [[rules]]
 layer_pattern = "KYL-LEVYHYLLY*"
@@ -179,8 +178,8 @@ talotekniikka_code = "T-TATE-01-01-001"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Levyhylly", yleistunnus = "AHJ.LVI" }
 fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjestelmien_tunnukset = "AHJ.LVI" }
-fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Valkoinen RAL 9010 polyesterimaali", Korroosioluokka = "C1-C2", Paloturvallisuusluokka = "E90", Levypaksuus = "1,25 mm", Paino = "19,09 kg/3 m" }
-fi_tuote = { nimi = "KRA-60-500 L=3000 M", valmistaja = "MEKA", valmistajan_linkki = "https://meka.eu/fi/tuote/kra-60-500-l3000-m/" }
+fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Polyesterimaalattu" }
+fi_tuote = { nimi = "KRA-60-500 L=3000 M", valmistaja = "MEKA" }
 
 # -----------------------------------------------------------------------------
 # Section 4: Cable carriers (electrical) — RAVA T-TATE-01-01-001.
