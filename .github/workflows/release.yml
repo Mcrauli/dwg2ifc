@@ -182,7 +182,7 @@ jobs:
             dist/LICENSES.md
           if-no-files-found: error
 
-      - name: Create draft GitHub release
+      - name: Publish GitHub prerelease
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -196,7 +196,11 @@ jobs:
             (Get-ChildItem dist/dxf2ifc-*.exe.sha256).FullName,
             "dist/LICENSES.md"
           )
+          # Publish as prerelease (not draft) so the GUI's auto-update
+          # banner picks it up immediately. The updater filters drafts
+          # but accepts prereleases — and every 0.2.0a* tag is alpha
+          # quality anyway.
           gh release create $tag @assets `
             --title $tag `
             --notes-file CHANGELOG.md `
-            --draft
+            --prerelease
