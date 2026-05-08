@@ -6,6 +6,21 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha13 — 2026-05-08 (block-sisäiset 3DSOLIDit huomataan)
+
+**Korjattu — koneikko-blokit triggeröivät nyt accoreconsole-pipelinen**:
+
+`dxf_contains_acis_bodies` skannasi vain modelspacea — koneikko ja muut
+laite-blokit joiden 3DSOLID-sisältö asuu **block definitionin sisällä**
+(MEKA / Solibri / valmistajien kirjastoista tuodut kokoonpanot ovat
+tyypillisesti tällaisia) eivät triggeröineet accoreconsole-Stage 1+2 -
+pipelinea lainkaan. Tarkistus käy nyt läpi jokaisen block-definition.
+
+Yhdessä alpha12:n Phase 2 -laajennuksen kanssa: koneikko-INSERTit
+layer KYL-KONEIKKO* räjäytetään → block-sisäiset 62 × 3DSOLID
+STLOUTataan → mesh aggregoidaan → IfcUnitaryEquipment + IfcFacetedBrep
+syntyy IFC:hen.
+
 ## v0.2.0-alpha12 — 2026-05-08 (STLOUT kaikille INSERT-blokeille)
 
 **Korjattu — koneikko ja muut equipment-blokit saavat nyt geometrian**:

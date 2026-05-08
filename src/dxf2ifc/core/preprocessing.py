@@ -60,10 +60,25 @@ class AcisMeshData:
 
 
 def dxf_contains_acis_bodies(path: str | Path) -> bool:
-    """Return ``True`` if the DXF model space contains any ACIS-backed entity."""
+    """Return ``True`` if the DXF carries any ACIS-backed entity, anywhere.
+
+    Walks every block definition (including modelspace, which is itself
+    a block) so equipment blocks whose 3DSOLID contents live inside the
+    block definition — KYL-KONEIKKO assemblies created in MEKA / Solibri
+    /  manufacturer libraries are typically built this way — trigger the
+    accoreconsole pipeline. The previous modelspace-only scan caused the
+    early-exit path to skip every drawing whose only ACIS content was
+    sealed inside a block.
+    """
     doc = ezdxf.readfile(str(path))
-    msp = doc.modelspace()
-    return any(entity.dxftype() in ACIS_DXF_TYPES for entity in msp)
+    for block in doc.blocks:
+        for entity in block:
+            try:
+                if entity.dxftype() in ACIS_DXF_TYPES:
+                    return True
+            except Exception:  # noqa: BLE001 — non-graphical custom entity
+                continue
+    return False
 
 
 def find_accoreconsole() -> Path | None:
