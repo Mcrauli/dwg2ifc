@@ -18,15 +18,11 @@ Pakkaukset:
 ## Current pipeline
 
 ```
-INPUT
-  ├─ .dxf  ─────────────────────────────────────────────┐
-  └─ .dwg  → core/dwg_preconvert.py (AutoCAD COM)       │
-              MAGIEXPLODE + EXPLODE + DXFOUT            │
-              välitilanne-DXF                            │
-                                                         ↓
+INPUT  .dxf  ─────────────────────────────────────────────┐
+                                                          ↓
 core/preprocessing.py    accoreconsole.exe + STLOUT 3DSOLID-bodyille
                           (per-handle binary STL → mesh)
-                                                         ↓
+                                                          ↓
 core/dxf_reader.py       ezdxf-luenta:
                           - 3DSOLID via acis_meshes
                           - INSERT.virtual_entities() →
@@ -63,18 +59,15 @@ core/quality.py          (optional) ifcopenshell.validate +
   `(arxload "MagiCAD_r25x64.arx")` palauttaa `ARXLOAD failed`.
   Sama rajoite koskee sekä DXF että DWG -formaattia. **Älä yritä uudelleen.**
 
-### MagiCAD ja Object Enabler
+### MagiCAD-osat — yksi oikea reitti
 
-- **MagiCAD Object Enabler on render-only** (Lauri:n koneella):
-  ARX latautuu mutta `EXPLODE` ei tuota 3DSOLID-lapsia. `MAGIEXPLODE`
-  tuottaa pelkkiä 2D-polylineja. **MagiCAD-osat pudottautuvat IFC:stä pois**
-  pelkän Object Enabler:n kanssa.
-- **FULL MagiCAD-lisenssi** tuottaa oikean 3D-geometrian `EXPLODE`-vaiheessa
-  → tessellöityy `IfcBuildingElementProxy`-mesh:nä, mutta ilman MagiCAD:in
-  semanttisia IFC-tyyppejä.
-- **Suositeltu reitti**: kollega ajaa `-MAGIIFCCD` AutoCAD:issa, dxf2ifc
-  yhdistää tuon IFC:n master-IFC:hen `core/ifc_merger.py`-modulilla.
-  DXF-syötteellä **ei tarvita AutoCAD COM:ia** lainkaan.
+- **Kollega ajaa `-MAGIIFCCD`** AutoCAD:issa, dxf2ifc mergee tuotetun
+  IFC:n master-IFC:hen `core/ifc_merger.py`:llä. DXF-syötteellä ei tarvita
+  AutoCAD COM:ia lainkaan.
+- DXF-puolen MAGI*-luokat + ACAD_PROXY_ENTITY skipataan automaattisesti
+  kun `magicad_ifc_path` on annettu — estää duplikaatit.
+- DWG-input poistettu v0.2.0-alpha10:ssä (kaikki COM-keystroke-yritykset
+  hauraita; `-MAGIIFCCD` + merge on luotettavampi).
 
 ### accoreconsole-rajoitukset
 
@@ -105,7 +98,6 @@ core/quality.py          (optional) ifcopenshell.validate +
   KYL-hyllyä (5 tikashylly + 3 levyhylly), alpha4–6:n test fixture
 - `~/OneDrive - RADIKA OY/Tiedostot/teholuettelo 2.xlsx` — RefDesign
   energy spec (JK1 + JK2, slash-otsikot, sektiot), alpha7:n test fixture
-- `~/OneDrive - RADIKA OY/Tiedostot/testimagi.dwg` — MagiCAD-DWG (POC v4)
 
 ## Open todos
 
@@ -116,18 +108,16 @@ core/quality.py          (optional) ifcopenshell.validate +
   IFC-tyyppi. Vaiheittain (split-suunnitelma `docs/SPLIT_PLAN.md`:ssä).
 - [ ] **`dxf_reader.py` (759 r)** — split per geometry kind
   (`insert_aggregator.py`, `polyline_reader.py`, `mesh_reader.py`).
-- [ ] **`dwg_preconvert.py` (768 r)** — split COM-bootstrap erilleen
-  AutoLISP-bodysta.
 - [ ] **GUI Profile Editor** ei näytä FI_*-kenttiä (TOML-edit toimii käsin).
 - [ ] **POSITIO-block-pattern** laajempi kattaus (nyt `positiov2*`).
 
 ## Known limitations
 
-- **DWG-input**: vaatii AutoCAD asennettuna (COM Visible=False -istunto).
-  Kokeellinen, ei core-pipelinen vakio-osa. Render-only Object Enabler
-  -tilassa MagiCAD-osat pudottautuvat pois.
-- **MagiCAD-osat ilman FULL-lisenssiä**: pudottautuvat pois IFC:stä.
-  Suositeltu workaround: kollegan `-MAGIIFCCD`-export + `--magicad-ifc`-merge.
+- **Vain DXF-input**: DWG-input poistettu v0.2.0-alpha10:ssä. Käytä
+  AutoCAD:in `DXFOUT`:ia tai `-MAGIIFCCD` + merge-reittiä.
+- **MagiCAD-osat**: tulevat IFC:hen vain kollegan `-MAGIIFCCD`-exportin
+  kautta `--magicad-ifc`-mergellä. Pelkkä DXF + Object Enabler ei tuota
+  semanttista MagiCAD-IFC:tä.
 - **DXF data quality**: konvertteri ei vielä korjaa DXF:n sisäistä
   outlier-geometriaa (esim. yksittäinen 3DSOLID 800m irrallaan), vain
   varoittaa.

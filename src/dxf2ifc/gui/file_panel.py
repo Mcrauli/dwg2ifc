@@ -7,7 +7,7 @@ from PySide6 import QtCore, QtWidgets
 
 class FilePanel(QtWidgets.QWidget):
     # Emits (dxf_path, ifc_path, energy_specs_path, floor_elevation_mm,
-    # quick_convert, preprocess_proxies, magicad_ifc_path).
+    # magicad_ifc_path).
     # ``energy_specs_path`` is empty string when the user has not picked
     # a spec file. ``floor_elevation_mm`` is the absolute Z elevation of
     # 1.krs (mm) — added to every IfcBuildingStorey.Elevation in the
@@ -17,20 +17,11 @@ class FilePanel(QtWidgets.QWidget):
     # is the right mode when the source DXF is already drawn in
     # absolute Finnish coordinates; the offset path is for the more
     # common case where designers draw entities relative to floor Z=0.
-    # ``quick_convert`` skips the accoreconsole 3D-tessellation pass
-    # when True, which trades faceted 3DSOLID bodies for a much faster
-    # convert (typically 5–10x) — useful when the user only needs the
-    # layer mapping + 2D geometry to validate setup.
-    # ``preprocess_proxies`` toggles the MagiCAD/ACAD_PROXY_ENTITY
-    # geometry pipeline (default True). Off mode skips the proxy
-    # bbox-cuboid fallback + accoreconsole EXPLODE for proxies whose
-    # graphics ezdxf cannot decode — useful only when proxies are
-    # known not to carry geometry.
     # ``magicad_ifc_path`` is empty string when no MagiCAD-IFC has been
     # picked. When non-empty, the converter merges that IFC (typically
-    # produced by a colleague's FULL-MagiCAD MAGIIFCEXPORT) into the
-    # master IFC and skips MagiCAD parts in the DWG to avoid duplicates.
-    convert_requested = QtCore.Signal(str, str, str, float, bool, bool, str)
+    # produced by a colleague's FULL-MagiCAD ``-MAGIIFCCD`` export) into
+    # the master IFC and skips MagiCAD parts in the DXF to avoid duplicates.
+    convert_requested = QtCore.Signal(str, str, str, float, str)
 
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
         super().__init__(parent)
@@ -41,7 +32,7 @@ class FilePanel(QtWidgets.QWidget):
 
         layout.addWidget(self._caption("DXF input"), 0, 0)
         self.input_edit = QtWidgets.QLineEdit()
-        self.input_edit.setPlaceholderText("Polku .dxf tai .dwg -tiedostoon")
+        self.input_edit.setPlaceholderText("Polku .dxf-tiedostoon")
         layout.addWidget(self.input_edit, 0, 1)
         self.browse_input_button = QtWidgets.QPushButton("Browse…")
         self.browse_input_button.setProperty("secondary", "true")
@@ -71,14 +62,14 @@ class FilePanel(QtWidgets.QWidget):
         layout.addWidget(self._caption("MagiCAD-IFC"), 3, 0)
         self.magicad_ifc_edit = QtWidgets.QLineEdit()
         self.magicad_ifc_edit.setPlaceholderText(
-            "Valinnainen MAGIIFCEXPORT-tuotos (LVI-puoli yhdistetään master-IFC:hen)"
+            "Valinnainen -MAGIIFCCD-tuotos (LVI-puoli yhdistetään master-IFC:hen)"
         )
         self.magicad_ifc_edit.setToolTip(
             "Valinnainen MagiCAD-IFC. Kun annettu, dxf2ifc skippaa "
-            "MagiCAD-objektit DWG:stä (MAGI*-luokat + ACAD_PROXY_ENTITY) "
+            "MagiCAD-objektit DXF:stä (MAGI*-luokat + ACAD_PROXY_ENTITY) "
             "ja yhdistää tämän IFC:n IfcProduct:t master-IFC:hen ensimmäisen "
             "IfcBuildingStoreyn alle. Tarkoitettu kollegan FULL-MagiCAD-"
-            "lisenssin koneella ajettavaa MAGIIFCEXPORT:in tuotosta varten."
+            "lisenssin koneella ajettavaa -MAGIIFCCD:n tuotosta varten."
         )
         layout.addWidget(self.magicad_ifc_edit, 3, 1)
         self.browse_magicad_ifc_button = QtWidgets.QPushButton("Browse…")
@@ -117,36 +108,10 @@ class FilePanel(QtWidgets.QWidget):
             self.floor_elevation_edit.setEnabled
         )
 
-        self.quick_convert_checkbox = QtWidgets.QCheckBox(
-            "Pikakonversio (ohita 3D-tessellaatio)"
-        )
-        self.quick_convert_checkbox.setToolTip(
-            "Ohita accoreconsole-vaihe joka tessellöi 3DSOLID-bodyt "
-            "(höyrystinten kotelot, hyllyt). 2D-geometria ja INSERT-blokit "
-            "konvertoidaan normaalisti. Käytä kun haluat nopean tarkistuksen "
-            "että layer-mappaus toimii — käytännössä 5–10× nopeampi raskailla "
-            "DXF-tiedostoilla."
-        )
-        layout.addWidget(self.quick_convert_checkbox, 6, 1, 1, 2)
-
-        self.preprocess_proxies_checkbox = QtWidgets.QCheckBox(
-            "MagiCAD/proxy-objektien geometria"
-        )
-        self.preprocess_proxies_checkbox.setChecked(True)
-        self.preprocess_proxies_checkbox.setToolTip(
-            "Päällä (default): MagiCAD- ja muut ACAD_PROXY_ENTITY-objektit "
-            "luetaan IFC:hen — open-polylinet (putket, detaljit) tarkana, "
-            "ja jos MagiCAD:in ilmainen Object Enabler on asennettu "
-            "(https://www.magicad.com/object-enabler/) niin myös "
-            "monimutkaiset 3D-objektit. Ilman Object Enableria nämä saavat "
-            "bbox-cuboid-fallbackin. Pois: skip kokonaan."
-        )
-        layout.addWidget(self.preprocess_proxies_checkbox, 7, 1, 1, 2)
-
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setProperty("primary", "true")
         self.convert_button.clicked.connect(self._on_convert)
-        layout.addWidget(self.convert_button, 8, 1, 1, 2)
+        layout.addWidget(self.convert_button, 6, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
 
@@ -158,9 +123,9 @@ class FilePanel(QtWidgets.QWidget):
     def _on_browse_input(self) -> None:
         path, _ = QtWidgets.QFileDialog.getOpenFileName(
             self,
-            "Avaa AutoCAD-piirustus",
+            "Avaa DXF-tiedosto",
             "",
-            "AutoCAD-piirustukset (*.dxf *.dwg);;DXF-tiedostot (*.dxf);;DWG-tiedostot (*.dwg)",
+            "DXF-tiedostot (*.dxf);;All files (*)",
         )
         if path:
             self.input_edit.setText(path)
@@ -183,7 +148,7 @@ class FilePanel(QtWidgets.QWidget):
     def _on_browse_magicad_ifc(self) -> None:
         path, _ = QtWidgets.QFileDialog.getOpenFileName(
             self,
-            "Avaa MagiCAD-IFC (MAGIIFCEXPORT-tuotos)",
+            "Avaa MagiCAD-IFC (-MAGIIFCCD-tuotos)",
             "",
             "IFC-tiedostot (*.ifc);;All files (*)",
         )
@@ -201,7 +166,5 @@ class FilePanel(QtWidgets.QWidget):
             self.output_edit.text(),
             self.energy_edit.text(),
             floor_elev,
-            bool(self.quick_convert_checkbox.isChecked()),
-            bool(self.preprocess_proxies_checkbox.isChecked()),
             self.magicad_ifc_edit.text(),
         )

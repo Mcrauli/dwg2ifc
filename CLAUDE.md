@@ -1,6 +1,6 @@
 # dxf2ifc — projektikartta Claudelle
 
-DXF/DWG → IFC4 -konvertteri suomalaiseen kylmälaite- ja LVI-suunnitteluun
+DXF → IFC4 -konvertteri suomalaiseen kylmälaite- ja LVI-suunnitteluun
 (Talo2000 + RAVA-luokitus, 6 FI_*-PSettiä, Solibri-yhteensopiva).
 
 ## Golden rule (älä riko)
@@ -18,8 +18,7 @@ geometriayksityiskohtia mapperiin.
 ## Current pipeline
 
 ```
-.dxf / .dwg
-  → core/dwg_preconvert.py            (vain DWG, AutoCAD COM, kokeellinen)
+.dxf
   → core/preprocessing.py             (accoreconsole + STLOUT 3DSOLID:eille)
   → core/dxf_reader.py                (ezdxf + INSERT.virtual_entities)
   → core/mapper.py                    (layer pattern → IFC-tyyppi)
@@ -39,7 +38,6 @@ Yksityiskohtainen pipeline: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 | `src/dxf2ifc/core/dxf_reader.py` (759 r) | DXF-luenta + INSERT-aggregaatio |
 | `src/dxf2ifc/core/mapper.py` | Layer-pattern → IFC-tyyppi |
 | `src/dxf2ifc/core/preprocessing.py` | accoreconsole + STLOUT |
-| `src/dxf2ifc/core/dwg_preconvert.py` (768 r) | DWG → DXF AutoCAD COM:lla |
 | `src/dxf2ifc/core/energy_specs.py` (589 r) | Excel/CSV → FI_Tekninen-merge |
 | `src/dxf2ifc/core/positio.py` | POSITIO-blokki → Koneikko/Laitetunnus |
 | `src/dxf2ifc/core/ifc_merger.py` | MagiCAD-IFC merge (optional) |
@@ -55,19 +53,17 @@ Yksityiskohtainen pipeline: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 Task-kohtainen lukulista: [`docs/CLAUDE_TASKS.md`](docs/CLAUDE_TASKS.md).
 
-## MagiCAD/DWG -faktat (älä toista)
+## MagiCAD-faktat (älä toista)
 
 - **`accoreconsole.exe` ei voi ladata `.arx`-moduuleja** — Autodesk-rajoite.
   Älä yritä `(arxload "MagiCAD_*.arx")`.
-- **MagiCAD Object Enabler render-only**: ARX latautuu mutta `EXPLODE` ei
-  tuota 3DSOLID-lapsia → MagiCAD-osat pudottautuvat IFC:stä pois Lauri:n
-  koneella.
-- **FULL MagiCAD** tuottaa 3DSOLID-lapsia, mutta tessellöity IFC ei sisällä
-  MagiCAD:in semanttisia tyyppejä.
-- **Oikea reitti**: kollega ajaa `-MAGIIFCCD` AutoCAD:issa, dxf2ifc mergee
-  IFC:n `core/ifc_merger.py`:llä master-IFC:hen.
-- DWG-input on **kokeellinen, ei core-osa**. DXF-pipeline toimii ilman.
-- Yksityiskohdat: [`docs/DWG_MAGICAD_PREPROCESSING.md`](docs/DWG_MAGICAD_PREPROCESSING.md).
+- **DWG-input poistettiin v0.2.0-alpha10:ssä** kaikki keystroke-pohjaiset
+  AutoCAD COM -ratkaisut osoittautuivat hauraiksi. Vain `.dxf`-input.
+- **Oikea reitti MagiCAD-osille**: kollega ajaa `-MAGIIFCCD` AutoCAD:issa,
+  dxf2ifc mergee IFC:n `core/ifc_merger.py`:llä master-IFC:hen.
+- DXF-puolen MAGI*-luokat + ACAD_PROXY_ENTITY skipataan automaattisesti
+  kun `magicad_ifc_path` on annettu (estää duplikaatit).
+- Historia ja umpikujat: [`docs/DWG_MAGICAD_PREPROCESSING.md`](docs/DWG_MAGICAD_PREPROCESSING.md).
 
 ## Komennot
 
@@ -113,9 +109,9 @@ Lisää konteksti vain silloin kun se on relevantti aktiiviselle tehtävälle.
   "Mcrauli".
 - **EI multi-classification** — yksi luokitus per IFC-element.
 - **EI Solibri-discipline-auto-detect** — manuaalinen valinta hyväksytty.
-- **EI AutoCAD COM:ia DXF-pipelinessä** — vain DWG-preconvertissä, joka on
-  kokeellinen.
-- **DXF-pipeline EI saa rikkoutua** DWG/MagiCAD-muutoksista.
+- **EI AutoCAD COM:ia missään** — vain `accoreconsole.exe` 3DSOLID-tess.
+- **EI DWG-input-tukea** — vain `.dxf`. MagiCAD-osat tulevat erikseen
+  `--magicad-ifc`-mergellä.
 
 ## Visuaalinen design (GUI)
 

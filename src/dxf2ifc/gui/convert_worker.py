@@ -24,28 +24,16 @@ class ConvertWorker(QtCore.QObject):
         out: str,
         profile: Profile,
         validate: bool = False,
-        preprocess_acis: bool = True,
-        preprocess_proxies: bool = True,
         energy_specs: str | None = None,
         floor_elevation_mm: float = 0.0,
-        quick_convert: bool = False,
         magicad_ifc: str | None = None,
     ) -> None:
-        # quick_convert is the user-facing knob; it overrides BOTH
-        # preprocess_acis AND preprocess_proxies when True so the
-        # orchestrator skips every accoreconsole-touching step
-        # (typically 5–10× faster) for layer-mapping verification.
-        if quick_convert:
-            preprocess_acis = False
-            preprocess_proxies = False
         runnable = _ConvertRunnable(
             self,
             dxf=dxf,
             out=out,
             profile=profile,
             validate=validate,
-            preprocess_acis=preprocess_acis,
-            preprocess_proxies=preprocess_proxies,
             energy_specs=energy_specs,
             floor_elevation_mm=floor_elevation_mm,
             magicad_ifc=magicad_ifc,
@@ -62,8 +50,6 @@ class _ConvertRunnable(QtCore.QRunnable):
         out: str,
         profile: Profile,
         validate: bool,
-        preprocess_acis: bool,
-        preprocess_proxies: bool,
         energy_specs: str | None,
         floor_elevation_mm: float = 0.0,
         magicad_ifc: str | None = None,
@@ -74,8 +60,6 @@ class _ConvertRunnable(QtCore.QRunnable):
         self._out = out
         self._profile = profile
         self._validate = validate
-        self._preprocess_acis = preprocess_acis
-        self._preprocess_proxies = preprocess_proxies
         self._energy_specs = energy_specs
         self._floor_elevation_mm = floor_elevation_mm
         self._magicad_ifc = magicad_ifc
@@ -87,8 +71,6 @@ class _ConvertRunnable(QtCore.QRunnable):
                 output_path=self._out,
                 profile=self._profile,
                 validate=self._validate,
-                preprocess_acis=self._preprocess_acis,
-                preprocess_proxies=self._preprocess_proxies,
                 progress=self._worker.progress.emit,
                 energy_specs_path=self._energy_specs or None,
                 floor_elevation_mm=self._floor_elevation_mm,

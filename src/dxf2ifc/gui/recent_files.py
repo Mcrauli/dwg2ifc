@@ -8,8 +8,6 @@ _KEY = "recent_files"
 _LAST_PROFILE_KEY = "last_profile_path"
 _FLOOR_ELEVATION_KEY = "floor_elevation_mm"
 _FLOOR_ELEVATION_ENABLED_KEY = "floor_elevation_enabled"
-_QUICK_CONVERT_KEY = "quick_convert"
-_PREPROCESS_PROXIES_KEY = "preprocess_proxies"
 _MAX_ENTRIES = 5
 
 
@@ -88,49 +86,4 @@ class RecentFilesStore:
     @floor_elevation_enabled.setter
     def floor_elevation_enabled(self, value: bool) -> None:
         self._settings.setValue(_FLOOR_ELEVATION_ENABLED_KEY, bool(value))
-        self._settings.sync()
-
-    @property
-    def quick_convert(self) -> bool:
-        """Whether the user prefers the fast path that skips accoreconsole.
-
-        Persisted across sessions so a user who works mainly with
-        2D-mapping verification doesn't have to re-tick the checkbox
-        every time. Defaults to False (full 3D pipeline) — same as the
-        pre-checkbox behaviour.
-        """
-        raw = self._settings.value(_QUICK_CONVERT_KEY, False)
-        # QSettings on Windows returns bool-as-string ("true" / "false");
-        # normalise both forms.
-        if isinstance(raw, bool):
-            return raw
-        if isinstance(raw, str):
-            return raw.strip().lower() in ("true", "1", "yes")
-        return bool(raw)
-
-    @quick_convert.setter
-    def quick_convert(self, value: bool) -> None:
-        self._settings.setValue(_QUICK_CONVERT_KEY, bool(value))
-        self._settings.sync()
-
-    @property
-    def preprocess_proxies(self) -> bool:
-        """Whether MagiCAD/ACAD_PROXY_ENTITY preprocessing is enabled.
-
-        Default ``True``: out-of-the-box behaviour for MagiCAD-bearing
-        DXFs (open polylines from proxy_graphic + bbox cuboid fallback
-        + accoreconsole EXPLODE when Object Enabler is present).
-        Persists across sessions; users with non-MagiCAD workloads can
-        untick once and the setting stays off.
-        """
-        raw = self._settings.value(_PREPROCESS_PROXIES_KEY, True)
-        if isinstance(raw, bool):
-            return raw
-        if isinstance(raw, str):
-            return raw.strip().lower() in ("true", "1", "yes")
-        return bool(raw)
-
-    @preprocess_proxies.setter
-    def preprocess_proxies(self, value: bool) -> None:
-        self._settings.setValue(_PREPROCESS_PROXIES_KEY, bool(value))
         self._settings.sync()

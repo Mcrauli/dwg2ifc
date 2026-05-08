@@ -3,20 +3,15 @@
 Why this module exists
 ----------------------
 
-dxf2ifc's DWG-pipeline (see :mod:`dxf2ifc.core.dwg_preconvert`) gets
-MagiCAD geometry by ``MAGIEXPLODE`` + ``EXPLODE`` + ``STLOUT`` —
-mesh-tessellated bodies that land in the IFC as ``IfcFacetedBrep``
-under whichever ``IfcBuildingElementProxy`` / ``IfcPipeSegment`` /
-``IfcCooler`` / etc. type the layer profile picks. That works on a
-FULL-MagiCAD-licensed machine, but the result is *just geometry* —
-no MagiCAD product types (``IfcDuctSegment``, ``IfcAirTerminal``…),
-no MagiCAD propertysets, no semantic IFC.
-
-When the colleague has FULL MagiCAD, they can run ``-MAGIIFCCD`` (the
-command-line / dialog-free variant of ``MAGIIFCEXPORT``) themselves
-and get a much higher-fidelity IFC for the MagiCAD parts. This module
-merges that MagiCAD-exported IFC *into* the master IFC that dxf2ifc
-just wrote for Lauri's KYL-LISP shelves / refrigeration equipment. The result is a single IFC that carries:
+dxf2ifc reads only DXF; MagiCAD parts native to a DWG don't reach
+the master IFC through any of dxf2ifc's own paths. The recommended
+workflow is for the MagiCAD designer to run ``-MAGIIFCCD`` (the
+command-line / dialog-free variant of ``MAGIIFCEXPORT``) inside
+AutoCAD and get a high-fidelity IFC export — proper MagiCAD product
+types (``IfcDuctSegment``, ``IfcAirTerminal``…) with MagiCAD
+propertysets intact. This module merges that exported IFC *into*
+the master IFC that dxf2ifc wrote for Lauri's KYL-LISP shelves /
+refrigeration equipment. The result is a single IFC that carries:
 
 * Lauri's KYL-* refrigeration parts (Brep, RAVA-classified, FI_*-PSets)
 * Colleague's MagiCAD parts (MagiCAD-native IFC types + MagiCAD-PSets)

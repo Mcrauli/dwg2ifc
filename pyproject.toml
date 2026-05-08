@@ -1,6 +1,6 @@
 [project]
 name = "dxf2ifc"
-version = "0.2.0a9"
+version = "0.2.0a10"
 description = "AutoCAD DXF to IFC 4 converter for Finnish refrigeration design (RAVA3Pro classification)"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -12,11 +12,6 @@ dependencies = [
     "openpyxl>=3.1.0",
     "pydantic>=2.8.0",
     "tomli-w>=1.0.0",
-    # Windows-only: drives the hidden-AutoCAD COM session for DWG-input
-    # MagiCAD preconversion (core/dwg_preconvert.py). On non-Windows
-    # hosts (CI Linux runners) the dwg_preconvert module no-ops; only
-    # DXF input is supported there.
-    "pywin32>=305; sys_platform=='win32'",
 ]
 
 [project.optional-dependencies]

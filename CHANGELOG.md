@@ -6,6 +6,43 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha10 — 2026-05-08 (DWG-tuki + toggle-checkboxit pois)
+
+**Poistettu — pelkistetty käyttöliittymä ja core-pipeline**:
+
+Lauri:n päätös: koska `--magicad-ifc`-merge on käytössä ja toimii,
+DWG-input + sen toggle-checkboxit ovat tarpeettomia. Poistetaan
+kokonaan ettei käyttäjä eksy hauraihin AutoCAD COM -reitteihin.
+
+- **DWG-input poistettu**: `core/dwg_preconvert.py` (768 r) deletoitu,
+  `tests/test_dwg_preconvert.py` deletoitu. Orchestratorin DWG-haara
+  + `last_explode_meshes`-merge poistettu. Vain `.dxf` hyväksytään
+  syötteenä.
+- **`pywin32`-dependency poistettu** `pyproject.toml`:sta — ei enää
+  Windows-only-vaadetta, asennettavissa myös macOS/Linux-Pythonille
+  (vaikka käyttötapaus on edelleen Windows-keskeinen `accoreconsole`-
+  riippuvuuden takia).
+- **CLI `--no-preprocess-proxies`-argumentti poistettu**.
+- **GUI:n "Pikakonversio (ohita 3D-tessellaatio)"-checkbox poistettu**
+  — accoreconsole 3DSOLID-tessellaatio aina päällä.
+- **GUI:n "MagiCAD/proxy-objektien geometria"-checkbox poistettu** —
+  DXF-puolen MAGI*-luokat skipataan automaattisesti kun MagiCAD-IFC
+  on annettu, muutoin niitä luetaan oletuksena.
+- **`recent_files.quick_convert` + `recent_files.preprocess_proxies`
+  -kentät poistettu** — vanhat asetukset pysyvät QSettings-rekisterissä
+  mutta eivät enää vaikuta pipelineen.
+- `convert_dxf`-funktion `preprocess_proxies`-kwargi poistettu;
+  `convert_worker.run` -metodista `quick_convert` + `preprocess_proxies`
+  -parametrit poistettu; `FilePanel.convert_requested`-signaali
+  pelkistetty 7 → 5 parametriin.
+- Dokumentaatio päivitetty: README, CLAUDE.md, PROGRESS.md,
+  ARCHITECTURE.md, CLAUDE_TASKS.md, DWG_MAGICAD_PREPROCESSING.md
+  (jälkimmäinen historic-näkökulmaan: mitä ei toimi ja miksi).
+
+**Ei toiminnallisia muutoksia DXF-pipelineen** — kaikki KYL-LISP-osat,
+3DFACE-aggregaatio, energiateho-Excel-merge ja MagiCAD-IFC-merge
+toimivat identtisesti.
+
 ## v0.2.0-alpha9 — 2026-05-08 (RAVA viemäri-koodit valmiina cache:hen)
 
 **Lisätty — RAVA-LVI viemärikoodit koodisto-cache:hen**:

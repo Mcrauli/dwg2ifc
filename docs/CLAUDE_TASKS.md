@@ -39,25 +39,20 @@ Lue ensin:
 Testit: `tests/test_dxf_reader*.py` (dxf_reader, dxf_reader_proxy,
 dxf_reader_polyface, dxf_reader_insert_3dface).
 
-## DWG / MagiCAD preprocessing
+## MagiCAD-IFC merge (kollegan -MAGIIFCCD)
 
-**Tehtävä**: AutoCAD COM -istunto, MAGIEXPLODE/EXPLODE keystrokes,
-DXFOUT-tallennus, ARX-yhteensopivuus.
+**Tehtävä**: kollegan tuottaman MagiCAD-IFC:n yhdistäminen master-IFC:hen,
+append_asset, container-linkitys, MAGI*-skip DXF-puolella.
 
 Lue ensin:
 - [`docs/DWG_MAGICAD_PREPROCESSING.md`](DWG_MAGICAD_PREPROCESSING.md) —
-  totuus mitä toimii, mitä ei
-- `src/dxf2ifc/core/dwg_preconvert.py` (768 r)
+  miksi DWG-input poistettiin ja miksi merge on oikea reitti
+- `src/dxf2ifc/core/ifc_merger.py` (186 r — pieni, lue koko)
+- `tests/test_ifc_merger.py`
 
 Älä lue:
-- DXF-pipelineä (`dxf_reader.py`, `mapper.py`, `ifc_writer/`) — DWG-
-  preconvert tuottaa välitilanne-DXF:n, sen jälkeen pipeline on sama
-
-Testit: `tests/test_dwg_preconvert.py` (skipped ilman testimagi.dwg:tä).
-
-**Kriittinen sääntö**: DWG-muutokset eivät saa rikkoa DXF-pipelineä.
-Aja `pytest tests/test_dxf_reader*.py tests/test_*ifc*.py` jokaisen
-DWG-muutoksen jälkeen.
+- `dxf_reader.py` (paitsi `skip_magicad`-lippuun liittyen)
+- `ifc_writer/builders.py`
 
 ## Geometry extraction (3DSOLID, mesh, extrusion)
 
@@ -97,18 +92,6 @@ Lue ensin:
 
 Testit: `tests/test_finnish_psets.py`, `tests/test_classification.py`,
 `tests/test_mesh_writer*.py`, `tests/test_ifc_writer*.py`.
-
-## MagiCAD-IFC merge
-
-**Tehtävä**: MagiCAD-IFC:n yhdistäminen master-IFC:hen, append_asset-
-kutsu, container-linkitys.
-
-Lue ensin:
-- `src/dxf2ifc/core/ifc_merger.py` (186 r — pieni, lue koko)
-- `tests/test_ifc_merger.py`
-
-Älä lue:
-- `dxf_reader.py`, `mapper.py`, `builders.py`
 
 ## Energy specs (Excel/CSV)
 

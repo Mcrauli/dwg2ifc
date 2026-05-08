@@ -24,11 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
     convert.add_argument(
         "input",
         type=Path,
-        help=(
-            "Path to the input drawing — .dxf or .dwg. DWG inputs require "
-            "AutoCAD installed (used in hidden Visible=False mode for "
-            "MagiCAD-EXPLODE preconversion)."
-        ),
+        help="Path to the input .dxf file.",
     )
     convert.add_argument("output", type=Path, help="Path for the IFC output file.")
     convert.add_argument(
@@ -75,32 +71,17 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     convert.add_argument(
-        "--no-preprocess-proxies",
-        dest="preprocess_proxies",
-        action="store_false",
-        help=(
-            "Skip MagiCAD/ACAD_PROXY_ENTITY preprocessing. By default "
-            "dxf2ifc inspects every proxy in the DXF, falls back to a "
-            "bbox cuboid for proxies whose geometry it cannot decode, "
-            "and (when MagiCAD's free Object Enabler is installed) runs "
-            "accoreconsole EXPLODE for full geometry."
-        ),
-    )
-    convert.set_defaults(preprocess_proxies=True)
-    convert.add_argument(
         "--magicad-ifc",
         type=Path,
         default=None,
         help=(
-            "Optional IFC produced by MagiCAD's MAGIIFCEXPORT command "
+            "Optional IFC produced by MagiCAD's -MAGIIFCCD command "
             "(or any other tool that writes per-MagiCAD-product IFC "
             "with MagiCAD types/PSets). When supplied, MagiCAD parts "
-            "from the DWG (MAGI* native classes + ACAD_PROXY_ENTITY) "
+            "in the DXF (MAGI* native classes + ACAD_PROXY_ENTITY) "
             "are skipped to avoid duplicates, and the supplied IFC's "
             "products are appended into the master IFC under the "
-            "first IfcBuildingStorey. Use this to combine Lauri's "
-            "KYL-LISP refrigeration geometry with a colleague's "
-            "FULL-MagiCAD-licensed IFC export of the LVI design."
+            "first IfcBuildingStorey."
         ),
     )
     return parser
@@ -118,7 +99,6 @@ def main(argv: list[str] | None = None) -> int:
             schema=args.schema.upper(),
             energy_specs_path=args.energy_specs,
             floor_elevation_mm=args.floor_elevation,
-            preprocess_proxies=args.preprocess_proxies,
             magicad_ifc_path=args.magicad_ifc,
         )
         print(f"Wrote {args.output}", file=sys.stderr)

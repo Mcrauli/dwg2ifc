@@ -227,7 +227,6 @@ def convert_dxf(
     validate: bool = False,
     schema: str = "IFC4",
     preprocess_acis: bool = True,
-    preprocess_proxies: bool = True,
     progress: object | None = None,
     energy_specs_path: str | Path | None = None,
     floor_elevation_mm: float = 0.0,
@@ -250,44 +249,14 @@ def convert_dxf(
     accoreconsole is missing (LT-only or no AutoCAD on host), ACIS bodies
     are skipped silently and the validation report flags the gap.
 
-    When the input is a ``.dwg`` file, a hidden ``acad.exe`` (Visible=False
-    via COM) is launched as a singleton to ``EXPLODE`` MagiCAD/proxy
-    entities and ``DXFOUT`` an intermediate DXF — the rest of the
-    pipeline then runs on that intermediate. Object Enabler ARX loads
-    in ``acad.exe`` (unlike accoreconsole, which cannot load ARX),
-    so on a machine with FULL MagiCAD licensed the EXPLODE produces
-    real 3DSOLID children that flow through the same ``acis_meshes``
-    channel as native bodies. On a render-only-Object-Enabler machine,
-    EXPLODE silently no-ops and MagiCAD parts drop out — Lauri's own
-    KYL-LISP geometry still works.
+    DWG inputs are no longer supported (v0.2.0-alpha10). The recommended
+    workflow for MagiCAD projects is to run ``-MAGIIFCCD`` in AutoCAD
+    separately and supply the resulting IFC via ``magicad_ifc_path`` —
+    the merger appends those products into the master IFC and the
+    DXF-side MagiCAD entities (MAGI* + ACAD_PROXY_ENTITY) are skipped
+    automatically to avoid duplicates.
     """
     name = project_name or Path(dxf_path).stem
-
-    # DWG → DXF preconversion via hidden acad.exe (Visible=False).
-    # accoreconsole cannot load MagiCAD ARX, so for DWG inputs we route
-    # through the full AutoCAD runtime to get MagiCAD EXPLODE working.
-    # The intermediate DXF then drops back into the v0.1.18 pipeline.
-    intermediate_dxf: Path | None = None
-    effective_input: str | Path = dxf_path
-    if preprocess_proxies and str(dxf_path).lower().endswith(".dwg"):
-        # DWG inputs need a hidden-AutoCAD pre-pass to MAGIEXPLODE the
-        # MagiCAD-native parts and DXFOUT an intermediate DXF that
-        # ezdxf can parse. preconvert_dwg returns None when the COM
-        # session refused to start or DXFOUT failed — we cannot fall
-        # back to ezdxf.readfile on the raw .dwg (ezdxf only reads
-        # DXF), so surface a clear error instead of producing a
-        # cryptic IOError downstream.
-        from dxf2ifc.core.dwg_preconvert import preconvert_dwg
-        intermediate_dxf = preconvert_dwg(dxf_path, progress=progress)
-        if intermediate_dxf is None:
-            raise RuntimeError(
-                "DWG-preconvert epäonnistui — MAGIEXPLODE / DXFOUT ei "
-                "tuottanut välitilanne-DXF:ää. Tarkista että AutoCAD "
-                "on asennettu, ettei toinen dxf2ifc-konversio ole jo "
-                "käynnissä, ja ettei MagiCAD-popup keskeytä prosessia "
-                "(klikkaa OK jos näkyy)."
-            )
-        effective_input = intermediate_dxf
 
     acis_meshes: dict[str, object] = {}
     if preprocess_acis:
@@ -295,23 +264,17 @@ def convert_dxf(
         # is not installed — extract_acis_meshes itself returns ``{}`` in
         # that case after calling find_accoreconsole().
         from dxf2ifc.core.preprocessing import extract_acis_meshes
-        acis_meshes = extract_acis_meshes(effective_input, progress=progress)  # type: ignore[arg-type,assignment]
-
-    # Merge any per-handle meshes the DWG preconvert produced (STLOUT
-    # output keyed by original proxy handle) into the same side channel.
-    if intermediate_dxf is not None:
-        from dxf2ifc.core.dwg_preconvert import last_explode_meshes
-        for h, mesh in last_explode_meshes().items():
-            acis_meshes.setdefault(h, mesh)
+        acis_meshes = extract_acis_meshes(dxf_path, progress=progress)  # type: ignore[arg-type,assignment]
 
     # When the caller supplied a MagiCAD-IFC for merge-in, drop MAGI*
     # native classes and ACAD_PROXY_ENTITY records here so we don't
     # produce duplicates (mesh-tessellated copy from STLOUT + properly-
-    # typed copy from MAGIIFCEXPORT). When no MagiCAD-IFC is supplied
-    # the legacy DXF-side MagiCAD path runs as before.
+    # typed copy from -MAGIIFCCD). When no MagiCAD-IFC is supplied the
+    # DXF-side MagiCAD entities are still read into IfcBuildingElementProxy
+    # mesh placeholders.
     skip_magicad = magicad_ifc_path is not None
     entities = read_dxf(
-        effective_input, acis_meshes=acis_meshes, skip_magicad=skip_magicad
+        dxf_path, acis_meshes=acis_meshes, skip_magicad=skip_magicad
     )
 
     # POC diagnostics: count polyface / 3DFACE / MESH records read
@@ -376,7 +339,7 @@ def convert_dxf(
         )
 
         positio_markers = index_positio_markers(
-            effective_input, block_pattern=profile.positio.block_pattern
+            dxf_path, block_pattern=profile.positio.block_pattern
         )
         if positio_markers:
             scope = set(profile.positio.apply_to)
@@ -460,15 +423,6 @@ def convert_dxf(
         storey_z_levels_mm=list(profile.storey_z_levels_mm),
         discipline_label=project_discipline,
     )
-
-    def _cleanup_temp() -> None:
-        """No-op retained for the trailing ``finally`` block below.
-
-        The previous COM preprocessor wrote a temp DXF that needed
-        unlinking on every exit path; the new accoreconsole+STLOUT path
-        cleans up its own temp dir inside :func:`extract_acis_meshes`,
-        so there is nothing to do here.
-        """
 
     ifc = skeleton.file
     systems: dict[str, list] = {}
@@ -725,9 +679,7 @@ def convert_dxf(
             report = _validate_ifc(output_path)
         return systems, report
     finally:
-        # Always clean up the preprocessing temp DXF, no matter where in
-        # the IFC build any remaining exception fired. Combined with the
-        # earlier read_dxf / apply_profile try/except blocks, every exit
-        # path through convert_dxf removes the temp file. Honour
-        # DXF2IFC_KEEP_TEMP=1 for debugging.
-        _cleanup_temp()
+        # accoreconsole+STLOUT cleans up its own temp dir inside
+        # extract_acis_meshes; nothing to do here. The try/finally
+        # remains as a stable structure for future cleanup hooks.
+        pass

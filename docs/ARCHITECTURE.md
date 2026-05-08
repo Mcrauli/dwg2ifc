@@ -10,12 +10,6 @@ osaa lokalisoida muutoksen oikeaan moduuliin.
 │ INPUT                                                              │
 ├────────────────────────────────────────────────────────────────────┤
 │  user.dxf  ──────────────────────────────────────────────┐         │
-│  user.dwg  ──┐                                           │         │
-│              ▼                                           │         │
-│      core/dwg_preconvert.py    [optional, AutoCAD COM]   │         │
-│      hidden acad.exe                                     │         │
-│      MAGIEXPLODE + EXPLODE + DXFOUT                      │         │
-│      → välitilanne.dxf  ─────────────────────────────────┤         │
 │                                                          ▼         │
 ├──────────────────────────────────────── DXF-pipeline ──────────────┤
 │                                                                    │
@@ -108,7 +102,6 @@ Pipeline välittää ylimääräistä tietoa side-channel:eilla — eivät kulje
 |---|---|---|
 | `acis_meshes` | `preprocessing.extract_acis_meshes()` → `dxf_reader.read_dxf(acis_meshes=...)` | per-handle binary STL-mesh:t 3DSOLID:eille |
 | `proxy_layers` | accoreconsole LISP-manifest → `dxf_reader.read_dxf(proxy_layers=...)` | MAGI*-luokkien layer-tieto (ezdxf ei lue) |
-| `last_explode_meshes` | `dwg_preconvert.preconvert_dwg()` → orchestrator `acis_meshes`-mergeen | DWG-puolella STLOUT:tetut MagiCAD-mesh:t |
 | POSITIO `extra_props` | `positio.find_nearest_positio()` → `MappedEntity.extra_props` | Koneikko + Laitetunnus per kylmälaite |
 | `energy_specs` lookup | `energy_specs.load_energy_specs()` → builder: `finnish_psets.add_finnish_psets()` | FI_Tekninen-kenttiarvot |
 
@@ -143,8 +136,6 @@ value = "Tikashylly"
 
 - **`accoreconsole.exe`** — AutoCAD 2018+ -asennuksen headless-ydin
   (3DSOLID-tessellaatio). Optional — DXF jossa ei 3DSOLID:eja toimii ilman.
-- **`acad.exe` (COM)** — vain DWG-input (`dwg_preconvert.py`). Optional,
-  Windows-only, kokeellinen.
 - **`Solibri.exe`** — vain Plan F integration-testit (skipped jos ei
   PATH:ssa).
 - **GitHub Releases API** — itsepäivitykseen (silent failure jos verkko

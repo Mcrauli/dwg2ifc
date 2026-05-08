@@ -49,14 +49,12 @@ def test_file_panel_convert_button_emits_signal_with_paths(qtbot, tmp_path):
     with qtbot.waitSignal(panel.convert_requested, timeout=500) as sig:
         panel.convert_button.click()
     # (dxf, ifc, energy_specs="" empty when not picked, floor_elevation_mm=0.0,
-    # quick_convert=False)
+    # magicad_ifc_path="")
     assert sig.args == [
         str(tmp_path / "in.dxf"),
         str(tmp_path / "out.ifc"),
         "",
         0.0,
-        False,
-        True,
         "",
     ]
 
@@ -110,8 +108,6 @@ def test_file_panel_emits_zero_when_checkbox_unchecked(qtbot, tmp_path):
         str(tmp_path / "out.ifc"),
         "",
         0.0,
-        False,
-        True,
         "",
     ]
 
@@ -132,8 +128,6 @@ def test_file_panel_emits_floor_elevation_with_convert(qtbot, tmp_path):
         str(tmp_path / "out.ifc"),
         "",
         12000.0,
-        False,
-        True,
         "",
     ]
 
@@ -170,8 +164,6 @@ def test_file_panel_convert_with_energy_specs_path(qtbot, tmp_path):
         str(tmp_path / "out.ifc"),
         str(tmp_path / "energy.xlsx"),
         0.0,
-        False,
-        True,
         "",
     ]
 
@@ -208,7 +200,5 @@ def test_file_panel_convert_emits_magicad_ifc_path(qtbot, tmp_path):
         str(tmp_path / "out.ifc"),
         "",
         0.0,
-        False,
-        True,
         str(tmp_path / "magicad.ifc"),
     ]
