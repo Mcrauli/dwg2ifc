@@ -6,6 +6,39 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha12 — 2026-05-08 (STLOUT kaikille INSERT-blokeille)
+
+**Korjattu — koneikko ja muut equipment-blokit saavat nyt geometrian**:
+
+Phase 2:n LISP-filter rajasi STLOUTin vain block-name-patterneilla
+`*yrystin*,*ahdutin*,*pressori*,KLHYLLY-*,VPUTKI-*` — alpha11:n
+laajennuksen tuomat uudet KYL-laitteet (KONEIKKO, CHILLER, KOMPLAUH,
+KAASUNJAA, NESTEJAAHD, VARAAJA, PAKASTEKAAPPI, KYLMAKAAPPI jne)
+jäivät ilman meshiä, putosivat orchestratorin BlockInstance-skipiin
+ja eivät päätyneet IFC:hen.
+
+**`preprocessing.py` Phase 2** käyttää nyt **layer-filteriä** (sama kuin
+Phase 1, oletus `*`) block-name-filterin sijaan. Kaikki INSERTit
+layer-filterillä räjäytetään ja STLOUTataan. Lisäksi:
+
+- POSITIO-annotaatioblokit suljetaan pois `wcmatch ... "*POSITIO*"`
+- Nested INSERTit räjäytetään rekursiivisesti queue-pohjaisella loopilla
+  (iter_cap 1000) — compound-blokit joiden määrittelyssä on alablokkeja
+  (esim. koneikko = kompressori-sub + lauhdutin-sub) saavat lehti-
+  tason 3DSOLIDinsä esiin
+- Kaikki ACIS-tyypit STLOUTataan: `3DSOLID` + `SURFACE` + `REGION` +
+  `BODY` + `PLANESURFACE`/`EXTRUDEDSURFACE`/`REVOLVEDSURFACE`/
+  `SWEPTSURFACE`/`LOFTEDSURFACE`/`NURBSURFACE`
+- LWPOLYLINE+thickness → CONVTOSOLID → STLOUT (KLHYLLY-pattern säilyy)
+
+**`dxf_reader.py` `_aggregate_3dface_from_insert`** flatten:ää nested
+INSERTit virtual_entities-rekursiolla. ezdxf:n `virtual_entities()` ei
+itse descend:aa sub-blokkeihin — ilman tätä accoreconsoleton fallback
+(KYL-LISP-hyllyt) jäisi sokeaksi nested 3DFACE/closed LWPOLYLINE
+-sisällölle.
+
+EI bbox-arvauksia. Jokainen geometriareitti tuottaa aitoa mesh-dataa.
+
 ## v0.2.0-alpha11 — 2026-05-08 (kattava kylmälaitesuunnittelun tuki)
 
 **Lisätty — out-of-the-box mappaus kaikelle kylmälaitesuunnitteluun**:
