@@ -1,0 +1,191 @@
+# Claude task map
+
+Per-tehtävä lukulista — minkä tiedostot avata ENSIN ja minkä JÄTTÄÄ
+LUKEMATTA. Pidä konteksti pienenä; lisää tiedostoja vain jos tehtävä
+sitä vaatii.
+
+## Layer mapping / profile
+
+**Tehtävä**: lisää uusi layer, muuta IFC-tyyppi-mappausta, säädä
+classification-koodeja, päivitä `default_kylmalaite.toml`.
+
+Lue ensin:
+- `src/dxf2ifc/profiles/default_kylmalaite.toml`
+- `src/dxf2ifc/profiles/schema.py` (pydantic-mallit)
+- `src/dxf2ifc/core/mapper.py` (`apply_profile`)
+
+Älä lue:
+- `core/dxf_reader.py`, `core/dwg_preconvert.py`, `ifc_writer/builders.py`
+- `gui/`-puuta
+
+Testit: `tests/test_mapper.py`, `tests/test_profile_*.py`.
+
+## DXF reading
+
+**Tehtävä**: uusi entity-tyyppi, INSERT-aggregointi-bugi, polyline-
+extrusion-säännöt, OCS/WCS-muunnokset.
+
+Lue ensin:
+- `src/dxf2ifc/core/dxf_reader.py` (759 r — huomaa että iso, mutta
+  paikalliset muutokset ovat usein dispatch-tason `if dxftype == ...`-
+  haaroissa)
+- `src/dxf2ifc/core/types.py` (Point3D, MeshGeometry, BlockInstance, …)
+- `src/dxf2ifc/core/geometry.py` (extrusion-dataclassit)
+
+Älä lue:
+- `dwg_preconvert.py` (vain jos kysymys on AutoCAD COM:ista)
+- `ifc_writer/`-puuta
+
+Testit: `tests/test_dxf_reader*.py` (dxf_reader, dxf_reader_proxy,
+dxf_reader_polyface, dxf_reader_insert_3dface).
+
+## DWG / MagiCAD preprocessing
+
+**Tehtävä**: AutoCAD COM -istunto, MAGIEXPLODE/EXPLODE keystrokes,
+DXFOUT-tallennus, ARX-yhteensopivuus.
+
+Lue ensin:
+- [`docs/DWG_MAGICAD_PREPROCESSING.md`](DWG_MAGICAD_PREPROCESSING.md) —
+  totuus mitä toimii, mitä ei
+- `src/dxf2ifc/core/dwg_preconvert.py` (768 r)
+
+Älä lue:
+- DXF-pipelineä (`dxf_reader.py`, `mapper.py`, `ifc_writer/`) — DWG-
+  preconvert tuottaa välitilanne-DXF:n, sen jälkeen pipeline on sama
+
+Testit: `tests/test_dwg_preconvert.py` (skipped ilman testimagi.dwg:tä).
+
+**Kriittinen sääntö**: DWG-muutokset eivät saa rikkoa DXF-pipelineä.
+Aja `pytest tests/test_dxf_reader*.py tests/test_*ifc*.py` jokaisen
+DWG-muutoksen jälkeen.
+
+## Geometry extraction (3DSOLID, mesh, extrusion)
+
+**Tehtävä**: 3DSOLID-tessellaatio, polyline-extrusion, INSERT-aggregaatio,
+mesh-vertex-deduplikointi.
+
+Lue ensin:
+- `src/dxf2ifc/core/preprocessing.py` (accoreconsole + STL parser)
+- `src/dxf2ifc/core/dxf_reader.py` — `_aggregate_3dface_from_insert`,
+  `_record_from_entity`
+- `src/dxf2ifc/core/geometry.py`
+
+Älä lue:
+- `mapper.py`, `ifc_writer/builders.py` — geometriastrategia ei vaikuta
+  IFC-tyypin valintaan
+
+Testit: `tests/test_acis_extraction.py`, `tests/test_dxf_reader_polyface.py`,
+`tests/test_dxf_reader_insert_3dface.py`.
+
+## IFC writer (builders, classification, PSets)
+
+**Tehtävä**: uusi IFC-tyyppi (esim. IfcChiller), Brep/mesh-rep, PSet-
+laajennus, suunnittelualat-luokitus.
+
+Lue ensin:
+- `src/dxf2ifc/core/ifc_writer/orchestrator.py` (733 r — kutsuu kaiken)
+- `src/dxf2ifc/core/ifc_writer/builders.py` (1321 r — ISO, mutta
+  `add_*`-funktiot ovat itsenäisiä; lue vain ne joita muutat)
+- `src/dxf2ifc/core/ifc_writer/skeleton.py` (CRS + storey)
+- `src/dxf2ifc/core/ifc_writer/mesh.py` (Brep helpers)
+- `src/dxf2ifc/core/ifc_writer/classification.py`
+- `src/dxf2ifc/core/finnish_psets.py`
+
+Älä lue:
+- `dxf_reader.py`, `dwg_preconvert.py`, `mapper.py`
+- `gui/`
+
+Testit: `tests/test_finnish_psets.py`, `tests/test_classification.py`,
+`tests/test_mesh_writer*.py`, `tests/test_ifc_writer*.py`.
+
+## MagiCAD-IFC merge
+
+**Tehtävä**: MagiCAD-IFC:n yhdistäminen master-IFC:hen, append_asset-
+kutsu, container-linkitys.
+
+Lue ensin:
+- `src/dxf2ifc/core/ifc_merger.py` (186 r — pieni, lue koko)
+- `tests/test_ifc_merger.py`
+
+Älä lue:
+- `dxf_reader.py`, `mapper.py`, `builders.py`
+
+## Energy specs (Excel/CSV)
+
+**Tehtävä**: alias-laajennus, slash-otsikoiden parsinta, sektio-
+tunnistus, forward-fill, uusien Excel-pohjien tuki.
+
+Lue ensin:
+- `src/dxf2ifc/core/energy_specs.py` (589 r)
+- `src/dxf2ifc/core/positio.py` (POSITIO-linkitys joka tuottaa lookup-
+  avaimen)
+
+Älä lue:
+- `dxf_reader.py`, `ifc_writer/`
+
+Testit: `tests/test_energy_specs.py`, `tests/test_positio.py`.
+
+## GUI (PySide6)
+
+**Tehtävä**: uusi filepicker, signal-rajapinnan muutos, profile-editori,
+itsepäivitys-banneri, layer-table.
+
+Lue ensin:
+- `src/dxf2ifc/gui/main_window.py` (yhdistää kaiken)
+- Kohdennettu widget-tiedosto: `file_panel.py`, `convert_worker.py`,
+  `profile_editor.py`, `update_banner.py`, `layer_table.py`,
+  `preview_log.py`
+
+Älä lue:
+- `core/`-puuta (ellei convert_worker tarvitse uutta core-API:a)
+- `style.qss` (paitsi jos tehtävä on visuaalinen)
+
+Testit: `tests/test_gui_*.py`.
+
+GUI-testit vaativat: `os.environ["QT_QPA_PLATFORM"] = "offscreen"`.
+
+## Packaging / release
+
+**Tehtävä**: PyInstaller-spec, Inno Setup, GitHub Actions release-
+workflow, version-bump, CHANGELOG-päivitys.
+
+Lue ensin:
+- `pyproject.toml`
+- `build/dxf2ifc.spec`
+- `build/installer.iss`
+- `build/version_info.py`
+- `scripts/build_installer.ps1`
+- `.github/workflows/release.yml`
+- `CHANGELOG.md` + `src/dxf2ifc/_version.py`
+
+Älä lue:
+- Lähdekoodia (paitsi jos versio-bump tai metadata)
+
+## Quality gates
+
+**Tehtävä**: `ifcopenshell.validate`-säännöt, RAVA-validointi, Solibri-
+BCF-export, snapshot-chain.
+
+Lue ensin:
+- `src/dxf2ifc/core/quality.py`
+- `tools/solibri/` (BCF-export + snapshot)
+- [`docs/quality-gates.md`](quality-gates.md)
+- [`docs/solibri-rules.md`](solibri-rules.md)
+
+Älä lue:
+- Builder/writer-puuta (paitsi jos validointi tarvitsee uuden tyypin)
+
+Testit: `tests/test_quality*.py`, `tests/test_solibri*.py`.
+
+## Memory
+
+**Tehtävä**: Lauri:n mieltymysten / projektin tilan tallentaminen
+muistiin, vanhan poisto.
+
+Lue ensin:
+- `~/.claude/projects/C--Users-LauriRekola/memory/MEMORY.md` (index)
+- `~/.claude/projects/C--Users-LauriRekola/memory/project_dxf2ifc.md`
+- Muut `feedback_*.md` / `project_*.md` jos relevantteja
+
+Älä lue:
+- POC v4 -tiedostoja jos kysymys on alpha7-tilasta
