@@ -8,6 +8,7 @@ the file-write helper.
 from __future__ import annotations
 
 import math
+from pathlib import Path
 
 import ifcopenshell
 import ifcopenshell.api
@@ -25,9 +26,6 @@ from dxf2ifc.core.geometry import (
 )
 from dxf2ifc.core.ifc_writer.mesh import (
     _add_mesh_product,
-    _attach_brep_representation,
-    _mesh_bbox_min,
-    _mesh_to_brep,
 )
 from dxf2ifc.core.ifc_writer.transforms import _z_rotation_matrix
 from dxf2ifc.core.types import (
