@@ -1006,7 +1006,16 @@ def add_building_element_proxy(
     return proxy
 
 
-_COOLING_EQUIPMENT_CLASSES = frozenset({"IfcEvaporator", "IfcCondenser", "IfcCompressor"})
+_COOLING_EQUIPMENT_CLASSES = frozenset({
+    # Compressor stack: classic refrigeration plant components.
+    "IfcEvaporator",
+    "IfcCondenser",
+    "IfcCompressor",
+    # Whole-unit refrigeration machines added 2026-05-08:
+    "IfcChiller",            # Vedenjäähdytyskone (T-LVI-01-01-003)
+    "IfcUnitaryEquipment",   # Kylmävesiasema, jäähdytyskoneikko, kylmäkalusteet
+    "IfcCoil",               # Välijäähdytin (T-LVI-01-01-024)
+})
 
 
 def add_cooling_equipment(
@@ -1147,6 +1156,55 @@ def add_flow_controller(ifc, mapped: MappedEntity, *, parent_storey) -> object:
         ifc,
         mapped,
         ifc_class="IfcFlowController",
+        parent_storey=parent_storey,
+        predefined_type=mapped.predefined_type or "USERDEFINED",
+    )
+
+
+# Generic distribution-element classes added 2026-05-08 for the broad
+# kylmälaitesuunnittelu coverage. Each one is constructed from
+# MeshGeometry via _add_mesh_product — the exact IFC class comes from
+# the layer rule, predefined_type may also be carried on the rule.
+_DISTRIBUTION_ELEMENT_CLASSES = frozenset({
+    "IfcSensor",            # Termostaatit, lämpötila-/paine-/pinta-anturit
+    "IfcValve",             # Magneettiventtiilit, padotusventtiilit, käsiventtiilit
+    "IfcPump",              # Kierto-/lauhdepumput, sadevesipumppaamot
+    "IfcWasteTerminal",     # Lattiakaivot, vesilukot, sadevesikattokaivot
+    "IfcInterceptor",       # Rasvanerottimet, öljynerottimet, hiekanerottimet
+    "IfcDistributionBoard", # Koneikkokeskus (KK), kohdekeskus (RK)
+    "IfcDuctSegment",       # IV-kanavat (jos KYL-piirustuksessa)
+    "IfcDuctFitting",       # Kanavaosat
+    "IfcAirTerminal",       # Tulo/poistoilmapäätelaitteet
+})
+
+
+def add_distribution_element(
+    ifc,
+    mapped: MappedEntity,
+    *,
+    ifc_class: str,
+    parent_storey,
+) -> object:
+    """Create any generic IfcDistributionElement subclass from a
+    MeshGeometry-bearing MappedEntity.
+
+    Added in v0.2.0-alpha11 for the broad kylmälaitesuunnittelu
+    coverage. Instead of writing a dedicated ``add_*`` per IFC class
+    (sensor / valve / pump / waste terminal / distribution board /
+    duct), this single helper takes the class name as an argument and
+    funnels through :func:`_add_mesh_product`. Predefined type comes
+    from the rule (``mapped.predefined_type``) and falls back to
+    ``USERDEFINED`` when the rule omits it.
+    """
+    if ifc_class not in _DISTRIBUTION_ELEMENT_CLASSES:
+        raise ValueError(
+            f"add_distribution_element supports {sorted(_DISTRIBUTION_ELEMENT_CLASSES)}, "
+            f"got {ifc_class!r}"
+        )
+    return _add_mesh_product(
+        ifc,
+        mapped,
+        ifc_class=ifc_class,
         parent_storey=parent_storey,
         predefined_type=mapped.predefined_type or "USERDEFINED",
     )

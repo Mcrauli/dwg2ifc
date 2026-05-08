@@ -18,10 +18,12 @@ from dxf2ifc.core.energy_specs import (
 )
 from dxf2ifc.core.ifc_writer.builders import (
     _COOLING_EQUIPMENT_CLASSES,
+    _DISTRIBUTION_ELEMENT_CLASSES,
     add_building_element_proxy,
     add_cable_carrier,
     add_cable_carrier_segment,
     add_cooling_equipment,
+    add_distribution_element,
     add_door,
     add_flow_controller,
     add_furniture,
@@ -634,6 +636,22 @@ def convert_dxf(
                 ctrl = add_flow_controller(ifc, m, parent_storey=_storey_for(m))
                 _classify(ctrl, m)
                 _record(m, ctrl)
+            elif m.ifc_type in _DISTRIBUTION_ELEMENT_CLASSES:
+                # Generic distribution-element dispatch added 2026-05-08
+                # for the broader kylmälaitesuunnittelu coverage:
+                # IfcSensor (anturit), IfcValve (venttiilit),
+                # IfcPump (pumput), IfcWasteTerminal (lattiakaivot,
+                # vesilukot), IfcInterceptor (rasvanerottimet),
+                # IfcDistributionBoard (KK / RK -keskukset), IfcDuct*,
+                # IfcAirTerminal. All routed through _add_mesh_product
+                # the same way IfcFlowController is.
+                if isinstance(m.geometry, (LineGeometry, BlockInstance)):
+                    continue
+                element = add_distribution_element(
+                    ifc, m, ifc_class=m.ifc_type, parent_storey=_storey_for(m)
+                )
+                _classify(element, m)
+                _record(m, element)
 
         for system_name, products in systems.items():
             system = add_system(ifc, name=system_name)

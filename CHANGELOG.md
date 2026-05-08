@@ -6,6 +6,47 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha11 — 2026-05-08 (kattava kylmälaitesuunnittelun tuki)
+
+**Lisätty — out-of-the-box mappaus kaikelle kylmälaitesuunnitteluun**:
+
+Default-profiili kasvoi 17:stä 49:ään sääntöön. Käyttäjä saa valmiin
+mappauksen yleisimmille KYL-* layereille; oma profile voi karsia /
+muokata layer-patterneja kun AutoCAD-konventiot eroavat.
+
+**Builders-laajennus**:
+
+- **`_COOLING_EQUIPMENT_CLASSES`** kattaa nyt myös `IfcChiller`,
+  `IfcUnitaryEquipment`, `IfcCoil` — `add_cooling_equipment` rakentaa
+  niille mesh-Brep-tuotteen kuten höyrystimille / lauhduttimille.
+- **Uusi `add_distribution_element(ifc, m, *, ifc_class, parent_storey)`**
+  — geneerinen rakentaja `IfcSensor`/`IfcValve`/`IfcPump`/
+  `IfcWasteTerminal`/`IfcInterceptor`/`IfcDistributionBoard`/
+  `IfcDuctSegment`/`IfcDuctFitting`/`IfcAirTerminal`-luokille.
+  Funnel:oi `_add_mesh_product`-kautta samalla pattern:lla kuin
+  `add_flow_controller`.
+- Orchestrator-dispatchiin uusi haaroitus jokaisen
+  `_DISTRIBUTION_ELEMENT_CLASSES`-luokan käsittelyyn.
+
+**Profile-säännöt — Section 7 (uutta sisältöä)**:
+
+| Kategoria | Layer-pattern -prefix | RAVA-koodit |
+|---|---|---|
+| **7a Kylmäkoneikkojen loput osat** | `KYL-CHILLER*` `KYL-VEDENJAAHDY*` `KYL-KYLMAVESIAS*` `KYL-KONEIKKO*` `KYL-VALIJAAHD*` `KYL-KOMPLAUH*` `KYL-KAASUNJAA*` `KYL-NESTEJAAHD*` `KYL-VARAAJA*` | T-LVI-01-01-003/004/005/016/019/024/027 + T-LVI-03-07-012 |
+| **7b Kylmäkalusteet** | `KYL-PAKASTEKAAPPI*` `KYL-KYLMAKAAPPI*` `KYL-PAKASTEALLAS*` `KYL-PAKASTEARKKU*` `KYL-KYLMAALLAS*` `KYL-MARJAALLAS*` `KYL-PIKAJAA*` `KYL-OMAKONEELLI*` | T-LVI-01-01-999 (MUU) + ObjectType FI_Komponenttiin |
+| **7c Kondenssiviemäri** | `KYL-KONDENSSI*` `KYL-LATTIAKAIV*` `KYL-VESILUKKO*` `KYL-PADOTUS*` | T-LVI-04-01-001 + T-LVI-05-01-001 + T-LVI-04-02-002/005, J-LVI-04-04 |
+| **7d Säätö ja anturit** | `KYL-TERMO*` `KYL-LAMPOTILA*` `KYL-PAINEMITT*` `KYL-PINTAANT*` `KYL-MAGNV*` `KYL-PAISUNTAVENT*` `KYL-SULATUSVAST*` | T-TATE-01-01-099 / T-LVI-02 / T-LVI-01-01-999 |
+| **7e Sähkökeskukset** | `KYL-KK-*` `KYL-RK-*` | T-TATE-01-01-099 |
+| **7f Putkivarusteet** | `KYL-VENTTIILI*` `KYL-PUMPPU*` `KYL-PAISUNTASAILIO*` | T-LVI-02 |
+
+**RAVA-LVI-TUOTEOSA-cache laajennettu**: 9 uutta T-LVI-01-01-koodia
+(002, 006, 015, 016, 020, 021, 022, 026, 027, 999) jotta tarkka
+luokitus on käytettävissä custom-profileissa.
+
+**Tärkeä huomio käyttäjälle**: nämä ovat oletus-layer-patternit, eivät
+pakottavia. Tee oma profile jos AutoCAD-konventiot eroavat — profile-
+TOML on selkeä ja kommentoitu.
+
 ## v0.2.0-alpha10 — 2026-05-08 (DWG-tuki + toggle-checkboxit pois)
 
 **Poistettu — pelkistetty käyttöliittymä ja core-pipeline**:

@@ -260,3 +260,347 @@ talotekniikka_code = "T-TATE-01-01-099"
 system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "MUUT OSAT", yleisnimi = "Muut osat", yleistunnus = "MUU" }
 fi_sijainti = { jarjestelmien_nimet = "Kylmäkoneistot", jarjestelmien_tunnukset = "KYL" }
+
+# =============================================================================
+# Section 7: Refrigeration plant — full coverage (added v0.2.0-alpha11).
+#
+# These rules cover the rest of the kylmälaitesuunnittelu lifecycle so
+# Lauri (or any future user) gets a working out-of-the-box mapping for
+# every common KYL-* layer. Patterns are conventional only — copy this
+# profile and rename layer_pattern values to match your own AutoCAD
+# layer naming.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Section 7a: Refrigeration plant equipment (T-LVI-01-01-*).
+# Whole-unit machines: chiller, water-station, compressor unit, sub-cooler,
+# compressor-condenser combo, gas cooler, refrigerant receiver.
+# -----------------------------------------------------------------------------
+
+[[rules]]
+layer_pattern = "KYL-CHILLER*"
+ifc_type = "IfcChiller"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-003"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Vedenjäähdytyskone", yleistunnus = "VJK" }
+
+[[rules]]
+layer_pattern = "KYL-VEDENJAAHDY*"
+ifc_type = "IfcChiller"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-003"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Vedenjäähdytyskone", yleistunnus = "VJK" }
+
+[[rules]]
+layer_pattern = "KYL-KYLMAVESIAS*"
+ifc_type = "IfcUnitaryEquipment"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-004"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kylmävesiasema", yleistunnus = "KVA" }
+
+[[rules]]
+layer_pattern = "KYL-KONEIKKO*"
+ifc_type = "IfcUnitaryEquipment"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-005"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Jäähdytyskompressorikoneikko", yleistunnus = "KKO" }
+
+[[rules]]
+layer_pattern = "KYL-VALIJAAHD*"
+ifc_type = "IfcCoil"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-024"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Välijäähdytin", yleistunnus = "VJ" }
+
+[[rules]]
+layer_pattern = "KYL-KOMPLAUH*"
+ifc_type = "IfcCondenser"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-019"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kompressorilauhdutin", yleistunnus = "KLA" }
+
+[[rules]]
+layer_pattern = "KYL-KAASUNJAA*"
+ifc_type = "IfcCondenser"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-027"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kaasunjäähdytin", yleistunnus = "KAJ" }
+
+[[rules]]
+layer_pattern = "KYL-NESTEJAAHD*"
+ifc_type = "IfcCondenser"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-016"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Nestejäähdytin", yleistunnus = "NJ" }
+
+[[rules]]
+layer_pattern = "KYL-VARAAJA*"
+ifc_type = "IfcTank"
+predefined_type = "STORAGE"
+domain = "KYL"
+lvi_code = "T-LVI-03-07-012"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kylmäainevaraajasäiliö", yleistunnus = "VAR" }
+
+# -----------------------------------------------------------------------------
+# Section 7b: Cold-storage furniture (kylmäkalusteet) — IfcUnitaryEquipment.
+# Commercial refrigeration appliances: freezer cabinet, fridge cabinet,
+# blast chiller, berry/produce display, freezer chest. RAVA-LVI does not
+# carry dedicated codes for this category, so we use T-LVI-01-01-999
+# (MUU - Lämmitys- ja jäähdytyslaitteistot) with an explicit ObjectType
+# in FI_Komponentti.yleisnimi.
+# -----------------------------------------------------------------------------
+
+[[rules]]
+layer_pattern = "KYL-PAKASTEKAAPPI*"
+ifc_type = "IfcUnitaryEquipment"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-999"
+system_name = "Refrigeration cabinets"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Pakastekaappi", yleistunnus = "PKK" }
+
+[[rules]]
+layer_pattern = "KYL-KYLMAKAAPPI*"
+ifc_type = "IfcUnitaryEquipment"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-999"
+system_name = "Refrigeration cabinets"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Kylmäkaappi", yleistunnus = "KKK" }
+
+[[rules]]
+layer_pattern = "KYL-PAKASTEALLAS*"
+ifc_type = "IfcUnitaryEquipment"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-999"
+system_name = "Refrigeration cabinets"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Pakasteallas", yleistunnus = "PKA" }
+
+[[rules]]
+layer_pattern = "KYL-PAKASTEARKKU*"
+ifc_type = "IfcUnitaryEquipment"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-999"
+system_name = "Refrigeration cabinets"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Pakastearkku", yleistunnus = "PKR" }
+
+[[rules]]
+layer_pattern = "KYL-KYLMAALLAS*"
+ifc_type = "IfcUnitaryEquipment"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-999"
+system_name = "Refrigeration cabinets"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Kylmäallas", yleistunnus = "KAL" }
+
+[[rules]]
+layer_pattern = "KYL-MARJAALLAS*"
+ifc_type = "IfcUnitaryEquipment"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-999"
+system_name = "Refrigeration cabinets"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Marja-allas", yleistunnus = "MJA" }
+
+[[rules]]
+layer_pattern = "KYL-PIKAJAA*"
+ifc_type = "IfcUnitaryEquipment"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-999"
+system_name = "Refrigeration cabinets"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Pikajäähdytyskaappi", yleistunnus = "PJK" }
+
+[[rules]]
+layer_pattern = "KYL-OMAKONEELLI*"
+ifc_type = "IfcUnitaryEquipment"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-999"
+system_name = "Refrigeration cabinets"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Omakoneellinen kylmäkaluste", yleistunnus = "OMK" }
+
+# -----------------------------------------------------------------------------
+# Section 7c: Refrigeration condensate drainage (J-LVI-04-04).
+# Sulanapidon ja kondenssin viemäröinti omana järjestelmänään.
+# Pakettiin kuuluu: kondenssiputki, lattiakaivo, vesilukko, padotusventtiili.
+# -----------------------------------------------------------------------------
+
+[[rules]]
+layer_pattern = "KYL-KONDENSSI*"
+ifc_type = "IfcPipeSegment"
+predefined_type = "DRAINPIPE"
+domain = "KYL"
+lvi_code = "T-LVI-04-01-001"
+system_name = "Drainage - kondenssi"
+fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KVE" }
+fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
+
+[[rules]]
+layer_pattern = "KYL-LATTIAKAIV*"
+ifc_type = "IfcWasteTerminal"
+predefined_type = "FLOORTRAP"
+domain = "KYL"
+lvi_code = "T-LVI-05-01-001"
+system_name = "Drainage - kondenssi"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Lattiakaivo", yleistunnus = "LK" }
+fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
+
+[[rules]]
+layer_pattern = "KYL-VESILUKKO*"
+ifc_type = "IfcWasteTerminal"
+predefined_type = "WASTETRAP"
+domain = "KYL"
+lvi_code = "T-LVI-04-02-002"
+system_name = "Drainage - kondenssi"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Vesilukko", yleistunnus = "VL" }
+
+[[rules]]
+layer_pattern = "KYL-PADOTUS*"
+ifc_type = "IfcValve"
+predefined_type = "CHECKVALVE"
+domain = "KYL"
+lvi_code = "T-LVI-04-02-005"
+system_name = "Drainage - kondenssi"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Padotusventtiili", yleistunnus = "PVT" }
+
+# -----------------------------------------------------------------------------
+# Section 7d: Sensors and control devices (anturit / säätö).
+# Termostaatit, lämpötila-/paine-/pinta-anturit, magneettiventtiilit,
+# sulatusvastukset.
+# -----------------------------------------------------------------------------
+
+[[rules]]
+layer_pattern = "KYL-TERMO*"
+ifc_type = "IfcSensor"
+predefined_type = "TEMPERATURESENSOR"
+domain = "KYL"
+talotekniikka_code = "T-TATE-01-01-099"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "ANTURIT", yleisnimi = "Termostaatti", yleistunnus = "TER" }
+
+[[rules]]
+layer_pattern = "KYL-LAMPOTILA*"
+ifc_type = "IfcSensor"
+predefined_type = "TEMPERATURESENSOR"
+domain = "KYL"
+talotekniikka_code = "T-TATE-01-01-099"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "ANTURIT", yleisnimi = "Lämpötila-anturi", yleistunnus = "LTA" }
+
+[[rules]]
+layer_pattern = "KYL-PAINEMITT*"
+ifc_type = "IfcSensor"
+predefined_type = "PRESSURESENSOR"
+domain = "KYL"
+talotekniikka_code = "T-TATE-01-01-099"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "ANTURIT", yleisnimi = "Painemittari", yleistunnus = "PMI" }
+
+[[rules]]
+layer_pattern = "KYL-PINTAANT*"
+ifc_type = "IfcSensor"
+predefined_type = "LEVELSENSOR"
+domain = "KYL"
+talotekniikka_code = "T-TATE-01-01-099"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "ANTURIT", yleisnimi = "Pinta-anturi", yleistunnus = "PNT" }
+
+[[rules]]
+layer_pattern = "KYL-MAGNV*"
+ifc_type = "IfcValve"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-02"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VENTTIILIT", yleisnimi = "Magneettiventtiili", yleistunnus = "MV" }
+
+[[rules]]
+layer_pattern = "KYL-PAISUNTAVENT*"
+ifc_type = "IfcValve"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-02"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VENTTIILIT", yleisnimi = "Paisuntaventtiili", yleistunnus = "PAV" }
+
+[[rules]]
+layer_pattern = "KYL-SULATUSVAST*"
+ifc_type = "IfcCoil"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-01-01-999"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Sulatusvastus", yleistunnus = "SV" }
+
+# -----------------------------------------------------------------------------
+# Section 7e: Electrical distribution boards (Koneikkokeskus / Kohdekeskus).
+# Kylmäkoneikon syöttävät keskukset — ei sähkösuunnittelu-tasolla mutta
+# näkyvät usein kylmäkuvassa. Käyttäjä voi siirtää nämä sähköpuolen
+# profiiliin custom-mappauksella jos tarpeen.
+# -----------------------------------------------------------------------------
+
+[[rules]]
+layer_pattern = "KYL-KK-*"
+ifc_type = "IfcDistributionBoard"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+talotekniikka_code = "T-TATE-01-01-099"
+system_name = "Refrigeration power"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "SÄHKÖKESKUKSET", yleisnimi = "Koneikkokeskus", yleistunnus = "KK" }
+
+[[rules]]
+layer_pattern = "KYL-RK-*"
+ifc_type = "IfcDistributionBoard"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+talotekniikka_code = "T-TATE-01-01-099"
+system_name = "Refrigeration power"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "SÄHKÖKESKUKSET", yleisnimi = "Kohdekeskus", yleistunnus = "RK" }
+
+# -----------------------------------------------------------------------------
+# Section 7f: Pipe accessories (venttiilit, pumput, paisuntasäiliöt).
+# Kylmäkoneikon putkivarusteet — käsiventtiilit, kiertopumput,
+# paisuntasäiliöt (eivät kylmäainevaraajia, vaan jäähdytysvesi-kierron).
+# -----------------------------------------------------------------------------
+
+[[rules]]
+layer_pattern = "KYL-VENTTIILI*"
+ifc_type = "IfcValve"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-02"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VENTTIILIT", yleisnimi = "Käsiventtiili", yleistunnus = "VT" }
+
+[[rules]]
+layer_pattern = "KYL-PUMPPU*"
+ifc_type = "IfcPump"
+predefined_type = "USERDEFINED"
+domain = "KYL"
+lvi_code = "T-LVI-02"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "PUMPUT", yleisnimi = "Kiertopumppu", yleistunnus = "PMP" }
+
+[[rules]]
+layer_pattern = "KYL-PAISUNTASAILIO*"
+ifc_type = "IfcTank"
+predefined_type = "EXPANSION"
+domain = "KYL"
+lvi_code = "T-LVI-02"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "SÄILIÖT", yleisnimi = "Paisuntasäiliö", yleistunnus = "PSA" }
