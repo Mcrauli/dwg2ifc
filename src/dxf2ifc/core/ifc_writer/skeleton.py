@@ -207,6 +207,31 @@ def _attach_project_discipline(
         RelatingPropertyDefinition=pset,
     )
 
+    # Pset_Discipline experiment — some Solibri Role configurations read
+    # this non-standard but widely-supported PSet at project level instead
+    # of Pset_Project.Authorization. Adding "Discipline" + the same label
+    # ("Jäähdytys") as the suunnittelualat classification gives Solibri's
+    # role auto-detect one more chance to skip the manual dialog when
+    # the file is opened. Costs nothing if the user's Solibri ignores it.
+    discipline_pset = ifc.create_entity(
+        "IfcPropertySet",
+        GlobalId=ifcopenshell.guid.new(),
+        Name="Pset_Discipline",
+        HasProperties=[
+            ifc.create_entity(
+                "IfcPropertySingleValue",
+                Name="Discipline",
+                NominalValue=ifc.create_entity("IfcLabel", label),
+            ),
+        ],
+    )
+    ifc.create_entity(
+        "IfcRelDefinesByProperties",
+        GlobalId=ifcopenshell.guid.new(),
+        RelatedObjects=[project],
+        RelatingPropertyDefinition=discipline_pset,
+    )
+
 
 def _customize_file_header(ifc: ifcopenshell.file, *, output_name: str) -> None:
     """Stamp the STEP physical file HEADER with refrigeration metadata.

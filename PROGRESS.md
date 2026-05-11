@@ -4,20 +4,24 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha14 (2026-05-11)
+## Current state — v0.2.0-alpha15 (2026-05-11)
 
-Tuorein julkaistu: **v0.2.0-alpha14** (2026-05-11).
+Tuorein julkaistu: **v0.2.0-alpha15** (2026-05-11).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a14.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a14.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a15.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a15.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–14:n korjaukset tiivistettynä (täysi historia
+Alpha8–15:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha15** (2026-05-11): `Pset_Discipline.Discipline = "Jäähdytys"`
+  lisätty IfcProject-tasolle Solibri-role-auto-detect-kokeena (defence-
+  in-depth aiempien Pset_Project.Authorization / suunnittelualat /
+  STEP-header / IfcApplication -signaalien lisäksi).
 - **alpha14** (2026-05-11): POSITIO tunnistaa anonyymit `*U*`-blokit
   attribuuttien perusteella (NUMERO + TEKSTI). Orchestrator käyttää
   POSITIO-haussa INSERT.xy:tä mesh-bbox-keskipisteen sijaan.

@@ -6,6 +6,25 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha15 — 2026-05-11 (Pset_Discipline IfcProject-tasolle)
+
+**Lisätty — Solibri-role-auto-detect saa yhden lisäsignaalin**:
+
+Kun konversio tuottaa yksisuunnitteluala-mallin (kaikki rivit
+`domain="KYL"`), `IfcProject`-entiteettiin liitetään nyt
+`Pset_Discipline` -PropertySet, jossa `Discipline = "Jäähdytys"`.
+
+Aiemmin emittoituja Solibri-roolin signaaleja (`IfcProject.LongName`,
+`Pset_Project.Authorization`, `suunnittelualat`-luokitus,
+STEP-header `Kylmäsuunnittelu`, `IfcApplication`) ei muutettu — tämä on
+defence-in-depth-lisäys jonka jotkin Solibri-konfiguraatiot lukevat
+suoraan Pset_Disciplinestä Pset_Projectin sijaan. Jos Solibri ohittaa
+sen, kustannus on yksi PSet IfcProjectin alla, ei mitään muuta.
+
+Päivitä alpha15 → avaa IFC Solibrissä → katso tuleeko "Jäähdytys"-rooli
+automaattisesti ilman dialogia. Jos ei, Solibri ei lue tätä mekanismia
+ja jää manuaalinen valinta käyttöön.
+
 ## v0.2.0-alpha14 — 2026-05-11 (POSITIO-linkki anonyymeille blokeille)
 
 **Korjattu — POSITIO matchaa kaikki höyrystimet/lauhduttimet/kompressorit
