@@ -6,6 +6,27 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha16 — 2026-05-11 (suunnitteluala-label "Jäähdytys" → "KYL")
+
+**Muutettu — discipline-classification:n label vastaa nyt AutoCAD-puolta**:
+
+`DISCIPLINE_LABELS["KYL"]` `"Jäähdytys"` → `"KYL"`. Tämä vaikuttaa:
+
+- `IfcProject.LongName` = `KYL` (oli `Jäähdytys`)
+- `IfcClassification "suunnittelualat"` → reference `Identification` ja
+  `Name` = `KYL` (oli `Jäähdytys`) sekä projektitasolla että jokaisella
+  KYL-domain-tuotteella
+- `Pset_Discipline.Discipline` = `KYL` (oli `Jäähdytys`)
+
+`Pset_Project.Authorization` jää edelleen `"Kylmäsuunnittelu"`:ksi
+(Granlund/RAVA3Pro-konventio). Tuotteiden surface-väri pysyy AutoCAD
+ACI 175:ssä (RGB 76,76,153).
+
+Solibrin role-auto-detect ei toiminut "Jäähdytys"-labelillakaan
+(testit alpha15:ssä), joten siirrytään yhden­mukaiseen lyhenteeseen
+joka näkyy AutoCAD-layereissa (KYL-*). Manuaalinen rooli­valinta
+Solibrissä avatessa pysyy hyväksyttynä.
+
 ## v0.2.0-alpha15 — 2026-05-11 (Pset_Discipline IfcProject-tasolle)
 
 **Lisätty — Solibri-role-auto-detect saa yhden lisäsignaalin**:

@@ -70,13 +70,15 @@ def add_classification(
     return reference
 
 
-# Discipline (suunnitteluala) labels written into the IFC. Solibri's
-# Luokittelusäännöistä / Disciplines view reads these strings; using
-# the Solibri-native term makes the role auto-detect cleanly.
+# Discipline (suunnitteluala) labels written into the IFC.
+# Lyhennetään KYL:ksi joka näkyy Solibrin "suunnittelualat"-luokittelussa
+# samana lyhenteenä kuin AutoCAD-puolen layer-prefix (KYL-*) — yhden­mukaisuus
+# alkupäästä loppupäähän. Solibrin role auto-detect ei aiemmin toiminut
+# pidemmälläkään "Jäähdytys"-merkillä, joten siitä siirrytään pois.
 DISCIPLINE_LABELS: dict[str, str] = {
     "ARK": "ARK",
     "TATE": "Talotekniikka",
-    "KYL": "Jäähdytys",
+    "KYL": "KYL",
 }
 
 

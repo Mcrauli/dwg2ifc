@@ -1,11 +1,13 @@
 """Tests for the suunnittelualat / discipline metadata in the IFC.
 
-Solibri's role auto-selection reads:
-  1. IfcProject.LongName (top-level project hint)
-  2. ``suunnittelualat`` IfcClassification on IfcProject (file-wide)
-  3. ``suunnittelualat`` IfcClassificationReference on each product
-We verify all three for the default refrigeration profile so opening
-the IFC in Solibri picks the Jäähdytys profile without prompting.
+Discipline-classification reference is "KYL" for refrigeration files —
+sama lyhenne kuin AutoCAD-puolen layer-prefix (KYL-*). Yhden­mukaisuus
+alkupäästä loppupäähän.
+
+Solibri's role auto-selection ei automaattisesti tunnistu vaikka kaikki
+yleisesti dokumentoidut signaalit (LongName, suunnittelualat,
+Pset_Project.Authorization, Pset_Discipline, STEP-header) on emittoitu
+— manuaalinen valinta avatessa hyväksytty.
 """
 
 from __future__ import annotations
@@ -29,7 +31,7 @@ from dxf2ifc.profiles.loader import load_default_profile
 def test_discipline_label_table() -> None:
     assert DISCIPLINE_LABELS["ARK"] == "ARK"
     assert DISCIPLINE_LABELS["TATE"] == "Talotekniikka"
-    assert DISCIPLINE_LABELS["KYL"] == "Jäähdytys"
+    assert DISCIPLINE_LABELS["KYL"] == "KYL"
 
 
 def test_discipline_label_returns_none_for_unknown() -> None:
@@ -66,14 +68,14 @@ def test_jaahdytys_classification_on_products(tmp_path: Path) -> None:
         r for r in ifc.by_type("IfcClassificationReference")
         if r.ReferencedSource == classifications[0]
     ]
-    # Every ref under the suunnittelualat classification should be Jäähdytys
+    # Every ref under the suunnittelualat classification should be KYL
     # for a refrigeration-only file.
     assert refs, "no suunnittelualat references emitted"
     for r in refs:
-        assert r.Identification == "Jäähdytys", (
-            f"expected Identification 'Jäähdytys', got {r.Identification!r}"
+        assert r.Identification == "KYL", (
+            f"expected Identification 'KYL', got {r.Identification!r}"
         )
-        assert r.Name == "Jäähdytys"
+        assert r.Name == "KYL"
 
 
 def test_project_long_name_set_to_discipline(tmp_path: Path) -> None:
@@ -90,7 +92,7 @@ def test_project_long_name_set_to_discipline(tmp_path: Path) -> None:
     )
     ifc = ifcopenshell.open(str(ifc_path))
     project = ifc.by_type("IfcProject")[0]
-    assert project.LongName == "Jäähdytys"
+    assert project.LongName == "KYL"
 
 
 def test_project_pset_authorization_kylmasuunnittelu(tmp_path: Path) -> None:
@@ -232,4 +234,4 @@ def test_project_level_classification_present(tmp_path: Path) -> None:
         and rel.RelatingClassification.ReferencedSource.Name == "suunnittelualat"
     ]
     assert len(discipline_refs) == 1
-    assert discipline_refs[0].RelatingClassification.Identification == "Jäähdytys"
+    assert discipline_refs[0].RelatingClassification.Identification == "KYL"
