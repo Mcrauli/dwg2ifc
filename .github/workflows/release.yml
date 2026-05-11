@@ -204,3 +204,27 @@ jobs:
             --title $tag `
             --notes-file CHANGELOG.md `
             --prerelease
+
+      - name: Trigger autocad-lisp-ohjeet version-pin sync
+        # Lahettaa repository_dispatch -eventin Mcrauli/autocad-lisp-ohjeet:lle
+        # joka triggeroi sen sync-dxf2ifc-version.yml -workflow:n ja
+        # paivittaa dxf2ifc.html-sivun pinnauksen tahan tagiin saman tien
+        # (muuten cron paivittaa tunnin sisalla).
+        #
+        # Vaatii repository_dispatch-permissioilla varustetun PAT-tokenin
+        # secrets-nimella SYNC_PAT (Settings -> Secrets and variables ->
+        # Actions). Token tarvitsee:
+        #   - Fine-grained PAT: repository access = Mcrauli/autocad-lisp-ohjeet,
+        #     permissions = Contents: read + Metadata: read + Actions: write
+        # Jos token puuttuu, step skipataan hiljaa — cron toimii silti.
+        if: env.SYNC_PAT != ''
+        shell: pwsh
+        env:
+          SYNC_PAT: ${{ secrets.SYNC_PAT }}
+          GH_TOKEN: ${{ secrets.SYNC_PAT }}
+        run: |
+          gh api repos/Mcrauli/autocad-lisp-ohjeet/dispatches `
+            -X POST `
+            -f event_type=dxf2ifc-release `
+            -F "client_payload[tag]=${env:GITHUB_REF_NAME}"
+          Write-Host "Sync dispatch sent for $env:GITHUB_REF_NAME"
