@@ -277,7 +277,7 @@ _LISP_PHASE2 = (
     '(setq ins (ssname inserts k)) '
     '(setq insel (entget ins)) '
     '(setq bname (cdr (assoc 2 insel))) '
-    '(if (and bname (not (wcmatch (strcase bname) "*POSITIO*"))) '
+    '(if (and bname (not (wcmatch (strcase bname) "{skip_blocks}"))) '
     '(progn '
     '(setq ih (cdr (assoc 5 insel))) '
     '(setq ctr 0 toconv (ssadd) iter_cap 1000) '
@@ -301,7 +301,7 @@ _LISP_PHASE2 = (
     '(setq ctr (1+ ctr))) '
     '((eq etype "INSERT") '
     '(setq sbname (cdr (assoc 2 el))) '
-    '(if (and sbname (not (wcmatch (strcase sbname) "*POSITIO*"))) '
+    '(if (and sbname (not (wcmatch (strcase sbname) "{skip_blocks}"))) '
     '(progn '
     '(command "_.EXPLODE" ent) '
     '(setq subss (ssget "_P")) '
@@ -341,6 +341,7 @@ def extract_acis_meshes(
     layer_filter: str = "*",
     timeout_s: float = 180.0,
     progress: Callable[[str], None] | None = None,
+    skip_magicad: bool = False,
 ) -> dict[str, AcisMeshData]:
     """Triangulate every ACIS body in ``dxf_path`` via accoreconsole.
 
@@ -352,6 +353,16 @@ def extract_acis_meshes(
     ``layer_filter`` is an AutoCAD wildcard pattern matched against entity
     layer names by ``ssget``. Default ``"*"`` extracts every ACIS body;
     pass e.g. ``"KYL-*,LT *,MT *"`` to limit by domain.
+
+    ``skip_magicad`` (default False): when True, the Phase-2 INSERT-
+    explode loop additionally skips any block whose name matches
+    ``MAGI*`` / ``*MAGICAD*`` / ``MAG_*``. Set to True by the
+    orchestrator whenever the caller supplied ``--magicad-ifc`` so
+    accoreconsole does not attempt to ``_.EXPLODE`` MagiCAD blocks
+    that the merged-in IFC will replace anyway. On colleague machines
+    with FULL MagiCAD ARX loaded, an ``_.EXPLODE`` on a MagiCAD
+    PathwayDevice/PipeSegment may crash inside the MagiCAD ARX —
+    skipping them avoids the AutoCAD CER popup.
     """
     input_path = Path(dxf_path).resolve()
     if not input_path.is_file():
@@ -394,6 +405,17 @@ def extract_acis_meshes(
         # ``(load …)`` from a single big .lsp file is NOT an option:
         # accoreconsole's SECURELOAD policy auto-cancels LSP loads from
         # %TEMP% with "; error: File load canceled".
+        # Phase 2 ``wcmatch`` skip pattern. POSITIO blocks are always
+        # skipped (their explode pollutes per-handle STL counter with
+        # letter-shaped meshes). When the caller is going to merge a
+        # MagiCAD-IFC in afterwards, also skip MagiCAD blocks so we
+        # never invoke ``_.EXPLODE`` on a MagiCAD entity — that has
+        # been observed to crash accoreconsole on machines with FULL
+        # MagiCAD ARX loaded (AutoCAD CER popup).
+        skip_blocks = "*POSITIO*"
+        if skip_magicad:
+            skip_blocks = "*POSITIO*,MAGI*,*MAGICAD*,MAG_*"
+
         scr_path = workdir / "extract.scr"
         forms = [
             _LISP_SETUP.format(
@@ -402,7 +424,7 @@ def extract_acis_meshes(
                 log_out=out_posix,
             ),
             _LISP_PHASE1.format(filter=layer_filter),
-            _LISP_PHASE2.format(filter=layer_filter),
+            _LISP_PHASE2.format(filter=layer_filter, skip_blocks=skip_blocks),
             _LISP_CLEANUP,
         ]
         scr_path.write_text("\r\n".join(forms) + "\r\n", encoding="utf-8")
@@ -431,7 +453,7 @@ def extract_acis_meshes(
             # LISP body itself.
             log_path = workdir / "accoreconsole.log"
             with log_path.open("w", encoding="utf-8") as log_fh:
-                subprocess.run(
+                completed = subprocess.run(
                     [
                         str(accoreconsole),
                         "/i",
@@ -446,16 +468,30 @@ def extract_acis_meshes(
                     check=False,
                     creationflags=creationflags,
                 )
+            # accoreconsole's exit code reflects whether the process exited
+            # cleanly OR whether AutoCAD crashed mid-script. A crash inside
+            # the LISP (e.g. MagiCAD ARX failing _.EXPLODE on a MagiCAD
+            # entity) shows up as a non-zero rc + an AutoCAD CER popup.
+            # Surface the workdir to the user so they can attach the logs
+            # for diagnosis without us having to ship a debug build.
+            if completed.returncode != 0 and progress is not None:
+                progress(
+                    f"accoreconsole exited with code {completed.returncode}; "
+                    f"diagnostics preserved in {workdir}"
+                )
         except subprocess.TimeoutExpired:
             if progress is not None:
                 progress(
                     f"accoreconsole timed out after {timeout_s:.0f} s — "
-                    f"ACIS bodies will be skipped"
+                    f"ACIS bodies will be skipped (diagnostics in {workdir})"
                 )
             return {}
         except OSError as exc:
             if progress is not None:
-                progress(f"accoreconsole failed: {exc} — ACIS bodies will be skipped")
+                progress(
+                    f"accoreconsole failed: {exc} — ACIS bodies will be "
+                    f"skipped (diagnostics in {workdir})"
+                )
             return {}
 
         meshes: dict[str, AcisMeshData] = {}

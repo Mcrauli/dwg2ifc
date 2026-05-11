@@ -4,20 +4,25 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha17 (2026-05-11)
+## Current state — v0.2.0-alpha18 (2026-05-11)
 
-Tuorein julkaistu: **v0.2.0-alpha17** (2026-05-11).
+Tuorein julkaistu: **v0.2.0-alpha18** (2026-05-11).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a17.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a17.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a18.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a18.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–17:n korjaukset tiivistettynä (täysi historia
+Alpha8–18:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha18** (2026-05-11): Skip MagiCAD-blokit accoreconsolen LISP-
+  Phase 2:sta kun `--magicad-ifc` on annettu. Korjaa AutoCAD-CER-popupin
+  kollegan koneella jossa FULL-MagiCAD-ARX latautuu. Lisäksi
+  diagnostiikka-polku tulostuu preview-lokiin kun accoreconsole exit
+  != 0.
 - **alpha17** (2026-05-11): Skip-ACIS-toggle GUI-checkboxina + CLI-flagina
   `--skip-acis`. Käyttäjä voi nyt ohittaa accoreconsole-prosessin
   käynnistämisen yhdellä klikillä — auttaa kun AutoCAD-crash-report

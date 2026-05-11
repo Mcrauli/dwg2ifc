@@ -241,6 +241,35 @@ def test_extract_acis_meshes_returns_empty_when_dxf_has_no_acis(tmp_path: Path):
     assert extract_acis_meshes(dxf) == {}
 
 
+def test_lisp_phase2_under_accoreconsole_line_buffer():
+    """accoreconsole's .scr line buffer hard-caps at 2048 chars per Enter-
+    terminated input line — past that the parser hangs in a multi-paren
+    prompt forever. Phase 2 grows when skip_magicad is enabled (extra
+    wildcard patterns substitute into the wcmatch skip list); verify
+    both modes stay safely under the cap."""
+    from dxf2ifc.core.preprocessing import _LISP_PHASE2
+
+    p2_default = _LISP_PHASE2.format(filter="*", skip_blocks="*POSITIO*")
+    p2_magicad = _LISP_PHASE2.format(
+        filter="*", skip_blocks="*POSITIO*,MAGI*,*MAGICAD*,MAG_*"
+    )
+    assert len(p2_default) < 2048
+    assert len(p2_magicad) < 2048
+
+
+def test_lisp_phase2_skip_magicad_includes_all_magicad_patterns():
+    """When skip_magicad is requested the wcmatch pattern must match the
+    block-name conventions MagiCAD uses in DXF — MAGI* (native types),
+    *MAGICAD* (vendor block libraries), MAG_* (legacy prefix)."""
+    from dxf2ifc.core.preprocessing import _LISP_PHASE2
+
+    p2_magicad = _LISP_PHASE2.format(
+        filter="*", skip_blocks="*POSITIO*,MAGI*,*MAGICAD*,MAG_*"
+    )
+    # The two occurrences must both carry the extended skip list.
+    assert p2_magicad.count("*POSITIO*,MAGI*,*MAGICAD*,MAG_*") == 2
+
+
 def test_dxf_contains_acis_bodies_true_for_3dsolid(tmp_path: Path):
     dxf = tmp_path / "solid.dxf"
     _make_3dsolid_dxf(dxf)

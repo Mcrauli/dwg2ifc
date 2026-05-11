@@ -6,6 +6,30 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha18 — 2026-05-11 (skip MagiCAD-blokit accoreconsolen LISP-puolelta)
+
+**Korjattu — MagiCAD-osat eivät enää aja `_.EXPLODE`-kutsuun**:
+
+Kun `--magicad-ifc`-merge on käytössä, accoreconsolen LISP-puoli ohittaa
+nyt myös MagiCAD-blokit (`MAGI*`, `*MAGICAD*`, `MAG_*`) Phase 2:n
+INSERT-räjäytys-silmukassa — aiemmin vain `*POSITIO*`-blokit ohitettiin.
+Tämä korjaa AutoCAD-crash-raportin joka voi tulla **kollegan koneella
+jossa FULL-MagiCAD-ARX on ladattuna**: `_.EXPLODE` MagiCAD-entityyn voi
+kaataa MagiCAD-ARX:in jonka näkyvänä lopputuloksena on Customer Error
+Reporting -dialogi. Koska MagiCAD-osat tulevat IFC:hen kuitenkin
+`-MAGIIFCCD`-mergen kautta, niiden räjäytys oli vain hukkatyö +
+crash-riski.
+
+Lisäksi: jos accoreconsole päättyy ei-nollalla exit-koodilla,
+preview-loki näyttää nyt sen koodin sekä `%TEMP%\dxf2ifc_acis_*`-
+työhakemiston polun jossa `accoreconsole.log` + `extract.log` +
+`extract.scr` ovat diagnostiikkaa varten.
+
+Käyttäjälle näkyvä muutos:
+- Default-konversiossa (ei `--magicad-ifc`-flagia) ei muutosta.
+- `--magicad-ifc`-konversiossa MagiCAD-blokit ohitetaan accoreconsolen
+  LISP-puolelta, mikä estää CER-popupin kollegan koneella.
+
 ## v0.2.0-alpha17 — 2026-05-11 (skip-ACIS-toggle GUI:hin + CLI:hen)
 
 **Lisätty — accoreconsole-ohitusvalinta käyttäjälle**:

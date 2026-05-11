@@ -260,14 +260,6 @@ def convert_dxf(
     """
     name = project_name or Path(dxf_path).stem
 
-    acis_meshes: dict[str, object] = {}
-    if preprocess_acis:
-        # Lazy import keeps ifc_writer importable on hosts where AutoCAD
-        # is not installed — extract_acis_meshes itself returns ``{}`` in
-        # that case after calling find_accoreconsole().
-        from dxf2ifc.core.preprocessing import extract_acis_meshes
-        acis_meshes = extract_acis_meshes(dxf_path, progress=progress)  # type: ignore[arg-type,assignment]
-
     # When the caller supplied a MagiCAD-IFC for merge-in, drop MAGI*
     # native classes and ACAD_PROXY_ENTITY records here so we don't
     # produce duplicates (mesh-tessellated copy from STLOUT + properly-
@@ -275,6 +267,18 @@ def convert_dxf(
     # DXF-side MagiCAD entities are still read into IfcBuildingElementProxy
     # mesh placeholders.
     skip_magicad = magicad_ifc_path is not None
+
+    acis_meshes: dict[str, object] = {}
+    if preprocess_acis:
+        # Lazy import keeps ifc_writer importable on hosts where AutoCAD
+        # is not installed — extract_acis_meshes itself returns ``{}`` in
+        # that case after calling find_accoreconsole().
+        from dxf2ifc.core.preprocessing import extract_acis_meshes
+        acis_meshes = extract_acis_meshes(  # type: ignore[arg-type,assignment]
+            dxf_path,
+            progress=progress,
+            skip_magicad=skip_magicad,
+        )
     entities = read_dxf(
         dxf_path, acis_meshes=acis_meshes, skip_magicad=skip_magicad
     )
