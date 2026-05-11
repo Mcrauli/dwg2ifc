@@ -184,6 +184,17 @@ def test_file_panel_browse_magicad_ifc_fills_line_edit(qtbot, tmp_path):
     assert panel.magicad_ifc_edit.text() == fake_path
 
 
+def test_file_panel_skip_acis_checkbox_default_unchecked(qtbot):
+    """Default-off because most refrigeration DXFs need accoreconsole to
+    triangulate 3DSOLID/SURFACE bodies into IFC mesh. Users whose
+    accoreconsole crashes tick this once and the choice persists."""
+    from dxf2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+    assert panel.skip_acis_checkbox.isChecked() is False
+
+
 def test_file_panel_convert_emits_magicad_ifc_path(qtbot, tmp_path):
     from dxf2ifc.gui.file_panel import FilePanel
 

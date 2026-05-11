@@ -108,10 +108,24 @@ class FilePanel(QtWidgets.QWidget):
             self.floor_elevation_edit.setEnabled
         )
 
+        self.skip_acis_checkbox = QtWidgets.QCheckBox(
+            "Ohita 3DSOLID-triangulaatio (accoreconsole)"
+        )
+        self.skip_acis_checkbox.setChecked(False)
+        self.skip_acis_checkbox.setToolTip(
+            "Päällä: ohittaa erillisen AutoCAD accoreconsole-prosessin, "
+            "joka muuten triangulaa DXF:n 3DSOLID/SURFACE/REGION-bodit "
+            "IFC-meshiksi. ACIS-pohjaiset osat (esim. KYL-TIKASHYLLY-"
+            "3DSOLID:t) jäävät tällöin pois IFC:stä, mutta dynamic-block "
+            "KYL-hyllyt ja INSERT-pohjaiset osat tulevat normaalisti. "
+            "Käytä jos accoreconsole heittää AutoCAD-crash-reportin."
+        )
+        layout.addWidget(self.skip_acis_checkbox, 6, 0, 1, 3)
+
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setProperty("primary", "true")
         self.convert_button.clicked.connect(self._on_convert)
-        layout.addWidget(self.convert_button, 6, 1, 1, 2)
+        layout.addWidget(self.convert_button, 7, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
 

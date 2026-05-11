@@ -84,6 +84,18 @@ def build_parser() -> argparse.ArgumentParser:
             "first IfcBuildingStorey."
         ),
     )
+    convert.add_argument(
+        "--skip-acis",
+        action="store_true",
+        help=(
+            "Skip the accoreconsole.exe ACIS-triangulation pass. DXF "
+            "3DSOLID/SURFACE/REGION bodies will not appear in the IFC "
+            "(dynamic-block and INSERT-pohjainen geometria tulee silti "
+            "normaalisti). Käytä jos accoreconsole heittää AutoCAD-crash-"
+            "reportin, tai jos haluat varmistaa että erillistä AutoCAD-"
+            "prosessia ei käynnistetä lainkaan."
+        ),
+    )
     return parser
 
 
@@ -100,6 +112,7 @@ def main(argv: list[str] | None = None) -> int:
             energy_specs_path=args.energy_specs,
             floor_elevation_mm=args.floor_elevation,
             magicad_ifc_path=args.magicad_ifc,
+            preprocess_acis=not args.skip_acis,
         )
         print(f"Wrote {args.output}", file=sys.stderr)
         if args.validate:

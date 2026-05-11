@@ -27,6 +27,7 @@ class ConvertWorker(QtCore.QObject):
         energy_specs: str | None = None,
         floor_elevation_mm: float = 0.0,
         magicad_ifc: str | None = None,
+        skip_acis: bool = False,
     ) -> None:
         runnable = _ConvertRunnable(
             self,
@@ -37,6 +38,7 @@ class ConvertWorker(QtCore.QObject):
             energy_specs=energy_specs,
             floor_elevation_mm=floor_elevation_mm,
             magicad_ifc=magicad_ifc,
+            skip_acis=skip_acis,
         )
         QtCore.QThreadPool.globalInstance().start(runnable)
 
@@ -53,6 +55,7 @@ class _ConvertRunnable(QtCore.QRunnable):
         energy_specs: str | None,
         floor_elevation_mm: float = 0.0,
         magicad_ifc: str | None = None,
+        skip_acis: bool = False,
     ) -> None:
         super().__init__()
         self._worker = worker
@@ -63,6 +66,7 @@ class _ConvertRunnable(QtCore.QRunnable):
         self._energy_specs = energy_specs
         self._floor_elevation_mm = floor_elevation_mm
         self._magicad_ifc = magicad_ifc
+        self._skip_acis = skip_acis
 
     def run(self) -> None:  # type: ignore[override]
         try:
@@ -75,6 +79,7 @@ class _ConvertRunnable(QtCore.QRunnable):
                 energy_specs_path=self._energy_specs or None,
                 floor_elevation_mm=self._floor_elevation_mm,
                 magicad_ifc_path=self._magicad_ifc or None,
+                preprocess_acis=not self._skip_acis,
             )
         except Exception as exc:  # noqa: BLE001 — surface every failure to the GUI
             self._worker.failed.emit(f"{type(exc).__name__}: {exc}")

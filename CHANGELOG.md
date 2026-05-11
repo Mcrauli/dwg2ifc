@@ -6,6 +6,26 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha17 — 2026-05-11 (skip-ACIS-toggle GUI:hin + CLI:hen)
+
+**Lisätty — accoreconsole-ohitusvalinta käyttäjälle**:
+
+- GUI:n FilePaneliin uusi checkbox **"Ohita 3DSOLID-triangulaatio
+  (accoreconsole)"**. Päällä-tilassa konvertteri ei käynnistä
+  `accoreconsole.exe`-prosessia DXF:n 3DSOLID/SURFACE/REGION-bodien
+  triangulointiin. Valinta persistoituu QSettings-kautta
+  (`skip_acis`-avain).
+- CLI:hen uusi flagi **`--skip-acis`** samalla semantiikalla:
+  `dxf2ifc convert in.dxf out.ifc --skip-acis`.
+- Default-tila on yhä **käytä accoreconsolea** koska useimmat KYL-DXF:t
+  sisältävät 3DSOLID-pohjaisia tikashyllyjä / putkia jotka tarvitsevat
+  triangulointia. Ohitusvalinta on tarkoitettu tilanteisiin jossa
+  accoreconsole heittää AutoCAD-crash-reportin tai DXF sisältää vain
+  dynamic-block / INSERT-pohjaista geometriaa.
+
+Sisäisesti `convert_dxf(preprocess_acis=False)` oli jo olemassa —
+tämä release vain altistaa lipun loppukäyttäjälle.
+
 ## v0.2.0-alpha16 — 2026-05-11 (suunnitteluala-label "Jäähdytys" → "KYL")
 
 **Muutettu — discipline-classification:n label vastaa nyt AutoCAD-puolta**:

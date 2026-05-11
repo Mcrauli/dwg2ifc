@@ -8,6 +8,7 @@ _KEY = "recent_files"
 _LAST_PROFILE_KEY = "last_profile_path"
 _FLOOR_ELEVATION_KEY = "floor_elevation_mm"
 _FLOOR_ELEVATION_ENABLED_KEY = "floor_elevation_enabled"
+_SKIP_ACIS_KEY = "skip_acis"
 _MAX_ENTRIES = 5
 
 
@@ -86,4 +87,27 @@ class RecentFilesStore:
     @floor_elevation_enabled.setter
     def floor_elevation_enabled(self, value: bool) -> None:
         self._settings.setValue(_FLOOR_ELEVATION_ENABLED_KEY, bool(value))
+        self._settings.sync()
+
+    @property
+    def skip_acis(self) -> bool:
+        """Whether the user wants to skip the accoreconsole ACIS-extraction step.
+
+        Default ``False`` because most refrigeration DXFs (with 3DSOLID
+        cable carriers / ladder racks) need accoreconsole to triangulate
+        ACIS bodies into IFC mesh. Users whose accoreconsole crashes (or
+        whose drawings only contain dynamic-block / INSERT-pohjaista
+        geometriaa) can tick the FilePanel checkbox once; the choice
+        persists per machine via QSettings.
+        """
+        raw = self._settings.value(_SKIP_ACIS_KEY, False)
+        if isinstance(raw, bool):
+            return raw
+        if isinstance(raw, str):
+            return raw.strip().lower() in ("true", "1", "yes")
+        return bool(raw)
+
+    @skip_acis.setter
+    def skip_acis(self, value: bool) -> None:
+        self._settings.setValue(_SKIP_ACIS_KEY, bool(value))
         self._settings.sync()
