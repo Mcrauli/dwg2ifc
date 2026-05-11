@@ -96,11 +96,27 @@ uv pip install -e ".[gui]"
 dxf2ifc-gui   # tai: python -m dxf2ifc.gui
 ```
 
-GUI tukee: DXF/DWG-tiedoston valinnan, layerien esikatselun +
-luokitus-resoluution, energiateho-Excel:n + MagiCAD-IFC:n
-filepicker:in, taustasäikeen konversion, profiilin editoinnin
-(Profile → Edit profile…), itsepäivityksen GitHub Releases:istä,
-ja 1.krs-koron säätämisen.
+GUI tukee: **DXF-tiedoston valinnan** (vain `.dxf`, ks. alla),
+layerien esikatselun + luokitus-resoluution, energiateho-Excel:n
++ MagiCAD-IFC:n filepicker:in, taustasäikeen konversion, profiilin
+editoinnin (Profile → Edit profile…), itsepäivityksen GitHub
+Releases:istä, ja 1.krs-koron säätämisen.
+
+### Input-formaatit
+
+Vain `.dxf`. DWG-input poistettiin v0.2.0-alpha10:ssä — kaikki POC v1–v4
+-iteraatiot keystroke-pohjaiseen DWG→DXF-muunnokseen osoittautuivat
+hauraiksi (ks. [`docs/DWG_MAGICAD_PREPROCESSING.md`](docs/DWG_MAGICAD_PREPROCESSING.md)).
+Jos lähdetiedostosi on DWG, valitse jompi kumpi reitti:
+
+- **DWG ilman MagiCAD-osia**: muunna DWG → DXF AutoCAD:in `DXFOUT`-komennolla
+  (tai ODA File Converter / TrueView SaveAs) ja avaa tuotettu `.dxf`
+  dxf2ifc:ssä normaalisti.
+- **DWG jossa MagiCAD-osat**: kollega ajaa AutoCAD:in command-linelle
+  `-MAGIIFCCD` jolloin MagiCAD tuottaa korkealaatuisen `.ifc`:n
+  natiivilla MagiCAD-PSet:llä. Sen jälkeen anna dxf2ifc:lle DXF-lähde
+  + `--magicad-ifc colleague.ifc`, niin master-IFC sisältää molemmat
+  puolet samassa storey:ssä.
 
 ## Tekniikka
 
