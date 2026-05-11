@@ -45,11 +45,20 @@ def index_positio_markers(
 ) -> list[PositioMarker]:
     """Iterate model space and collect every POSITIO INSERT.
 
-    ``block_pattern`` is a case-insensitive ``fnmatch`` glob against the
-    INSERT's block name (group code 2). The default ``"positiov2*"``
-    catches ``positiov2``, ``positiov2_alt`` etc. INSERTs without the
-    expected ``NUMERO`` and ``TEKSTI`` attributes are silently skipped
-    (broken / placeholder positios should never crash a conversion).
+    Matching is **attribute-driven** with name-glob as a soft hint:
+    any INSERT carrying both ``NUMERO`` and ``TEKSTI`` text attributes
+    is treated as a positio marker, regardless of block name. This
+    catches:
+
+    * the canonical ``positiov2`` block + its variants (``positiov2_alt``
+      etc) matching the ``block_pattern`` glob
+    * dynamic-block instances and copy-pasted variants that AutoCAD
+      renames to anonymous ``*U12`` etc — the attributes survive even
+      when the name doesn't match.
+
+    ``block_pattern`` is kept as a parameter so users with non-NUMERO/
+    -TEKSTI attribute conventions can still restrict matching by name.
+    INSERTs lacking both attributes are skipped (decoration-only blocks).
     """
     pattern = block_pattern.casefold()
     doc = ezdxf.readfile(str(dxf_path))
@@ -57,13 +66,8 @@ def index_positio_markers(
     for entity in doc.modelspace():
         if entity.dxftype() != "INSERT":
             continue
-        if not fnmatch(entity.dxf.name.casefold(), pattern):
-            continue
         if not entity.has_attrib:
             continue
-        # Attribute TAG match is case-insensitive too — Lauri's positiov2
-        # uses upper-case NUMERO / TEKSTI but a future variant might
-        # differ. We extract by uppercased tag name.
         attribs: dict[str, str] = {}
         for att in entity.attribs:
             tag = (att.dxf.tag or "").upper().strip()
@@ -72,8 +76,15 @@ def index_positio_markers(
                 attribs[tag] = text
         numero = attribs.get("NUMERO")
         teksti = attribs.get("TEKSTI")
+        name_matches = fnmatch(entity.dxf.name.casefold(), pattern)
+        # A block counts as a positio if EITHER:
+        #  - its name matches the pattern AND it carries at least one
+        #    NUMERO/TEKSTI value, OR
+        #  - it carries BOTH NUMERO and TEKSTI (anonymous *U* duplicates
+        #    of a positiov2 dynamic block that AutoCAD renamed).
+        if not name_matches and not (numero and teksti):
+            continue
         if not numero and not teksti:
-            # Block is pure decoration without numbering data — skip.
             continue
         markers.append(
             PositioMarker(

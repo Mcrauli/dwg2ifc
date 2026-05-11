@@ -346,24 +346,49 @@ def convert_dxf(
         if positio_markers:
             scope = set(profile.positio.apply_to)
             radius = profile.positio.max_distance_mm
+            # Build handle → INSERT.xy lookup so we can match POSITIOs
+            # to the equipment's INSERTION POINT (where the user drew
+            # the symbol's anchor) instead of the mesh bbox centroid.
+            # The bbox centroid of a forward-extending höyrystin mesh
+            # sits 200–400 mm in front of INSERT.xy — enough to push a
+            # 2.5–3.0 m POSITIO link out of the default 3.0 m radius and
+            # leave some höyrystimet unlabelled.
+            import ezdxf as _ezdxf
+            insert_xy_by_handle: dict[str, tuple[float, float]] = {}
+            try:
+                _doc = _ezdxf.readfile(str(dxf_path))
+                for _ent in _doc.modelspace():
+                    if _ent.dxftype() != "INSERT":
+                        continue
+                    try:
+                        _h = str(_ent.dxf.handle).upper()
+                        insert_xy_by_handle[_h] = (
+                            float(_ent.dxf.insert.x),
+                            float(_ent.dxf.insert.y),
+                        )
+                    except Exception:  # noqa: BLE001
+                        continue
+            except Exception:  # noqa: BLE001 — POSITIO link is best-effort
+                pass
+
             for m in mapped:
                 if m.ifc_type not in scope:
                     continue
-                # Resolve a target XY for the match. The geometry might
-                # be a BlockInstance (raw INSERT placement) OR a
-                # MeshGeometry (when accoreconsole+STLOUT replaced the
-                # block content with a faceted body — höyrystimet land
-                # here). Pipes / lines / polygons are intentionally not
-                # matched against POSITIOs.
+                # Resolve a target XY for the match. Prefer the INSERT's
+                # insertion point (handle lookup); fall back to BlockInstance's
+                # insertion_point; finally fall back to mesh bbox centroid.
+                # Pipes / lines / polygons are intentionally not matched
+                # against POSITIOs (target_xy stays None and they skip).
                 target_xy: tuple[float, float] | None = None
-                if isinstance(m.geometry, BlockInstance):
+                handle = getattr(m, "handle", None)
+                if handle and str(handle).upper() in insert_xy_by_handle:
+                    target_xy = insert_xy_by_handle[str(handle).upper()]
+                elif isinstance(m.geometry, BlockInstance):
                     target_xy = (
                         m.geometry.insertion_point.x,
                         m.geometry.insertion_point.y,
                     )
                 elif isinstance(m.geometry, MeshGeometry) and m.geometry.vertices:
-                    # Bbox centroid in world XY — STLOUT writes world
-                    # coordinates so the bbox is already correctly placed.
                     xs = [v.x for v in m.geometry.vertices]
                     ys = [v.y for v in m.geometry.vertices]
                     target_xy = (

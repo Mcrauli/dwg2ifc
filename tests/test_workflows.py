@@ -151,10 +151,12 @@ def test_release_workflow_writes_sha256_sidecar():
     assert ".exe.sha256" in text
 
 
-def test_release_workflow_creates_draft_release():
+def test_release_workflow_publishes_prerelease():
     text = RELEASE_PATH.read_text(encoding="utf-8")
     assert "gh release create" in text
-    assert "--draft" in text
+    # Releases now publish straight to prerelease so the GUI auto-update
+    # banner picks them up without a manual undraft step.
+    assert "--prerelease" in text
     assert "CHANGELOG.md" in text
     # Must wire GITHUB_TOKEN through env so gh CLI authenticates.
     assert "GH_TOKEN" in text or "GITHUB_TOKEN" in text

@@ -6,6 +6,30 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha14 — 2026-05-11 (POSITIO-linkki anonyymeille blokeille)
+
+**Korjattu — POSITIO matchaa kaikki höyrystimet/lauhduttimet/kompressorit
+modifioiduilla blokeilla**:
+
+Kaksi vikaa POSITIO-linkkauksessa kun käytetään muokattua positio-blokkia
+(dynamic-block-variantti jonka AutoCAD nimeää anonyymisti `*U12` jne):
+
+1. **`index_positio_markers` matchasi vain block-nimen perusteella**
+   patternilla `positiov2*`. Anonyymi `*U12` ei matchannut, vaikka
+   sisältö (NUMERO + TEKSTI -ATTRIBit) on sama. Nyt tunnistus on
+   ATTRIBUUTTIVETOINEN: kun INSERTilla on sekä NUMERO että TEKSTI -
+   attribuutit, se on positio riippumatta blokin nimestä.
+
+2. **Orchestrator käytti mesh-bbox-keskipistettä target-XY:nä** kun
+   mapped-entity on MeshGeometry-pohjainen (kaikki accoreconsole-
+   pipelinen läpimenneet höyrystimet). Höyrystimen mesh ulottuu
+   etupuolelle ~250 mm INSERT-pisteestä → bbox-keskipiste on sivussa
+   INSERTistä, mikä saattaa heittää 3 m POSITIO-radiuksen vahingossa
+   ulottumattomiin. Nyt käytetään INSERT.xy:tä handle-haulla.
+
+Verifioitu 4001_1krs.dxf:llä: 16/16 IfcEvaporator saa nyt
+Koneikko (JK1/JK2/JK3/JK4) + Laitetunnus (NUMERO) FI_Komponentti-PSettiin.
+
 ## v0.2.0-alpha13 — 2026-05-08 (block-sisäiset 3DSOLIDit huomataan)
 
 **Korjattu — koneikko-blokit triggeröivät nyt accoreconsole-pipelinen**:
