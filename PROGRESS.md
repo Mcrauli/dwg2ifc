@@ -4,16 +4,32 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha7 (2026-05-08)
+## Current state — v0.2.0-alpha14 (2026-05-11)
 
-Tuorein julkaistu: **v0.2.0-alpha7** (2026-05-07).
+Tuorein julkaistu: **v0.2.0-alpha14** (2026-05-11).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a7.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a7.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a14.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a14.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
+
+Alpha8–14:n korjaukset tiivistettynä (täysi historia
+[`CHANGELOG.md`](CHANGELOG.md):ssä):
+
+- **alpha14** (2026-05-11): POSITIO tunnistaa anonyymit `*U*`-blokit
+  attribuuttien perusteella (NUMERO + TEKSTI). Orchestrator käyttää
+  POSITIO-haussa INSERT.xy:tä mesh-bbox-keskipisteen sijaan.
+- **alpha13** (2026-05-08): `dxf_contains_acis_bodies` skannaa block-
+  definitiot, ei vain modelspacea — block-sisäiset 3DSOLIDit
+  (KONEIKKO, valmistajakirjastot) löytyvät.
+- **alpha12** (2026-05-08): Phase 2 STLOUT layer-filterillä (oli
+  block-name-filter). Nested INSERT-rekursio + kaikki ACIS-tyypit.
+- **alpha10–11**: DWG-input lopullisesti poistettu, default-profiili
+  laajeni 49 sääntöön (KONEIKKO/CHILLER/KOMPLAUH/PAKASTEKAAPPI jne.).
+- **alpha8–9**: cooling-equipment-rakentajat (`IfcChiller`,
+  `IfcUnitaryEquipment`, `IfcCoil`), distribution-element-dispatch.
 
 ## Current pipeline
 
@@ -109,7 +125,6 @@ core/quality.py          (optional) ifcopenshell.validate +
 - [ ] **`dxf_reader.py` (759 r)** — split per geometry kind
   (`insert_aggregator.py`, `polyline_reader.py`, `mesh_reader.py`).
 - [ ] **GUI Profile Editor** ei näytä FI_*-kenttiä (TOML-edit toimii käsin).
-- [ ] **POSITIO-block-pattern** laajempi kattaus (nyt `positiov2*`).
 
 ## Known limitations
 

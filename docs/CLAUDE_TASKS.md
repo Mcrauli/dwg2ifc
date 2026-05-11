@@ -15,7 +15,7 @@ Lue ensin:
 - `src/dxf2ifc/core/mapper.py` (`apply_profile`)
 
 Älä lue:
-- `core/dxf_reader.py`, `core/dwg_preconvert.py`, `ifc_writer/builders.py`
+- `core/dxf_reader.py`, `ifc_writer/builders.py`
 - `gui/`-puuta
 
 Testit: `tests/test_mapper.py`, `tests/test_profile_*.py`.
@@ -33,11 +33,26 @@ Lue ensin:
 - `src/dxf2ifc/core/geometry.py` (extrusion-dataclassit)
 
 Älä lue:
-- `dwg_preconvert.py` (vain jos kysymys on AutoCAD COM:ista)
 - `ifc_writer/`-puuta
 
 Testit: `tests/test_dxf_reader*.py` (dxf_reader, dxf_reader_proxy,
 dxf_reader_polyface, dxf_reader_insert_3dface).
+
+## MagiCAD / DWG / COM / Object Enabler -tehtävät
+
+**Tehtävä**: mitä tahansa joka koskee MagiCAD-osia, DWG-tuen palauttamista,
+AutoCAD COM:ia, render-only Object Enableria tai MAGIEXPLODE-ratkaisua.
+
+Lue ensin:
+- [`docs/DWG_MAGICAD_PREPROCESSING.md`](DWG_MAGICAD_PREPROCESSING.md) —
+  historiallinen päätös ja säännöt.
+
+**Tunne säännöt ennen koodimuutosta**:
+- DWG-input ja `dwg_preconvert.py` on poistettu v0.2.0-alpha10:ssä.
+  Älä palauta niitä ilman käyttäjän eksplisiittistä lupaa.
+- AutoCAD COM / `pywin32` ei kuulu enää dependencyihin. Älä lisää
+  takaisin ilman keskustelua.
+- MagiCAD-osille ainoa luotettava reitti: kollegan `-MAGIIFCCD` + merge.
 
 ## MagiCAD-IFC merge (kollegan -MAGIIFCCD)
 
@@ -172,3 +187,29 @@ Lue ensin:
 
 Älä lue:
 - POC v4 -tiedostoja jos kysymys on alpha7-tilasta
+
+## Yleissääntö
+
+**Älä skannaa koko repoa ellei käyttäjä pyydä tai task map ei riitä.**
+Per-tehtävä-lukulista yllä riittää 95 %:iin muutoksista. Koko `src/`-
+puun lukeminen tuhlaa kontekstia ja heikentää muutoksen täsmällisyyttä.
+
+## Documentation sync checklist
+
+Jokaisen koodimuutoksen jälkeen tarkista pitääkö päivittää dokumentit.
+Muutos ei ole valmis ennen kuin dokumentit vastaavat koodin nykytilaa.
+
+| Muutoksen luonne | Päivitä |
+|---|---|
+| CLI-komento / -optio | `README.md`, `CLAUDE.md` |
+| GUI-käyttö (näkyvä) | `README.md`, tarvittaessa `docs/` |
+| Pipeline-rakenne | `docs/ARCHITECTURE.md` |
+| MagiCAD / DWG / Object Enabler / COM / MAGIEXPLODE | `docs/DWG_MAGICAD_PREPROCESSING.md`, `PROGRESS.md` |
+| Mapper / profiili / layer-logiikka | `README.md`, `docs/ARCHITECTURE.md`, esimerkki­profiilit |
+| Release / build / signing | `README.md`, `CHANGELOG.md` |
+| Uusi feature | `CHANGELOG.md`, `PROGRESS.md` |
+| Poistettu / hylätty feature | Merkitse kaikkialle selkeästi, ei ristiriitaisia ohjeita |
+| Versiopumppi | `pyproject.toml`, `src/dxf2ifc/_version.py`, `CHANGELOG.md`, `README.md` "Nykyinen versio" -rivi, `PROGRESS.md` "Current state"-otsikko |
+
+**Definition of Done**: testit menevät läpi ja dokumentit vastaavat
+koodin nykytilaa. Jos joko-tai puuttuu, muutos on kesken.

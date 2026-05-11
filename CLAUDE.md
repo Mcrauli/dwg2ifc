@@ -6,14 +6,18 @@ DXF → IFC4 -konvertteri suomalaiseen kylmälaite- ja LVI-suunnitteluun
 ## Golden rule (älä riko)
 
 ```
-layer mapper          = metadata (mikä IFC-tyyppi tämä on)
-geometry / mesh       = shape   (miten se piirretään)
-IFC writer            = output  (miten se kirjoitetaan IFC:hen)
+layer mapper          = metadata / semantiikka (mikä IFC-tyyppi tämä on)
+geometry / mesh       = shape (miten kappale piirretään)
+IFC writer            = output (miten se kirjoitetaan IFC:hen)
 ```
 
-Pidä nämä kolme erillään. Jos lisäät uuden geometriastrategian, älä
-sotke layer-mappausta. Jos lisäät uuden IFC-tyypin, älä lisää
-geometriayksityiskohtia mapperiin.
+Pidä nämä kolme erillään:
+
+- **STL / mesh / 3DSOLID EI ole metadatan lähde.** Se on pelkkä muoto.
+- **Parserin ei pidä päätellä IFC-luokkia geometriasta** — luokka tulee
+  aina mapperista / profiilista layer-patternin perusteella.
+- Jos lisäät uuden geometriastrategian, älä sotke layer-mappausta.
+- Jos lisäät uuden IFC-tyypin, älä lisää geometriayksityiskohtia mapperiin.
 
 ## Current pipeline
 
@@ -112,6 +116,19 @@ Lisää konteksti vain silloin kun se on relevantti aktiiviselle tehtävälle.
 - **EI AutoCAD COM:ia missään** — vain `accoreconsole.exe` 3DSOLID-tess.
 - **EI DWG-input-tukea** — vain `.dxf`. MagiCAD-osat tulevat erikseen
   `--magicad-ifc`-mergellä.
+
+## Dokumentaation ylläpitosääntö
+
+Kun muutat koodia, tarkista aina pitääkö päivittää `README.md`,
+`PROGRESS.md`, `CHANGELOG.md`, `CLAUDE.md` tai `docs/*.md`. Jos muutos
+vaikuttaa käyttäjän workflow:hon, CLI-optioihin, GUI:hin, pipelineen,
+MagiCAD/DWG-polkuun, releaseen tai mapper-profiileihin, **dokumentit
+päivitetään samassa commitissa kuin koodi**. Per-muutostyyppinen
+checklist löytyy [`docs/CLAUDE_TASKS.md`](docs/CLAUDE_TASKS.md):n
+loppuosasta.
+
+**Definition of Done**: muutos ei ole valmis ennen kuin testit menevät
+läpi *ja* dokumentit vastaavat koodin nykytilaa.
 
 ## Visuaalinen design (GUI)
 

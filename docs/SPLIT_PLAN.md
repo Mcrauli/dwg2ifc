@@ -1,4 +1,11 @@
-# Split plan — kolme isoa tiedostoa
+# Split plan — kaksi isoa tiedostoa
+
+> **Päivitetty alpha14 (2026-05-11)**: Alkuperäinen Section 2
+> (`dwg_preconvert.py`, 768 r) on **poistettu** — koko `dwg_preconvert.py`
+> tiedosto poistettiin v0.2.0-alpha10:ssä yhdessä DWG-inputin kanssa
+> (ks. [`DWG_MAGICAD_PREPROCESSING.md`](DWG_MAGICAD_PREPROCESSING.md)).
+> Tämä suunnitelma kattaa nyt vain `builders.py`:n ja `dxf_reader.py`:n
+> pilkkomisen.
 
 Tämä dokumentti kuvaa **suunnitelman**, ei toteutusta. Jakoa ei tehdä
 yhdellä isolla committilla; jokainen vaihe on oma PR / commit jonka
@@ -7,7 +14,6 @@ jälkeen koko testisuite ajetaan vihreäksi.
 | Tiedosto | Rivit | Vastuu nyt |
 |---|---|---|
 | `src/dxf2ifc/core/ifc_writer/builders.py` | 1321 | Kaikki `add_*`-funktiot per IFC-tyyppi |
-| `src/dxf2ifc/core/dwg_preconvert.py` | 768 | COM-singleton + AutoLISP + DXFOUT-keystrokes |
 | `src/dxf2ifc/core/dxf_reader.py` | 759 | ezdxf-luenta, INSERT-aggregaatio, polyline/mesh-dispatch |
 
 Pidetään public API ehjänä: `__init__`-fasadit re-exportaavat samat
@@ -67,46 +73,7 @@ import on edelleen `ifc_writer/__init__.py`:n re-exportin kautta.
 - Jaettu helper joka käyttää toista helperin → tarvitsee `_common.py`-
   refaktorin ennen ensimmäistä siirtoa.
 
-## 2) `dwg_preconvert.py`
-
-Kokeellinen moduuli. Pidetään ehjänä (älä riko POC v4 -saagan
-kovalla työllä saavutettua toimivaa keystroke-sekvenssiä), mutta
-selkeytetään kerrokset.
-
-### Tavoite-rakenne
-
-```
-core/dwg_preconvert/
-  __init__.py              re-export: preconvert_dwg, last_explode_meshes
-  com_session.py           _ensure_app, _shutdown, _force_reset_app
-  lisp_body.py             _build_lisp + sysvar SAVE/RESTORE
-  keystrokes.py            MAGIEXPLODE/EXPLODE/DXFOUT keystroke-sekvenssit
-                           + per-phase-deadlines + liveness pings
-  mesh_collect.py          _parse_stl-yhdistelmä, last_explode_meshes-cache
-  preconvert.py            preconvert_dwg() orkestraattori (pieni)
-```
-
-### Vaiheet
-
-| # | Muutos | Testit |
-|---|---|---|
-| 1 | Luo `dwg_preconvert/__init__.py` joka re-exportaa `preconvert_dwg` + `last_explode_meshes`. | `pytest tests/test_dwg_preconvert.py` (skipped) + `pytest tests/test_dxf_reader*.py` |
-| 2 | Siirrä COM-singleton (`_ensure_app`, `_shutdown`, `_force_reset_app`) → `com_session.py`. Imports kunnossa. | `pytest -q` |
-| 3 | Siirrä `_build_lisp` → `lisp_body.py`. | `pytest -q` |
-| 4 | Siirrä keystroke-sekvenssit + polling → `keystrokes.py`. | `pytest -q` |
-| 5 | Siirrä mesh-collect → `mesh_collect.py`. | `pytest -q` |
-| 6 | Lyhennä `preconvert.py` orkestraattoriksi joka kutsuu yllä olevia. | Manuaalitesti `testimagi.dwg`:llä jos saatavilla |
-
-### Riskit
-
-- COM-singleton on `module-global` (`_app = None`). Jos refaktori siirtää
-  sen toiseen moduuliin, sama instance pitää säilyttää. Mitigaatio:
-  re-export `__init__.py`:stä, älä luo uutta singleton-instanssia per
-  moduuli.
-- POC v4 -saagan keystroke-järjestys on hauras. Älä optimoi sitä — vain
-  siirrä rivit moduulista toiseen.
-
-## 3) `dxf_reader.py`
+## 2) `dxf_reader.py`
 
 Pisin tiedosto mutta sisältää eri vastuita: top-level dispatch,
 INSERT-aggregaatio, polyface mesh, ACAD_PROXY_ENTITY virtual-expansion.
@@ -151,15 +118,15 @@ core/dxf_reader/
 ## Yleinen järjestys ja sääntö
 
 1. **Tee yksi tiedosto kerrallaan**, järjestyksessä:
-   `builders` → `dwg_preconvert` → `dxf_reader`. Helpoimmasta vaikeimpaan.
+   `builders` → `dxf_reader`. Helpoimmasta vaikeimpaan.
 2. **Yksi commit per vaihe** — jokaisen vaiheen jälkeen koko
    `pytest -q` (deselect pre-existing failurit) + relevantit
    funktionaaliset testit.
 3. **Ei logiikkamuutoksia**. Jos huomaat bugin siirron yhteydessä,
    merkitse TODO-kommentilla mutta korjaa erillisellä PR:llä.
 4. **Public API muuttumaton**. `from dxf2ifc.core.ifc_writer import *`,
-   `from dxf2ifc.core.dwg_preconvert import preconvert_dwg`, jne.,
-   tuottavat saman tuloksen.
+   `from dxf2ifc.core.dxf_reader import read_dxf`, jne., tuottavat
+   saman tuloksen.
 5. **GUI/CLI ei muutu**. `convert_dxf` ja muut korkean tason API:t
    pysyvät paikallaan.
 
