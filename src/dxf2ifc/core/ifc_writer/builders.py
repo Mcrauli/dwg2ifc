@@ -1166,12 +1166,16 @@ def add_flow_controller(ifc, mapped: MappedEntity, *, parent_storey) -> object:
 # MeshGeometry via _add_mesh_product — the exact IFC class comes from
 # the layer rule, predefined_type may also be carried on the rule.
 _DISTRIBUTION_ELEMENT_CLASSES = frozenset({
-    "IfcSensor",            # Termostaatit, lämpötila-/paine-/pinta-anturit
+    "IfcSensor",            # Termostaatit, lämpötila-/paine-/pinta-anturit, CO2-anturit
     "IfcValve",             # Magneettiventtiilit, padotusventtiilit, käsiventtiilit
     "IfcPump",              # Kierto-/lauhdepumput, sadevesipumppaamot
     "IfcWasteTerminal",     # Lattiakaivot, vesilukot, sadevesikattokaivot
     "IfcInterceptor",       # Rasvanerottimet, öljynerottimet, hiekanerottimet
-    "IfcDistributionBoard", # Koneikkokeskus (KK), kohdekeskus (RK)
+    "IfcElectricDistributionBoard",  # Koneikkokeskus (KK), ryhmäkeskus (RK)
+    "IfcController",        # Ohjaus-/säädinkeskukset (PROGRAMMABLE)
+    "IfcAlarm",             # CO2-sireenit, palopainikkeet, hätäilmoittimet
+    "IfcSwitchingDevice",   # Hätäseispainikkeet, turvakytkimet
+    "IfcCommunicationsAppliance",  # Huolto-PC:t, valvomotyöasemat
     "IfcDuctSegment",       # IV-kanavat (jos KYL-piirustuksessa)
     "IfcDuctFitting",       # Kanavaosat
     "IfcAirTerminal",       # Tulo/poistoilmapäätelaitteet

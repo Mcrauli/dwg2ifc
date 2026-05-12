@@ -25,7 +25,9 @@ def test_all_four_codeset_files_exist():
 def test_lvi_tuoteosa_contains_verified_cooling_codes():
     data = _load("lvi_tuoteosa.json")
     codes = {c["codeValue"]: c["prefLabel"]["fi"] for c in data["results"]}
-    # Verified from CLAUDE.md decision log + koodistot.suomi.fi.
+    # Labels from koodistot.suomi.fi/codelist-api after sync_codes.py
+    # ran (Plan H Task 6 completion). Mismatch versus historical stub
+    # is normal — official RYTJ labels are the canonical truth.
     assert codes["T-LVI-01-01-023"] == "Höyrystin"
     assert codes["T-LVI-01-01-018"] == "Lauhdutin"
     assert codes["T-LVI-01-01-017"] == "Kompressori"
@@ -36,11 +38,21 @@ def test_lvi_tuoteosa_contains_verified_cooling_codes():
     assert codes["T-LVI-01-01-004"] == "Kylmävesiasema"
     assert codes["T-LVI-03-07-012"] == "Kylmäainevaraajasäiliö"
     assert codes["T-LVI-04-01-001"] == "Viemäriputki"
-    assert codes["T-LVI-02"] == "Putkiosat (yleiskategoria)"
+    assert codes["T-LVI-02"] == "PUTKISTOT"
 
 
 def test_talotekniikka_tuoteosa_contains_cable_carrier_codes():
     data = _load("talotekniikka_tuoteosa.json")
     codes = {c["codeValue"]: c["prefLabel"]["fi"] for c in data["results"]}
-    assert codes["T-TATE-01-01-001"] == "Kaapelihylly"
-    assert codes["T-TATE-01-02"] == "Asennuskanavat"
+    assert codes["T-TATE-01-01-001"] == "Asennushylly"
+    assert codes["T-TATE-01-02"] == "ASENNUSKANAVAT JA -KANAVAOSAT"
+
+
+def test_talotekniikka_tuoteosa_contains_space_reservation_codes():
+    """Sähkölaite-tilavaraukset käytetään VARUSTEET-LISP:n laitteille
+    (CO2-anturi, sireeni, Huolto-PC, RK, säädinkeskus, hätäseis) —
+    kylmäsuunnittelija varaa tilan, sähkösuunnittelija korvaa."""
+    data = _load("talotekniikka_tuoteosa.json")
+    codes = {c["codeValue"]: c["prefLabel"]["fi"] for c in data["results"]}
+    assert codes["T-TATE-02-01-003"] == "Tilavaraus - laitteisto"
+    assert codes["T-TATE-02-01-004"] == "Tilavaraus - keskus"

@@ -6,6 +6,56 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha19 — 2026-05-12 (kylmäkoneikon sähkövarusteet — 6 uutta layer-mappausta)
+
+**Lisätty — VARUSTEET-LISP:n 6:n uuden laitteen tuki**:
+
+Autocad-lisp-ohjeet/Laitteet/-kansion uudet 3DSOLID-blokit
+(CO2-anturi, CO2-sireeni, Huolto-PC, RK-JK10, Säädinkeskus, kylmäkoneikon
+hätäseispainike) tunnistetaan nyt automaattisesti default-profiilista
+ja mapataan IFC4-tyypeiksi RAVA3Pro-tilavarauskoodeilla:
+
+| Layer | IFC4-tyyppi | PredefinedType | RAVA |
+|---|---|---|---|
+| `KYL-CO2-ANTURI*` | `IfcSensor` | `CO2SENSOR` | `T-TATE-02-01-003` |
+| `KYL-CO2-SIREENI*` | `IfcAlarm` | `SIREN` | `T-TATE-02-01-003` |
+| `KYL-HUOLTO-PC*` | `IfcCommunicationsAppliance` | `COMPUTER` | `T-TATE-02-01-003` |
+| `KYL-RK-*` (myös JK10) | `IfcElectricDistributionBoard` | `DISTRIBUTIONBOARD` | `T-TATE-02-01-004` |
+| `KYL-SAADINKESKUS-*` | `IfcController` | `PROGRAMMABLE` | `T-TATE-02-01-004` |
+| `KYL-HATASEIS*` | `IfcSwitchingDevice` | `EMERGENCYSTOP` | `T-TATE-02-01-003` |
+
+RAVA-konventio: kylmäsuunnittelijan sähkölaitteet ovat **tilavarauksia**
+(`T-TATE-02-01-003` Tilavaraus - laitteisto / `T-TATE-02-01-004`
+Tilavaraus - keskus) joita sähkösuunnittelija korvaa lopullisilla
+osilla. TATE-TUOTEOSA-katalogissa ei ole erillisiä sähkölaite-koodeja
+yksittäisille antureille / sireeneille / kytkimille.
+
+**Korjattu — IFC4-yhteensopivuus**:
+
+- Aiempi `IfcDistributionBoard` (vain IFC4.3) → `IfcElectricDistributionBoard`
+  (toimii sekä IFC4:ssä että IFC4.3:ssa). Olemassaolevat säännöt
+  `KYL-KK-*` ja `KYL-RK-*` käyttivät tyyppiä joka EI ole IFC4-skeemassa
+  ja olisi kaatanut konversion jos näitä layereja olisi DXF:ssä ollut.
+- Säädinkeskus-säännön `predefined_type` korjattu: `PROGRAMMABLECONTROLLER`
+  → `PROGRAMMABLE` (IFC4 `IfcControllerTypeEnum`).
+
+**Korjattu — RAVA-koodien oikaisu**:
+
+`KYL-KK-*` ja `KYL-RK-*` käyttivät placeholder-koodia `T-TATE-01-01-099`
+("MUU - Asennushyllyt") joka ei vastaa keskusten luonnetta. Nyt
+`T-TATE-02-01-004` (Tilavaraus - keskus) — Solibri näyttää nämä
+oikeassa RAVA-kategoriassa.
+
+**Sisäistä**:
+
+- `_DISTRIBUTION_ELEMENT_CLASSES` laajeni 4 uudella tyypillä (IfcAlarm,
+  IfcController, IfcSwitchingDevice, IfcCommunicationsAppliance) +
+  IfcDistributionBoard → IfcElectricDistributionBoard.
+- `src/dxf2ifc/profiles/rava/` paikalliset koodisto-cachet ajettiin
+  ajan tasalle `python -m tools.rava.sync_codes`-komennolla
+  koodistot.suomi.fi/RYTJ-API:sta. TATE-TUOTEOSA stub (2 koodia) →
+  täysi katalogi (90 koodia) sis. tilavaraus-osion.
+
 ## v0.2.0-alpha18 — 2026-05-11 (skip MagiCAD-blokit accoreconsolen LISP-puolelta)
 
 **Korjattu — MagiCAD-osat eivät enää aja `_.EXPLODE`-kutsuun**:

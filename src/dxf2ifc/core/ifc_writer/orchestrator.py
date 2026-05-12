@@ -671,7 +671,10 @@ def convert_dxf(
                 # IfcSensor (anturit), IfcValve (venttiilit),
                 # IfcPump (pumput), IfcWasteTerminal (lattiakaivot,
                 # vesilukot), IfcInterceptor (rasvanerottimet),
-                # IfcDistributionBoard (KK / RK -keskukset), IfcDuct*,
+                # IfcElectricDistributionBoard (KK / RK -keskukset),
+                # IfcController (säädinkeskukset), IfcAlarm (sireenit),
+                # IfcSwitchingDevice (hätäseispainikkeet),
+                # IfcCommunicationsAppliance (huolto-PC:t), IfcDuct*,
                 # IfcAirTerminal. All routed through _add_mesh_product
                 # the same way IfcFlowController is.
                 if isinstance(m.geometry, (LineGeometry, BlockInstance)):

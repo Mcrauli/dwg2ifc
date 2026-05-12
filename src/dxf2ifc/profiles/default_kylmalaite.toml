@@ -598,32 +598,94 @@ system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Sulatusvastus", yleistunnus = "SV" }
 
 # -----------------------------------------------------------------------------
-# Section 7e: Electrical distribution boards (Koneikkokeskus / Kohdekeskus).
-# Kylmäkoneikon syöttävät keskukset — ei sähkösuunnittelu-tasolla mutta
-# näkyvät usein kylmäkuvassa. Käyttäjä voi siirtää nämä sähköpuolen
-# profiiliin custom-mappauksella jos tarpeen.
+# Section 7e: Electrical distribution boards & control centers
+# (Koneikkokeskus / Ryhmäkeskus / Säädinkeskus).
+#
+# Kylmäkoneikon syöttävät keskukset näkyvät kylmäkuvassa vaikka eivät
+# kylmäsuunnittelijan loppuvastuulla ole — kylmäsuunnittelija tekee
+# tilavarauksen (T-TATE-02-01-004 "Tilavaraus - keskus") jonka
+# sähkösuunnittelija korvaa lopullisella keskuksella.
 # -----------------------------------------------------------------------------
 
 [[rules]]
 layer_pattern = "KYL-KK-*"
-ifc_type = "IfcDistributionBoard"
+ifc_type = "IfcElectricDistributionBoard"
 predefined_type = "USERDEFINED"
 domain = "KYL"
-talotekniikka_code = "T-TATE-01-01-099"
+talotekniikka_code = "T-TATE-02-01-004"
 system_name = "Refrigeration power"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "SÄHKÖKESKUKSET", yleisnimi = "Koneikkokeskus", yleistunnus = "KK" }
 
 [[rules]]
 layer_pattern = "KYL-RK-*"
-ifc_type = "IfcDistributionBoard"
-predefined_type = "USERDEFINED"
+ifc_type = "IfcElectricDistributionBoard"
+predefined_type = "DISTRIBUTIONBOARD"
 domain = "KYL"
-talotekniikka_code = "T-TATE-01-01-099"
+talotekniikka_code = "T-TATE-02-01-004"
 system_name = "Refrigeration power"
-fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "SÄHKÖKESKUKSET", yleisnimi = "Kohdekeskus", yleistunnus = "RK" }
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "SÄHKÖKESKUKSET", yleisnimi = "Ryhmäkeskus", yleistunnus = "RK" }
+
+[[rules]]
+layer_pattern = "KYL-SAADINKESKUS-*"
+ifc_type = "IfcController"
+predefined_type = "PROGRAMMABLE"
+domain = "KYL"
+talotekniikka_code = "T-TATE-02-01-004"
+system_name = "Refrigeration power"
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "SÄHKÖKESKUKSET", yleisnimi = "Säädinkeskus", yleistunnus = "SK" }
 
 # -----------------------------------------------------------------------------
-# Section 7f: Pipe accessories (venttiilit, pumput, paisuntasäiliöt).
+# Section 7f: Electrical / automation devices (kylmäkoneikon sähkövarusteet).
+#
+# Yksittäiset sähkö-/automaatiolaitteet kylmäkoneikon ympärillä:
+# CO2-anturi, CO2-sireeni, hätäseispainike, huolto-PC. Nämäkin ovat
+# tilavarauksia (T-TATE-02-01-003 "Tilavaraus - laitteisto") — kylmä-
+# suunnittelija varaa paikan, sähkösuunnittelija toteuttaa.
+#
+# Layer-konventio: VARUSTEET-LISP-komento luo per-laite-layerit
+# (KYL-CO2-ANTURI, KYL-CO2-SIREENI, KYL-HUOLTO-PC, KYL-HATASEIS) jotka
+# matchaavat näihin sääntöihin. Värit: ks. autocad-lisp-ohjeet/files/
+# varusteet.lsp.
+# -----------------------------------------------------------------------------
+
+[[rules]]
+layer_pattern = "KYL-CO2-ANTURI*"
+ifc_type = "IfcSensor"
+predefined_type = "CO2SENSOR"
+domain = "KYL"
+talotekniikka_code = "T-TATE-02-01-003"
+system_name = "Refrigeration safety"
+fi_komponentti = { paaryhma = "TALOTEKNIIKAN VARUSTEET", alaryhma = "ANTURIT", yleisnimi = "CO2-anturi", yleistunnus = "CO2A" }
+
+[[rules]]
+layer_pattern = "KYL-CO2-SIREENI*"
+ifc_type = "IfcAlarm"
+predefined_type = "SIREN"
+domain = "KYL"
+talotekniikka_code = "T-TATE-02-01-003"
+system_name = "Refrigeration safety"
+fi_komponentti = { paaryhma = "TALOTEKNIIKAN VARUSTEET", alaryhma = "HÄLYTYSLAITTEET", yleisnimi = "CO2-sireeni", yleistunnus = "CO2S" }
+
+[[rules]]
+layer_pattern = "KYL-HUOLTO-PC*"
+ifc_type = "IfcCommunicationsAppliance"
+predefined_type = "COMPUTER"
+domain = "KYL"
+talotekniikka_code = "T-TATE-02-01-003"
+system_name = "Refrigeration control"
+fi_komponentti = { paaryhma = "TALOTEKNIIKAN VARUSTEET", alaryhma = "TIETOTEKNIIKKA", yleisnimi = "Huolto-PC", yleistunnus = "PC" }
+
+[[rules]]
+layer_pattern = "KYL-HATASEIS*"
+ifc_type = "IfcSwitchingDevice"
+predefined_type = "EMERGENCYSTOP"
+domain = "KYL"
+talotekniikka_code = "T-TATE-02-01-003"
+system_name = "Refrigeration safety"
+fi_komponentti = { paaryhma = "TALOTEKNIIKAN VARUSTEET", alaryhma = "TURVAKYTKIMET", yleisnimi = "Hätäseispainike", yleistunnus = "HS" }
+
+# -----------------------------------------------------------------------------
+# Section 7g: Pipe accessories (venttiilit, pumput, paisuntasäiliöt).
 # Kylmäkoneikon putkivarusteet — käsiventtiilit, kiertopumput,
 # paisuntasäiliöt (eivät kylmäainevaraajia, vaan jäähdytysvesi-kierron).
 # -----------------------------------------------------------------------------

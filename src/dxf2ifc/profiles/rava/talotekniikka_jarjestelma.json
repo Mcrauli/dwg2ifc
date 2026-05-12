@@ -1,5 +1,3157 @@
 {
-  "_origin": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes",
-  "_note": "Plan H Task 6 stub. Replace with live sync_codes download.",
-  "results": []
+  "meta": {
+    "code": 200,
+    "from": 0,
+    "resultCount": 60,
+    "totalResults": 60
+  },
+  "results": [
+    {
+      "id": "62ee3257-86df-4e9d-9f56-60e4a8f99cae",
+      "codeValue": "J-TATE",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE",
+      "status": "VALID",
+      "order": 1,
+      "hierarchyLevel": 1,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:39:36.784Z",
+      "modified": "2023-11-06T17:57:39.650Z",
+      "statusModified": "2023-11-06T17:57:39.650Z",
+      "prefLabel": {
+        "fi": "REITITYS- JA ASENNUSJÄRJESTELMÄT - TATE"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄLAJI"
+      },
+      "definition": {
+        "fi": "järjestelmäkoodiston järjestelmälaji, ryhmittelevä"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-14"
+    },
+    {
+      "id": "24e3602d-dec9-4049-acce-f028441babfa",
+      "codeValue": "J-TATE-01",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01",
+      "status": "VALID",
+      "order": 2,
+      "hierarchyLevel": 2,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:40:12.805Z",
+      "modified": "2023-11-06T17:57:39.261Z",
+      "statusModified": "2023-11-06T17:57:39.261Z",
+      "prefLabel": {
+        "fi": "ASENNUSHYLLYJÄRJESTELMÄT"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄLUOKKA"
+      },
+      "definition": {
+        "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "broaderCode": {
+        "id": "62ee3257-86df-4e9d-9f56-60e4a8f99cae",
+        "codeValue": "J-TATE",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE",
+        "status": "VALID",
+        "order": 1,
+        "hierarchyLevel": 1,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:39:36.784Z",
+        "modified": "2023-11-06T17:57:39.650Z",
+        "statusModified": "2023-11-06T17:57:39.650Z",
+        "prefLabel": {
+          "fi": "REITITYS- JA ASENNUSJÄRJESTELMÄT - TATE"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLAJI"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmälaji, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-14"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-15"
+    },
+    {
+      "id": "0c9afc9f-bdc6-41e4-8c75-4b82333645f3",
+      "codeValue": "J-TATE-01-01",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01-01",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-01",
+      "status": "VALID",
+      "order": 3,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:40:59.933Z",
+      "modified": "2023-11-06T17:57:39.240Z",
+      "statusModified": "2023-11-06T17:57:39.240Z",
+      "prefLabel": {
+        "fi": "Asennushyllyjärjestelmä - sähkö"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi sähköjärjestelmien ja yhteiskäyttötilanteiden asennushyllyjärjestelmille\n(sähköjärjestelmien asennushyllyjärjestelmillä tarkoitetaan asennushyllyjen tuoteosista koottua reititysjärjestelmää, johon sijoitetaan ja kiinnitetään varsinaisten sähköjärjestelmien kaapeleita ja myös tarvittaessa muita tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "AHJ.SÄH",
+      "broaderCode": {
+        "id": "24e3602d-dec9-4049-acce-f028441babfa",
+        "codeValue": "J-TATE-01",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01",
+        "status": "VALID",
+        "order": 2,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:40:12.805Z",
+        "modified": "2023-11-06T17:57:39.261Z",
+        "statusModified": "2023-11-06T17:57:39.261Z",
+        "prefLabel": {
+          "fi": "ASENNUSHYLLYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-15"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-01/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-21"
+    },
+    {
+      "id": "3556efe6-c681-4e47-9cc4-c20ce2cc86bb",
+      "codeValue": "J-TATE-01-02",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01-02",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-02",
+      "status": "VALID",
+      "order": 4,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:27.966Z",
+      "modified": "2023-11-06T17:57:39.213Z",
+      "statusModified": "2023-11-06T17:57:39.213Z",
+      "prefLabel": {
+        "fi": "Asennushyllyjärjestelmä - data"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi ainoastaan tietoteknisten järjestelmien asennushyllyjärjestelmille\n(tietoteknisten järjestelmien asennushyllyjärjestelmillä tarkoitetaan asennushyllyjen tuoteosista koottua reititysjärjestelmää, johon sijoitetaan ja kiinnitetään varsinaisten tietoteknisten järjestelmien kaapeleita ja myös tarvittaessa muita tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "AHJ.DATA",
+      "broaderCode": {
+        "id": "24e3602d-dec9-4049-acce-f028441babfa",
+        "codeValue": "J-TATE-01",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01",
+        "status": "VALID",
+        "order": 2,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:40:12.805Z",
+        "modified": "2023-11-06T17:57:39.261Z",
+        "statusModified": "2023-11-06T17:57:39.261Z",
+        "prefLabel": {
+          "fi": "ASENNUSHYLLYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-15"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-02/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-49"
+    },
+    {
+      "id": "eb9c6c9b-6c01-46d5-b718-a494dcddd9e3",
+      "codeValue": "J-TATE-01-03",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01-03",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-03",
+      "status": "VALID",
+      "order": 5,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:27.973Z",
+      "modified": "2023-11-06T17:57:39.251Z",
+      "statusModified": "2023-11-06T17:57:39.251Z",
+      "prefLabel": {
+        "fi": "Asennushyllyjärjestelmä - turva"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi ainoastaan turvajärjestelmien asennushyllyjärjestelmille\n(turvateknisten järjestelmien asennushyllyjärjestelmillä tarkoitetaan asennushyllyjen tuoteosista koottua reititysjärjestelmää, johon sijoitetaan ja kiinnitetään varsinaisten turvateknisten järjestelmien kaapeleita ja myös tarvittaessa muita tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "AHJ.TURVA",
+      "broaderCode": {
+        "id": "24e3602d-dec9-4049-acce-f028441babfa",
+        "codeValue": "J-TATE-01",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01",
+        "status": "VALID",
+        "order": 2,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:40:12.805Z",
+        "modified": "2023-11-06T17:57:39.261Z",
+        "statusModified": "2023-11-06T17:57:39.261Z",
+        "prefLabel": {
+          "fi": "ASENNUSHYLLYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-15"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-03/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-35"
+    },
+    {
+      "id": "625640c8-40df-4594-833e-125047158eca",
+      "codeValue": "J-TATE-01-04",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01-04",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-04",
+      "status": "VALID",
+      "order": 6,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:27.980Z",
+      "modified": "2023-11-06T17:57:39.231Z",
+      "statusModified": "2023-11-06T17:57:39.231Z",
+      "prefLabel": {
+        "fi": "Asennushyllyjärjestelmä - rakennusautomaatio"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi ainoastaan rakennusautomaatiojärjestelmien asennushyllyjärjestelmille\n(rakennusautomaation järjestelmien asennushyllyjärjestelmillä tarkoitetaan asennushyllyjen tuoteosista koottua reititysjärjestelmää, johon sijoitetaan ja kiinnitetään varsinaisten rakennusautomaation järjestelmien kaapeleita ja myös tarvittaessa muita tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "AHJ.RAU",
+      "broaderCode": {
+        "id": "24e3602d-dec9-4049-acce-f028441babfa",
+        "codeValue": "J-TATE-01",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01",
+        "status": "VALID",
+        "order": 2,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:40:12.805Z",
+        "modified": "2023-11-06T17:57:39.261Z",
+        "statusModified": "2023-11-06T17:57:39.261Z",
+        "prefLabel": {
+          "fi": "ASENNUSHYLLYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-15"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-04/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-18"
+    },
+    {
+      "id": "6e2c56f8-c9f9-46c9-b9c6-138fe7e56628",
+      "codeValue": "J-TATE-01-05",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01-05",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-05",
+      "status": "VALID",
+      "order": 7,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:27.987Z",
+      "modified": "2023-11-06T17:57:39.222Z",
+      "statusModified": "2023-11-06T17:57:39.222Z",
+      "prefLabel": {
+        "fi": "Asennushyllyjärjestelmä - LVI"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi LVI-järjestelmien asennushyllyjärjestelmille\n(LVI-järjestelmien asennushyllyjärjestelmillä tarkoitetaan asennushyllyjen tuoteosista koottua reititysjärjestelmää, johon sijoitetaan ja kiinnitetään varsinaisten LVI-järjestelmien putkia ja putkiosia, esimerkiksi kylmätekniikan putkistot, tarvittaessa myös muita tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "AHJ.LVI",
+      "broaderCode": {
+        "id": "24e3602d-dec9-4049-acce-f028441babfa",
+        "codeValue": "J-TATE-01",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01",
+        "status": "VALID",
+        "order": 2,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:40:12.805Z",
+        "modified": "2023-11-06T17:57:39.261Z",
+        "statusModified": "2023-11-06T17:57:39.261Z",
+        "prefLabel": {
+          "fi": "ASENNUSHYLLYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-15"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-05/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-7"
+    },
+    {
+      "id": "75e1fd34-d229-4331-af10-762c0717d6d6",
+      "codeValue": "J-TATE-01-99",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01-99",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-99",
+      "status": "VALID",
+      "order": 8,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:27.994Z",
+      "modified": "2023-11-06T17:57:39.534Z",
+      "statusModified": "2023-11-06T17:57:39.534Z",
+      "prefLabel": {
+        "fi": "MUU - Asennushyllyjärjestelmät"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi muille asennushyllyjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ei tunnusta",
+      "broaderCode": {
+        "id": "24e3602d-dec9-4049-acce-f028441babfa",
+        "codeValue": "J-TATE-01",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-01",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01",
+        "status": "VALID",
+        "order": 2,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:40:12.805Z",
+        "modified": "2023-11-06T17:57:39.261Z",
+        "statusModified": "2023-11-06T17:57:39.261Z",
+        "prefLabel": {
+          "fi": "ASENNUSHYLLYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-15"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-01-99/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-8"
+    },
+    {
+      "id": "0b3b286c-684b-4c97-b6dd-560a7a371028",
+      "codeValue": "J-TATE-02",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02",
+      "status": "VALID",
+      "order": 9,
+      "hierarchyLevel": 2,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.000Z",
+      "modified": "2023-11-06T17:57:39.316Z",
+      "statusModified": "2023-11-06T17:57:39.316Z",
+      "prefLabel": {
+        "fi": "ASENNUSKANAVAJÄRJESTELMÄT"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄLUOKKA"
+      },
+      "definition": {
+        "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "broaderCode": {
+        "id": "62ee3257-86df-4e9d-9f56-60e4a8f99cae",
+        "codeValue": "J-TATE",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE",
+        "status": "VALID",
+        "order": 1,
+        "hierarchyLevel": 1,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:39:36.784Z",
+        "modified": "2023-11-06T17:57:39.650Z",
+        "statusModified": "2023-11-06T17:57:39.650Z",
+        "prefLabel": {
+          "fi": "REITITYS- JA ASENNUSJÄRJESTELMÄT - TATE"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLAJI"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmälaji, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-14"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-6"
+    },
+    {
+      "id": "6e3e1143-3526-451e-b03f-81de03dfd6cb",
+      "codeValue": "J-TATE-02-01",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02-01",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-01",
+      "status": "VALID",
+      "order": 10,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.008Z",
+      "modified": "2023-11-06T17:57:39.298Z",
+      "statusModified": "2023-11-06T17:57:39.298Z",
+      "prefLabel": {
+        "fi": "Asennuskanavajärjestelmä - sähkö"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi sähköjärjestelmien ja yhteiskäyttötilanteiden asennuskanavajärjestelmille\n(sähköjärjestelmien asennuskanavajärjestelmillä tarkoitetaan asennuskanavien tuoteosista koottua reititys- ja asennusjärjestelmää, johon sijoitetaan ja kiinnitetään esimerkiksi pistorasioita ja jolla peitetään varsinaisten sähköjärjestelmien kaapeleita ja liitäntöjä, mahdollistavat tuoteosien sijaintien muuttamisen myöhemmin)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "AKJ.SÄH",
+      "broaderCode": {
+        "id": "0b3b286c-684b-4c97-b6dd-560a7a371028",
+        "codeValue": "J-TATE-02",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02",
+        "status": "VALID",
+        "order": 9,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.000Z",
+        "modified": "2023-11-06T17:57:39.316Z",
+        "statusModified": "2023-11-06T17:57:39.316Z",
+        "prefLabel": {
+          "fi": "ASENNUSKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-6"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-01/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-45"
+    },
+    {
+      "id": "3f335798-e516-4523-8414-d304e9cf9542",
+      "codeValue": "J-TATE-02-02",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02-02",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-02",
+      "status": "VALID",
+      "order": 11,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.015Z",
+      "modified": "2023-11-06T17:57:39.269Z",
+      "statusModified": "2023-11-06T17:57:39.269Z",
+      "prefLabel": {
+        "fi": "Asennuskanavajärjestelmä - data"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi tietoteknisten järjestelmien asennuskanavajärjestelmille\n(tietoteknisten järjestelmien asennuskanavajärjestelmillä tarkoitetaan asennuskanavien tuoteosista koottua reititys- ja asennusjärjestelmää, johon sijoitetaan ja kiinnitetään esimerkiksi datapistorasioita ja jolla peitetään varsinaisten tietoteknisten järjestelmien kaapeleita ja liitäntöjä, mahdollistavat tuoteosien sijaintien muuttamisen myöhemmin)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "AKJ.DATA",
+      "broaderCode": {
+        "id": "0b3b286c-684b-4c97-b6dd-560a7a371028",
+        "codeValue": "J-TATE-02",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02",
+        "status": "VALID",
+        "order": 9,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.000Z",
+        "modified": "2023-11-06T17:57:39.316Z",
+        "statusModified": "2023-11-06T17:57:39.316Z",
+        "prefLabel": {
+          "fi": "ASENNUSKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-6"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-02/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-1"
+    },
+    {
+      "id": "661c2b57-ba59-4a19-9114-55ec9276b680",
+      "codeValue": "J-TATE-02-03",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02-03",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-03",
+      "status": "VALID",
+      "order": 12,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.021Z",
+      "modified": "2023-11-06T17:57:39.306Z",
+      "statusModified": "2023-11-06T17:57:39.306Z",
+      "prefLabel": {
+        "fi": "Asennuskanavajärjestelmä - turva"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi turvajärjestelmien asennuskanavajärjestelmille\n(turvateknisten järjestelmien asennuskanavajärjestelmillä tarkoitetaan asennuskanavien tuoteosista koottua reititys- ja asennusjärjestelmää, johon sijoitetaan ja kiinnitetään esimerkiksi pistorasioita ja jolla peitetään varsinaisten turvateknisten järjestelmien kaapeleita ja liitäntöjä, mahdollistavat tuoteosien sijaintien muuttamisen myöhemmin)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "AKJ.TURVA",
+      "broaderCode": {
+        "id": "0b3b286c-684b-4c97-b6dd-560a7a371028",
+        "codeValue": "J-TATE-02",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02",
+        "status": "VALID",
+        "order": 9,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.000Z",
+        "modified": "2023-11-06T17:57:39.316Z",
+        "statusModified": "2023-11-06T17:57:39.316Z",
+        "prefLabel": {
+          "fi": "ASENNUSKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-6"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-03/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-44"
+    },
+    {
+      "id": "48b5c7ef-b04a-4803-8c0f-8b1fcd2ea9cb",
+      "codeValue": "J-TATE-02-04",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02-04",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-04",
+      "status": "VALID",
+      "order": 13,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.028Z",
+      "modified": "2023-11-06T17:57:39.288Z",
+      "statusModified": "2023-11-06T17:57:39.288Z",
+      "prefLabel": {
+        "fi": "Asennuskanavajärjestelmä - rakennusautomaatio"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi rakennusautomaatiojärjestelmien asennuskanavajärjestelmille\n(rakennusautomaatiojärjestelmien asennuskanavajärjestelmillä tarkoitetaan asennuskanavien tuoteosista koottua reititys- ja asennusjärjestelmää, johon sijoitetaan ja kiinnitetään rakennusautomaation tuoteosia ja jolla peitetään varsinaisten rakennusautomaatiojärjestelmien kaapeleita ja liitäntöjä, mahdollistavat tuoteosien sijaintien muuttamisen myöhemmin)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "AKJ.RAU",
+      "broaderCode": {
+        "id": "0b3b286c-684b-4c97-b6dd-560a7a371028",
+        "codeValue": "J-TATE-02",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02",
+        "status": "VALID",
+        "order": 9,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.000Z",
+        "modified": "2023-11-06T17:57:39.316Z",
+        "statusModified": "2023-11-06T17:57:39.316Z",
+        "prefLabel": {
+          "fi": "ASENNUSKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-6"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-04/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-31"
+    },
+    {
+      "id": "7038935c-3be6-4200-bab7-ce040f90db6b",
+      "codeValue": "J-TATE-02-05",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02-05",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-05",
+      "status": "VALID",
+      "order": 14,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.035Z",
+      "modified": "2023-11-06T17:57:39.278Z",
+      "statusModified": "2023-11-06T17:57:39.278Z",
+      "prefLabel": {
+        "fi": "Asennuskanavajärjestelmä - LVI"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi LVI-järjestelmien asennuskanavajärjestelmille\n(LVI-järjestelmien asennuskanavajärjestelmillä tarkoitetaan asennuskanavien tuoteosista koottua reititys- ja asennusjärjestelmää, johon sijoitetaan ja kiinnitetään LVI:n tuoteosia, esimerkiksi kaasupisteitä, ja jolla peitetään varsinaisten LVI-järjestelmien putkistot, mahdollistavat tuoteosien sijaintien muuttamisen myöhemmin)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "AKJ.LVI",
+      "broaderCode": {
+        "id": "0b3b286c-684b-4c97-b6dd-560a7a371028",
+        "codeValue": "J-TATE-02",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02",
+        "status": "VALID",
+        "order": 9,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.000Z",
+        "modified": "2023-11-06T17:57:39.316Z",
+        "statusModified": "2023-11-06T17:57:39.316Z",
+        "prefLabel": {
+          "fi": "ASENNUSKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-6"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-05/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-50"
+    },
+    {
+      "id": "4f5aa9ad-a261-46bf-a1ea-b1113c176412",
+      "codeValue": "J-TATE-02-99",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02-99",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-99",
+      "status": "VALID",
+      "order": 15,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.042Z",
+      "modified": "2023-11-06T17:57:39.543Z",
+      "statusModified": "2023-11-06T17:57:39.543Z",
+      "prefLabel": {
+        "fi": "MUU - Asennuskanavajärjestelmät"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi muille asennuskanavajärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ei tunnusta",
+      "broaderCode": {
+        "id": "0b3b286c-684b-4c97-b6dd-560a7a371028",
+        "codeValue": "J-TATE-02",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-02",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02",
+        "status": "VALID",
+        "order": 9,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.000Z",
+        "modified": "2023-11-06T17:57:39.316Z",
+        "statusModified": "2023-11-06T17:57:39.316Z",
+        "prefLabel": {
+          "fi": "ASENNUSKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-6"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-02-99/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-34"
+    },
+    {
+      "id": "0fd429b6-bb4e-4b6a-b1db-ba7f82c37a64",
+      "codeValue": "J-TATE-03",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03",
+      "status": "VALID",
+      "order": 16,
+      "hierarchyLevel": 2,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.048Z",
+      "modified": "2023-11-06T17:57:39.526Z",
+      "statusModified": "2023-11-06T17:57:39.526Z",
+      "prefLabel": {
+        "fi": "LATTIAKANAVAJÄRJESTELMÄT"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄLUOKKA"
+      },
+      "definition": {
+        "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "broaderCode": {
+        "id": "62ee3257-86df-4e9d-9f56-60e4a8f99cae",
+        "codeValue": "J-TATE",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE",
+        "status": "VALID",
+        "order": 1,
+        "hierarchyLevel": 1,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:39:36.784Z",
+        "modified": "2023-11-06T17:57:39.650Z",
+        "statusModified": "2023-11-06T17:57:39.650Z",
+        "prefLabel": {
+          "fi": "REITITYS- JA ASENNUSJÄRJESTELMÄT - TATE"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLAJI"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmälaji, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-14"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-23"
+    },
+    {
+      "id": "ea4b4dd6-848c-4148-9cfc-2afd83345f2f",
+      "codeValue": "J-TATE-03-01",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03-01",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-01",
+      "status": "VALID",
+      "order": 17,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.055Z",
+      "modified": "2023-11-06T17:57:39.510Z",
+      "statusModified": "2023-11-06T17:57:39.510Z",
+      "prefLabel": {
+        "fi": "Lattiakanavajärjestelmä - sähkö"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi sähköjärjestelmien ja yhteiskäyttötilanteiden lattiakanavajärjestelmille\n(sähköjärjestelmien lattiakanavajärjestelmillä reititetään lattiassa sähköjärjestelmien varsinaisia tuoteosia, kuten kaapeleita)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "LAKJ.SÄH",
+      "broaderCode": {
+        "id": "0fd429b6-bb4e-4b6a-b1db-ba7f82c37a64",
+        "codeValue": "J-TATE-03",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03",
+        "status": "VALID",
+        "order": 16,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.048Z",
+        "modified": "2023-11-06T17:57:39.526Z",
+        "statusModified": "2023-11-06T17:57:39.526Z",
+        "prefLabel": {
+          "fi": "LATTIAKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-23"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-01/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-27"
+    },
+    {
+      "id": "20f33a76-f369-4480-9f7f-be1610b5a73f",
+      "codeValue": "J-TATE-03-02",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03-02",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-02",
+      "status": "VALID",
+      "order": 18,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.061Z",
+      "modified": "2023-11-06T17:57:39.484Z",
+      "statusModified": "2023-11-06T17:57:39.484Z",
+      "prefLabel": {
+        "fi": "Lattiakanavajärjestelmä - data"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi tietoteknisten järjestelmien lattiakanavajärjestelmille\n(tietoteknisten järjestelmien lattiakanavajärjestelmillä reititetään lattiassa tietoteknisten järjestelmien varsinaisia tuoteosia, kuten kaapeleita)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "LAKJ.DATA",
+      "broaderCode": {
+        "id": "0fd429b6-bb4e-4b6a-b1db-ba7f82c37a64",
+        "codeValue": "J-TATE-03",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03",
+        "status": "VALID",
+        "order": 16,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.048Z",
+        "modified": "2023-11-06T17:57:39.526Z",
+        "statusModified": "2023-11-06T17:57:39.526Z",
+        "prefLabel": {
+          "fi": "LATTIAKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-23"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-02/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-26"
+    },
+    {
+      "id": "9ab40334-a4bb-4d34-90d4-aa5caa467e4e",
+      "codeValue": "J-TATE-03-03",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03-03",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-03",
+      "status": "VALID",
+      "order": 19,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.068Z",
+      "modified": "2023-11-06T17:57:39.518Z",
+      "statusModified": "2023-11-06T17:57:39.518Z",
+      "prefLabel": {
+        "fi": "Lattiakanavajärjestelmä - turva"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi turvajärjestelmien lattiakanavajärjestelmille\n(turvateknisten järjestelmien lattiakanavajärjestelmillä reititetään lattiassa turvateknisten järjestelmien varsinaisia tuoteosia, kuten kaapeleita)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "LAKJ.TURVA",
+      "broaderCode": {
+        "id": "0fd429b6-bb4e-4b6a-b1db-ba7f82c37a64",
+        "codeValue": "J-TATE-03",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03",
+        "status": "VALID",
+        "order": 16,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.048Z",
+        "modified": "2023-11-06T17:57:39.526Z",
+        "statusModified": "2023-11-06T17:57:39.526Z",
+        "prefLabel": {
+          "fi": "LATTIAKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-23"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-03/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-46"
+    },
+    {
+      "id": "13efad61-5c8b-45d2-8bcc-1bb7072e517d",
+      "codeValue": "J-TATE-03-04",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03-04",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-04",
+      "status": "VALID",
+      "order": 20,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.074Z",
+      "modified": "2023-11-06T17:57:39.502Z",
+      "statusModified": "2023-11-06T17:57:39.502Z",
+      "prefLabel": {
+        "fi": "Lattiakanavajärjestelmä - rakennusautomaatio"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi rakennusautomaatiojärjestelmien lattiakanavajärjestelmille\n(rakennusautomaatiojärjestelmien lattiakanavajärjestelmillä reititetään lattiassa rakennusautomaatiojärjestelmien varsinaisia tuoteosia, kuten kaapeleita)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "LAKJ.RAU",
+      "broaderCode": {
+        "id": "0fd429b6-bb4e-4b6a-b1db-ba7f82c37a64",
+        "codeValue": "J-TATE-03",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03",
+        "status": "VALID",
+        "order": 16,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.048Z",
+        "modified": "2023-11-06T17:57:39.526Z",
+        "statusModified": "2023-11-06T17:57:39.526Z",
+        "prefLabel": {
+          "fi": "LATTIAKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-23"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-04/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-10"
+    },
+    {
+      "id": "623af82a-b57f-4610-bfa3-92f302954d05",
+      "codeValue": "J-TATE-03-05",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03-05",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-05",
+      "status": "VALID",
+      "order": 21,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.081Z",
+      "modified": "2023-11-06T17:57:39.493Z",
+      "statusModified": "2023-11-06T17:57:39.493Z",
+      "prefLabel": {
+        "fi": "Lattiakanavajärjestelmä - LVI"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi LVI-järjestelmien lattiakanavajärjestelmille\n(LVI-järjestelmien lattiakanavajärjestelmillä reititetään lattiassa LVI-järjestelmien varsinaisia tuoteosia, kuten putkia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "LAKJ.LVI",
+      "broaderCode": {
+        "id": "0fd429b6-bb4e-4b6a-b1db-ba7f82c37a64",
+        "codeValue": "J-TATE-03",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03",
+        "status": "VALID",
+        "order": 16,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.048Z",
+        "modified": "2023-11-06T17:57:39.526Z",
+        "statusModified": "2023-11-06T17:57:39.526Z",
+        "prefLabel": {
+          "fi": "LATTIAKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-23"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-05/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-22"
+    },
+    {
+      "id": "0420d446-c727-4ccf-b23e-d114c820f8c2",
+      "codeValue": "J-TATE-03-99",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03-99",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-99",
+      "status": "VALID",
+      "order": 22,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.087Z",
+      "modified": "2023-11-06T17:57:39.576Z",
+      "statusModified": "2023-11-06T17:57:39.576Z",
+      "prefLabel": {
+        "fi": "MUU - Lattiakanavajärjestelmät"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi muille lattiakanavajärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ei tunnusta",
+      "broaderCode": {
+        "id": "0fd429b6-bb4e-4b6a-b1db-ba7f82c37a64",
+        "codeValue": "J-TATE-03",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-03",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03",
+        "status": "VALID",
+        "order": 16,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.048Z",
+        "modified": "2023-11-06T17:57:39.526Z",
+        "statusModified": "2023-11-06T17:57:39.526Z",
+        "prefLabel": {
+          "fi": "LATTIAKANAVAJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-23"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-03-99/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-30"
+    },
+    {
+      "id": "6eed3367-1638-4e27-8bb2-71fcc155fea2",
+      "codeValue": "J-TATE-04",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04",
+      "status": "VALID",
+      "order": 23,
+      "hierarchyLevel": 2,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.093Z",
+      "modified": "2023-11-06T17:57:39.642Z",
+      "statusModified": "2023-11-06T17:57:39.642Z",
+      "prefLabel": {
+        "fi": "PUTKITUSJÄRJESTELMÄT"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄLUOKKA"
+      },
+      "definition": {
+        "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "broaderCode": {
+        "id": "62ee3257-86df-4e9d-9f56-60e4a8f99cae",
+        "codeValue": "J-TATE",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE",
+        "status": "VALID",
+        "order": 1,
+        "hierarchyLevel": 1,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:39:36.784Z",
+        "modified": "2023-11-06T17:57:39.650Z",
+        "statusModified": "2023-11-06T17:57:39.650Z",
+        "prefLabel": {
+          "fi": "REITITYS- JA ASENNUSJÄRJESTELMÄT - TATE"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLAJI"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmälaji, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-14"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-20"
+    },
+    {
+      "id": "83e41430-5678-4dc1-bf23-a3c57459716d",
+      "codeValue": "J-TATE-04-01",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04-01",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-01",
+      "status": "VALID",
+      "order": 24,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.099Z",
+      "modified": "2023-11-06T17:57:39.626Z",
+      "statusModified": "2023-11-06T17:57:39.626Z",
+      "prefLabel": {
+        "fi": "Putkitusjärjestelmä - sähkö"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi sähköjärjestelmien ja yhteiskäyttötilanteiden putkitusjärjestelmille\n(sähköjärjestelmien putkitusjärjestelmillä reititetään ja suojataan sähköjärjestelmien varsinaisia kaapeleita)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "PJ.SÄH",
+      "broaderCode": {
+        "id": "6eed3367-1638-4e27-8bb2-71fcc155fea2",
+        "codeValue": "J-TATE-04",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04",
+        "status": "VALID",
+        "order": 23,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.093Z",
+        "modified": "2023-11-06T17:57:39.642Z",
+        "statusModified": "2023-11-06T17:57:39.642Z",
+        "prefLabel": {
+          "fi": "PUTKITUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-20"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-01/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-16"
+    },
+    {
+      "id": "a5d7cfe8-5a6c-4f66-a42c-04998401cc8b",
+      "codeValue": "J-TATE-04-02",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04-02",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-02",
+      "status": "VALID",
+      "order": 25,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.105Z",
+      "modified": "2023-11-06T17:57:39.600Z",
+      "statusModified": "2023-11-06T17:57:39.600Z",
+      "prefLabel": {
+        "fi": "Putkitusjärjestelmä - data"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi tietoteknisten järjestelmien putkitusjärjestelmille\n(tietoteknisten järjestelmien putkitusjärjestelmillä reititetään ja suojataan tietoteknisten järjestelmien varsinaisia kaapeleita)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "PJ.DATA",
+      "broaderCode": {
+        "id": "6eed3367-1638-4e27-8bb2-71fcc155fea2",
+        "codeValue": "J-TATE-04",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04",
+        "status": "VALID",
+        "order": 23,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.093Z",
+        "modified": "2023-11-06T17:57:39.642Z",
+        "statusModified": "2023-11-06T17:57:39.642Z",
+        "prefLabel": {
+          "fi": "PUTKITUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-20"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-02/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-5"
+    },
+    {
+      "id": "25c38c3f-d629-45ed-9575-547d8ad3cc11",
+      "codeValue": "J-TATE-04-03",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04-03",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-03",
+      "status": "VALID",
+      "order": 26,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.111Z",
+      "modified": "2023-11-06T17:57:39.634Z",
+      "statusModified": "2023-11-06T17:57:39.634Z",
+      "prefLabel": {
+        "fi": "Putkitusjärjestelmä - turva"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi turvajärjestelmien putkitusjärjestelmille\n(turvateknisten järjestelmien putkitusjärjestelmillä reititetään ja suojataan tietoteknisten järjestelmien varsinaisia kaapeleita)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "PJ.TURVA",
+      "broaderCode": {
+        "id": "6eed3367-1638-4e27-8bb2-71fcc155fea2",
+        "codeValue": "J-TATE-04",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04",
+        "status": "VALID",
+        "order": 23,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.093Z",
+        "modified": "2023-11-06T17:57:39.642Z",
+        "statusModified": "2023-11-06T17:57:39.642Z",
+        "prefLabel": {
+          "fi": "PUTKITUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-20"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-03/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-2"
+    },
+    {
+      "id": "e7aaf633-3c52-40d0-a116-534d4287f1c9",
+      "codeValue": "J-TATE-04-04",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04-04",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-04",
+      "status": "VALID",
+      "order": 27,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.117Z",
+      "modified": "2023-11-06T17:57:39.618Z",
+      "statusModified": "2023-11-06T17:57:39.618Z",
+      "prefLabel": {
+        "fi": "Putkitusjärjestelmä - rakennusautomaatio"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi rakennusautomaatiojärjestelmien putkitusjärjestelmille\n(rakennusautomaatiojärjestelmien putkitusjärjestelmillä reititetään ja suojataan rakennusautomaatiojärjestelmien varsinaisia kaapeleita)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "PJ.RAU",
+      "broaderCode": {
+        "id": "6eed3367-1638-4e27-8bb2-71fcc155fea2",
+        "codeValue": "J-TATE-04",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04",
+        "status": "VALID",
+        "order": 23,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.093Z",
+        "modified": "2023-11-06T17:57:39.642Z",
+        "statusModified": "2023-11-06T17:57:39.642Z",
+        "prefLabel": {
+          "fi": "PUTKITUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-20"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-04/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-13"
+    },
+    {
+      "id": "cab2e4d0-2832-43e0-8c5f-25c2d061fe51",
+      "codeValue": "J-TATE-04-05",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04-05",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-05",
+      "status": "VALID",
+      "order": 28,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.123Z",
+      "modified": "2023-11-06T17:57:39.608Z",
+      "statusModified": "2023-11-06T17:57:39.608Z",
+      "prefLabel": {
+        "fi": "Putkitusjärjestelmä - LVI"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi LVI-järjestelmien putkitusjärjestelmille\n(LVI-järjestelmien putkitusjärjestelmillä reititetään ja suojataan LVI-järjestelmien varsinaisia putkia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "PJ.LVI",
+      "broaderCode": {
+        "id": "6eed3367-1638-4e27-8bb2-71fcc155fea2",
+        "codeValue": "J-TATE-04",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04",
+        "status": "VALID",
+        "order": 23,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.093Z",
+        "modified": "2023-11-06T17:57:39.642Z",
+        "statusModified": "2023-11-06T17:57:39.642Z",
+        "prefLabel": {
+          "fi": "PUTKITUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-20"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-05/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-0"
+    },
+    {
+      "id": "a71da939-c297-4517-b6b1-9fa4c95dac74",
+      "codeValue": "J-TATE-04-99",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04-99",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-99",
+      "status": "VALID",
+      "order": 29,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.129Z",
+      "modified": "2023-11-06T17:57:39.584Z",
+      "statusModified": "2023-11-06T17:57:39.584Z",
+      "prefLabel": {
+        "fi": "MUU - Putkitusjärjestelmät"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi muille  putkitusjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ei tunnusta",
+      "broaderCode": {
+        "id": "6eed3367-1638-4e27-8bb2-71fcc155fea2",
+        "codeValue": "J-TATE-04",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-04",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04",
+        "status": "VALID",
+        "order": 23,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.093Z",
+        "modified": "2023-11-06T17:57:39.642Z",
+        "statusModified": "2023-11-06T17:57:39.642Z",
+        "prefLabel": {
+          "fi": "PUTKITUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-20"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-04-99/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-42"
+    },
+    {
+      "id": "2b1a9eb8-afba-4713-a228-e4a6b9aa524b",
+      "codeValue": "J-TATE-05",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05",
+      "status": "VALID",
+      "order": 30,
+      "hierarchyLevel": 2,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.135Z",
+      "modified": "2023-11-06T17:57:39.476Z",
+      "statusModified": "2023-11-06T17:57:39.476Z",
+      "prefLabel": {
+        "fi": "KOURU- TAI SUOJALEVYJÄRJESTELMÄT"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄLUOKKA"
+      },
+      "definition": {
+        "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "broaderCode": {
+        "id": "62ee3257-86df-4e9d-9f56-60e4a8f99cae",
+        "codeValue": "J-TATE",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE",
+        "status": "VALID",
+        "order": 1,
+        "hierarchyLevel": 1,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:39:36.784Z",
+        "modified": "2023-11-06T17:57:39.650Z",
+        "statusModified": "2023-11-06T17:57:39.650Z",
+        "prefLabel": {
+          "fi": "REITITYS- JA ASENNUSJÄRJESTELMÄT - TATE"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLAJI"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmälaji, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-14"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-19"
+    },
+    {
+      "id": "593a7c64-33b6-4e41-a1cf-2bcc8da758ed",
+      "codeValue": "J-TATE-05-01",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05-01",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-01",
+      "status": "VALID",
+      "order": 31,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.141Z",
+      "modified": "2023-11-06T17:57:39.460Z",
+      "statusModified": "2023-11-06T17:57:39.460Z",
+      "prefLabel": {
+        "fi": "Kouru- tai suojalevyjärjestelmä - sähkö"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi sähköjärjestelmien ja yhteiskäyttötilanteiden kouru- tai suojalevyjärjestelmille\n(sähköjärjestelmien kouru- tai suojalevyjärjestelmillä reititetään ja suojataan sähköjärjestelmien varsinaisia kaapeleita ja muita tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KOJ.SÄH",
+      "broaderCode": {
+        "id": "2b1a9eb8-afba-4713-a228-e4a6b9aa524b",
+        "codeValue": "J-TATE-05",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05",
+        "status": "VALID",
+        "order": 30,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.135Z",
+        "modified": "2023-11-06T17:57:39.476Z",
+        "statusModified": "2023-11-06T17:57:39.476Z",
+        "prefLabel": {
+          "fi": "KOURU- TAI SUOJALEVYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-19"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-01/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-24"
+    },
+    {
+      "id": "99a6793f-4148-4751-9a7b-b346ef4e32f0",
+      "codeValue": "J-TATE-05-02",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05-02",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-02",
+      "status": "VALID",
+      "order": 32,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.148Z",
+      "modified": "2023-11-06T17:57:39.436Z",
+      "statusModified": "2023-11-06T17:57:39.436Z",
+      "prefLabel": {
+        "fi": "Kouru- tai suojalevyjärjestelmä - data"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi tietoteknisten järjestelmien kouru- tai suojalevyjärjestelmille\n(tietoteknisten järjestelmien kouru- tai suojalevyjärjestelmillä reititetään ja suojataan tietoteknisten järjestelmien varsinaisia kaapeleita ja muita tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KOJ.DATA",
+      "broaderCode": {
+        "id": "2b1a9eb8-afba-4713-a228-e4a6b9aa524b",
+        "codeValue": "J-TATE-05",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05",
+        "status": "VALID",
+        "order": 30,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.135Z",
+        "modified": "2023-11-06T17:57:39.476Z",
+        "statusModified": "2023-11-06T17:57:39.476Z",
+        "prefLabel": {
+          "fi": "KOURU- TAI SUOJALEVYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-19"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-02/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-28"
+    },
+    {
+      "id": "785fa2d6-2ef9-4656-b983-e649523a7306",
+      "codeValue": "J-TATE-05-03",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05-03",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-03",
+      "status": "VALID",
+      "order": 33,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.154Z",
+      "modified": "2023-11-06T17:57:39.468Z",
+      "statusModified": "2023-11-06T17:57:39.468Z",
+      "prefLabel": {
+        "fi": "Kouru- tai suojalevyjärjestelmä - turva"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi turvajärjestelmien kouru- tai suojalevyjärjestelmille\n(turvateknisten järjestelmien kouru- tai suojalevyjärjestelmillä reititetään ja suojataan turvateknisten järjestelmien varsinaisia kaapeleita ja muita tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KOJ.TURVA",
+      "broaderCode": {
+        "id": "2b1a9eb8-afba-4713-a228-e4a6b9aa524b",
+        "codeValue": "J-TATE-05",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05",
+        "status": "VALID",
+        "order": 30,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.135Z",
+        "modified": "2023-11-06T17:57:39.476Z",
+        "statusModified": "2023-11-06T17:57:39.476Z",
+        "prefLabel": {
+          "fi": "KOURU- TAI SUOJALEVYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-19"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-03/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-25"
+    },
+    {
+      "id": "eb8ed921-0673-46f8-b654-0b5c5e918dae",
+      "codeValue": "J-TATE-05-04",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05-04",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-04",
+      "status": "VALID",
+      "order": 34,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.159Z",
+      "modified": "2023-11-06T17:57:39.452Z",
+      "statusModified": "2023-11-06T17:57:39.452Z",
+      "prefLabel": {
+        "fi": "Kouru- tai suojalevyjärjestelmä - rakennusautomaatio"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi rakennusautomaatiojärjestelmien kouru- tai suojalevyjärjestelmille\n(rakennusautomaatiojärjestelmien kouru- tai suojalevyjärjestelmillä reititetään ja suojataan rakennusautomaatiojärjestelmien varsinaisia kaapeleita ja muita tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KOJ.RAU",
+      "broaderCode": {
+        "id": "2b1a9eb8-afba-4713-a228-e4a6b9aa524b",
+        "codeValue": "J-TATE-05",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05",
+        "status": "VALID",
+        "order": 30,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.135Z",
+        "modified": "2023-11-06T17:57:39.476Z",
+        "statusModified": "2023-11-06T17:57:39.476Z",
+        "prefLabel": {
+          "fi": "KOURU- TAI SUOJALEVYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-19"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-04/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-36"
+    },
+    {
+      "id": "a2b27637-3036-4055-b93e-14635ebcc014",
+      "codeValue": "J-TATE-05-05",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05-05",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-05",
+      "status": "VALID",
+      "order": 35,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.166Z",
+      "modified": "2023-11-06T17:57:39.444Z",
+      "statusModified": "2023-11-06T17:57:39.444Z",
+      "prefLabel": {
+        "fi": "Kouru- tai suojalevyjärjestelmä - LVI"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi LVI-järjestelmien kouru- tai suojalevyjärjestelmille\n(LVI-järjestelmien kouru- tai suojalevyjärjestelmillä reititetään ja suojataan LVI-järjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KOJ.LVI",
+      "broaderCode": {
+        "id": "2b1a9eb8-afba-4713-a228-e4a6b9aa524b",
+        "codeValue": "J-TATE-05",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05",
+        "status": "VALID",
+        "order": 30,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.135Z",
+        "modified": "2023-11-06T17:57:39.476Z",
+        "statusModified": "2023-11-06T17:57:39.476Z",
+        "prefLabel": {
+          "fi": "KOURU- TAI SUOJALEVYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-19"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-05/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-38"
+    },
+    {
+      "id": "97705f1a-5786-45ac-89ea-b93478a1ba57",
+      "codeValue": "J-TATE-05-99",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05-99",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-99",
+      "status": "VALID",
+      "order": 36,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.172Z",
+      "modified": "2023-11-06T17:57:39.567Z",
+      "statusModified": "2023-11-06T17:57:39.567Z",
+      "prefLabel": {
+        "fi": "MUU - Kouru- tai suojalevyjärjestelmät"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi muille kouru- tai suojalevyjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ei tunnusta",
+      "broaderCode": {
+        "id": "2b1a9eb8-afba-4713-a228-e4a6b9aa524b",
+        "codeValue": "J-TATE-05",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-05",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05",
+        "status": "VALID",
+        "order": 30,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.135Z",
+        "modified": "2023-11-06T17:57:39.476Z",
+        "statusModified": "2023-11-06T17:57:39.476Z",
+        "prefLabel": {
+          "fi": "KOURU- TAI SUOJALEVYJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-19"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-05-99/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-41"
+    },
+    {
+      "id": "230f8be9-4b01-4b6a-a620-ce93ebd97c9c",
+      "codeValue": "J-TATE-06",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06",
+      "status": "VALID",
+      "order": 37,
+      "hierarchyLevel": 2,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.178Z",
+      "modified": "2023-11-06T17:57:39.428Z",
+      "statusModified": "2023-11-06T17:57:39.428Z",
+      "prefLabel": {
+        "fi": "KANNATUSJÄRJESTELMÄT"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄLUOKKA"
+      },
+      "definition": {
+        "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "broaderCode": {
+        "id": "62ee3257-86df-4e9d-9f56-60e4a8f99cae",
+        "codeValue": "J-TATE",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE",
+        "status": "VALID",
+        "order": 1,
+        "hierarchyLevel": 1,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:39:36.784Z",
+        "modified": "2023-11-06T17:57:39.650Z",
+        "statusModified": "2023-11-06T17:57:39.650Z",
+        "prefLabel": {
+          "fi": "REITITYS- JA ASENNUSJÄRJESTELMÄT - TATE"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLAJI"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmälaji, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-14"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-33"
+    },
+    {
+      "id": "0faf129a-a44a-43d9-8626-9b7473ad844f",
+      "codeValue": "J-TATE-06-01",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06-01",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-01",
+      "status": "VALID",
+      "order": 38,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.184Z",
+      "modified": "2023-11-06T17:57:39.404Z",
+      "statusModified": "2023-11-06T17:57:39.404Z",
+      "prefLabel": {
+        "fi": "Kannatusjärjestelmä - sähkö"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi sähköjärjestelmien kannatusjärjestelmille\n(sähköjärjestelmien kannatusjärjestelmillä kannatetaan sähköjärjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KAJ.SÄH",
+      "broaderCode": {
+        "id": "230f8be9-4b01-4b6a-a620-ce93ebd97c9c",
+        "codeValue": "J-TATE-06",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06",
+        "status": "VALID",
+        "order": 37,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.178Z",
+        "modified": "2023-11-06T17:57:39.428Z",
+        "statusModified": "2023-11-06T17:57:39.428Z",
+        "prefLabel": {
+          "fi": "KANNATUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-33"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-01/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-40"
+    },
+    {
+      "id": "b331e3c9-2a79-4435-a7f8-bfd47cea7c02",
+      "codeValue": "J-TATE-06-02",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06-02",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-02",
+      "status": "VALID",
+      "order": 39,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.190Z",
+      "modified": "2023-11-06T17:57:39.380Z",
+      "statusModified": "2023-11-06T17:57:39.380Z",
+      "prefLabel": {
+        "fi": "Kannatusjärjestelmä - data"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi tietoteknisten järjestelmien kannatusjärjestelmille\n(tietoteknisten järjestelmien kannatusjärjestelmillä kannatetaan tietoteknisten järjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KAJ.DATA",
+      "broaderCode": {
+        "id": "230f8be9-4b01-4b6a-a620-ce93ebd97c9c",
+        "codeValue": "J-TATE-06",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06",
+        "status": "VALID",
+        "order": 37,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.178Z",
+        "modified": "2023-11-06T17:57:39.428Z",
+        "statusModified": "2023-11-06T17:57:39.428Z",
+        "prefLabel": {
+          "fi": "KANNATUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-33"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-02/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-17"
+    },
+    {
+      "id": "5f4dbba6-9cf4-4ada-974c-2af7f0a72d2d",
+      "codeValue": "J-TATE-06-03",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06-03",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-03",
+      "status": "VALID",
+      "order": 40,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.196Z",
+      "modified": "2023-11-06T17:57:39.412Z",
+      "statusModified": "2023-11-06T17:57:39.412Z",
+      "prefLabel": {
+        "fi": "Kannatusjärjestelmä - turva"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi turvajärjestelmien kannatusjärjestelmille\n(turvateknisten järjestelmien kannatusjärjestelmillä kannatetaan turvateknisten järjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KAJ.TURVA",
+      "broaderCode": {
+        "id": "230f8be9-4b01-4b6a-a620-ce93ebd97c9c",
+        "codeValue": "J-TATE-06",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06",
+        "status": "VALID",
+        "order": 37,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.178Z",
+        "modified": "2023-11-06T17:57:39.428Z",
+        "statusModified": "2023-11-06T17:57:39.428Z",
+        "prefLabel": {
+          "fi": "KANNATUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-33"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-03/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-4"
+    },
+    {
+      "id": "d18d430c-5a01-414a-b771-0694cde7c9d4",
+      "codeValue": "J-TATE-06-04",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06-04",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-04",
+      "status": "VALID",
+      "order": 41,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.202Z",
+      "modified": "2023-11-06T17:57:39.396Z",
+      "statusModified": "2023-11-06T17:57:39.396Z",
+      "prefLabel": {
+        "fi": "Kannatusjärjestelmä - rakennusautomaatio"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi rakennusautomaatiojärjestelmien kannatusjärjestelmille\n(rakennusautomaatiojärjestelmien kannatusjärjestelmillä kannatetaan rakennusautomaatiojärjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KAJ.RAU",
+      "broaderCode": {
+        "id": "230f8be9-4b01-4b6a-a620-ce93ebd97c9c",
+        "codeValue": "J-TATE-06",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06",
+        "status": "VALID",
+        "order": 37,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.178Z",
+        "modified": "2023-11-06T17:57:39.428Z",
+        "statusModified": "2023-11-06T17:57:39.428Z",
+        "prefLabel": {
+          "fi": "KANNATUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-33"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-04/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-3"
+    },
+    {
+      "id": "83c503b9-3d5a-4f5c-85ac-90fef6f34636",
+      "codeValue": "J-TATE-06-05",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06-05",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-05",
+      "status": "VALID",
+      "order": 42,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.208Z",
+      "modified": "2023-11-06T17:57:39.388Z",
+      "statusModified": "2023-11-06T17:57:39.388Z",
+      "prefLabel": {
+        "fi": "Kannatusjärjestelmä - LVI"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi LVI-järjestelmien kannatusjärjestelmille\n(LVI-järjestelmien kannatusjärjestelmillä kannatetaan LVI-järjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KAJ.LVI",
+      "broaderCode": {
+        "id": "230f8be9-4b01-4b6a-a620-ce93ebd97c9c",
+        "codeValue": "J-TATE-06",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06",
+        "status": "VALID",
+        "order": 37,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.178Z",
+        "modified": "2023-11-06T17:57:39.428Z",
+        "statusModified": "2023-11-06T17:57:39.428Z",
+        "prefLabel": {
+          "fi": "KANNATUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-33"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-05/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-29"
+    },
+    {
+      "id": "111cf273-c982-48c3-a4f5-b09aedc39cf0",
+      "codeValue": "J-TATE-06-06",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06-06",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-06",
+      "status": "VALID",
+      "order": 43,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.215Z",
+      "modified": "2023-11-06T17:57:39.420Z",
+      "statusModified": "2023-11-06T17:57:39.420Z",
+      "prefLabel": {
+        "fi": "Kannatusjärjestelmä - yhteinen"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi talotekniikkajärjestelmien yhteisille kannatusjärjestelmille\n(talotekniikkajärjestelmien yhteisillä kannatusjärjestelmillä kannatetaan talotekniikkajärjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "KAJ.YHT",
+      "broaderCode": {
+        "id": "230f8be9-4b01-4b6a-a620-ce93ebd97c9c",
+        "codeValue": "J-TATE-06",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06",
+        "status": "VALID",
+        "order": 37,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.178Z",
+        "modified": "2023-11-06T17:57:39.428Z",
+        "statusModified": "2023-11-06T17:57:39.428Z",
+        "prefLabel": {
+          "fi": "KANNATUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-33"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-06/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-48"
+    },
+    {
+      "id": "c8e4bc3b-b049-4f72-8fad-3c3343f20966",
+      "codeValue": "J-TATE-06-99",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06-99",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-99",
+      "status": "VALID",
+      "order": 44,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.224Z",
+      "modified": "2023-11-06T17:57:39.559Z",
+      "statusModified": "2023-11-06T17:57:39.559Z",
+      "prefLabel": {
+        "fi": "MUU - Kannatusjärjestelmät"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi muille kannatusjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ei tunnusta",
+      "broaderCode": {
+        "id": "230f8be9-4b01-4b6a-a620-ce93ebd97c9c",
+        "codeValue": "J-TATE-06",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-06",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06",
+        "status": "VALID",
+        "order": 37,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.178Z",
+        "modified": "2023-11-06T17:57:39.428Z",
+        "statusModified": "2023-11-06T17:57:39.428Z",
+        "prefLabel": {
+          "fi": "KANNATUSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-33"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-06-99/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-9"
+    },
+    {
+      "id": "9b5ff30e-9270-4405-8182-e49da1084e09",
+      "codeValue": "J-TATE-07",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07",
+      "status": "VALID",
+      "order": 45,
+      "hierarchyLevel": 2,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.231Z",
+      "modified": "2023-11-06T17:57:39.707Z",
+      "statusModified": "2023-11-06T17:57:39.707Z",
+      "prefLabel": {
+        "fi": "RIPUSTUSKISKOJÄRJESTELMÄT"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄLUOKKA"
+      },
+      "definition": {
+        "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "broaderCode": {
+        "id": "62ee3257-86df-4e9d-9f56-60e4a8f99cae",
+        "codeValue": "J-TATE",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE",
+        "status": "VALID",
+        "order": 1,
+        "hierarchyLevel": 1,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:39:36.784Z",
+        "modified": "2023-11-06T17:57:39.650Z",
+        "statusModified": "2023-11-06T17:57:39.650Z",
+        "prefLabel": {
+          "fi": "REITITYS- JA ASENNUSJÄRJESTELMÄT - TATE"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLAJI"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmälaji, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-14"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-37"
+    },
+    {
+      "id": "562d5d95-529b-422f-853f-ea12fe464ec9",
+      "codeValue": "J-TATE-07-01",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07-01",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-01",
+      "status": "VALID",
+      "order": 46,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.237Z",
+      "modified": "2023-11-06T17:57:39.683Z",
+      "statusModified": "2023-11-06T17:57:39.683Z",
+      "prefLabel": {
+        "fi": "Ripustuskiskojärjestelmä - sähkö"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi sähköjärjestelmien ripustuskiskojärjestelmille\n(sähköjärjestelmien ripustuskiskojärjestelmillä ripustetaan sähköjärjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "RIPJ.SÄH",
+      "broaderCode": {
+        "id": "9b5ff30e-9270-4405-8182-e49da1084e09",
+        "codeValue": "J-TATE-07",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07",
+        "status": "VALID",
+        "order": 45,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.231Z",
+        "modified": "2023-11-06T17:57:39.707Z",
+        "statusModified": "2023-11-06T17:57:39.707Z",
+        "prefLabel": {
+          "fi": "RIPUSTUSKISKOJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-37"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-01/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-11"
+    },
+    {
+      "id": "c2ffbf2c-6700-42e5-b67a-bab5000620d4",
+      "codeValue": "J-TATE-07-02",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07-02",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-02",
+      "status": "VALID",
+      "order": 47,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.244Z",
+      "modified": "2023-11-06T17:57:39.658Z",
+      "statusModified": "2023-11-06T17:57:39.658Z",
+      "prefLabel": {
+        "fi": "Ripustuskiskojärjestelmä - data"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi tietoteknisten järjestelmien ripustuskiskojärjestelmille\n(tietoteknisten järjestelmien ripustuskiskojärjestelmillä ripustetaan tietoteknisten järjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "RIPJ.DATA",
+      "broaderCode": {
+        "id": "9b5ff30e-9270-4405-8182-e49da1084e09",
+        "codeValue": "J-TATE-07",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07",
+        "status": "VALID",
+        "order": 45,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.231Z",
+        "modified": "2023-11-06T17:57:39.707Z",
+        "statusModified": "2023-11-06T17:57:39.707Z",
+        "prefLabel": {
+          "fi": "RIPUSTUSKISKOJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-37"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-02/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-12"
+    },
+    {
+      "id": "622c5533-b64d-4c4d-af84-046840185814",
+      "codeValue": "J-TATE-07-03",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07-03",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-03",
+      "status": "VALID",
+      "order": 48,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.251Z",
+      "modified": "2023-11-06T17:57:39.691Z",
+      "statusModified": "2023-11-06T17:57:39.691Z",
+      "prefLabel": {
+        "fi": "Ripustuskiskojärjestelmä - turva"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi turvajärjestelmien ripustuskiskojärjestelmille\n(turvateknisten järjestelmien ripustuskiskojärjestelmillä ripustetaan turvateknisten järjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "RIPJ.TURVA",
+      "broaderCode": {
+        "id": "9b5ff30e-9270-4405-8182-e49da1084e09",
+        "codeValue": "J-TATE-07",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07",
+        "status": "VALID",
+        "order": 45,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.231Z",
+        "modified": "2023-11-06T17:57:39.707Z",
+        "statusModified": "2023-11-06T17:57:39.707Z",
+        "prefLabel": {
+          "fi": "RIPUSTUSKISKOJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-37"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-03/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-32"
+    },
+    {
+      "id": "db9a0493-b29d-49d2-b4b3-18c8fdf009bd",
+      "codeValue": "J-TATE-07-04",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07-04",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-04",
+      "status": "VALID",
+      "order": 49,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.257Z",
+      "modified": "2023-11-06T17:57:39.675Z",
+      "statusModified": "2023-11-06T17:57:39.675Z",
+      "prefLabel": {
+        "fi": "Ripustuskiskojärjestelmä - rakennusautomaatio"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi rakennusautomaatiojärjestelmien ripustuskiskojärjestelmille\n(rakennusautomaatiojärjestelmien ripustuskiskojärjestelmillä ripustetaan rakennusautomaatiojärjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "RIPJ.RAU",
+      "broaderCode": {
+        "id": "9b5ff30e-9270-4405-8182-e49da1084e09",
+        "codeValue": "J-TATE-07",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07",
+        "status": "VALID",
+        "order": 45,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.231Z",
+        "modified": "2023-11-06T17:57:39.707Z",
+        "statusModified": "2023-11-06T17:57:39.707Z",
+        "prefLabel": {
+          "fi": "RIPUSTUSKISKOJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-37"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-04/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-39"
+    },
+    {
+      "id": "4facb65c-ffb3-4dc5-84f9-5e84b5c80ace",
+      "codeValue": "J-TATE-07-05",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07-05",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-05",
+      "status": "VALID",
+      "order": 50,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.264Z",
+      "modified": "2023-11-06T17:57:39.666Z",
+      "statusModified": "2023-11-06T17:57:39.666Z",
+      "prefLabel": {
+        "fi": "Ripustuskiskojärjestelmä - LVI"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi LVI-järjestelmien ripustuskiskojärjestelmille\n(LVI-järjestelmien ripustuskiskojärjestelmillä ripustetaan LVI-järjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "RIPJ.LVI",
+      "broaderCode": {
+        "id": "9b5ff30e-9270-4405-8182-e49da1084e09",
+        "codeValue": "J-TATE-07",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07",
+        "status": "VALID",
+        "order": 45,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.231Z",
+        "modified": "2023-11-06T17:57:39.707Z",
+        "statusModified": "2023-11-06T17:57:39.707Z",
+        "prefLabel": {
+          "fi": "RIPUSTUSKISKOJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-37"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-05/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-47"
+    },
+    {
+      "id": "2c29766a-2da2-4d2d-8946-3c805fbce72a",
+      "codeValue": "J-TATE-07-06",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07-06",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-06",
+      "status": "VALID",
+      "order": 51,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.270Z",
+      "modified": "2023-11-06T17:57:39.699Z",
+      "statusModified": "2023-11-06T17:57:39.699Z",
+      "prefLabel": {
+        "fi": "Ripustuskiskojärjestelmä - yhteinen"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi talotekniikkajärjestelmien yhteisille ripustuskiskojärjestelmille\n(talotekniikkajärjestelmien yhteisillä ripustuskiskojärjestelmillä ripustetaan talotekniikkajärjestelmien varsinaisia tuoteosia)"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "RIPJ.YHT",
+      "broaderCode": {
+        "id": "9b5ff30e-9270-4405-8182-e49da1084e09",
+        "codeValue": "J-TATE-07",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07",
+        "status": "VALID",
+        "order": 45,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.231Z",
+        "modified": "2023-11-06T17:57:39.707Z",
+        "statusModified": "2023-11-06T17:57:39.707Z",
+        "prefLabel": {
+          "fi": "RIPUSTUSKISKOJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-37"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-06/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-43"
+    },
+    {
+      "id": "9abd3c74-031f-499f-b905-b1d352c57a7f",
+      "codeValue": "J-TATE-07-99",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07-99",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-99",
+      "status": "VALID",
+      "order": 52,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.276Z",
+      "modified": "2023-11-06T17:57:39.592Z",
+      "statusModified": "2023-11-06T17:57:39.592Z",
+      "prefLabel": {
+        "fi": "MUU - Ripustuskiskojärjestelmät"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi muille ripustusjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ei tunnusta",
+      "broaderCode": {
+        "id": "9b5ff30e-9270-4405-8182-e49da1084e09",
+        "codeValue": "J-TATE-07",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-07",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07",
+        "status": "VALID",
+        "order": 45,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.231Z",
+        "modified": "2023-11-06T17:57:39.707Z",
+        "statusModified": "2023-11-06T17:57:39.707Z",
+        "prefLabel": {
+          "fi": "RIPUSTUSKISKOJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-37"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-07-99/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-53"
+    },
+    {
+      "id": "42d1c0da-650e-49a2-afcf-c2c76663db30",
+      "codeValue": "J-TATE-08",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08",
+      "status": "VALID",
+      "order": 53,
+      "hierarchyLevel": 2,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.283Z",
+      "modified": "2023-11-06T17:57:39.372Z",
+      "statusModified": "2023-11-06T17:57:39.372Z",
+      "prefLabel": {
+        "fi": "ASENNUSPYLVÄSJÄRJESTELMÄT"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄLUOKKA"
+      },
+      "definition": {
+        "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "broaderCode": {
+        "id": "62ee3257-86df-4e9d-9f56-60e4a8f99cae",
+        "codeValue": "J-TATE",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE",
+        "status": "VALID",
+        "order": 1,
+        "hierarchyLevel": 1,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:39:36.784Z",
+        "modified": "2023-11-06T17:57:39.650Z",
+        "statusModified": "2023-11-06T17:57:39.650Z",
+        "prefLabel": {
+          "fi": "REITITYS- JA ASENNUSJÄRJESTELMÄT - TATE"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLAJI"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmälaji, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-14"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-51"
+    },
+    {
+      "id": "99536e6f-5009-4c46-a0d7-7a9275b5173c",
+      "codeValue": "J-TATE-08-01",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08-01",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-01",
+      "status": "VALID",
+      "order": 54,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.289Z",
+      "modified": "2023-11-06T17:57:39.348Z",
+      "statusModified": "2023-11-06T17:57:39.348Z",
+      "prefLabel": {
+        "fi": "Asennuspylväsjärjestelmä - sähkö"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi sähköjärjestelmien asennuspylväsjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ASPYJ.SÄH",
+      "broaderCode": {
+        "id": "42d1c0da-650e-49a2-afcf-c2c76663db30",
+        "codeValue": "J-TATE-08",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08",
+        "status": "VALID",
+        "order": 53,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.283Z",
+        "modified": "2023-11-06T17:57:39.372Z",
+        "statusModified": "2023-11-06T17:57:39.372Z",
+        "prefLabel": {
+          "fi": "ASENNUSPYLVÄSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-51"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-01/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-59"
+    },
+    {
+      "id": "496a5503-8252-46c1-864a-91fe565d90d8",
+      "codeValue": "J-TATE-08-02",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08-02",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-02",
+      "status": "VALID",
+      "order": 55,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.295Z",
+      "modified": "2023-11-06T17:57:39.324Z",
+      "statusModified": "2023-11-06T17:57:39.324Z",
+      "prefLabel": {
+        "fi": "Asennuspylväsjärjestelmä - data"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi tietoteknisten järjestelmien asennuspylväsjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ASPYJ.DATA",
+      "broaderCode": {
+        "id": "42d1c0da-650e-49a2-afcf-c2c76663db30",
+        "codeValue": "J-TATE-08",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08",
+        "status": "VALID",
+        "order": 53,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.283Z",
+        "modified": "2023-11-06T17:57:39.372Z",
+        "statusModified": "2023-11-06T17:57:39.372Z",
+        "prefLabel": {
+          "fi": "ASENNUSPYLVÄSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-51"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-02/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-58"
+    },
+    {
+      "id": "dd00101f-0f0f-4093-883d-a37985d1eb7c",
+      "codeValue": "J-TATE-08-03",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08-03",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-03",
+      "status": "VALID",
+      "order": 56,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.302Z",
+      "modified": "2023-11-06T17:57:39.356Z",
+      "statusModified": "2023-11-06T17:57:39.356Z",
+      "prefLabel": {
+        "fi": "Asennuspylväsjärjestelmä - turva"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi turvajärjestelmien asennuspylväsjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ASPYJ.TURVA",
+      "broaderCode": {
+        "id": "42d1c0da-650e-49a2-afcf-c2c76663db30",
+        "codeValue": "J-TATE-08",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08",
+        "status": "VALID",
+        "order": 53,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.283Z",
+        "modified": "2023-11-06T17:57:39.372Z",
+        "statusModified": "2023-11-06T17:57:39.372Z",
+        "prefLabel": {
+          "fi": "ASENNUSPYLVÄSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-51"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-03/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-55"
+    },
+    {
+      "id": "bcfc33b6-de46-48ce-b036-43bfacef3372",
+      "codeValue": "J-TATE-08-04",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08-04",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-04",
+      "status": "VALID",
+      "order": 57,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.310Z",
+      "modified": "2023-11-06T17:57:39.340Z",
+      "statusModified": "2023-11-06T17:57:39.340Z",
+      "prefLabel": {
+        "fi": "Asennuspylväsjärjestelmä - rakennusautomaatio"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi rakennusautomaatiojärjestelmien asennuspylväsjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ASPYJ.RAU",
+      "broaderCode": {
+        "id": "42d1c0da-650e-49a2-afcf-c2c76663db30",
+        "codeValue": "J-TATE-08",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08",
+        "status": "VALID",
+        "order": 53,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.283Z",
+        "modified": "2023-11-06T17:57:39.372Z",
+        "statusModified": "2023-11-06T17:57:39.372Z",
+        "prefLabel": {
+          "fi": "ASENNUSPYLVÄSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-51"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-04/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-56"
+    },
+    {
+      "id": "66df408d-9643-4f56-8b00-0a2172a7f00d",
+      "codeValue": "J-TATE-08-05",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08-05",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-05",
+      "status": "VALID",
+      "order": 58,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.318Z",
+      "modified": "2023-11-06T17:57:39.332Z",
+      "statusModified": "2023-11-06T17:57:39.332Z",
+      "prefLabel": {
+        "fi": "Asennuspylväsjärjestelmä - LVI"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi LVI-järjestelmien asennuspylväsjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ASPYJ.LVI",
+      "broaderCode": {
+        "id": "42d1c0da-650e-49a2-afcf-c2c76663db30",
+        "codeValue": "J-TATE-08",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08",
+        "status": "VALID",
+        "order": 53,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.283Z",
+        "modified": "2023-11-06T17:57:39.372Z",
+        "statusModified": "2023-11-06T17:57:39.372Z",
+        "prefLabel": {
+          "fi": "ASENNUSPYLVÄSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-51"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-05/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-52"
+    },
+    {
+      "id": "5d9b1400-8ed5-4c9a-a8e3-75c95f20419c",
+      "codeValue": "J-TATE-08-06",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08-06",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-06",
+      "status": "VALID",
+      "order": 59,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.325Z",
+      "modified": "2023-11-06T17:57:39.364Z",
+      "statusModified": "2023-11-06T17:57:39.364Z",
+      "prefLabel": {
+        "fi": "Asennuspylväsjärjestelmä - yhteinen"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi talotekniikkajärjestelmien yhteisille asennuspylväsjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ASPYJ.YHT",
+      "broaderCode": {
+        "id": "42d1c0da-650e-49a2-afcf-c2c76663db30",
+        "codeValue": "J-TATE-08",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08",
+        "status": "VALID",
+        "order": 53,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.283Z",
+        "modified": "2023-11-06T17:57:39.372Z",
+        "statusModified": "2023-11-06T17:57:39.372Z",
+        "prefLabel": {
+          "fi": "ASENNUSPYLVÄSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-51"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-06/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-54"
+    },
+    {
+      "id": "3c5c057d-d60c-44cd-bef1-513ba589e286",
+      "codeValue": "J-TATE-08-99",
+      "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08-99",
+      "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-99",
+      "status": "VALID",
+      "order": 60,
+      "hierarchyLevel": 3,
+      "startDate": "2023-08-29",
+      "created": "2023-08-29T19:47:28.332Z",
+      "modified": "2023-11-06T17:57:39.551Z",
+      "statusModified": "2023-11-06T17:57:39.551Z",
+      "prefLabel": {
+        "fi": "MUU - Asennuspylväsjärjestelmät"
+      },
+      "description": {
+        "fi": "JÄRJESTELMÄTYYPPI"
+      },
+      "definition": {
+        "fi": "järjestelmätyyppi muille asennuspylväsjärjestelmille"
+      },
+      "codeScheme": {
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0"
+      },
+      "shortName": "ei tunnusta",
+      "broaderCode": {
+        "id": "42d1c0da-650e-49a2-afcf-c2c76663db30",
+        "codeValue": "J-TATE-08",
+        "uri": "http://uri.suomi.fi/codelist/rytj/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/code/J-TATE-08",
+        "url": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08",
+        "status": "VALID",
+        "order": 53,
+        "hierarchyLevel": 2,
+        "startDate": "2023-08-29",
+        "created": "2023-08-29T19:47:28.283Z",
+        "modified": "2023-11-06T17:57:39.372Z",
+        "statusModified": "2023-11-06T17:57:39.372Z",
+        "prefLabel": {
+          "fi": "ASENNUSPYLVÄSJÄRJESTELMÄT"
+        },
+        "description": {
+          "fi": "JÄRJESTELMÄLUOKKA"
+        },
+        "definition": {
+          "fi": "järjestelmäkoodiston järjestelmäluokka, ryhmittelevä"
+        },
+        "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08/members/",
+        "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-51"
+      },
+      "membersUrl": "https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/TALOTEKNIIKKA-JARJESTELMA_Versio_1_0/codes/J-TATE-08-99/members/",
+      "conceptUriInVocabularies": "http://uri.suomi.fi/terminology/talotekniikka-jarjestelma_versio_1_0/concept-57"
+    }
+  ]
 }
