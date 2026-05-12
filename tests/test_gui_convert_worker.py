@@ -78,34 +78,3 @@ def test_convert_worker_does_not_emit_report_when_validate_false(qtbot, tmp_path
     assert mock_convert.call_args.kwargs.get("validate") is False
 
 
-def test_convert_worker_passes_skip_acis_through_to_convert_dxf(qtbot, tmp_path):
-    """skip_acis=True must translate to preprocess_acis=False so the
-    accoreconsole-launching code path is not entered."""
-    from dxf2ifc.gui.convert_worker import ConvertWorker
-    from dxf2ifc.profiles.loader import load_default_profile
-
-    worker = ConvertWorker()
-
-    out = str(tmp_path / "out.ifc")
-    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value=({}, None)) as mock_convert:
-        with qtbot.waitSignal(worker.finished, timeout=2000):
-            worker.run(
-                dxf="dummy.dxf",
-                out=out,
-                profile=load_default_profile(),
-                skip_acis=True,
-            )
-    assert mock_convert.call_args.kwargs.get("preprocess_acis") is False
-
-
-def test_convert_worker_default_skip_acis_false_runs_preprocess(qtbot, tmp_path):
-    from dxf2ifc.gui.convert_worker import ConvertWorker
-    from dxf2ifc.profiles.loader import load_default_profile
-
-    worker = ConvertWorker()
-
-    out = str(tmp_path / "out.ifc")
-    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value=({}, None)) as mock_convert:
-        with qtbot.waitSignal(worker.finished, timeout=2000):
-            worker.run(dxf="dummy.dxf", out=out, profile=load_default_profile())
-    assert mock_convert.call_args.kwargs.get("preprocess_acis") is True

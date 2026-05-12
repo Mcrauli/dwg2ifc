@@ -6,6 +6,26 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha20 — 2026-05-12 (poistettu skip-ACIS-toggle GUI:sta ja CLI:stä)
+
+**Poistettu — käyttäjälle näkyvä accoreconsole-ohitusvalinta**:
+
+`FilePanel`-checkbox **"Ohita 3DSOLID-triangulaatio (accoreconsole)"**
+ja CLI-flagi **`--skip-acis`** (alpha17) on poistettu. Toggle oli
+hätäkorjaus alpha17:n aikaiseen oletettuun crash-tilanteeseen joka
+ratkesi alpha18:n MagiCAD-blokkien LISP-Phase-2-skipillä; toggle ei
+jää käyttöön tarpeellisena vaan toimii lähinnä jalkaalaukauksena
+(käyttäjä saattaa unohtaa sen päälle ja sitten ihmetellä miksi
+ACIS-pohjaiset osat puuttuvat IFC:stä).
+
+Sisäinen `convert_dxf(preprocess_acis=False)`-parametri säilyy —
+testit käyttävät sitä hermeettisiin ajoihin ilman accoreconsolea.
+Pelkän käyttäjälle näkyvän pintansa poistettiin.
+
+QSettings:n `skip_acis`-avain ei enää luotaisi/luettaisi. Jos avain
+on jonkun käyttäjän asetuksissa alpha17–alpha19:n ajoilta, se
+ignoroidaan harmittomasti.
+
 ## v0.2.0-alpha19 — 2026-05-12 (kylmäkoneikon sähkövarusteet — 6 uutta layer-mappausta)
 
 **Lisätty — VARUSTEET-LISP:n 6:n uuden laitteen tuki**:

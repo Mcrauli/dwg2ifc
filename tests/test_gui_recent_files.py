@@ -111,25 +111,3 @@ def test_recent_files_floor_elevation_enabled_handles_string_storage(qtbot, tmp_
     assert store.floor_elevation_enabled is True
 
 
-def test_recent_files_skip_acis_default_is_false(qtbot, tmp_path):
-    """Default-off — most refrigeration DXFs need accoreconsole to
-    triangulate 3DSOLID bodies. The opt-in is for crash-recovery and
-    for DXFs that only contain dynamic-block / INSERT-pohjaista
-    geometriaa."""
-    store = _make_store(tmp_path)
-    assert store.skip_acis is False
-
-
-def test_recent_files_skip_acis_round_trips(qtbot, tmp_path):
-    store = _make_store(tmp_path)
-    store.skip_acis = True
-    fresh = _make_store(tmp_path)
-    assert fresh.skip_acis is True
-
-
-def test_recent_files_skip_acis_handles_string_storage(qtbot, tmp_path):
-    store = _make_store(tmp_path)
-    store._settings.setValue("skip_acis", "true")
-    assert store.skip_acis is True
-    store._settings.setValue("skip_acis", "false")
-    assert store.skip_acis is False
