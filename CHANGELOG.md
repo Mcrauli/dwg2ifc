@@ -6,19 +6,19 @@ project uses semantic versioning.
 
 ## Unreleased
 
-## v0.2.0-alpha22 — 2026-05-13 (multi-floor merge + 3D-rotaatio-fixi LWPOLYLINE-ekstrudointiin)
+## v0.2.0-alpha23 — 2026-05-13 (multi-floor merge — N DWG → 1 IFC)
 
 **Uusi — Multi-floor DWG → yksi IFC**:
 
 dxf2ifc hyväksyy nyt useita DXF/DWG-tiedostoja yhteen IFC:hen. Jokainen
-tiedosto = yksi `IfcBuildingStorey`. GUI:ssa monirivinen taulukko
-(tiedosto / kerros / Z mm), CLI:ssa `--floor PATH[:LABEL[:ELEV_MM]]`
+tiedosto = yksi `IfcBuildingStorey`. GUI:ssä monirivinen taulukko
+(tiedosto / kerros / Z mm), CLI:ssä `--floor PATH[:LABEL[:ELEV_MM]]`
 toistettavasti. Labeli kirjoitetaan `IfcBuildingStorey.Name`-kenttään
-sellaisenaan ("1.krs", "2.krs", "kellari", …). Maailma-Z = `kerroksen
-korko + DXF-objektin Z`, joten kaikki kerrokset @ 0 mm päästää
-AutoCADin absoluuttiset Z:t läpi sellaisinaan.
+sellaisenaan ("1.krs", "2.krs", "kellari", …). Maailma-Z =
+`kerroksen korko + DXF-objektin Z`, joten kaikki kerrokset @ 0 mm
+päästää AutoCADin absoluuttiset Z:t läpi sellaisinaan.
 
-Suunnitelma:
+Spec:
 [`docs/superpowers/specs/2026-05-13-multi-floor-merge-design.md`](docs/superpowers/specs/2026-05-13-multi-floor-merge-design.md).
 
 **Breaking changes**:
@@ -39,6 +39,8 @@ Suunnitelma:
 - `MappedEntity.storey_index` kuljettaa jokaisen entiteetin
   omistaja-storeyn writerille; orchestrator ei enää kutsu
   `skeleton.resolve_storey`:ta.
+
+## v0.2.0-alpha22 — 2026-05-13 (3D-rotaatio-fixi LWPOLYLINE-ekstrudointiin)
 
 **Korjattu — KLHV (pystytetty TIKAS-hylly) ei enää romahda yhdeksi pystypalkiksi**:
 

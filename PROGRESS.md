@@ -4,29 +4,29 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha22 (2026-05-13)
+## Current state — v0.2.0-alpha23 (2026-05-13)
 
-Tuorein julkaistu: **v0.2.0-alpha22** (2026-05-13).
+Tuorein julkaistu: **v0.2.0-alpha23** (2026-05-13).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a22.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a22.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a23.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a23.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–22:n korjaukset tiivistettynä (täysi historia
+Alpha8–23:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
-- **alpha22** (2026-05-13): **Multi-floor merge** — N DXF/DWG → 1 IFC,
+- **alpha23** (2026-05-13): **Multi-floor merge** — N DXF/DWG → 1 IFC,
   yksi `IfcBuildingStorey` per tiedosto, kerros-labeli + Z per rivi
   GUI-taulukossa, CLI:ssä `--floor` toistettava. Maailma-Z =
   `kerros_z + dxf_z`. Storey.Name = käyttäjän labeli. Breaking:
   `Profile.storey_z_levels_mm` poistettu, GUI:n yhden-korko-toggle
-  poistettu, `RecentFilesStore.floor_elevation_*` poistettu. Sisältää
-  myös 3D-rotaatio-fixin LWPOLYLINE-extrudointiin (KLHV/TIKAS-hyllyt).
-  Spec:
+  poistettu, `RecentFilesStore.floor_elevation_*` poistettu. Spec:
   [`docs/superpowers/specs/2026-05-13-multi-floor-merge-design.md`](docs/superpowers/specs/2026-05-13-multi-floor-merge-design.md).
+- **alpha22** (2026-05-13): 3D-rotaatio-fix LWPOLYLINE-extrudointiin —
+  KLHV-pystytetty TIKAS-hylly ei enää romahda yhdeksi pystypalkiksi.
 - **alpha21** (2026-05-13): **DWG-syöte takaisin** — `accoreconsole.exe`
   + `DXFOUT` -preconversio uudessa modulissa `core/dwg_preconvert.py`.
   Sama headless-tekniikka kuin STLOUT-tessellaatiossa; ei COM:ia, ei
