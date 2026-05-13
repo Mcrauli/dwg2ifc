@@ -227,10 +227,6 @@ class Profile(BaseModel):
     name: str
     ifc_schema: Literal["IFC4"]
     rules: list[Rule]
-    storey_z_levels_mm: list[float] = Field(
-        default_factory=lambda: [0.0],
-        description="Storey base elevations (mm), strictly increasing.",
-    )
     positio: PositioConfig | None = Field(
         default=None,
         description=(
@@ -241,15 +237,3 @@ class Profile(BaseModel):
         ),
     )
 
-    @model_validator(mode="after")
-    def _validate_storey_z_levels(self) -> "Profile":
-        levels = self.storey_z_levels_mm
-        if not levels:
-            raise ValueError("storey_z_levels_mm must contain at least one entry")
-        for z in levels:
-            if z < 0 or z > 100_000:
-                raise ValueError("storey_z_levels_mm entries must be within [0, 100000] mm")
-        for prev, nxt in zip(levels, levels[1:], strict=False):
-            if nxt <= prev:
-                raise ValueError("storey_z_levels_mm must be strictly increasing")
-        return self

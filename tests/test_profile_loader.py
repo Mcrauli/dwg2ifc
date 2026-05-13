@@ -321,24 +321,6 @@ def test_dump_profile_writes_valid_utf8_toml(tmp_path: Path):
     assert text.startswith("[profile]") or "[[rules]]" in text
 
 
-def test_load_profile_round_trips_storey_levels(tmp_path: Path):
-    profile = Profile(
-        name="multi-storey",
-        ifc_schema="IFC4",
-        rules=[],
-        storey_z_levels_mm=[0.0, 3500.0, 7000.0],
-    )
-    out = tmp_path / "multi.toml"
-    dump_profile(profile, out)
-    reloaded = load_profile(out)
-    assert reloaded.storey_z_levels_mm == [0.0, 3500.0, 7000.0]
-
-
-def test_default_profile_storey_levels_default_single_zero():
-    profile = load_default_profile()
-    assert profile.storey_z_levels_mm == [0.0]
-
-
 # Removed test_load_default_tate_only_profile_drops_architecture:
 # Bugfix-12 collapsed the two profiles into one (the default IS TATE-only
 # now). The remaining test_default_profile_is_tate_only above covers

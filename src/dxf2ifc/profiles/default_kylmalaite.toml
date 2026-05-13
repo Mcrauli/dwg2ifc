@@ -21,7 +21,6 @@
 [profile]
 name = "Kylmälaite RAVA v1"
 ifc_schema = "IFC4"
-storey_z_levels_mm = [0.0]
 
 # POSITIO numbering-block linkage. KYL-laitteiden vieressä on Lauri'n
 # LISP-työkalulla piirretty positiov2-INSERT joka kantaa
