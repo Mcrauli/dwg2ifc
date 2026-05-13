@@ -6,6 +6,27 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha25 — 2026-05-13 (accoreconsole-kestävyys + bbox-fallback + diagnostics)
+
+Kolmen yhdistelmäkorjaus jotka adressoivat 2.krs-tyyppisiä DWG:itä
+jotka kaatavat accoreconsole STLOUT:in:
+
+- **Bbox-fallback** — kun acis-mesh puuttuu (accoreconsole crashasi tai
+  ei ajettu), cooling-equipment / proxy / distribution-element /
+  furniture / tank -INSERT:in geometria korvataan ezdxf:n laskemalla
+  block-bbox-cuboidilla. Tulos: koneikot, lauhduttimet jne. näkyvät
+  edes laatikko-placeholderina IFC:ssä oikealla XY-paikalla, eivät
+  enää tipu kokonaan kuvasta.
+- **Per-body diagnostics-loggaus** — Phase 1 ja Phase 2 kirjaavat
+  käsiteltävän handle:n / block-nimen `extract.log`-tiedostoon ENNEN
+  STLOUT/EXPLODE-kutsua. Kun accoreconsole crashaa, log-tiedosto
+  paljastaa MIKÄ body / blokki laukaisi kaatumisen — toistaiseksi
+  sokean työn ja arvailun sijaan.
+- **Robusti .scr-kirjoitus** — `Path.write_text` korvattu
+  `write_bytes`:llä jotta Windows-tekstimoodi ei kahdenna `\\r\\n` ⇒
+  `\\r\\r\\n` (mikä on havaittu sotkevan accoreconsolen .scr-parserin
+  joillain DWG:illä). Itsestäänselvä, mutta defensiivinen.
+
 ## v0.2.0-alpha24 — 2026-05-13 (always skip MagiCAD blocks in accoreconsole Phase 2)
 
 **Korjattu — AutoCAD CER 2.krs:n koneikoilla/lauhduttimilla**:

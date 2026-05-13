@@ -379,9 +379,116 @@ def _process_one_file(
             mapped, energy_specs_path, profile=profile, progress=progress
         )
 
+    # Bbox fallback: when accoreconsole STLOUT crashed (or didn't run),
+    # cooling equipment / proxies / etc. remain BlockInstance-only and
+    # the builder dispatch would skip them entirely. Compute a bbox
+    # cuboid from the block definition via ezdxf and replace the
+    # BlockInstance with a MeshGeometry so the equipment at least
+    # appears as a placeholder box at the right XY position.
+    _apply_block_bbox_fallback(mapped, dxf_path, progress=progress)
+
     _apply_floor_elevation_offset(mapped, file_entry.elevation_mm)
 
     return mapped
+
+
+def _apply_block_bbox_fallback(
+    mapped: list[MappedEntity],
+    dxf_path: str | Path,
+    *,
+    progress: object | None,
+) -> None:
+    """Replace BlockInstance geometry with a bbox cuboid mesh for any
+    mapped entity whose IFC type requires MeshGeometry but didn't get
+    one from accoreconsole. Ensures the equipment shows up at least as
+    a placeholder box even when STLOUT failed or never ran.
+
+    The bbox is computed via ``ezdxf.bbox.extents`` on the source INSERT
+    (which walks the block's content and any nested geometry). If the
+    bbox can't be determined (block empty, ezdxf can't read it), the
+    entity is left as BlockInstance and the dispatcher will skip it as
+    before — no regression vs. the old behaviour.
+    """
+    candidates = [
+        m for m in mapped
+        if isinstance(m.geometry, BlockInstance)
+        and m.ifc_type in (
+            _COOLING_EQUIPMENT_CLASSES
+            | _DISTRIBUTION_ELEMENT_CLASSES
+            | {"IfcTank", "IfcFlowController", "IfcBuildingElementProxy", "IfcFurniture"}
+        )
+    ]
+    if not candidates:
+        return
+
+    try:
+        import ezdxf
+        from ezdxf import bbox as ezbbox
+    except Exception:  # noqa: BLE001 — never block convert
+        return
+
+    try:
+        doc = ezdxf.readfile(str(dxf_path))
+    except Exception:  # noqa: BLE001
+        return
+
+    handle_to_insert: dict[str, object] = {}
+    for ent in doc.modelspace():
+        if ent.dxftype() != "INSERT":
+            continue
+        try:
+            h = str(ent.dxf.handle).upper()
+            handle_to_insert[h] = ent
+        except Exception:  # noqa: BLE001
+            continue
+
+    promoted = 0
+    for m in candidates:
+        handle = (getattr(m, "handle", "") or "").upper()
+        ins = handle_to_insert.get(handle)
+        if ins is None:
+            continue
+        try:
+            box = ezbbox.extents([ins])
+        except Exception:  # noqa: BLE001
+            continue
+        if box is None or not box.has_data:
+            continue
+        ext = box.extmin
+        emax = box.extmax
+        # Cuboid 8 vertices + 12 triangle faces (2 per side × 6 sides).
+        xmin, ymin, zmin = float(ext.x), float(ext.y), float(ext.z)
+        xmax, ymax, zmax = float(emax.x), float(emax.y), float(emax.z)
+        if xmin == xmax or ymin == ymax:
+            # Zero-area bbox — skip rather than emit a degenerate mesh.
+            continue
+        if zmin == zmax:
+            # 2D block (no Z extents) — give it a nominal 1 mm height
+            # so the IFC has *some* solid representation. The user will
+            # still see a near-flat placeholder.
+            zmax = zmin + 1.0
+        verts = (
+            Point3D(xmin, ymin, zmin), Point3D(xmax, ymin, zmin),
+            Point3D(xmax, ymax, zmin), Point3D(xmin, ymax, zmin),
+            Point3D(xmin, ymin, zmax), Point3D(xmax, ymin, zmax),
+            Point3D(xmax, ymax, zmax), Point3D(xmin, ymax, zmax),
+        )
+        faces = (
+            (0, 1, 2), (0, 2, 3),  # bottom
+            (4, 6, 5), (4, 7, 6),  # top
+            (0, 4, 5), (0, 5, 1),  # front
+            (1, 5, 6), (1, 6, 2),  # right
+            (2, 6, 7), (2, 7, 3),  # back
+            (3, 7, 4), (3, 4, 0),  # left
+        )
+        m.geometry = MeshGeometry(vertices=verts, faces=faces, source="3dface")
+        promoted += 1
+
+    if progress is not None and promoted > 0:
+        progress(
+            f"  Bbox-fallback: {promoted} blokkia ilman ACIS-meshia "
+            f"sai bbox-placeholderin (accoreconsole STLOUT puuttuva tai kaatui)"
+        )
 
 
 def convert_dxf(

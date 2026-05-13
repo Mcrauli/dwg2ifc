@@ -222,7 +222,8 @@ _LISP_SETUP = (
     '(setvar "FACETRES" 0.1) '
     '(setq solid_out "{solid_out}") '
     '(setq insert_out "{insert_out}") '
-    '(setq logf (open (strcat "{log_out}" "extract.log") "w")))'
+    '(setq logf (open (strcat "{log_out}" "extract.log") "w")) '
+    '(defun tryx (tag fn / err) (setq err (vl-catch-all-apply fn)) (if (vl-catch-all-error-p err) (write-line (strcat tag ":" (vl-catch-all-error-message err)) logf))))'
 )
 
 # Phase 1: raw ACIS bodies on the layer filter.
@@ -236,7 +237,8 @@ _LISP_PHASE1 = (
     '(while (< i n) '
     '(setq obj (ssname ss i)) '
     '(setq h (cdr (assoc 5 (entget obj)))) '
-    '(command "_.STLOUT" obj "" "Y" (strcat solid_out h ".stl")) '
+    '(write-line (strcat "phase1_handle=" h) logf) '
+    '(tryx (strcat "p1_stl_err=" h) (function (lambda () (command "_.STLOUT" obj "" "Y" (strcat solid_out h ".stl"))))) '
     '(setq i (1+ i))))))'
 )
 
@@ -280,6 +282,7 @@ _LISP_PHASE2 = (
     '(if (and bname (not (wcmatch (strcase bname) "{skip_blocks}"))) '
     '(progn '
     '(setq ih (cdr (assoc 5 insel))) '
+    '(write-line (strcat "phase2_handle=" ih "/block=" bname) logf) '
     '(setq ctr 0 toconv (ssadd) iter_cap 1000) '
     '(command "_.EXPLODE" ins) '
     '(setq queue (list (ssget "_P"))) '
@@ -427,7 +430,12 @@ def extract_acis_meshes(
             _LISP_PHASE2.format(filter=layer_filter, skip_blocks=skip_blocks),
             _LISP_CLEANUP,
         ]
-        scr_path.write_text("\r\n".join(forms) + "\r\n", encoding="utf-8")
+        # Write in binary mode to keep our explicit ``\r\n`` separators
+        # exact. ``write_text`` opens in text mode on Windows, which
+        # translates ``\n`` to ``\r\n`` again and turns our ``\r\n`` into
+        # ``\r\r\n`` — accoreconsole has been observed to lose forms when
+        # the file contains those double-CRs.
+        scr_path.write_bytes(("\r\n".join(forms) + "\r\n").encode("utf-8"))
 
         if progress is not None:
             progress("Triangulating ACIS bodies via accoreconsole…")
