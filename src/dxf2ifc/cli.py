@@ -7,9 +7,32 @@ import sys
 from pathlib import Path
 
 from dxf2ifc import __version__
-from dxf2ifc.core.ifc_writer import convert_dxf
+from dxf2ifc.core.ifc_writer import FileEntry, convert, convert_dxf
 from dxf2ifc.core.quality import validate_ifc
 from dxf2ifc.profiles.loader import load_default_profile, load_profile
+
+
+def _parse_floor_arg(value: str, *, default_index: int) -> FileEntry:
+    """Parse a ``--floor PATH[:LABEL[:ELEV_MM]]`` value into a FileEntry.
+
+    ``default_index`` is 0-based and only used to derive a default label
+    (``"{N + 1}.krs"``) when the caller did not supply one.
+    """
+    parts = value.split(":")
+    if len(parts) > 3:
+        raise ValueError(
+            f"--floor expects PATH[:LABEL[:ELEV_MM]], got {value!r}"
+        )
+    path = Path(parts[0])
+    label = parts[1] if len(parts) >= 2 and parts[1] else f"{default_index + 1}.krs"
+    elev_str = parts[2] if len(parts) == 3 else "0"
+    try:
+        elev_mm = float(elev_str)
+    except ValueError as exc:
+        raise ValueError(
+            f"--floor elevation must be a number, got {elev_str!r}"
+        ) from exc
+    return FileEntry(path=path, floor_label=label, elevation_mm=elev_mm)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -20,16 +43,32 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"dxf2ifc {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    convert = subparsers.add_parser("convert", help="Convert a DXF or DWG file to IFC.")
+    convert = subparsers.add_parser(
+        "convert", help="Convert one or more DXF/DWG files to a single IFC."
+    )
     convert.add_argument(
         "input",
         type=Path,
+        nargs="?",
+        default=None,
         help=(
-            "Path to the input .dxf or .dwg file. DWG inputs are "
-            "preconverted via accoreconsole + DXFOUT (requires AutoCAD)."
+            "Single DXF/DWG input (legacy form, becomes storey '1.krs'). "
+            "Mutually exclusive with --floor. DWG inputs are preconverted "
+            "via accoreconsole + DXFOUT (requires AutoCAD)."
         ),
     )
     convert.add_argument("output", type=Path, help="Path for the IFC output file.")
+    convert.add_argument(
+        "--floor",
+        action="append",
+        default=[],
+        metavar="PATH[:LABEL[:ELEV_MM]]",
+        help=(
+            "Multi-floor input. Repeatable: each occurrence adds one storey. "
+            "LABEL defaults to '<N>.krs' (1-based by --floor order). "
+            "ELEV_MM defaults to 0. Mutually exclusive with positional INPUT."
+        ),
+    )
     convert.add_argument(
         "--profile",
         type=Path,
@@ -95,15 +134,34 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "convert":
         profile = load_profile(args.profile) if args.profile else load_default_profile()
-        convert_dxf(
-            dxf_path=args.input,
-            output_path=args.output,
-            profile=profile,
-            schema=args.schema.upper(),
-            energy_specs_path=args.energy_specs,
-            floor_elevation_mm=args.floor_elevation,
-            magicad_ifc_path=args.magicad_ifc,
-        )
+        if args.floor and args.input is not None:
+            parser.error("--floor and positional INPUT are mutually exclusive")
+        if not args.floor and args.input is None:
+            parser.error(
+                "convert requires either a positional INPUT or one or more --floor flags"
+            )
+        if args.floor:
+            files = [
+                _parse_floor_arg(v, default_index=i) for i, v in enumerate(args.floor)
+            ]
+            convert(
+                files=files,
+                output_path=args.output,
+                profile=profile,
+                schema=args.schema.upper(),
+                energy_specs_path=args.energy_specs,
+                magicad_ifc_path=args.magicad_ifc,
+            )
+        else:
+            convert_dxf(
+                dxf_path=args.input,
+                output_path=args.output,
+                profile=profile,
+                schema=args.schema.upper(),
+                energy_specs_path=args.energy_specs,
+                floor_elevation_mm=args.floor_elevation,
+                magicad_ifc_path=args.magicad_ifc,
+            )
         print(f"Wrote {args.output}", file=sys.stderr)
         if args.validate:
             report = validate_ifc(args.output)
