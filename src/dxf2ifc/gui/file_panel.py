@@ -1,27 +1,30 @@
-"""Widget that lets the user pick a DXF input + IFC output and request conversion."""
+"""Widget for picking DXF/DWG inputs (multi-floor) and requesting conversion."""
 
 from __future__ import annotations
 
-from PySide6 import QtCore, QtWidgets
+from pathlib import Path
+
+from PySide6 import QtCore, QtGui, QtWidgets
+
+from dxf2ifc.core.types import FileEntry
 
 
 class FilePanel(QtWidgets.QWidget):
-    # Emits (dxf_path, ifc_path, energy_specs_path, floor_elevation_mm,
-    # magicad_ifc_path).
-    # ``energy_specs_path`` is empty string when the user has not picked
-    # a spec file. ``floor_elevation_mm`` is the absolute Z elevation of
-    # 1.krs (mm) — added to every IfcBuildingStorey.Elevation in the
-    # output IFC. When the "Lisää 1.krs absoluuttinen korko" checkbox is
-    # unchecked, the panel emits 0.0 here regardless of the spinbox
-    # value, so DXF Z coordinates pass through to IFC unchanged. That
-    # is the right mode when the source DXF is already drawn in
-    # absolute Finnish coordinates; the offset path is for the more
-    # common case where designers draw entities relative to floor Z=0.
-    # ``magicad_ifc_path`` is empty string when no MagiCAD-IFC has been
-    # picked. When non-empty, the converter merges that IFC (typically
-    # produced by a colleague's FULL-MagiCAD ``-MAGIIFCCD`` export) into
-    # the master IFC and skips MagiCAD parts in the DXF to avoid duplicates.
-    convert_requested = QtCore.Signal(str, str, str, float, str)
+    """Multi-row file table → emits ``convert_requested(dict)`` payload.
+
+    Payload shape::
+
+        {
+            "files": list[FileEntry],
+            "output_path": str,
+            "energy_specs_path": str,   # "" if unset
+            "magicad_ifc_path": str,    # "" if unset
+        }
+    """
+
+    convert_requested = QtCore.Signal(dict)
+
+    _HEADERS = ("Tiedosto", "Kerros", "Z (mm)")
 
     def __init__(self, parent: QtWidgets.QWidget | None = None) -> None:
         super().__init__(parent)
@@ -30,108 +33,130 @@ class FilePanel(QtWidgets.QWidget):
         layout.setHorizontalSpacing(8)
         layout.setVerticalSpacing(10)
 
-        layout.addWidget(self._caption("DXF input"), 0, 0)
-        self.input_edit = QtWidgets.QLineEdit()
-        self.input_edit.setPlaceholderText("Polku .dxf- tai .dwg-tiedostoon")
-        layout.addWidget(self.input_edit, 0, 1)
-        self.browse_input_button = QtWidgets.QPushButton("Browse…")
-        self.browse_input_button.setProperty("secondary", "true")
-        self.browse_input_button.clicked.connect(self._on_browse_input)
-        layout.addWidget(self.browse_input_button, 0, 2)
+        # --- File table -----------------------------------------------------
+        self.files_table = QtWidgets.QTableWidget(0, 3)
+        self.files_table.setHorizontalHeaderLabels(list(self._HEADERS))
+        self.files_table.horizontalHeader().setSectionResizeMode(
+            0, QtWidgets.QHeaderView.ResizeMode.Stretch
+        )
+        self.files_table.horizontalHeader().setSectionResizeMode(
+            1, QtWidgets.QHeaderView.ResizeMode.ResizeToContents
+        )
+        self.files_table.horizontalHeader().setSectionResizeMode(
+            2, QtWidgets.QHeaderView.ResizeMode.ResizeToContents
+        )
+        self.files_table.setSelectionBehavior(
+            QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows
+        )
+        self.files_table.verticalHeader().setVisible(False)
+        layout.addWidget(self.files_table, 0, 0, 1, 3)
 
-        layout.addWidget(self._caption("IFC output"), 1, 0)
+        # Add / Remove toolbar
+        toolbar = QtWidgets.QHBoxLayout()
+        self.add_files_button = QtWidgets.QPushButton("Lisää tiedosto(t)…")
+        self.add_files_button.setProperty("secondary", "true")
+        self.add_files_button.clicked.connect(self._on_add_files)
+        self.remove_button = QtWidgets.QPushButton("Poista")
+        self.remove_button.setProperty("secondary", "true")
+        self.remove_button.clicked.connect(self._on_remove)
+        toolbar.addWidget(self.add_files_button)
+        toolbar.addWidget(self.remove_button)
+        toolbar.addStretch(1)
+        layout.addLayout(toolbar, 1, 0, 1, 3)
+
+        # --- Output IFC -----------------------------------------------------
+        layout.addWidget(self._caption("IFC output"), 2, 0)
         self.output_edit = QtWidgets.QLineEdit()
         self.output_edit.setPlaceholderText("Path to .ifc")
-        layout.addWidget(self.output_edit, 1, 1)
+        layout.addWidget(self.output_edit, 2, 1)
         self.browse_output_button = QtWidgets.QPushButton("Browse…")
         self.browse_output_button.setProperty("secondary", "true")
         self.browse_output_button.clicked.connect(self._on_browse_output)
-        layout.addWidget(self.browse_output_button, 1, 2)
+        layout.addWidget(self.browse_output_button, 2, 2)
 
-        layout.addWidget(self._caption("Energiateho-listasta"), 2, 0)
+        # --- Energy specs --------------------------------------------------
+        layout.addWidget(self._caption("Energiateho-listasta"), 3, 0)
         self.energy_edit = QtWidgets.QLineEdit()
         self.energy_edit.setPlaceholderText(
             "Valinnainen .xlsx tai .csv jossa Koneikko, Laitetunnus + tehot"
         )
-        layout.addWidget(self.energy_edit, 2, 1)
+        layout.addWidget(self.energy_edit, 3, 1)
         self.browse_energy_button = QtWidgets.QPushButton("Browse…")
         self.browse_energy_button.setProperty("secondary", "true")
         self.browse_energy_button.clicked.connect(self._on_browse_energy)
-        layout.addWidget(self.browse_energy_button, 2, 2)
+        layout.addWidget(self.browse_energy_button, 3, 2)
 
-        layout.addWidget(self._caption("MagiCAD-IFC"), 3, 0)
+        # --- MagiCAD IFC ----------------------------------------------------
+        layout.addWidget(self._caption("MagiCAD-IFC"), 4, 0)
         self.magicad_ifc_edit = QtWidgets.QLineEdit()
         self.magicad_ifc_edit.setPlaceholderText(
-            "Valinnainen -MAGIIFCCD-tuotos (LVI-puoli yhdistetään master-IFC:hen)"
+            "Valinnainen -MAGIIFCCD-tuotos (kollegan IFC mergetään master-IFC:hen)"
         )
         self.magicad_ifc_edit.setToolTip(
             "Valinnainen MagiCAD-IFC. Kun annettu, dxf2ifc skippaa "
             "MagiCAD-objektit DXF:stä (MAGI*-luokat + ACAD_PROXY_ENTITY) "
             "ja yhdistää tämän IFC:n IfcProduct:t master-IFC:hen ensimmäisen "
-            "IfcBuildingStoreyn alle. Tarkoitettu kollegan FULL-MagiCAD-"
-            "lisenssin koneella ajettavaa -MAGIIFCCD:n tuotosta varten."
+            "IfcBuildingStoreyn alle."
         )
-        layout.addWidget(self.magicad_ifc_edit, 3, 1)
+        layout.addWidget(self.magicad_ifc_edit, 4, 1)
         self.browse_magicad_ifc_button = QtWidgets.QPushButton("Browse…")
         self.browse_magicad_ifc_button.setProperty("secondary", "true")
         self.browse_magicad_ifc_button.clicked.connect(self._on_browse_magicad_ifc)
-        layout.addWidget(self.browse_magicad_ifc_button, 3, 2)
+        layout.addWidget(self.browse_magicad_ifc_button, 4, 2)
 
-        self.floor_elevation_enabled_checkbox = QtWidgets.QCheckBox(
-            "Lisää 1.krs absoluuttinen korko"
-        )
-        self.floor_elevation_enabled_checkbox.setChecked(True)
-        self.floor_elevation_enabled_checkbox.setToolTip(
-            "Päällä: DXF:n Z=0 tulkitaan 1.krs lattiaksi ja alla annettu "
-            "korko lisätään jokaiseen IfcBuildingStorey.Elevation- ja "
-            "elementti-Z-arvoon. Pois: DXF:n Z-koordinaatit menevät IFC:hen "
-            "sellaisinaan (käytä jos piirrät suoraan absoluuttiseen korkoon)."
-        )
-        layout.addWidget(self.floor_elevation_enabled_checkbox, 4, 0, 1, 3)
-
-        layout.addWidget(self._caption("1.krs korko (mm)"), 5, 0)
-        self.floor_elevation_edit = QtWidgets.QDoubleSpinBox()
-        # AutoCAD drawings can place 1.krs anywhere on the absolute
-        # Finnish coordinate map — typical values 0…30000 mm but
-        # leave generous slack for unusual sites and below-grade refs.
-        self.floor_elevation_edit.setRange(-50_000.0, 500_000.0)
-        self.floor_elevation_edit.setDecimals(0)
-        self.floor_elevation_edit.setSingleStep(100.0)
-        self.floor_elevation_edit.setSuffix(" mm")
-        self.floor_elevation_edit.setToolTip(
-            "Absoluuttinen 1.krs korko (mm). "
-            "DXF:n Z=0 = 1.krs lattia. Tämä arvo lisätään jokaiseen "
-            "IfcBuildingStorey.Elevation-arvoon."
-        )
-        layout.addWidget(self.floor_elevation_edit, 5, 1, 1, 2)
-        self.floor_elevation_enabled_checkbox.toggled.connect(
-            self.floor_elevation_edit.setEnabled
-        )
-
+        # --- Convert button -------------------------------------------------
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setProperty("primary", "true")
+        self.convert_button.setEnabled(False)
         self.convert_button.clicked.connect(self._on_convert)
-        layout.addWidget(self.convert_button, 6, 1, 1, 2)
+        layout.addWidget(self.convert_button, 5, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
+
+        self.files_table.itemChanged.connect(self._refresh_convert_enabled)
+        self.output_edit.textChanged.connect(self._refresh_convert_enabled)
+
+    # ---------------------------------------------------------------- helpers
 
     def _caption(self, text: str) -> QtWidgets.QLabel:
         label = QtWidgets.QLabel(text)
         label.setProperty("role", "caption")
         return label
 
-    def _on_browse_input(self) -> None:
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+    def _on_add_files(self) -> None:
+        paths, _ = QtWidgets.QFileDialog.getOpenFileNames(
             self,
-            "Avaa DXF- tai DWG-tiedosto",
+            "Avaa DXF- tai DWG-tiedostot",
             "",
             "AutoCAD-piirustukset (*.dxf *.dwg);;DXF (*.dxf);;DWG (*.dwg);;All files (*)",
         )
-        if path:
-            self.input_edit.setText(path)
+        for path in paths:
+            self._append_row(path)
+        self._refresh_convert_enabled()
+
+    def _append_row(self, path: str) -> None:
+        row = self.files_table.rowCount()
+        self.files_table.insertRow(row)
+        # File path: read-only (the table edits label + Z only).
+        path_item = QtWidgets.QTableWidgetItem(path)
+        path_item.setFlags(path_item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
+        self.files_table.setItem(row, 0, path_item)
+        self.files_table.setItem(row, 1, QtWidgets.QTableWidgetItem(f"{row + 1}.krs"))
+        self.files_table.setItem(row, 2, QtWidgets.QTableWidgetItem("0"))
+
+    def _on_remove(self) -> None:
+        rows = sorted(
+            {index.row() for index in self.files_table.selectedIndexes()},
+            reverse=True,
+        )
+        for row in rows:
+            self.files_table.removeRow(row)
+        self._refresh_convert_enabled()
 
     def _on_browse_output(self) -> None:
-        path, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save IFC", "", "IFC files (*.ifc)")
+        path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self, "Save IFC", "", "IFC files (*.ifc)"
+        )
         if path:
             self.output_edit.setText(path)
 
@@ -155,16 +180,51 @@ class FilePanel(QtWidgets.QWidget):
         if path:
             self.magicad_ifc_edit.setText(path)
 
+    def _collect_file_entries(self) -> list[FileEntry] | None:
+        rows = self.files_table.rowCount()
+        if rows == 0:
+            return None
+        entries: list[FileEntry] = []
+        for row in range(rows):
+            path_item = self.files_table.item(row, 0)
+            label_item = self.files_table.item(row, 1)
+            elev_item = self.files_table.item(row, 2)
+            if path_item is None or label_item is None or elev_item is None:
+                return None
+            path = path_item.text().strip()
+            label = label_item.text().strip()
+            if not path or not label:
+                return None
+            try:
+                elev = float(elev_item.text().strip() or "0")
+            except ValueError:
+                return None
+            entries.append(
+                FileEntry(path=Path(path), floor_label=label, elevation_mm=elev)
+            )
+        labels_lower = [e.floor_label.lower() for e in entries]
+        if len(set(labels_lower)) != len(labels_lower):
+            return None
+        return entries
+
+    def _refresh_convert_enabled(self) -> None:
+        entries = self._collect_file_entries()
+        has_output = bool(self.output_edit.text().strip())
+        self.convert_button.setEnabled(bool(entries) and has_output)
+
     def _on_convert(self) -> None:
-        floor_elev = (
-            float(self.floor_elevation_edit.value())
-            if self.floor_elevation_enabled_checkbox.isChecked()
-            else 0.0
-        )
+        entries = self._collect_file_entries()
+        if not entries:
+            return
         self.convert_requested.emit(
-            self.input_edit.text(),
-            self.output_edit.text(),
-            self.energy_edit.text(),
-            floor_elev,
-            self.magicad_ifc_edit.text(),
+            {
+                "files": entries,
+                "output_path": self.output_edit.text(),
+                "energy_specs_path": self.energy_edit.text(),
+                "magicad_ifc_path": self.magicad_ifc_edit.text(),
+            }
         )
+
+
+__all__ = ["FilePanel"]
+_ = QtGui
