@@ -45,13 +45,12 @@ from dxf2ifc.core.ifc_writer.classification import (
 )
 from dxf2ifc.core.ifc_writer.skeleton import (
     IfcSkeleton,
-    _entity_anchor_z,
     build_ifc_project_skeleton,
-    resolve_storey,
 )
 from dxf2ifc.core.mapper import apply_profile
 from dxf2ifc.core.types import (
     BlockInstance,
+    FileEntry,
     LineGeometry,
     MappedEntity,
     MeshGeometry,
@@ -221,6 +220,170 @@ def _run_energy_spec_lookup(
         _emit(progress, f"  …ja {len(skipped) - 10} muuta ohitettua")
 
 
+def _process_one_file(
+    file_entry: FileEntry,
+    *,
+    profile: Profile,
+    schema: str,
+    preprocess_acis: bool,
+    skip_magicad: bool,
+    energy_specs_path: str | Path | None,
+    progress: object | None,
+) -> list[MappedEntity]:
+    """Run preprocess + read + map + POSITIO + energy-spec + Z-offset for one file.
+
+    Returns ``MappedEntity`` records ready for the IFC writer. The caller
+    is responsible for assigning ``storey_index`` on each returned entry
+    (default 0 — fine for single-file legacy callers).
+    """
+    label = file_entry.floor_label
+    input_path = Path(file_entry.path)
+    if input_path.suffix.lower() == ".dwg":
+        from dxf2ifc.core.dwg_preconvert import convert_dwg_to_dxf
+        dwg_workdir = Path(tempfile.mkdtemp(prefix="dxf2ifc_dwgin_"))
+        dxf_path: str | Path = convert_dwg_to_dxf(
+            input_path,
+            dwg_workdir,
+            progress=progress if callable(progress) else None,
+        )
+    else:
+        dxf_path = input_path
+
+    acis_meshes: dict[str, object] = {}
+    if preprocess_acis:
+        from dxf2ifc.core.preprocessing import extract_acis_meshes
+        acis_meshes = extract_acis_meshes(  # type: ignore[arg-type,assignment]
+            dxf_path,
+            progress=progress,
+            skip_magicad=skip_magicad,
+        )
+
+    entities = read_dxf(dxf_path, acis_meshes=acis_meshes, skip_magicad=skip_magicad)
+
+    if progress is not None:
+        polyface_count = sum(
+            1 for e in entities
+            if isinstance(e.geometry, MeshGeometry)
+            and e.geometry.source in {"polyface", "3dface", "mesh"}
+        )
+        acis_count = sum(
+            1 for e in entities
+            if isinstance(e.geometry, MeshGeometry)
+            and e.geometry.source == "acis"
+        )
+        layers_with_mesh: dict[str, int] = {}
+        for e in entities:
+            if isinstance(e.geometry, MeshGeometry):
+                layers_with_mesh[e.layer] = layers_with_mesh.get(e.layer, 0) + 1
+        progress(
+            f"[{label}] DXF-luettu: {polyface_count} polyface/3DFACE/MESH + "
+            f"{acis_count} ACIS-mesh (yhteensä {len(entities)} entiteettiä)"
+        )
+        if layers_with_mesh:
+            top = sorted(layers_with_mesh.items(), key=lambda x: -x[1])[:5]
+            progress(
+                f"[{label}] Mesh-layerit (top 5): "
+                + ", ".join(f"{lyr}={n}" for lyr, n in top)
+            )
+
+    mapped = apply_profile(entities, profile)
+
+    if progress is not None:
+        mapped_mesh = sum(1 for m in mapped if isinstance(m.geometry, MeshGeometry))
+        mapped_types: dict[str, int] = {}
+        for m in mapped:
+            if isinstance(m.geometry, MeshGeometry):
+                mapped_types[m.ifc_type] = mapped_types.get(m.ifc_type, 0) + 1
+        progress(
+            f"[{label}] Profile-mappaus: {len(mapped)} entiteettiä, joista "
+            f"{mapped_mesh} mesh-pohjaisia"
+        )
+        if mapped_types:
+            top = sorted(mapped_types.items(), key=lambda x: -x[1])[:5]
+            progress(
+                f"[{label}] Mesh→IFC-tyypit: "
+                + ", ".join(f"{t}={n}" for t, n in top)
+            )
+
+    # POSITIO-block linkage. Index every numbering INSERT once, then per
+    # refrigeration-equipment MappedEntity find the closest one (XY-2D,
+    # profile-specified radius). The match goes into extra_props so
+    # add_finnish_psets can read it without a separate parameter channel.
+    if profile.positio is not None:
+        from dxf2ifc.core.positio import (
+            find_nearest_positio,
+            index_positio_markers,
+        )
+
+        positio_markers = index_positio_markers(
+            dxf_path, block_pattern=profile.positio.block_pattern
+        )
+        if positio_markers:
+            scope = set(profile.positio.apply_to)
+            radius = profile.positio.max_distance_mm
+            import ezdxf as _ezdxf
+            insert_xy_by_handle: dict[str, tuple[float, float]] = {}
+            try:
+                _doc = _ezdxf.readfile(str(dxf_path))
+                for _ent in _doc.modelspace():
+                    if _ent.dxftype() != "INSERT":
+                        continue
+                    try:
+                        _h = str(_ent.dxf.handle).upper()
+                        insert_xy_by_handle[_h] = (
+                            float(_ent.dxf.insert.x),
+                            float(_ent.dxf.insert.y),
+                        )
+                    except Exception:  # noqa: BLE001
+                        continue
+            except Exception:  # noqa: BLE001 — POSITIO link is best-effort
+                pass
+
+            for m in mapped:
+                if m.ifc_type not in scope:
+                    continue
+                target_xy: tuple[float, float] | None = None
+                handle = getattr(m, "handle", None)
+                if handle and str(handle).upper() in insert_xy_by_handle:
+                    target_xy = insert_xy_by_handle[str(handle).upper()]
+                elif isinstance(m.geometry, BlockInstance):
+                    target_xy = (
+                        m.geometry.insertion_point.x,
+                        m.geometry.insertion_point.y,
+                    )
+                elif isinstance(m.geometry, MeshGeometry) and m.geometry.vertices:
+                    xs = [v.x for v in m.geometry.vertices]
+                    ys = [v.y for v in m.geometry.vertices]
+                    target_xy = (
+                        (min(xs) + max(xs)) / 2.0,
+                        (min(ys) + max(ys)) / 2.0,
+                    )
+                if target_xy is None:
+                    continue
+                marker = find_nearest_positio(
+                    target_xy,
+                    positio_markers,
+                    max_distance_mm=radius,
+                )
+                if marker is None:
+                    continue
+                if m.extra_props is None:
+                    m.extra_props = {}
+                if marker.teksti:
+                    m.extra_props["koneikko"] = marker.teksti
+                if marker.numero:
+                    m.extra_props["laitetunnus"] = marker.numero
+
+    if energy_specs_path is not None:
+        _run_energy_spec_lookup(
+            mapped, energy_specs_path, profile=profile, progress=progress
+        )
+
+    _apply_floor_elevation_offset(mapped, file_entry.elevation_mm)
+
+    return mapped
+
+
 def convert_dxf(
     *,
     dxf_path: str | Path,
@@ -259,211 +422,108 @@ def convert_dxf(
     raises FileNotFoundError). MagiCAD-DWGs are NOT supported as input
     — for MagiCAD content the colleague's ``-MAGIIFCCD`` IFC must be
     supplied via ``magicad_ifc_path``.
+
+    This entry point is preserved as a thin shim around the multi-file
+    :func:`convert` for backward compatibility. New callers should prefer
+    :func:`convert` directly with one or more ``FileEntry`` records.
     """
-    input_path = Path(dxf_path)
-    if input_path.suffix.lower() == ".dwg":
-        from dxf2ifc.core.dwg_preconvert import convert_dwg_to_dxf
-        dwg_workdir = Path(tempfile.mkdtemp(prefix="dxf2ifc_dwgin_"))
-        dxf_path = convert_dwg_to_dxf(
-            input_path,
-            dwg_workdir,
-            progress=progress if callable(progress) else None,
-        )
-
-    name = project_name or Path(dxf_path).stem
-
-    # When the caller supplied a MagiCAD-IFC for merge-in, drop MAGI*
-    # native classes and ACAD_PROXY_ENTITY records here so we don't
-    # produce duplicates (mesh-tessellated copy from STLOUT + properly-
-    # typed copy from -MAGIIFCCD). When no MagiCAD-IFC is supplied the
-    # DXF-side MagiCAD entities are still read into IfcBuildingElementProxy
-    # mesh placeholders.
-    skip_magicad = magicad_ifc_path is not None
-
-    acis_meshes: dict[str, object] = {}
-    if preprocess_acis:
-        # Lazy import keeps ifc_writer importable on hosts where AutoCAD
-        # is not installed — extract_acis_meshes itself returns ``{}`` in
-        # that case after calling find_accoreconsole().
-        from dxf2ifc.core.preprocessing import extract_acis_meshes
-        acis_meshes = extract_acis_meshes(  # type: ignore[arg-type,assignment]
-            dxf_path,
-            progress=progress,
-            skip_magicad=skip_magicad,
-        )
-    entities = read_dxf(
-        dxf_path, acis_meshes=acis_meshes, skip_magicad=skip_magicad
+    file_entry = FileEntry(
+        path=Path(dxf_path),
+        floor_label="1.krs",
+        elevation_mm=floor_elevation_mm,
+    )
+    return convert(
+        files=[file_entry],
+        output_path=output_path,
+        profile=profile,
+        project_name=project_name or Path(dxf_path).stem,
+        validate=validate,
+        schema=schema,
+        preprocess_acis=preprocess_acis,
+        progress=progress,
+        energy_specs_path=energy_specs_path,
+        magicad_ifc_path=magicad_ifc_path,
     )
 
-    # POC diagnostics: count polyface / 3DFACE / MESH records read
-    # from the intermediate DXF so we can see if MAGIEXPLODE+EXPLODE
-    # actually surfaced any MagiCAD geometry at this stage.
-    if progress is not None:
-        polyface_count = sum(
-            1 for e in entities
-            if isinstance(e.geometry, MeshGeometry)
-            and e.geometry.source in {"polyface", "3dface", "mesh"}
+
+def convert(
+    *,
+    files: list[FileEntry],
+    output_path: str | Path,
+    profile: Profile,
+    project_name: str | None = None,
+    validate: bool = False,
+    schema: str = "IFC4",
+    preprocess_acis: bool = True,
+    progress: object | None = None,
+    energy_specs_path: str | Path | None = None,
+    magicad_ifc_path: str | Path | None = None,
+) -> tuple[dict[str, list], ValidationReport | None]:
+    """Multi-file DXF/DWG → single IFC with one ``IfcBuildingStorey`` per file.
+
+    Each ``FileEntry`` is processed independently (preprocess, read, map,
+    POSITIO, energy-spec, Z-offset). The resulting ``MappedEntity``
+    records are tagged with their owning storey index and merged into a
+    single IFC. ``IfcBuildingStorey.Name`` is taken from
+    ``FileEntry.floor_label``; ``Elevation`` is ``FileEntry.elevation_mm``.
+
+    World-space Z of every object becomes
+    ``file_entry.elevation_mm + dxf_object.Z`` — so when every floor is
+    set to elevation 0, DXF Z coordinates pass through to the IFC
+    unchanged.
+
+    The single-file legacy entry point :func:`convert_dxf` delegates here
+    with a one-entry ``files`` list.
+    """
+    if not files:
+        raise ValueError("convert() requires at least one FileEntry")
+    labels_lower = [fe.floor_label.strip().lower() for fe in files]
+    if "" in labels_lower:
+        raise ValueError("floor_label cannot be empty")
+    if len(set(labels_lower)) != len(labels_lower):
+        raise ValueError(
+            f"duplicate floor labels in files: {[fe.floor_label for fe in files]}"
         )
-        acis_count = sum(
-            1 for e in entities
-            if isinstance(e.geometry, MeshGeometry)
-            and e.geometry.source == "acis"
-        )
-        layers_with_mesh: dict[str, int] = {}
-        for e in entities:
-            if isinstance(e.geometry, MeshGeometry):
-                layers_with_mesh[e.layer] = layers_with_mesh.get(e.layer, 0) + 1
-        progress(
-            f"DXF-luettu: {polyface_count} polyface/3DFACE/MESH + "
-            f"{acis_count} ACIS-mesh (yhteensä {len(entities)} entiteettiä)"
-        )
-        if layers_with_mesh:
-            top = sorted(layers_with_mesh.items(), key=lambda x: -x[1])[:5]
+
+    skip_magicad = magicad_ifc_path is not None
+
+    all_mapped: list[MappedEntity] = []
+    for index, fe in enumerate(files):
+        if progress is not None:
             progress(
-                "Mesh-layerit (top 5): "
-                + ", ".join(f"{lyr}={n}" for lyr, n in top)
+                f"[{fe.floor_label}] käsitellään {Path(fe.path).name} "
+                f"({index + 1}/{len(files)})"
             )
-
-    mapped = apply_profile(entities, profile)
-
-    if progress is not None:
-        mapped_mesh = sum(
-            1 for m in mapped if isinstance(m.geometry, MeshGeometry)
+        mapped = _process_one_file(
+            fe,
+            profile=profile,
+            schema=schema,
+            preprocess_acis=preprocess_acis,
+            skip_magicad=skip_magicad,
+            energy_specs_path=energy_specs_path,
+            progress=progress,
         )
-        mapped_types: dict[str, int] = {}
         for m in mapped:
-            if isinstance(m.geometry, MeshGeometry):
-                mapped_types[m.ifc_type] = mapped_types.get(m.ifc_type, 0) + 1
-        progress(
-            f"Profile-mappaus: {len(mapped)} entiteettiä, joista "
-            f"{mapped_mesh} mesh-pohjaisia"
-        )
-        if mapped_types:
-            top = sorted(mapped_types.items(), key=lambda x: -x[1])[:5]
-            progress(
-                "Mesh→IFC-tyypit: "
-                + ", ".join(f"{t}={n}" for t, n in top)
-            )
-
-    # POSITIO-block linkage. Index every numbering INSERT once, then
-    # per refrigeration-equipment MappedEntity find the closest one
-    # (XY-2D, profile-specified radius). The match goes into
-    # extra_props so add_finnish_psets can read it without a separate
-    # parameter channel.
-    if profile.positio is not None:
-        from dxf2ifc.core.positio import (
-            find_nearest_positio,
-            index_positio_markers,
-        )
-
-        positio_markers = index_positio_markers(
-            dxf_path, block_pattern=profile.positio.block_pattern
-        )
-        if positio_markers:
-            scope = set(profile.positio.apply_to)
-            radius = profile.positio.max_distance_mm
-            # Build handle → INSERT.xy lookup so we can match POSITIOs
-            # to the equipment's INSERTION POINT (where the user drew
-            # the symbol's anchor) instead of the mesh bbox centroid.
-            # The bbox centroid of a forward-extending höyrystin mesh
-            # sits 200–400 mm in front of INSERT.xy — enough to push a
-            # 2.5–3.0 m POSITIO link out of the default 3.0 m radius and
-            # leave some höyrystimet unlabelled.
-            import ezdxf as _ezdxf
-            insert_xy_by_handle: dict[str, tuple[float, float]] = {}
-            try:
-                _doc = _ezdxf.readfile(str(dxf_path))
-                for _ent in _doc.modelspace():
-                    if _ent.dxftype() != "INSERT":
-                        continue
-                    try:
-                        _h = str(_ent.dxf.handle).upper()
-                        insert_xy_by_handle[_h] = (
-                            float(_ent.dxf.insert.x),
-                            float(_ent.dxf.insert.y),
-                        )
-                    except Exception:  # noqa: BLE001
-                        continue
-            except Exception:  # noqa: BLE001 — POSITIO link is best-effort
-                pass
-
-            for m in mapped:
-                if m.ifc_type not in scope:
-                    continue
-                # Resolve a target XY for the match. Prefer the INSERT's
-                # insertion point (handle lookup); fall back to BlockInstance's
-                # insertion_point; finally fall back to mesh bbox centroid.
-                # Pipes / lines / polygons are intentionally not matched
-                # against POSITIOs (target_xy stays None and they skip).
-                target_xy: tuple[float, float] | None = None
-                handle = getattr(m, "handle", None)
-                if handle and str(handle).upper() in insert_xy_by_handle:
-                    target_xy = insert_xy_by_handle[str(handle).upper()]
-                elif isinstance(m.geometry, BlockInstance):
-                    target_xy = (
-                        m.geometry.insertion_point.x,
-                        m.geometry.insertion_point.y,
-                    )
-                elif isinstance(m.geometry, MeshGeometry) and m.geometry.vertices:
-                    xs = [v.x for v in m.geometry.vertices]
-                    ys = [v.y for v in m.geometry.vertices]
-                    target_xy = (
-                        (min(xs) + max(xs)) / 2.0,
-                        (min(ys) + max(ys)) / 2.0,
-                    )
-                if target_xy is None:
-                    continue
-                marker = find_nearest_positio(
-                    target_xy,
-                    positio_markers,
-                    max_distance_mm=radius,
-                )
-                if marker is None:
-                    continue
-                if m.extra_props is None:
-                    m.extra_props = {}
-                # POSITIO attribute mapping:
-                #   TEKSTI (e.g. "JK1") → Koneikko (refrigeration unit)
-                #   NUMERO (e.g. "501") → Laitetunnus (unique device tag)
-                if marker.teksti:
-                    m.extra_props["koneikko"] = marker.teksti
-                if marker.numero:
-                    m.extra_props["laitetunnus"] = marker.numero
-
-    # Energy-spec lookup with full diagnostics. The previous version
-    # silently skipped if specs was empty or a lookup missed, so the
-    # user could not tell why FI_Tekninen stayed blank in Solibri.
-    # Now every code path emits a status line so the GUI preview-log
-    # shows exactly what happened.
-    if energy_specs_path is not None:
-        _run_energy_spec_lookup(
-            mapped, energy_specs_path, profile=profile, progress=progress
-        )
-
-    # Floor-elevation Z-offset: shift every entity's geometry up by
-    # ``floor_elevation_mm`` BEFORE the builders consume it, since the
-    # builders pass the entity's anchor Z into ``geometry.edit_object_placement``
-    # as an absolute world-space matrix that does not chain through the
-    # storey's IfcLocalPlacement. Without this pass, Storey.Elevation
-    # shifts but the elements stay at their DXF Z. Run AFTER POSITIO
-    # (XY-only matching, unaffected by Z) and energy-spec (no geometry
-    # access) so neither is perturbed.
-    _apply_floor_elevation_offset(mapped, floor_elevation_mm)
+            m.storey_index = index
+        all_mapped.extend(mapped)
 
     # Determine the dominant discipline so Solibri can auto-detect the
     # role when the file is opened. A unanimous mapped-rule domain
     # (e.g. every rule is KYL → Jäähdytys) wins; mixed-discipline files
     # leave the marker unset rather than picking a misleading role.
-    domains = {m.domain for m in mapped if m.domain}
+    domains = {m.domain for m in all_mapped if m.domain}
     project_discipline = (
         discipline_label(next(iter(domains))) if len(domains) == 1 else None
     )
 
+    name = project_name or Path(output_path).stem
+
     skeleton = build_ifc_project_skeleton(
         project_name=name,
         schema=schema,
-        floor_elevation_mm=floor_elevation_mm,
-        storey_z_levels_mm=list(profile.storey_z_levels_mm),
+        floor_elevation_mm=0.0,
+        storey_z_levels_mm=[fe.elevation_mm for fe in files],
+        storey_names=[fe.floor_label for fe in files],
         discipline_label=project_discipline,
     )
 
@@ -471,24 +531,16 @@ def convert_dxf(
     systems: dict[str, list] = {}
 
     def _storey_for(m) -> object:
-        return resolve_storey(skeleton.storeys, _entity_anchor_z(m.geometry))
+        return skeleton.storeys[m.storey_index]
 
     def _record(m: object, product: object) -> None:
         sys_name = m.extra_props.get("system_name") if m.extra_props else None
         if sys_name:
             systems.setdefault(sys_name, []).append(product)
-        # Finnish PSets piggy-back on _record so every builder branch
-        # gets them for free (same as IfcSystem grouping). Wrapped in a
-        # broad try so any PSet failure cannot block IFC export — the
-        # product still lands on its storey with classification.
         try:
             _attach_fi_psets(product, m)
         except Exception:  # noqa: BLE001 — never block convert
             pass
-        # Uniform AutoCAD ACI-175 surface style for every product so the
-        # cooling network reads consistently in Solibri / MagiCAD. Same
-        # defensive try as the PSet attach above — a styling glitch
-        # never aborts the export.
         try:
             from dxf2ifc.core.ifc_writer.styling import apply_color_to_product
             apply_color_to_product(ifc, product)
@@ -501,23 +553,11 @@ def convert_dxf(
                 ifc, product, domain="ARK", code=m.talo2000_code, name=m.talo2000_name
             )
         elif m.domain in ("TATE", "KYL"):
-            # KYL and TATE share the RAVA-LVI / RAVA-TATE classification
-            # source — they only differ in the discipline (suunnittelualat)
-            # marker emitted further down.
             code = m.lvi_code or m.talotekniikka_code
             add_classification(ifc, product, domain=m.domain, code=code)
-        # Always also emit an explicit discipline classification so
-        # Solibri's "suunnittelualat" view shows the right value
-        # (otherwise it falls back to ARK for every IFC type heuristic).
         add_discipline_classification(ifc, product, domain=m.domain)
 
     def _attach_fi_psets(product: object, m: object) -> None:
-        """Attach FI_Asennus / FI_Geometria / FI_Komponentti / FI_Tuote.
-
-        Computes geometry extents from the mapped entity's geometry and
-        the profile's height / thickness defaults (so e.g. a wall
-        emits its real top elevation = base + 2.7 m, not 0).
-        """
         from dxf2ifc.core.finnish_psets import add_finnish_psets
         from dxf2ifc.core.geometry import extents_from_geometry
 
@@ -538,128 +578,77 @@ def convert_dxf(
         )
 
     try:
-        for m in mapped:
+        for m in all_mapped:
             if m.ifc_type == "IfcWall":
                 wall = add_wall(
-                    ifc,
-                    m,
-                    parent_storey=_storey_for(m),
+                    ifc, m, parent_storey=_storey_for(m),
                     predefined_type=m.predefined_type or "STANDARD",
                 )
                 _classify(wall, m)
                 _record(m, wall)
             elif m.ifc_type == "IfcSlab":
                 slab = add_slab(
-                    ifc,
-                    m,
-                    parent_storey=_storey_for(m),
+                    ifc, m, parent_storey=_storey_for(m),
                     predefined_type=m.predefined_type or "FLOOR",
                 )
                 _classify(slab, m)
                 _record(m, slab)
             elif m.ifc_type == "IfcDoor":
                 door = add_door(
-                    ifc,
-                    m,
-                    parent_storey=_storey_for(m),
+                    ifc, m, parent_storey=_storey_for(m),
                     predefined_type=m.predefined_type or "DOOR",
                 )
                 _classify(door, m)
                 _record(m, door)
             elif m.ifc_type == "IfcWindow":
                 window = add_window(
-                    ifc,
-                    m,
-                    parent_storey=_storey_for(m),
+                    ifc, m, parent_storey=_storey_for(m),
                     predefined_type=m.predefined_type or "WINDOW",
                 )
                 _classify(window, m)
                 _record(m, window)
             elif m.ifc_type == "IfcPipeSegment":
-                # Two valid geometry inputs:
-                # * LineGeometry → swept-solid via add_pipe_segment
-                #   (KYL-JV1 LWPOLYLINE centerlines).
-                # * MeshGeometry → IfcTriangulatedFaceSet via
-                #   _add_mesh_product (MagiCAD MAGIEXPLODE +
-                #   _.EXPLODE polyface mesh that lands on a pipe
-                #   layer like KYL-JV1).
-                # BlockInstance (raw INSERT) has no usable geometry —
-                # skip it and let any sibling Mesh/Line record on the
-                # same handle carry the body.
                 if isinstance(m.geometry, BlockInstance):
                     continue
                 if isinstance(m.geometry, MeshGeometry):
                     pipe = _add_mesh_product(
-                        ifc,
-                        m,
-                        ifc_class="IfcPipeSegment",
+                        ifc, m, ifc_class="IfcPipeSegment",
                         parent_storey=_storey_for(m),
                         predefined_type=m.predefined_type or "REFRIGERATION",
                     )
                 else:
                     pipe = add_pipe_segment(
-                        ifc,
-                        m,
-                        parent_storey=_storey_for(m),
+                        ifc, m, parent_storey=_storey_for(m),
                         predefined_type=m.predefined_type or "REFRIGERATION",
                     )
                 _classify(pipe, m)
                 _record(m, pipe)
             elif m.ifc_type == "IfcFurniture":
-                # add_furniture funnels MeshGeometry through
-                # _add_mesh_product; BlockInstance (raw INSERT) has no
-                # mesh body and would raise. Skip — a sibling MESH
-                # record on the same handle, if any, carries the body.
                 if isinstance(m.geometry, BlockInstance):
                     continue
                 furniture = add_furniture(ifc, m, parent_storey=_storey_for(m))
                 _classify(furniture, m)
                 _record(m, furniture)
             elif m.ifc_type == "IfcCableCarrierSegment":
-                # Dispatch by geometry: 2D LineGeometry → swept-solid extrusion,
-                # MESH/BlockInstance → faceted Brep (cold-storage shelves are
-                # ACIS bodies preprocessed into MESH; legacy CAD tools draw
-                # cable carriers as 2D centerlines).
                 if isinstance(m.geometry, LineGeometry):
                     seg = add_cable_carrier_segment(
-                        ifc,
-                        m,
-                        parent_storey=_storey_for(m),
+                        ifc, m, parent_storey=_storey_for(m),
                         predefined_type=m.predefined_type or "CABLETRUNKINGSEGMENT",
                     )
                 else:
                     seg = add_cable_carrier(
-                        ifc,
-                        m,
-                        parent_storey=_storey_for(m),
+                        ifc, m, parent_storey=_storey_for(m),
                         predefined_type=m.predefined_type or "CABLETRAYSEGMENT",
                     )
                 _classify(seg, m)
                 _record(m, seg)
             elif m.ifc_type == "IfcBuildingElementProxy":
-                # add_building_element_proxy expects PolygonGeometry
-                # (closed outline → extruded panel) or MeshGeometry
-                # (faceted Brep — used by proxy_preprocessing's bbox
-                # cuboid fallback). Skip records whose geometry is a
-                # raw INSERT placement (BlockInstance) or a 2D detail
-                # primitive (LineGeometry from MagiCAD proxy graphics)
-                # — neither can be meaningfully extruded into a 3D
-                # proxy body without a synthesised bbox guess. The
-                # MeshGeometry path still covers proxies with bbox
-                # cuboids and the MAGIEXPLODE-derived polyface meshes.
                 if isinstance(m.geometry, (LineGeometry, BlockInstance)):
                     continue
                 proxy = add_building_element_proxy(ifc, m, parent_storey=_storey_for(m))
                 _classify(proxy, m)
                 _record(m, proxy)
             elif m.ifc_type in _COOLING_EQUIPMENT_CLASSES:
-                # add_cooling_equipment / add_tank / add_flow_controller
-                # all funnel through ``_add_mesh_product`` which raises
-                # on non-MeshGeometry. Skip BlockInstance (raw INSERT
-                # placement without an STLOUT mesh) and LineGeometry
-                # (proxy virtual-entity 2D primitives) — neither has a
-                # 3D body to render. The MeshGeometry record for the
-                # same handle, if any, carries the actual geometry.
                 if isinstance(m.geometry, (LineGeometry, BlockInstance)):
                     continue
                 equipment = add_cooling_equipment(ifc, m, parent_storey=_storey_for(m))
@@ -678,17 +667,6 @@ def convert_dxf(
                 _classify(ctrl, m)
                 _record(m, ctrl)
             elif m.ifc_type in _DISTRIBUTION_ELEMENT_CLASSES:
-                # Generic distribution-element dispatch added 2026-05-08
-                # for the broader kylmälaitesuunnittelu coverage:
-                # IfcSensor (anturit), IfcValve (venttiilit),
-                # IfcPump (pumput), IfcWasteTerminal (lattiakaivot,
-                # vesilukot), IfcInterceptor (rasvanerottimet),
-                # IfcElectricDistributionBoard (KK / RK -keskukset),
-                # IfcController (säädinkeskukset), IfcAlarm (sireenit),
-                # IfcSwitchingDevice (hätäseispainikkeet),
-                # IfcCommunicationsAppliance (huolto-PC:t), IfcDuct*,
-                # IfcAirTerminal. All routed through _add_mesh_product
-                # the same way IfcFlowController is.
                 if isinstance(m.geometry, (LineGeometry, BlockInstance)):
                     continue
                 element = add_distribution_element(
@@ -703,13 +681,6 @@ def convert_dxf(
 
         write_ifc(ifc, output_path)
 
-        # Merge in the colleague's MAGIIFCEXPORT-produced IFC, if one
-        # was provided. This must run AFTER write_ifc since the merger
-        # opens both files via ifcopenshell.open() and does its own
-        # save. The ``skip_magicad`` flag set on ``read_dxf`` above
-        # already prevented mesh-tessellated MagiCAD parts from being
-        # written, so the merge adds the proper-IFC-typed parts on top
-        # of Lauri's KYL-LISP refrigeration parts cleanly.
         if magicad_ifc_path is not None:
             from dxf2ifc.core.ifc_merger import merge_magicad_ifc
 
