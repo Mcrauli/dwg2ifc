@@ -6,6 +6,7 @@ No business logic in this module — only plain data containers.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 
@@ -118,3 +119,20 @@ class MappedEntity(EntityRecord):
     fi_tekninen: dict[str, Any] | None = None
     fi_sijainti: dict[str, Any] | None = None
     extra_props: dict[str, Any] = field(default_factory=dict)
+    storey_index: int = 0
+
+
+@dataclass(frozen=True)
+class FileEntry:
+    """One input file with its assigned floor label and Z elevation.
+
+    A multi-floor conversion run takes a ``list[FileEntry]``; each entry
+    becomes one ``IfcBuildingStorey``. ``elevation_mm`` is added to every
+    entity's Z coordinate read from this file, so when all entries are at
+    ``elevation_mm=0`` the DXF Z coordinates pass through to the IFC
+    unchanged.
+    """
+
+    path: Path
+    floor_label: str
+    elevation_mm: float = 0.0
