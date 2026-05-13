@@ -22,16 +22,22 @@ Pidä nämä kolme erillään:
 ## Current pipeline
 
 ```
-.dxf
+N x .dxf/.dwg (multi-floor)
+  ↓  per file (jokainen → yksi IfcBuildingStorey):
   → core/preprocessing.py             (accoreconsole + STLOUT 3DSOLID:eille)
   → core/dxf_reader.py                (ezdxf + INSERT.virtual_entities)
   → core/mapper.py                    (layer pattern → IFC-tyyppi)
   → core/positio.py + energy_specs.py (Koneikko/Laitetunnus + Excel-tehot)
+  → Z-offset: world_z = floor_elev + dxf_z, storey_index tag
+  ↓  yhdistetään:
   → core/ifc_writer/orchestrator.py   (skeleton + builders + classification)
   → core/ifc_merger.py                (optional: MagiCAD-IFC merge)
   → core/quality.py                   (optional: validate + RAVA/Talo2000)
   → output.ifc
 ```
+
+`orchestrator.convert(files=[FileEntry(...), ...])` on pääentrypoint.
+`convert_dxf(...)` säilyy yhden tiedoston shim:nä (legacy callers + tests).
 
 Yksityiskohtainen pipeline: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
@@ -77,13 +83,20 @@ Task-kohtainen lukulista: [`docs/CLAUDE_TASKS.md`](docs/CLAUDE_TASKS.md).
 # Testit
 .venv/Scripts/python -m pytest -q
 
-# CLI (DXF tai DWG; DWG preconvertataan accoreconsole+DXFOUT)
+# CLI yhdellä tiedostolla (legacy single-floor, kerros = "1.krs" @ 0 mm)
 .venv/Scripts/python -m dxf2ifc convert input.dxf output.ifc
 .venv/Scripts/python -m dxf2ifc convert input.dwg output.ifc
+
+# CLI multi-floor — --floor PATH[:LABEL[:ELEV_MM]] toistettavasti
+.venv/Scripts/python -m dxf2ifc convert output.ifc \
+    --floor 1krs.dwg:1.krs:0 \
+    --floor 2krs.dwg:2.krs:3500
+
+# CLI lisäoptiot (single-floor formaatissa)
 .venv/Scripts/python -m dxf2ifc convert input.dxf output.ifc --magicad-ifc colleague.ifc
 .venv/Scripts/python -m dxf2ifc convert input.dxf output.ifc --energy-specs teho.xlsx
 
-# GUI
+# GUI (monirivinen file-table — Lisää tiedosto(t)…)
 .venv/Scripts/python -m dxf2ifc.gui
 
 # Build (Windows)

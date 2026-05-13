@@ -6,7 +6,41 @@ project uses semantic versioning.
 
 ## Unreleased
 
-## v0.2.0-alpha22 — 2026-05-13 (3D-rotaatio-fixi LWPOLYLINE-ekstrudointiin)
+## v0.2.0-alpha22 — 2026-05-13 (multi-floor merge + 3D-rotaatio-fixi LWPOLYLINE-ekstrudointiin)
+
+**Uusi — Multi-floor DWG → yksi IFC**:
+
+dxf2ifc hyväksyy nyt useita DXF/DWG-tiedostoja yhteen IFC:hen. Jokainen
+tiedosto = yksi `IfcBuildingStorey`. GUI:ssa monirivinen taulukko
+(tiedosto / kerros / Z mm), CLI:ssa `--floor PATH[:LABEL[:ELEV_MM]]`
+toistettavasti. Labeli kirjoitetaan `IfcBuildingStorey.Name`-kenttään
+sellaisenaan ("1.krs", "2.krs", "kellari", …). Maailma-Z = `kerroksen
+korko + DXF-objektin Z`, joten kaikki kerrokset @ 0 mm päästää
+AutoCADin absoluuttiset Z:t läpi sellaisinaan.
+
+Suunnitelma:
+[`docs/superpowers/specs/2026-05-13-multi-floor-merge-design.md`](docs/superpowers/specs/2026-05-13-multi-floor-merge-design.md).
+
+**Breaking changes**:
+
+- Profiilin `storey_z_levels_mm`-kenttä poistettu. Vanhat custom-TOML:t
+  jotka käyttävät sitä eivät enää validoidu — poista rivi.
+- GUI:n "Lisää 1.krs absoluuttinen korko" -valintaruutu ja yksittäinen
+  korko-spinbox poistettu. Korko asetetaan per kerros taulukon
+  Z-sarakkeessa.
+- `RecentFilesStore`:sta poistettu `floor_elevation_mm` ja
+  `floor_elevation_enabled` — globaalia tilaa ei enää tarvita.
+
+**Sisäistä**:
+
+- `orchestrator.convert(files: list[FileEntry], …)` on uusi
+  pääentrypoint. `convert_dxf(...)` säilytetty yhden tiedoston shim:nä
+  takaisinpäin yhteensopivuuden vuoksi.
+- `MappedEntity.storey_index` kuljettaa jokaisen entiteetin
+  omistaja-storeyn writerille; orchestrator ei enää kutsu
+  `skeleton.resolve_storey`:ta.
+
+**Korjattu — KLHV (pystytetty TIKAS-hylly) ei enää romahda yhdeksi pystypalkiksi**:
 
 **Korjattu — KLHV (pystytetty TIKAS-hylly) ei enää romahda yhdeksi pystypalkiksi**:
 

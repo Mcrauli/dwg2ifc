@@ -9,7 +9,22 @@ PropertySettiä per IFC-tuote (`FI_Asennus` / `FI_Geometria` /
 `FI_Komponentti` / `FI_Tuote` / `FI_Tekninen` / `FI_Sijainti`), ja
 Solibri-yhteensopivan IFC4-tiedoston yhdellä konversio-ajolla.
 
-Nykyinen versio: **v0.2.0-alpha21** (2026-05-13). Pre-release-vaiheessa.
+Nykyinen versio: **v0.2.0-alpha22** (2026-05-13). Pre-release-vaiheessa.
+
+## Multi-floor merge (alpha22)
+
+Yksi konversio = N DXF/DWG-tiedostoa = N `IfcBuildingStorey`-kerrosta
+yhteen IFC:hen. Käyttäjä asettaa per kerros labelin (`"1.krs"`,
+`"2.krs"`, `"kellari"`, …) ja Z-koron (mm). Maailman Z =
+`kerroksen_korko + DXF-objektin Z`, joten kun kaikki kerrokset @ 0 mm,
+AutoCADin absoluuttiset Z-koordinaatit menevät IFC:hen sellaisinaan.
+
+GUI:ssä on monirivinen taulukko (`Tiedosto` / `Kerros` / `Z (mm)`) +
+"Lisää tiedosto(t)…"-nappi. CLI:ssä toistettava `--floor`-lippu.
+
+Vanhat profiili-TOML:t jotka käyttävät `storey_z_levels_mm`-kenttää
+eivät enää validoidu — poista rivi. GUI:n "Lisää 1.krs absoluuttinen
+korko" -valintaruutu on myös poistettu (korko per kerros).
 
 ## Lataa (Windows)
 
@@ -82,9 +97,17 @@ mesh-renderin), muuten ne pudottautuvat pois.
 ### CLI
 
 ```bash
+# Yksi tiedosto (kerros = "1.krs" @ Z=0)
 uv run dxf2ifc convert input.dxf output.ifc
+uv run dxf2ifc convert input.dwg output.ifc
 uv run dxf2ifc convert input.dxf output.ifc --magicad-ifc colleague.ifc
 uv run dxf2ifc convert input.dxf output.ifc --energy-specs teholuettelo.xlsx
+
+# Monta tiedostoa (per kerros: PATH[:LABEL[:ELEV_MM]])
+uv run dxf2ifc convert output.ifc \
+    --floor 1krs.dwg:1.krs:0 \
+    --floor 2krs.dwg:2.krs:3500 \
+    --floor pohja.dwg:kellari:-3000
 ```
 
 Lisävalinnat:
@@ -92,7 +115,9 @@ Lisävalinnat:
 - `--profile polku.toml` — custom layer→IFC-tyyppi-mappaus
 - `--validate` — `ifcopenshell.validate` + RAVA/Talo2000-säännöt
 - `--schema ifc4 | ifc4x3` (default `ifc4`)
-- `--floor-elevation 12000` — 1.krs absoluuttinen Z-korko (mm)
+- `--floor-elevation 12000` — 1.krs absoluuttinen Z-korko (mm) yhden-tiedoston tapauksessa
+
+`--floor` ja positional INPUT ovat toisensa poissulkevia: anna jompi kumpi.
 
 ### GUI
 
@@ -101,27 +126,19 @@ uv pip install -e ".[gui]"
 dxf2ifc-gui   # tai: python -m dxf2ifc.gui
 ```
 
-GUI tukee: **DXF-tiedoston valinnan** (vain `.dxf`, ks. alla),
-layerien esikatselun + luokitus-resoluution, energiateho-Excel:n
-+ MagiCAD-IFC:n filepicker:in, taustasäikeen konversion, profiilin
-editoinnin (Profile → Edit profile…), itsepäivityksen GitHub
-Releases:istä, ja 1.krs-koron säätämisen.
+GUI:n päänäkymässä on monirivinen file-table (`Tiedosto / Kerros / Z (mm)`).
+Klikkaa **"Lisää tiedosto(t)…"**, valitse yksi tai useampi DXF/DWG;
+labelit oletusasennetaan `"1.krs"`, `"2.krs"`, … ja Z=0. Muokkaa
+tarvittaessa. Lisäksi: layerien esikatselu + luokitus-resoluutio,
+energiateho-Excel:n + MagiCAD-IFC:n filepicker:it, taustasäikeen
+konversio, profiilin editointi (Profile → Edit profile…),
+itsepäivitys GitHub Releases:istä.
 
 ### Input-formaatit
 
-Vain `.dxf`. DWG-input poistettiin v0.2.0-alpha10:ssä — kaikki POC v1–v4
--iteraatiot keystroke-pohjaiseen DWG→DXF-muunnokseen osoittautuivat
-hauraiksi (ks. [`docs/DWG_MAGICAD_PREPROCESSING.md`](docs/DWG_MAGICAD_PREPROCESSING.md)).
-Jos lähdetiedostosi on DWG, valitse jompi kumpi reitti:
-
-- **DWG ilman MagiCAD-osia**: muunna DWG → DXF AutoCAD:in `DXFOUT`-komennolla
-  (tai ODA File Converter / TrueView SaveAs) ja avaa tuotettu `.dxf`
-  dxf2ifc:ssä normaalisti.
-- **DWG jossa MagiCAD-osat**: kollega ajaa AutoCAD:in command-linelle
-  `-MAGIIFCCD` jolloin MagiCAD tuottaa korkealaatuisen `.ifc`:n
-  natiivilla MagiCAD-PSet:llä. Sen jälkeen anna dxf2ifc:lle DXF-lähde
-  + `--magicad-ifc colleague.ifc`, niin master-IFC sisältää molemmat
-  puolet samassa storey:ssä.
+`.dxf` ja `.dwg` (DWG preconvertataan headless `accoreconsole.exe + DXFOUT`
+-kutsulla, vaatii AutoCAD-asennuksen). MagiCAD-DWG ei ole tuettu
+sisältö — käytä kollegan `-MAGIIFCCD`-IFC:tä + `--magicad-ifc`-mergeä.
 
 ## Tekniikka
 
