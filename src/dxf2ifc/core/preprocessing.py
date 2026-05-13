@@ -220,6 +220,13 @@ _LISP_SETUP = (
     '(setvar "FILEDIA" 0) '
     '(setvar "CMDDIA" 0) '
     '(setvar "FACETRES" 0.1) '
+    # REPORTERROR=0 + SENDREPORTINFO=0 silence AutoCAD's Customer Error
+    # Report popup that otherwise appears on every accoreconsole-side
+    # crash (e.g. STLOUT failing on a malformed 3DSOLID body). Our caller
+    # already handles a non-zero exit code from the subprocess; the popup
+    # only adds noise.
+    '(setvar "REPORTERROR" 0) '
+    '(if (= (type (getvar "SENDREPORTINFO")) \'INT) (setvar "SENDREPORTINFO" 0)) '
     '(setq solid_out "{solid_out}") '
     '(setq insert_out "{insert_out}") '
     '(setq logf (open (strcat "{log_out}" "extract.log") "w")) '

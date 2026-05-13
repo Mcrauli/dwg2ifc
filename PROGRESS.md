@@ -4,20 +4,24 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha25 (2026-05-13)
+## Current state — v0.2.0-alpha26 (2026-05-13)
 
-Tuorein julkaistu: **v0.2.0-alpha25** (2026-05-13).
+Tuorein julkaistu: **v0.2.0-alpha26** (2026-05-13).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a25.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a25.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a26.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a26.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–25:n korjaukset tiivistettynä (täysi historia
+Alpha8–26:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha26** (2026-05-13): Vaiennettu AutoCAD-CER-popup REPORTERROR=0
+  + SENDREPORTINFO=0 -sysvar-asetuksilla LISP SETUPissa. Konversio
+  etenee ja bbox-fallback tekee tehtävänsä — käyttäjä ei enää näe
+  hälyttävää crash-dialogia jokaisella kaatumisella.
 - **alpha25** (2026-05-13): **Robustia accoreconsolelle** — bbox-fallback
   kun STLOUT crashaa (koneikot/lauhduttimet näkyvät edes laatikkoina),
   per-body LISP-loggaus crash-diagnostiikkaan, .scr-kirjoitus

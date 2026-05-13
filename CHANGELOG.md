@@ -6,6 +6,18 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha26 — 2026-05-13 (suppress AutoCAD CER popup)
+
+Vaiennetaan AutoCAD-Customer Error Report -popup joka muuten aukeaa
+joka kerta kun accoreconsolen STLOUT kaatuu jonkun spesifin 3DSOLIDin
+kohdalla. Korjaus lisää LISP SETUP-formiin `(setvar "REPORTERROR" 0)` +
+`(setvar "SENDREPORTINFO" 0)` jolloin AutoCAD ei nosta CER-dialogia
+prosessin kaatuessa. Konversio etenee normaalisti — alpha25:n
+bbox-fallback hoitaa puuttuvat meshit edes laatikoiksi.
+
+Itse kaatuminen ei ole ratkaistu (tarvitsee DWG-spesifisen 3DSOLID-
+analyysin), mutta käyttäjälle vaikutus on nyt näkymätön.
+
 ## v0.2.0-alpha25 — 2026-05-13 (accoreconsole-kestävyys + bbox-fallback + diagnostics)
 
 Kolmen yhdistelmäkorjaus jotka adressoivat 2.krs-tyyppisiä DWG:itä
