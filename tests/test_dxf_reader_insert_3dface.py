@@ -127,6 +127,84 @@ def test_insert_3dface_rotation_applies(tmp_path: Path):
     assert abs(min(xs) - (-50.0)) < 0.001  # block max-Y rotated → -X
 
 
+def test_insert_3d_rotated_polyline_extrudes_along_block_local_z(tmp_path: Path):
+    """KLHV (vertical TIKAS) rotates KLHYLLY-TIKAS 90° around X via
+    INSERT.extrusion=(0,-1,0). Block-local LWPOLYLINE+3DFACE pairs must
+    extrude along the extrusion vector (block-local +Z), not WCS +Z —
+    otherwise every rung collapses onto the same WCS-Y plane and the
+    whole shelf renders as one tall slab instead of a ladder.
+
+    Block layout: two parallel rungs (1000×30 closed polylines at
+    elev=0) with matching 3DFACE caps at z=30 (rung thickness 30mm).
+    The block is then INSERTed with extrusion=(0,-1,0), which in OCS
+    means the block-local +Z axis points along world -Y.
+
+    Expected world-space mesh:
+    * Rungs lie in the world XZ plane (their long axis = block-X = world-X,
+      their thickness extrudes along block-Z = world -Y).
+    * The two rungs must remain separated in block-Y (= world Z), not
+      collapsed onto each other.
+    """
+    import math
+
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name="KYL-TIKASHYLLY")
+    blk = doc.blocks.new(name="TIKAS_VERT")
+    # Rung 1: closed polyline at z=0 + 3DFACE cap at z=30
+    blk.add_lwpolyline(
+        [(0.0, 0.0), (1000.0, 0.0), (1000.0, 30.0), (0.0, 30.0)],
+        close=True,
+    )
+    blk.add_3dface(
+        [(0.0, 0.0, 30.0), (1000.0, 0.0, 30.0), (1000.0, 30.0, 30.0), (0.0, 30.0, 30.0)]
+    )
+    # Rung 2: same shape, offset along block-Y by 200mm
+    blk.add_lwpolyline(
+        [(0.0, 200.0), (1000.0, 200.0), (1000.0, 230.0), (0.0, 230.0)],
+        close=True,
+    )
+    blk.add_3dface(
+        [(0.0, 200.0, 30.0), (1000.0, 200.0, 30.0), (1000.0, 230.0, 30.0), (0.0, 230.0, 30.0)]
+    )
+
+    msp = doc.modelspace()
+    msp.add_blockref(
+        "TIKAS_VERT",
+        (0.0, 0.0, 0.0),
+        dxfattribs={
+            "layer": "KYL-TIKASHYLLY",
+            "extrusion": (0.0, -1.0, 0.0),
+        },
+    )
+
+    records = _save_and_read(doc, tmp_path)
+    insert_records = [
+        r for r in records if r.dxf_type == "INSERT"
+        and isinstance(r.geometry, MeshGeometry)
+    ]
+    assert len(insert_records) == 1
+    mesh = insert_records[0].geometry
+    xs = [v.x for v in mesh.vertices]
+    ys = [v.y for v in mesh.vertices]
+    zs = [v.z for v in mesh.vertices]
+
+    # Block-X (= rung length) maps to world-X
+    assert max(xs) - min(xs) > 999.0
+    # The two rungs are separated by 200mm along block-Y, which under
+    # extrusion=(0,-1,0) maps to world-Z. So the Z spread must reflect
+    # both the rung width (30mm each) AND the 200mm gap between them.
+    assert max(zs) - min(zs) > 200.0, (
+        f"Rungs collapsed in world-Z. zs range = {min(zs)}..{max(zs)}"
+    )
+    # Thickness (30mm) extrudes along block-Z = world -Y, so the Y
+    # spread should be ~30mm (not 0, not collapsed, not extruded vertically).
+    y_spread = max(ys) - min(ys)
+    assert 25.0 < y_spread < 35.0, (
+        f"Thickness extruded wrong direction. y_spread={y_spread} "
+        f"(expected ~30mm along world -Y from extrusion=(0,-1,0))"
+    )
+
+
 def test_insert_without_3dface_falls_back_to_blockinstance(tmp_path: Path):
     """If a block has no 3DFACE entities, INSERT must still yield a
     BlockInstance — the existing fallback path for height-extrusion

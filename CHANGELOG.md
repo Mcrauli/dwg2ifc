@@ -6,6 +6,44 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha22 — 2026-05-13 (3D-rotaatio-fixi LWPOLYLINE-ekstrudointiin)
+
+**Korjattu — KLHV (pystytetty TIKAS-hylly) ei enää romahda yhdeksi pystypalkiksi**:
+
+KLHYLLY-TIKAS-blockin INSERT-räjäytys käytti aikaisemmin block-sisäisen
+LWPOLYLINEn vain XY-osaa ja extrudoi paksuuden aina WCS-Z-akselin
+suuntaan. Kun KLHV pystyttää saman blockin asettamalla INSERT.extrusion
+= (0, -1, 0), block-lokaalin Z-akseli osoittaa WCS:n -Y-suuntaan ja
+askelmien LWPOLYLINEt ovat eri Z-arvoilla. Edellinen logiikka:
+
+1. luki ainoastaan (x, y) pisteistä ja hukkasi Z:n,
+2. käytti yhden vertikseksen Z:tä `base_z`-arvona,
+3. extrudoi `(p[0], p[1], top_z)` — eli pystysuoraan WCS:n Z:n suuntaan.
+
+Tuloksena kaikki askelmat romahtivat samaan tasoon ja muodostivat
+yhden pitkän pystypalkin oikean ladder-rakenteen sijaan.
+
+Uusi logiikka aggregoi koko blockin Object Coordinate Systemissä
+(OCS) jonka Z-akseli on LWPOLYLINEn extrusion-vektori. 3DFACEt
+muunnetaan WCS→OCS, LWPOLYLINEt ovat jo OCS:ssä, pairing ja
+ekstrudointi tehdään OCS-tasossa ja lopullinen mesh muunnetaan
+OCS→WCS. Axis-aligned INSERT (extrusion=(0,0,1)) on identtinen
+vanhan käytöksen kanssa, joten KLH ja muut horisontaaliset hyllyt
+eivät muutu.
+
+Tiedostot:
+
+- `src/dxf2ifc/core/dxf_reader.py` — `_aggregate_3dface_from_insert`
+  käyttää nyt yhteistä `block_ocs`-objektia kaikkien block-sisäisten
+  entiteettien aggregaatioon
+- **UUSI** `tests/test_dxf_reader_insert_3dface.py::test_insert_3d_rotated_polyline_extrudes_along_block_local_z`
+  — todistaa että INSERT.extrusion=(0,-1,0) extrudoi block-Z-suuntaan
+  ja askelmat säilyvät WCS-Z:ssä erillisinä
+
+Vaikuttaa: KLHV (kylmälaite-LISP:n pystytetty tikashylly) muuntuu nyt
+oikeaksi ladder-meshiksi Solibrissa. Muut LISP-hyllyt (vaaka KLH,
+KLHV ilman 3D-rotaatiota) pysyvät identtisinä.
+
 ## v0.2.0-alpha21 — 2026-05-13 (DWG-syöte takaisin — accoreconsole + DXFOUT)
 
 **Lisätty — DWG-tiedostot käyvät jälleen syötteeksi**:

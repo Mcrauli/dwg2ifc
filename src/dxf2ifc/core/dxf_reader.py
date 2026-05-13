@@ -99,15 +99,50 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
         flat.append(v_ent)
     virt = flat
 
-    # Separate 3DFACEs from closed LWPOLYLINEs so we can pair them up.
+    # Aggregation runs in a single OCS (Object Coordinate System) defined
+    # by a common extrusion vector. For an axis-aligned INSERT the OCS is
+    # WCS itself; for a 3D-rotated INSERT (e.g. KLHV — KLHYLLY-TIKAS stood
+    # vertically by setting extrusion=(0,-1,0)) the OCS Z axis follows the
+    # extrusion vector and the thickness-extrusion step below runs along
+    # that axis instead of world Z. The two are equivalent when the
+    # extrusion is (0,0,1) so existing axis-aligned shelves are unchanged.
+    #
+    # Determining the OCS:
+    # * LWPOLYLINEs in a virtual block share the parent INSERT's extrusion,
+    #   so the first closed polyline we see fixes it for the whole block.
+    # * 3DFACEs are always emitted in WCS by DXF spec — they don't carry an
+    #   extrusion vector — but they belong to the same block, so we convert
+    #   their WCS vertices into the shared OCS via ``ocs.from_wcs``.
+    extrusion = (0.0, 0.0, 1.0)
+    block_ocs = None
+    for v_ent in virt:
+        if (
+            v_ent.dxftype() == "LWPOLYLINE"
+            and getattr(v_ent, "is_closed", False)
+        ):
+            try:
+                ext = v_ent.dxf.extrusion
+                extrusion = (float(ext[0]), float(ext[1]), float(ext[2]))
+                block_ocs = v_ent.ocs()
+                break
+            except AttributeError:
+                continue
+    if block_ocs is None:
+        # No LWPOLYLINE found — every 3DFACE will be treated as already
+        # being in (WCS == OCS). Build a trivial OCS for that.
+        from ezdxf.math import OCS as _OCS  # local import keeps top tidy
+
+        block_ocs = _OCS(extrusion)
+
+    # Records are now stored in OCS coordinates.
     face_records: list[tuple[
-        tuple[float, float, float, float],  # (xmin, ymin, xmax, ymax)
-        float,  # face top Z
-        list[tuple[float, float, float]],  # vertices in world coords
+        tuple[float, float, float, float],  # (xmin, ymin, xmax, ymax) in OCS
+        float,  # face top Z in OCS
+        list[tuple[float, float, float]],  # vertices in OCS
     ]] = []
     polyline_records: list[tuple[
-        list[tuple[float, float]],  # XY vertices (closed, world)
-        float,  # base Z
+        list[tuple[float, float]],  # XY vertices in OCS (closed)
+        float,  # base Z in OCS (= polyline elevation)
     ]] = []
 
     for v_ent in virt:
@@ -120,10 +155,20 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
                 v3 = v_ent.dxf.vtx3
             except AttributeError:
                 continue
-            pts = [
+            wcs_pts = [
                 (float(v[0]), float(v[1]), float(v[2]) if len(v) > 2 else 0.0)
                 for v in (v0, v1, v2, v3)
             ]
+            # Convert WCS → OCS so the downstream bbox/pairing logic
+            # runs in the same local frame as the polylines.
+            try:
+                pts = [
+                    tuple(block_ocs.from_wcs(p))
+                    for p in wcs_pts
+                ]
+            except Exception:  # noqa: BLE001
+                continue
+            pts = [(float(p[0]), float(p[1]), float(p[2])) for p in pts]
             face_pts = pts[:3] if pts[2] == pts[3] else pts
             xs = [p[0] for p in face_pts]
             ys = [p[1] for p in face_pts]
@@ -143,25 +188,13 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
             if len(ocs_pts) < 3:
                 continue
             elev = float(getattr(v_ent.dxf, "elevation", 0.0) or 0.0)
-            # LWPOLYLINE vertices are 2D in OCS (Object Coordinate
-            # System). When the parent INSERT has a mirrored axis
-            # (e.g. yscale=-1) ezdxf produces a virtual LWPOLYLINE
-            # with extrusion=(0,0,-1) — the OCS Z axis points opposite
-            # to world Z, so a block-level elevation=10 lands at
-            # world Z=-10 if we read elevation directly. ``ocs.to_wcs``
-            # handles the flip transparently for both vertices and
-            # the elevation Z.
-            try:
-                ocs = v_ent.ocs()
-                wcs_pts = [
-                    ocs.to_wcs((float(p[0]), float(p[1]), elev))
-                    for p in ocs_pts
-                ]
-            except Exception:  # noqa: BLE001
-                continue
-            pts2d = [(float(p.x), float(p.y)) for p in wcs_pts]
-            base_z = float(wcs_pts[0].z) if wcs_pts else 0.0
-            polyline_records.append((pts2d, base_z))
+            # LWPOLYLINE vertices are already in OCS. Store the raw 2D
+            # coordinates plus the OCS elevation as base Z. The shared
+            # block OCS converts everything back to WCS at the end —
+            # this is the path that previously dropped the Z and broke
+            # 3D-rotated INSERTs (every rung collapsed onto WCS-Z).
+            pts2d = [(float(p[0]), float(p[1])) for p in ocs_pts]
+            polyline_records.append((pts2d, elev))
 
     if not face_records and not polyline_records:
         return None
@@ -171,12 +204,16 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
     v_to_idx: dict[tuple[float, float, float], int] = {}
 
     def add_vertex(x: float, y: float, z: float) -> int:
-        key = (round(x, 4), round(y, 4), round(z, 4))
+        # (x, y, z) are in the block's OCS. Convert back to WCS so the
+        # downstream MeshGeometry is world-space.
+        wcs = block_ocs.to_wcs((float(x), float(y), float(z)))
+        wx, wy, wz = float(wcs.x), float(wcs.y), float(wcs.z)
+        key = (round(wx, 4), round(wy, 4), round(wz, 4))
         idx = v_to_idx.get(key)
         if idx is None:
             idx = len(vertices)
             v_to_idx[key] = idx
-            vertices.append(Point3D(x, y, z))
+            vertices.append(Point3D(wx, wy, wz))
         return idx
 
     # 1) Emit 3DFACEs as flat polygons
