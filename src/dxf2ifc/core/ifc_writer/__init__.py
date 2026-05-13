@@ -30,7 +30,7 @@ from dxf2ifc.core.ifc_writer.classification import (
     add_talo2000_classification,
 )
 from dxf2ifc.core.ifc_writer.mesh import _mesh_to_brep  # noqa: F401 — tests import this
-from dxf2ifc.core.ifc_writer.orchestrator import convert_dxf
+from dxf2ifc.core.ifc_writer.orchestrator import FileEntry, convert, convert_dxf
 from dxf2ifc.core.ifc_writer.skeleton import (
     IfcSkeleton,
     build_ifc_project_skeleton,
@@ -39,6 +39,8 @@ from dxf2ifc.core.ifc_writer.skeleton import (
 )
 
 __all__ = [
+    "FileEntry",
+    "convert",
     "convert_dxf",
     "build_ifc_project_skeleton",
     "IfcSkeleton",
