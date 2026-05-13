@@ -42,6 +42,7 @@ def build_ifc_project_skeleton(
     building_name: str = "Default Building",
     schema: str = "IFC4",
     storey_z_levels_mm: list[float] | None = None,
+    storey_names: list[str] | None = None,
     floor_elevation_mm: float = 0.0,
     discipline_label: str | None = None,
 ) -> IfcSkeleton:
@@ -67,6 +68,12 @@ def build_ifc_project_skeleton(
     """
     if storey_z_levels_mm is None:
         storey_z_levels_mm = [0.0]
+
+    if storey_names is not None and len(storey_names) != len(storey_z_levels_mm):
+        raise ValueError(
+            "storey_names must have the same length as storey_z_levels_mm "
+            f"(got {len(storey_names)} names for {len(storey_z_levels_mm)} levels)"
+        )
 
     ifc = ifcopenshell.api.run("project.create_file", version=schema)
 
@@ -107,11 +114,14 @@ def build_ifc_project_skeleton(
     storeys = []
     for index, z_mm in enumerate(storey_z_levels_mm, start=1):
         absolute_z = float(z_mm) + float(floor_elevation_mm)
+        storey_name = (
+            storey_names[index - 1] if storey_names is not None else f"Kerros {index}"
+        )
         storey = ifcopenshell.api.run(
             "root.create_entity",
             ifc,
             ifc_class="IfcBuildingStorey",
-            name=f"Kerros {index}",
+            name=storey_name,
         )
         storey.ObjectPlacement = _make_origin_placement(
             ifc, parent=building.ObjectPlacement, z_mm=absolute_z
