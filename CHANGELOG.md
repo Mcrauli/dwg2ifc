@@ -6,6 +6,21 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha24 — 2026-05-13 (always skip MagiCAD blocks in accoreconsole Phase 2)
+
+**Korjattu — AutoCAD CER 2.krs:n koneikoilla/lauhduttimilla**:
+
+Accoreconsolen Phase 2 INSERT-EXPLODE laukaisi CER-popupin sellaisilla
+DWG:illä joissa on MagiCAD-blokkeja, vaikka `--magicad-ifc`-flagia ei
+oltu annettu (alpha18:n fix oli ehdollinen siihen flagiin). Tuloksena
+3DSOLIDit, jotka olivat samassa työpassissa, jäivät tessellöimättä ja
+koneikko/lauhdutin-objektit eivät tulleet IFC:hen.
+
+Tästä versiosta MagiCAD-blokit (`MAGI*` / `*MAGICAD*` / `MAG_*`)
+ohitetaan AINA accoreconsolen Phase 2:ssa. `.arx`-moduulit eivät
+lataudu accoreconsoleen muutenkaan, joten näiden EXPLODE ei tuottanut
+hyödyllistä geometriaa edes silloin kun se ei kaatunut.
+
 ## v0.2.0-alpha23 — 2026-05-13 (multi-floor merge — N DWG → 1 IFC)
 
 **Uusi — Multi-floor DWG → yksi IFC**:

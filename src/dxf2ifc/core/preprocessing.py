@@ -407,14 +407,14 @@ def extract_acis_meshes(
         # %TEMP% with "; error: File load canceled".
         # Phase 2 ``wcmatch`` skip pattern. POSITIO blocks are always
         # skipped (their explode pollutes per-handle STL counter with
-        # letter-shaped meshes). When the caller is going to merge a
-        # MagiCAD-IFC in afterwards, also skip MagiCAD blocks so we
-        # never invoke ``_.EXPLODE`` on a MagiCAD entity — that has
-        # been observed to crash accoreconsole on machines with FULL
-        # MagiCAD ARX loaded (AutoCAD CER popup).
-        skip_blocks = "*POSITIO*"
-        if skip_magicad:
-            skip_blocks = "*POSITIO*,MAGI*,*MAGICAD*,MAG_*"
+        # letter-shaped meshes). MagiCAD blocks are also always skipped:
+        # ``_.EXPLODE`` on a MagiCAD entity crashes accoreconsole on
+        # machines with FULL MagiCAD ARX loaded (AutoCAD CER popup), and
+        # ``.arx`` modules don't load in accoreconsole anyway — so the
+        # tessellation would produce nothing useful even when it didn't
+        # crash. The ``skip_magicad`` kwarg is kept for the dxf_reader
+        # side-channel filter; this preprocessing step ignores it.
+        skip_blocks = "*POSITIO*,MAGI*,*MAGICAD*,MAG_*"
 
         scr_path = workdir / "extract.scr"
         forms = [

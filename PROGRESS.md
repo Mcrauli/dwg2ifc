@@ -4,20 +4,25 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha23 (2026-05-13)
+## Current state — v0.2.0-alpha24 (2026-05-13)
 
-Tuorein julkaistu: **v0.2.0-alpha23** (2026-05-13).
+Tuorein julkaistu: **v0.2.0-alpha24** (2026-05-13).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a23.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a23.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a24.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a24.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–23:n korjaukset tiivistettynä (täysi historia
+Alpha8–24:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha24** (2026-05-13): MagiCAD-blokit (MAGI*/MAGICAD/MAG_)
+  ohitetaan AINA accoreconsolen Phase 2:ssa, ei vain
+  `--magicad-ifc`-flagin kanssa. Korjaa AutoCAD-CER:in DWG:illä joissa
+  on MagiCAD-blokkeja ilman erillistä MagiCAD-IFC:tä — esim. 2.krs:n
+  koneikot/lauhduttimet eivät enää tipu tessellaation kaatuessa.
 - **alpha23** (2026-05-13): **Multi-floor merge** — N DXF/DWG → 1 IFC,
   yksi `IfcBuildingStorey` per tiedosto, kerros-labeli + Z per rivi
   GUI-taulukossa, CLI:ssä `--floor` toistettava. Maailma-Z =
