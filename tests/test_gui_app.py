@@ -83,6 +83,19 @@ def test_main_window_set_status_levels(qtbot):
     assert bar.property("level") == "error"
 
 
+def _seed_one_file(panel, tmp_path, name: str = "in.dxf") -> None:
+    """Insert one row into the multi-floor file table for tests below."""
+    from unittest.mock import patch
+
+    src = tmp_path / name
+    src.write_bytes(b"")
+    with patch(
+        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        return_value=([str(src)], "*"),
+    ):
+        panel.add_files_button.click()
+
+
 def test_main_window_convert_flow_updates_status_on_success(qtbot, tmp_path):
     from unittest.mock import patch
 
@@ -91,10 +104,10 @@ def test_main_window_convert_flow_updates_status_on_success(qtbot, tmp_path):
     window = MainWindow()
     qtbot.addWidget(window)
     panel = window.file_panel
-    panel.input_edit.setText(str(tmp_path / "in.dxf"))
+    _seed_one_file(panel, tmp_path)
     panel.output_edit.setText(str(tmp_path / "out.ifc"))
 
-    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value=({}, None)):
+    with patch("dxf2ifc.gui.convert_worker.convert", return_value=({}, None)):
         with qtbot.waitSignal(window.convert_finished, timeout=2000):
             panel.convert_button.click()
 
@@ -112,10 +125,10 @@ def test_main_window_convert_flow_disables_button_during_run(qtbot, tmp_path):
     window = MainWindow()
     qtbot.addWidget(window)
     panel = window.file_panel
-    panel.input_edit.setText(str(tmp_path / "in.dxf"))
+    _seed_one_file(panel, tmp_path)
     panel.output_edit.setText(str(tmp_path / "out.ifc"))
 
-    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value=({}, None)):
+    with patch("dxf2ifc.gui.convert_worker.convert", return_value=({}, None)):
         panel.convert_button.click()
         assert not panel.convert_button.isEnabled()
         qtbot.waitUntil(lambda: panel.convert_button.isEnabled(), timeout=2000)
@@ -130,6 +143,18 @@ def test_main_window_profile_menu_has_edit_action(qtbot):
     assert "Edit profile…" in texts
 
 
+def _seed_fixture_file(panel, fixtures_dir, name: str) -> None:
+    """Append one existing fixture DXF into the file table."""
+    from unittest.mock import patch
+
+    src = str(fixtures_dir / name)
+    with patch(
+        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        return_value=([src], "*"),
+    ):
+        panel.add_files_button.click()
+
+
 def test_main_window_apply_profile_after_editor_save(qtbot, fixtures_dir, tmp_path):
     from dxf2ifc.gui.app import MainWindow
     from dxf2ifc.profiles.loader import dump_profile, load_default_profile
@@ -137,8 +162,7 @@ def test_main_window_apply_profile_after_editor_save(qtbot, fixtures_dir, tmp_pa
 
     window = MainWindow()
     qtbot.addWidget(window)
-    window.file_panel.input_edit.setText(str(fixtures_dir / "simple_wall.dxf"))
-    window.file_panel.input_edit.editingFinished.emit()
+    _seed_fixture_file(window.file_panel, fixtures_dir, "simple_wall.dxf")
 
     extended = load_default_profile()
     extended_rules = list(extended.rules) + [
@@ -165,8 +189,7 @@ def test_main_window_layer_table_updates_when_input_path_set(qtbot, fixtures_dir
     window = MainWindow()
     qtbot.addWidget(window)
     assert window.layer_table.rowCount() == 0
-    window.file_panel.input_edit.setText(str(fixtures_dir / "simple_wall.dxf"))
-    window.file_panel.input_edit.editingFinished.emit()
+    _seed_fixture_file(window.file_panel, fixtures_dir, "simple_wall.dxf")
     assert window.layer_table.rowCount() >= 1
     layers = [window.layer_table.item(r, 0).text() for r in range(window.layer_table.rowCount())]
     assert "KYL-ULKOSEINA" in layers
@@ -202,10 +225,10 @@ def test_main_window_convert_flow_passes_validate_true(qtbot, tmp_path):
     window = MainWindow()
     qtbot.addWidget(window)
     panel = window.file_panel
-    panel.input_edit.setText(str(tmp_path / "in.dxf"))
+    _seed_one_file(panel, tmp_path)
     panel.output_edit.setText(str(tmp_path / "out.ifc"))
 
-    with patch("dxf2ifc.gui.convert_worker.convert_dxf", return_value=({}, None)) as mock_convert:
+    with patch("dxf2ifc.gui.convert_worker.convert", return_value=({}, None)) as mock_convert:
         with qtbot.waitSignal(window.convert_finished, timeout=2000):
             panel.convert_button.click()
 
@@ -263,8 +286,7 @@ def test_main_window_preview_log_summarizes_dxf_on_open(qtbot, fixtures_dir):
 
     window = MainWindow()
     qtbot.addWidget(window)
-    window.file_panel.input_edit.setText(str(fixtures_dir / "simple_wall.dxf"))
-    window.file_panel.input_edit.editingFinished.emit()
+    _seed_fixture_file(window.file_panel, fixtures_dir, "simple_wall.dxf")
     text = window.preview_log.text()
     assert "simple_wall.dxf" in text
     assert "KYL-ULKOSEINA" in text

@@ -108,7 +108,9 @@ class MainWindow(QtWidgets.QMainWindow):
         help_menu.addAction(self._about_action)
 
     def _on_open_dxf(self) -> None:
-        self.file_panel._on_browse_input()
+        """File menu entry — delegate to the panel's add-files dialog so
+        the user lands in the multi-row table flow."""
+        self.file_panel._on_add_files()
 
     def _on_edit_profile(self) -> None:
         from dxf2ifc.gui.profile_editor import ProfileEditorDialog
@@ -144,30 +146,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self._refresh_layer_table()
         self.set_status(f"Profile loaded: {path}", level="success")
 
-    def _on_convert_requested(
-        self,
-        dxf: str,
-        out: str,
-        energy_specs: str = "",
-        floor_elevation_mm: float = 0.0,
-        magicad_ifc: str = "",
-    ) -> None:
-        if not dxf or not out:
-            self.set_status("Pick both a DXF input and an IFC output first", level="error")
-            self.preview_log.append_error("Pick both a DXF input and an IFC output first")
+    def _on_convert_requested(self, payload: dict) -> None:
+        files = payload.get("files") or []
+        out = payload.get("output_path", "")
+        energy_specs = payload.get("energy_specs_path", "")
+        magicad_ifc = payload.get("magicad_ifc_path", "")
+        if not files or not out:
+            self.set_status(
+                "Lisää vähintään yksi tiedosto + IFC-output ennen konversiota",
+                level="error",
+            )
+            self.preview_log.append_error(
+                "Lisää vähintään yksi tiedosto + IFC-output ennen konversiota"
+            )
             return
-        # Persist the latest values so they pre-fill next session.
-        # Save the spinbox value separately from the enabled-flag so an
-        # enabled→disabled toggle doesn't wipe the last typed elevation.
-        self._recent_files.floor_elevation_mm = float(
-            self.file_panel.floor_elevation_edit.value()
-        )
-        self._recent_files.floor_elevation_enabled = bool(
-            self.file_panel.floor_elevation_enabled_checkbox.isChecked()
-        )
         self.file_panel.convert_button.setEnabled(False)
-        self.set_status(f"Converting {dxf}…")
-        self.preview_log.append_info(f"Converting {Path(dxf).name} -> {Path(out).name}")
+        self.set_status(f"Konvertoidaan {len(files)} tiedostoa → {Path(out).name}…")
+        for fe in files:
+            self.preview_log.append_info(
+                f"  [{fe.floor_label} @ {int(fe.elevation_mm)} mm] {Path(fe.path).name}"
+            )
         if energy_specs:
             self.preview_log.append_info(
                 f"Energiateho-listasta: {Path(energy_specs).name}"
@@ -176,17 +174,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.preview_log.append_info(
                 f"MagiCAD-IFC merge: {Path(magicad_ifc).name}"
             )
-        if floor_elevation_mm:
-            self.preview_log.append_info(
-                f"1.krs korko: +{int(floor_elevation_mm)} mm"
-            )
         self._worker.run(
-            dxf=dxf,
+            files=files,
             out=out,
             profile=self._profile,
             validate=True,
             energy_specs=energy_specs or None,
-            floor_elevation_mm=float(floor_elevation_mm),
             magicad_ifc=magicad_ifc or None,
         )
 
@@ -248,33 +241,33 @@ class MainWindow(QtWidgets.QMainWindow):
         heading.setProperty("role", "h2")
         layout.addWidget(heading)
         self.file_panel = FilePanel()
-        # Pre-fill 1.krs korko with the value used in the previous
-        # session so the user does not retype their building elevation
-        # for every conversion of the same project. The enabled-flag
-        # also persists — Lauri's "draw in absolute coords" workflow
-        # ticks this off once and stays off; coworkers who draw
-        # floor-relative leave it on.
-        self.file_panel.floor_elevation_enabled_checkbox.setChecked(
-            self._recent_files.floor_elevation_enabled
-        )
-        self.file_panel.floor_elevation_edit.setEnabled(
-            self._recent_files.floor_elevation_enabled
-        )
-        self.file_panel.floor_elevation_edit.setValue(
-            self._recent_files.floor_elevation_mm
-        )
         self.file_panel.convert_requested.connect(self._on_convert_requested)
-        self.file_panel.input_edit.editingFinished.connect(self._refresh_layer_table)
-        # editingFinished only fires on manual edit-and-Enter — not when
-        # _on_browse_input setText()s a path. textChanged covers both flows.
-        self.file_panel.input_edit.textChanged.connect(self._refresh_layer_table)
+        # Refresh the layer table preview whenever the file list changes —
+        # we read the first row's path so the user sees what's in the
+        # primary floor before clicking Convert.
+        self.file_panel.files_table.itemChanged.connect(self._refresh_layer_table)
+        self.file_panel.files_table.model().rowsInserted.connect(
+            lambda *_args: self._refresh_layer_table()
+        )
+        self.file_panel.files_table.model().rowsRemoved.connect(
+            lambda *_args: self._refresh_layer_table()
+        )
         layout.addWidget(self.file_panel)
         self.layer_table = LayerTable()
         layout.addWidget(self.layer_table, stretch=1)
         return panel
 
     def _refresh_layer_table(self) -> None:
-        path_text = self.file_panel.input_edit.text().strip()
+        # Multi-floor: preview against the first row's file. The
+        # converter reads every file at convert time, but the planning
+        # preview only needs one representative DXF to show layer→IFC
+        # mappings.
+        table = self.file_panel.files_table
+        path_text = ""
+        if table.rowCount() > 0:
+            first = table.item(0, 0)
+            if first is not None:
+                path_text = first.text().strip()
         if not path_text:
             self.layer_table.set_layers([], self._profile)
             return
