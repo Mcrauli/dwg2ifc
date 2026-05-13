@@ -6,6 +6,33 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha27 — 2026-05-13 (SAB-bbox fallback + handle propagation)
+
+Sukellettiin 4002_2krs.dwg:n kaltaisten tiedostojen kohdalle. Niissä
+KYL-KONEIKKO / KYL-LAUHDUTIN -blokit (block "4+3" 65 3DSOLIDilla, block
+"kaasunjaahdytin" 31:llä) kaatavat accoreconsole STLOUT:in
+stack-buffer-overrun-virheeseen (0xC0000409) ennen kuin yhtäkään
+meshia ehtii valmistua. Alpha25:n bbox-fallback ei aktivoitunut näille
+kahdesta syystä jotka nyt korjattu:
+
+1. **mapper unohti propagatoida `handle`-kentän** EntityRecord →
+   MappedEntity, joten bbox-fallback ei pystynyt löytämään alkuperäistä
+   INSERTia uudelleen DXF:stä handle-lookupilla. Yhden rivin korjaus
+   `core/mapper.py`:hin.
+
+2. **ezdxf:n `bbox.extents([INSERT])` palauttaa tyhjän** kun blokin
+   sisällä on vain 3DSOLIDeja (ACIS SAB v4 binäärimuoto, jonka
+   strukturoitu parseri ei vielä lue). Lisätty rinnakkais-fallback joka
+   skannaa SAB-binäärin raakatavuista `0x14`-position-opcodet ja niitä
+   seuraavat IEEE-754-doublet (x,y,z), yhdistää bodyjen vertex-pilvet
+   yhdeksi laatikoksi, ja transformoi INSERT-asettelun (insertion +
+   rotation + scale) mukaan world-koordinaatteihin.
+
+Tuloksena 2krs.dwg:n koneikot ja lauhduttimet näkyvät nyt IFC:ssä
+laatikko-placeholdereina vaikka itse accoreconsole-crash on yhä
+olemassa — käyttäjä saa visuaalisen vahvistuksen että equipment on
+oikealla paikalla, eikä mitään tipu hiljaa.
+
 ## v0.2.0-alpha26 — 2026-05-13 (suppress AutoCAD CER popup)
 
 Vaiennetaan AutoCAD-Customer Error Report -popup joka muuten aukeaa

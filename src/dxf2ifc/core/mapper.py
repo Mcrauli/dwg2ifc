@@ -53,6 +53,7 @@ def apply_profile(entities: list[EntityRecord], profile: Profile) -> list[Mapped
                 attributes=entity.attributes,
                 block_name=entity.block_name,
                 xform=entity.xform,
+                handle=entity.handle,
                 ifc_type=rule.ifc_type,
                 predefined_type=rule.predefined_type,
                 domain=rule.domain,

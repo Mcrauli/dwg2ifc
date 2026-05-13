@@ -392,6 +392,75 @@ def _process_one_file(
     return mapped
 
 
+def _sab_vertex_extents(
+    acis_data: bytes,
+) -> tuple[tuple[float, float, float], tuple[float, float, float]] | None:
+    """Crude bbox of a 3DSOLID's ACIS SAB body by scanning for ``(0x14, x, y, z)``
+    position tokens — three little-endian IEEE 754 doubles preceded by the
+    SAB ``position`` opcode (0x14). Works on Autodesk SAB v4 (the binary
+    format that ezdxf's structured parser does not yet handle), giving us
+    a placeholder bbox even when full tessellation is unavailable.
+    Returns ``None`` if no plausible coordinates can be extracted.
+    """
+    import struct
+    if not acis_data or len(acis_data) < 25:
+        return None
+    xs: list[float] = []
+    ys: list[float] = []
+    zs: list[float] = []
+    end = len(acis_data) - 25
+    for i in range(end):
+        if acis_data[i] != 0x14:
+            continue
+        try:
+            x, y, z = struct.unpack_from("<ddd", acis_data, i + 1)
+        except struct.error:
+            continue
+        # Filter junk matches: real coordinates are finite and within a
+        # generous building-scale window (kilometres). Doubles that
+        # decode random byte runs typically blow past 1e30 or are NaN.
+        if not (
+            -1e9 < x < 1e9 and -1e9 < y < 1e9 and -1e9 < z < 1e9
+        ):
+            continue
+        xs.append(x)
+        ys.append(y)
+        zs.append(z)
+    if not xs:
+        return None
+    return (
+        (min(xs), min(ys), min(zs)),
+        (max(xs), max(ys), max(zs)),
+    )
+
+
+def _block_local_extents_with_sab(block) -> tuple[tuple[float, float, float], tuple[float, float, float]] | None:
+    """Walk a block definition and return the combined bbox of every
+    3DSOLID's SAB-scanned vertex cloud, in BLOCK-LOCAL coordinates.
+    Fallback for INSERTs whose ezdxf bbox is empty because the block
+    only contains 3DSOLIDs."""
+    xs: list[float] = []
+    ys: list[float] = []
+    zs: list[float] = []
+    for ent in block:
+        if ent.dxftype() not in ("3DSOLID", "SURFACE", "BODY", "REGION"):
+            continue
+        data = getattr(ent, "acis_data", None) or b""
+        ext = _sab_vertex_extents(bytes(data))
+        if ext is None:
+            continue
+        (lo, hi) = ext
+        xs.extend([lo[0], hi[0]])
+        ys.extend([lo[1], hi[1]])
+        zs.extend([lo[2], hi[2]])
+    if not xs:
+        return None
+    return (
+        (min(xs), min(ys), min(zs)),
+        (max(xs), max(ys), max(zs)),
+    )
+
+
 def _apply_block_bbox_fallback(
     mapped: list[MappedEntity],
     dxf_path: str | Path,
@@ -448,24 +517,75 @@ def _apply_block_bbox_fallback(
         ins = handle_to_insert.get(handle)
         if ins is None:
             continue
+        xmin = ymin = zmin = xmax = ymax = zmax = None
+        # First try ezdxf's structured bbox (works when block has
+        # 3DFACE/MESH/POLYLINE/extruded LWPOLYLINE).
         try:
             box = ezbbox.extents([ins])
         except Exception:  # noqa: BLE001
-            continue
-        if box is None or not box.has_data:
-            continue
-        ext = box.extmin
-        emax = box.extmax
-        # Cuboid 8 vertices + 12 triangle faces (2 per side × 6 sides).
-        xmin, ymin, zmin = float(ext.x), float(ext.y), float(ext.z)
-        xmax, ymax, zmax = float(emax.x), float(emax.y), float(emax.z)
-        if xmin == xmax or ymin == ymax:
-            # Zero-area bbox — skip rather than emit a degenerate mesh.
+            box = None
+        if box is not None and box.has_data:
+            xmin, ymin, zmin = float(box.extmin.x), float(box.extmin.y), float(box.extmin.z)
+            xmax, ymax, zmax = float(box.extmax.x), float(box.extmax.y), float(box.extmax.z)
+        else:
+            # Block only contains 3DSOLIDs (SAB v4 binary) — ezdxf
+            # returns empty. Scan the SAB binary directly for vertex
+            # coordinates and compute extents from those, then apply
+            # the INSERT's placement so the bbox lands in world space.
+            try:
+                bname = ins.dxf.name
+                block_def = doc.blocks.get(bname)
+            except Exception:  # noqa: BLE001
+                continue
+            if block_def is None:
+                continue
+            local = _block_local_extents_with_sab(block_def)
+            if local is None:
+                continue
+            (lo, hi) = local
+            # Apply INSERT placement: 8 corners of the local bbox →
+            # transform via (scale, rotation around Z, translate). Then
+            # take the axis-aligned bbox of the 8 transformed corners.
+            try:
+                import math
+                ip = ins.dxf.insert
+                sx = float(getattr(ins.dxf, "xscale", 1.0))
+                sy = float(getattr(ins.dxf, "yscale", 1.0))
+                sz = float(getattr(ins.dxf, "zscale", 1.0))
+                rot_deg = float(getattr(ins.dxf, "rotation", 0.0))
+                cos_r = math.cos(math.radians(rot_deg))
+                sin_r = math.sin(math.radians(rot_deg))
+                corners_local = [
+                    (lo[0], lo[1], lo[2]),
+                    (hi[0], lo[1], lo[2]),
+                    (hi[0], hi[1], lo[2]),
+                    (lo[0], hi[1], lo[2]),
+                    (lo[0], lo[1], hi[2]),
+                    (hi[0], lo[1], hi[2]),
+                    (hi[0], hi[1], hi[2]),
+                    (lo[0], hi[1], hi[2]),
+                ]
+                xs: list[float] = []
+                ys: list[float] = []
+                zs: list[float] = []
+                for cx, cy, cz in corners_local:
+                    px = cx * sx
+                    py = cy * sy
+                    pz = cz * sz
+                    rx = px * cos_r - py * sin_r + float(ip.x)
+                    ry = px * sin_r + py * cos_r + float(ip.y)
+                    rz = pz + float(ip.z)
+                    xs.append(rx)
+                    ys.append(ry)
+                    zs.append(rz)
+                xmin, ymin, zmin = min(xs), min(ys), min(zs)
+                xmax, ymax, zmax = max(xs), max(ys), max(zs)
+            except Exception:  # noqa: BLE001
+                continue
+
+        if xmin is None or xmin == xmax or ymin == ymax:
             continue
         if zmin == zmax:
-            # 2D block (no Z extents) — give it a nominal 1 mm height
-            # so the IFC has *some* solid representation. The user will
-            # still see a near-flat placeholder.
             zmax = zmin + 1.0
         verts = (
             Point3D(xmin, ymin, zmin), Point3D(xmax, ymin, zmin),

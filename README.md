@@ -9,7 +9,7 @@ PropertySettiä per IFC-tuote (`FI_Asennus` / `FI_Geometria` /
 `FI_Komponentti` / `FI_Tuote` / `FI_Tekninen` / `FI_Sijainti`), ja
 Solibri-yhteensopivan IFC4-tiedoston yhdellä konversio-ajolla.
 
-Nykyinen versio: **v0.2.0-alpha26** (2026-05-13). Pre-release-vaiheessa.
+Nykyinen versio: **v0.2.0-alpha27** (2026-05-13). Pre-release-vaiheessa.
 
 ## Multi-floor merge (alpha23)
 
