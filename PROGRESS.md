@@ -4,20 +4,27 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha20 (2026-05-12)
+## Current state — v0.2.0-alpha21 (2026-05-13)
 
-Tuorein julkaistu: **v0.2.0-alpha20** (2026-05-12).
+Tuorein julkaistu: **v0.2.0-alpha21** (2026-05-13).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a20.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a20.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a21.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a21.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–20:n korjaukset tiivistettynä (täysi historia
+Alpha8–21:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha21** (2026-05-13): **DWG-syöte takaisin** — `accoreconsole.exe`
+  + `DXFOUT` -preconversio uudessa modulissa `core/dwg_preconvert.py`.
+  Sama headless-tekniikka kuin STLOUT-tessellaatiossa; ei COM:ia, ei
+  sendkeys:iä, ei näkyvää AutoCAD-ikkunaa. CLI + GUI hyväksyvät
+  `.dwg`:n; preconvertattu DXF kirjoitetaan `%TEMP%/dxf2ifc_dwgin_*/`
+  -workdiriin. Vaatii AutoCAD-asennuksen. MagiCAD-DWG ei tuettu (sama
+  Object Enabler 2D-fragmentti -ongelma kuin alpha2:ssa).
 - **alpha20** (2026-05-12): Poistettu skip-ACIS-toggle GUI:sta + CLI:stä.
   Alpha17:n hätäkorjaus ei enää tarpeen (alpha18:n MagiCAD-skip
   ratkaisi varsinaisen ongelman). Sisäinen `preprocess_acis`-parametri
@@ -108,12 +115,14 @@ core/quality.py          (optional) ifcopenshell.validate +
 ### MagiCAD-osat — yksi oikea reitti
 
 - **Kollega ajaa `-MAGIIFCCD`** AutoCAD:issa, dxf2ifc mergee tuotetun
-  IFC:n master-IFC:hen `core/ifc_merger.py`:llä. DXF-syötteellä ei tarvita
-  AutoCAD COM:ia lainkaan.
+  IFC:n master-IFC:hen `core/ifc_merger.py`:llä. Pelkkä DXF/DWG-syöte ei
+  tuota MagiCAD-semantiikkaa — proxy-objektit puuttuvat tai ne renderöidään
+  2D-fragmentteina.
 - DXF-puolen MAGI*-luokat + ACAD_PROXY_ENTITY skipataan automaattisesti
   kun `magicad_ifc_path` on annettu — estää duplikaatit.
-- DWG-input poistettu v0.2.0-alpha10:ssä (kaikki COM-keystroke-yritykset
-  hauraita; `-MAGIIFCCD` + merge on luotettavampi).
+- DWG-syöte palautettiin v0.2.0-alpha21:ssä accoreconsole+DXFOUT-reitillä,
+  mutta MagiCAD-DWG ei silti ole tuettu sisältö (sama Object Enabler -ongelma
+  kuin alpha2:ssa). MagiCAD-osat: `-MAGIIFCCD` + `--magicad-ifc`-merge.
 
 ### accoreconsole-rajoitukset
 
@@ -158,11 +167,13 @@ core/quality.py          (optional) ifcopenshell.validate +
 
 ## Known limitations
 
-- **Vain DXF-input**: DWG-input poistettu v0.2.0-alpha10:ssä. Käytä
-  AutoCAD:in `DXFOUT`:ia tai `-MAGIIFCCD` + merge-reittiä.
+- **DWG-syöte vaatii AutoCAD-asennuksen**: alpha21:ssä lisätty
+  `accoreconsole.exe + DXFOUT` -preconversio toimii vain AutoCAD-koneilla.
+  LT- tai AutoCAD-vapaalla koneella tulee selkeä virheilmoitus jossa
+  ehdotetaan DXFOUT:n ajamista käsin.
 - **MagiCAD-osat**: tulevat IFC:hen vain kollegan `-MAGIIFCCD`-exportin
-  kautta `--magicad-ifc`-mergellä. Pelkkä DXF + Object Enabler ei tuota
-  semanttista MagiCAD-IFC:tä.
+  kautta `--magicad-ifc`-mergellä. Pelkkä DXF/DWG + Object Enabler ei
+  tuota semanttista MagiCAD-IFC:tä.
 - **DXF data quality**: konvertteri ei vielä korjaa DXF:n sisäistä
   outlier-geometriaa (esim. yksittäinen 3DSOLID 800m irrallaan), vain
   varoittaa.

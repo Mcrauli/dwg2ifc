@@ -1,10 +1,17 @@
 # DWG / MagiCAD preprocessing — historiallinen kontekstilappu
 
-> **Status v0.2.0-alpha10 (2026-05-08)**: DWG-input on **POISTETTU**
-> kokonaan. Vain `.dxf`-input. MagiCAD-osat tulevat erikseen kollegan
-> `-MAGIIFCCD`-IFC:n kautta `--magicad-ifc`-mergellä. Tämä dokumentti
-> kerää sen mitä todella opittiin POC v1–v4 -saagasta jotta seuraavalla
-> iteraatiolla **ei keksitä uudelleen** samoja umpikujia.
+> **Status v0.2.0-alpha21 (2026-05-13)**: DWG-syöte on **palautettu**
+> `accoreconsole.exe + DXFOUT` -reitillä (`src/dxf2ifc/core/dwg_preconvert.py`).
+> EI keystroke-sendkeys:iä, EI näkyvää acad.exe-COM:ia — sama headless-tekniikka
+> kuin 3DSOLID-tessellaatiossa, paitsi STLOUT:n sijasta DXFOUT. MagiCAD-DWG
+> ei silti ole tuettu syöte (Object Enabler tuottaa 2D-fragmentteja
+> samoin kuin alpha2:n POC:ssa). Tämä dokumentti kerää sen mitä todella
+> opittiin POC v1–v4 -saagasta jotta seuraavalla iteraatiolla **ei keksitä
+> uudelleen** samoja umpikujia.
+>
+> **Historia**: alpha2..alpha9 yritti `acad.exe` COM + sendkeys (hauras),
+> alpha10 poisti kaiken DWG-tuen, alpha21 palautti sen oikealla
+> headless-reitillä.
 
 ## Suositeltu reitti tänään
 

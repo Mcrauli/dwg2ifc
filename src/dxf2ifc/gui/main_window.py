@@ -279,7 +279,19 @@ class MainWindow(QtWidgets.QMainWindow):
             self.layer_table.set_layers([], self._profile)
             return
         path = Path(path_text)
-        if not path.is_file() or path.suffix.lower() != ".dxf":
+        if not path.is_file() or path.suffix.lower() not in (".dxf", ".dwg"):
+            return
+        if path.suffix.lower() == ".dwg":
+            # ezdxf cannot read DWG. DWG input is preconverted via accoreconsole
+            # DXFOUT inside convert_dxf, but we don't run that here just to
+            # populate the layer preview — the conversion itself surfaces the
+            # layer information after preconversion.
+            self.layer_table.set_layers([], self._profile)
+            self.set_status(
+                "DWG-syöte: layer-esikatselu näkyy konversion jälkeen "
+                "(ezdxf ei lue DWG:tä suoraan).",
+                level="info",
+            )
             return
         try:
             layers = list_layers(path)

@@ -32,7 +32,7 @@ class FilePanel(QtWidgets.QWidget):
 
         layout.addWidget(self._caption("DXF input"), 0, 0)
         self.input_edit = QtWidgets.QLineEdit()
-        self.input_edit.setPlaceholderText("Polku .dxf-tiedostoon")
+        self.input_edit.setPlaceholderText("Polku .dxf- tai .dwg-tiedostoon")
         layout.addWidget(self.input_edit, 0, 1)
         self.browse_input_button = QtWidgets.QPushButton("Browse…")
         self.browse_input_button.setProperty("secondary", "true")
@@ -123,9 +123,9 @@ class FilePanel(QtWidgets.QWidget):
     def _on_browse_input(self) -> None:
         path, _ = QtWidgets.QFileDialog.getOpenFileName(
             self,
-            "Avaa DXF-tiedosto",
+            "Avaa DXF- tai DWG-tiedosto",
             "",
-            "DXF-tiedostot (*.dxf);;All files (*)",
+            "AutoCAD-piirustukset (*.dxf *.dwg);;DXF (*.dxf);;DWG (*.dwg);;All files (*)",
         )
         if path:
             self.input_edit.setText(path)

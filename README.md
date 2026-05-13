@@ -2,14 +2,14 @@
 
 [![Latest release](https://img.shields.io/github/v/release/Mcrauli/dxf2ifc?include_prereleases&sort=semver)](https://github.com/Mcrauli/dxf2ifc/releases/latest)
 
-**AutoCAD DXF → IFC 4 -konvertteri suomalaiseen kylmälaite- ja
+**AutoCAD DXF/DWG → IFC 4 -konvertteri suomalaiseen kylmälaite- ja
 LVI-suunnitteluun.** Layer-pohjainen mappaus tuottaa Talo2000-luokituksen
 (ARK) ja RAVA-LVI / RAVA-TATE -luokituksen (TATE), 6 suomalaista
 PropertySettiä per IFC-tuote (`FI_Asennus` / `FI_Geometria` /
 `FI_Komponentti` / `FI_Tuote` / `FI_Tekninen` / `FI_Sijainti`), ja
 Solibri-yhteensopivan IFC4-tiedoston yhdellä konversio-ajolla.
 
-Nykyinen versio: **v0.2.0-alpha16** (2026-05-11). Pre-release-vaiheessa.
+Nykyinen versio: **v0.2.0-alpha21** (2026-05-13). Pre-release-vaiheessa.
 
 ## Lataa (Windows)
 
@@ -37,9 +37,14 @@ seuraavalla käynnistyksellä.
 
 | Input | Tuotos |
 |---|---|
-| **DXF** (KYL-* layerit, dynamic blockit, 3DSOLID, 3DFACE, INSERT, polylinet) | IFC4 + Talo2000/RAVA + FI_*-PSet:t |
+| **DXF / DWG** (KYL-* layerit, dynamic blockit, 3DSOLID, 3DFACE, INSERT, polylinet) | IFC4 + Talo2000/RAVA + FI_*-PSet:t |
 | **Energiateho-Excel** (xlsx/csv, valinnainen) | tehot → FI_Tekninen-merge POSITIO-linkityksen kautta |
 | **MagiCAD-IFC** (kollegan `-MAGIIFCCD`-tuotos, valinnainen) | yhdistetään master-IFC:hen samaan storey:hin |
+
+DWG-syöte preconvertataan DXF:ksi headless `accoreconsole.exe + DXFOUT`
+-kutsulla (sama tekniikka kuin 3DSOLID-tessellaatiossa) — vaatii
+AutoCAD-asennuksen. MagiCAD-DWG ei ole tuettu syöte; käytä `-MAGIIFCCD`
++ `--magicad-ifc`-mergeä.
 
 **KYL-LISP-elementit** (Lauri:n omat AutoLISP-piirtotyökalut):
 

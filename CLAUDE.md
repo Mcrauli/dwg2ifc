@@ -61,10 +61,12 @@ Task-kohtainen lukulista: [`docs/CLAUDE_TASKS.md`](docs/CLAUDE_TASKS.md).
 
 - **`accoreconsole.exe` ei voi ladata `.arx`-moduuleja** — Autodesk-rajoite.
   Älä yritä `(arxload "MagiCAD_*.arx")`.
-- **DWG-input poistettiin v0.2.0-alpha10:ssä** kaikki keystroke-pohjaiset
-  AutoCAD COM -ratkaisut osoittautuivat hauraiksi. Vain `.dxf`-input.
+- **DWG-syöte palautettiin v0.2.0-alpha21:ssä** accoreconsole+DXFOUT-
+  preconversiolla. EI keystroke-COM:ia (sen yritti alpha2..alpha10).
+  Toteutus: `src/dxf2ifc/core/dwg_preconvert.py`.
 - **Oikea reitti MagiCAD-osille**: kollega ajaa `-MAGIIFCCD` AutoCAD:issa,
-  dxf2ifc mergee IFC:n `core/ifc_merger.py`:llä master-IFC:hen.
+  dxf2ifc mergee IFC:n `core/ifc_merger.py`:llä master-IFC:hen. MagiCAD-DWG-
+  syöte EI tuota semanttisia osia (Object Enabler tuottaa 2D-fragmentteja).
 - DXF-puolen MAGI*-luokat + ACAD_PROXY_ENTITY skipataan automaattisesti
   kun `magicad_ifc_path` on annettu (estää duplikaatit).
 - Historia ja umpikujat: [`docs/DWG_MAGICAD_PREPROCESSING.md`](docs/DWG_MAGICAD_PREPROCESSING.md).
@@ -75,8 +77,9 @@ Task-kohtainen lukulista: [`docs/CLAUDE_TASKS.md`](docs/CLAUDE_TASKS.md).
 # Testit
 .venv/Scripts/python -m pytest -q
 
-# CLI
+# CLI (DXF tai DWG; DWG preconvertataan accoreconsole+DXFOUT)
 .venv/Scripts/python -m dxf2ifc convert input.dxf output.ifc
+.venv/Scripts/python -m dxf2ifc convert input.dwg output.ifc
 .venv/Scripts/python -m dxf2ifc convert input.dxf output.ifc --magicad-ifc colleague.ifc
 .venv/Scripts/python -m dxf2ifc convert input.dxf output.ifc --energy-specs teho.xlsx
 
@@ -113,9 +116,10 @@ Lisää konteksti vain silloin kun se on relevantti aktiiviselle tehtävälle.
   "Mcrauli".
 - **EI multi-classification** — yksi luokitus per IFC-element.
 - **EI Solibri-discipline-auto-detect** — manuaalinen valinta hyväksytty.
-- **EI AutoCAD COM:ia missään** — vain `accoreconsole.exe` 3DSOLID-tess.
-- **EI DWG-input-tukea** — vain `.dxf`. MagiCAD-osat tulevat erikseen
-  `--magicad-ifc`-mergellä.
+- **EI AutoCAD COM:ia missään** — vain `accoreconsole.exe` (3DSOLID-tess
+  + DWG-preconversio alpha21:stä lähtien).
+- **DWG-syöte OK** alpha21:stä alkaen accoreconsole+DXFOUT-reitillä, mutta
+  MagiCAD-DWG ei. MagiCAD-osat: kollegan `-MAGIIFCCD` + `--magicad-ifc`-merge.
 
 ## Dokumentaation ylläpitosääntö
 

@@ -6,6 +6,48 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha21 — 2026-05-13 (DWG-syöte takaisin — accoreconsole + DXFOUT)
+
+**Lisätty — DWG-tiedostot käyvät jälleen syötteeksi**:
+
+`.dwg`-tiedostoa voi syöttää suoraan sekä CLI:lle että GUI:lle.
+Konversiopipeline preconvertaa DWG:n DXF:ksi headless-AutoCAD:in
+(`accoreconsole.exe`) ja `DXFOUT`-komennon avulla, jonka jälkeen
+DXF-parsing-putki jatkaa muuttumattomana. Yksi yhteinen koodipolku
+ja yksi GUI-virheilmoitus jos AutoCAD puuttuu (vain AutoCAD-omistajille
+suunnattu).
+
+Tärkeä ero alpha10:ssä poistettuun reittiin: uusi polku käyttää
+**samaa headless-tekniikkaa** jolla 3DSOLID-tessellaatio jo toimii
+(ei COM:ia, ei sendkeys:iä, ei näkyvää AutoCADia, ei FILEDIA-toggle:a,
+ei käyttäjän AutoCAD-profiilin pollutiota). Hauras `acad.exe`-COM-
+keystroke-pipeline ei palaa.
+
+Käyttö:
+
+```bash
+# CLI
+python -m dxf2ifc convert piirustus.dwg out.ifc
+
+# GUI: pudota .dwg tiedostopolku-kenttään, paina Convert.
+```
+
+Rajoitukset:
+- Vaatii AutoCAD-asennuksen (LT EI tue accoreconsole.exe:tä — paitsi
+  jos LT-installissa on AutoCAD-LT-Cargo-laajennus, mitä emme tue)
+- MagiCAD-DWG-syöte EI ole tuettu — proxy-objektit tulisivat 2D-
+  fragmentteina (sama syy kuin alpha2:n POC:ssa). MagiCAD-osat:
+  kollegan `-MAGIIFCCD` + `--magicad-ifc`-merge
+
+Tiedostot:
+- **UUSI** `src/dxf2ifc/core/dwg_preconvert.py` — `convert_dwg_to_dxf()`
+- `src/dxf2ifc/core/ifc_writer/orchestrator.py` — `.dwg`-syötteen
+  haarautuminen `convert_dxf`-funktion etupäähän
+- `src/dxf2ifc/cli.py` + `src/dxf2ifc/gui/file_panel.py` +
+  `src/dxf2ifc/gui/main_window.py` — UI hyväksyy `.dwg`:n
+- **UUSI** `tests/test_dwg_preconvert.py` — 5 unit-testiä + 1 end-to-
+  end -testi joka skip:ää ilman AutoCAD-asennusta
+
 ## v0.2.0-alpha20 — 2026-05-12 (poistettu skip-ACIS-toggle GUI:sta ja CLI:stä)
 
 **Poistettu — käyttäjälle näkyvä accoreconsole-ohitusvalinta**:

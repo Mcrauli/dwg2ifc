@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -251,13 +252,24 @@ def convert_dxf(
     accoreconsole is missing (LT-only or no AutoCAD on host), ACIS bodies
     are skipped silently and the validation report flags the gap.
 
-    DWG inputs are no longer supported (v0.2.0-alpha10). The recommended
-    workflow for MagiCAD projects is to run ``-MAGIIFCCD`` in AutoCAD
-    separately and supply the resulting IFC via ``magicad_ifc_path`` —
-    the merger appends those products into the master IFC and the
-    DXF-side MagiCAD entities (MAGI* + ACAD_PROXY_ENTITY) are skipped
-    automatically to avoid duplicates.
+    DWG inputs are accepted in v0.2.0-alpha21+: the same headless
+    ``accoreconsole.exe`` runs DXFOUT on the .dwg, writes a temporary
+    .dxf to ``%TEMP%/dxf2ifc_dwgin_*/``, and the existing pipeline
+    consumes that. Requires an AutoCAD install (LT-only / no AutoCAD
+    raises FileNotFoundError). MagiCAD-DWGs are NOT supported as input
+    — for MagiCAD content the colleague's ``-MAGIIFCCD`` IFC must be
+    supplied via ``magicad_ifc_path``.
     """
+    input_path = Path(dxf_path)
+    if input_path.suffix.lower() == ".dwg":
+        from dxf2ifc.core.dwg_preconvert import convert_dwg_to_dxf
+        dwg_workdir = Path(tempfile.mkdtemp(prefix="dxf2ifc_dwgin_"))
+        dxf_path = convert_dwg_to_dxf(
+            input_path,
+            dwg_workdir,
+            progress=progress if callable(progress) else None,
+        )
+
     name = project_name or Path(dxf_path).stem
 
     # When the caller supplied a MagiCAD-IFC for merge-in, drop MAGI*

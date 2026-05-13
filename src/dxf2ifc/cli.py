@@ -20,11 +20,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"dxf2ifc {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    convert = subparsers.add_parser("convert", help="Convert a DXF file to IFC.")
+    convert = subparsers.add_parser("convert", help="Convert a DXF or DWG file to IFC.")
     convert.add_argument(
         "input",
         type=Path,
-        help="Path to the input .dxf file.",
+        help=(
+            "Path to the input .dxf or .dwg file. DWG inputs are "
+            "preconverted via accoreconsole + DXFOUT (requires AutoCAD)."
+        ),
     )
     convert.add_argument("output", type=Path, help="Path for the IFC output file.")
     convert.add_argument(
