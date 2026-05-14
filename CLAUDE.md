@@ -58,6 +58,7 @@ Yksityiskohtainen pipeline: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 | `src/dxf2ifc/core/ifc_writer/mesh.py` | IfcFacetedBrep / IfcTriangulatedFaceSet |
 | `src/dxf2ifc/core/finnish_psets.py` | 6 FI_*-PSet:tä per tuote |
 | `src/dxf2ifc/profiles/default_kylmalaite.toml` | Default layer-mappaus |
+| `src/dxf2ifc/profiles/store.py` | Aktiivisen profiilin per-käyttäjä-persistointi (GUI:n "Tallenna") |
 | `src/dxf2ifc/cli.py` | CLI entry point |
 | `src/dxf2ifc/gui/main_window.py` | GUI (PySide6) |
 

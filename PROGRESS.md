@@ -4,20 +4,25 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha33 (2026-05-14)
+## Current state — v0.2.0-alpha34 (2026-05-14)
 
-Tuorein julkaistu: **v0.2.0-alpha33** (2026-05-14).
+Tuorein julkaistu: **v0.2.0-alpha34** (2026-05-14).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a33.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a33.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a34.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a34.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–33:n korjaukset tiivistettynä (täysi historia
+Alpha8–34:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha34** (2026-05-14): **Profiilieditori käyttökelpoisemmaksi** —
+  hakukenttä + rivilaskuri + selkeä scrollipalkki sääntötaulukkoon,
+  täysi IFC-tyyppivalikko (`SUPPORTED_IFC_TYPES`, 11 → ~29 tyyppiä,
+  ryhmitelty), ja "Tallenna" persistoi profiilin per-käyttäjä-tiedostoon
+  joka autolatautuu käynnistyessä. Editorin TOML-tiedostodialogit pois.
 - **alpha33** (2026-05-14): **KORJAUS — höyrystimet jäivät tessellöimättä**
   (alpha32:n regressio). alpha32:n `worthlist` sisälsi ä/ö-nimisiä
   blockeja (`Höyrystin 1-puh`) joita LISP-`member` ei pystynyt

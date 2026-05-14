@@ -6,6 +6,39 @@ project uses semantic versioning.
 
 ## Unreleased
 
+- **Uusi layer-mappaus: `KYL-KOTELO*`** → `IfcCableCarrierSegment` /
+  `CABLETRUNKINGSEGMENT`. Kotelo on koteloitu (suljettu) kaapelireitti;
+  `CABLETRUNKINGSEGMENT` erottaa sen avoimista tikas-/levyhyllyistä
+  (`CABLELADDERSEGMENT` / `CABLETRAYSEGMENT`). RAVA-koodi
+  `T-TATE-01-01-001`, KYL-domain. Kotelot piirretään
+  `autocad-lisp-ohjeet/files/kotelo.lsp`-työkalulla (sama
+  polyline+thickness-dynamic-block-rakenne kuin KLHYLLY-hyllyillä, joten
+  preprocessing/geometry-polku toimii sellaisenaan).
+
+## v0.2.0-alpha34 — 2026-05-14 (profiilieditori: haku, täysi IFC-lista, tallennus sovellukseen)
+
+**Profiilieditori käyttökelpoisemmaksi** — kolme käyttäjäpalautteen
+kipupistettä korjattu:
+
+- **Hakukenttä + selkeä scrollipalkki**: sääntötaulukon yläpuolella
+  hakukenttä joka suodattaa rivit elävästi (layer pattern / IFC-tyyppi /
+  domain / koodi). Vieressä "N / 49 riviä" -laskuri. Pystyscrollipalkki
+  leveämpi ja korkeakontrastinen amber-vetimellä — näkee yhdellä
+  silmäyksellä missä kohtaa listaa ollaan. Add/Edit/Remove osuvat oikeaan
+  sääntöön myös suodatettuna.
+- **Täysi IFC-tyyppivalikko**: pudotusvalikossa oli vain 11 tyyppiä,
+  vaikka writer tukee ~29:ää. Nyt kaikki — jäähdytyslaitteet, säiliöt,
+  sähkö- ja jakelulaitteet — ryhmiteltynä erottimin. Lista tulee yhdestä
+  `SUPPORTED_IFC_TYPES`-vakiosta jota testi pitää synkassa orchestratorin
+  kanssa.
+- **Tallennus sovelluksen muistiin**: "Tallenna" kirjoittaa profiilin
+  per-käyttäjä-tiedostoon (`%APPDATA%\Mcrauli\dxf2ifc\active_profile.toml`)
+  ja se latautuu automaattisesti käynnistyessä — ei enää TOML-tiedoston
+  etsimistä ja lataamista joka kerta. Atominen kirjoitus; vioittunut
+  tiedosto putoaa siististi oletusprofiiliin. "Reset to bundled default"
+  poistaa tallennetun profiilin. Editorin Load/Save-tiedostodialogit
+  poistettu. CLI:n `--profile` toimii ennallaan.
+
 ## v0.2.0-alpha33 — 2026-05-14 (KORJAUS: höyrystimet jäivät tessellöimättä)
 
 **Juurisyy-fix alpha32:n regressiolle — höyrystimet tulivat väärin**:
