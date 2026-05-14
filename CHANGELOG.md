@@ -6,6 +6,38 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha28 — 2026-05-14 (ROOT CAUSE: TILEMODE — modelspace forced)
+
+**Juurisyy löytyi ja korjattiin.** 2krs.dwg:n kaltaiset tiedostot
+(tallennettu paper-space-layout-välilehti aktiivisena) saivat
+accoreconsolen STLOUT-Phase-1:n hylkäämään JOKA ikisen modelspace-
+3DSOLIDin virheellä "1 was not in current space". STLOUT operoi vain
+aktiivisessa tilassa, ja accoreconsole avaa DWG:n siihen välilehteen
+joka oli aktiivisena tallennettaessa. Hylätyt valinnat jäivät
+roikkumaan STLOUT-promptiin, seuraavan loopin token syötiin
+selektioksi, komentopino korruptoitui → STATUS_STACK_BUFFER_OVERRUN.
+
+Korjaukset (kaikki preprocessing.py:n LISP-skriptissä):
+
+1. **`(setvar "TILEMODE" 1)`** SETUP-formissa — pakottaa Model-tabin
+   aktiiviseksi heti. Tämä on varsinainen juurisyy-fix: nyt
+   modelspace-bodyt ovat valittavissa STLOUTille.
+2. **`flushcmd`-helper + `(fc)`-kutsut** jokaisen STLOUT/EXPLODE/
+   CONVTOSOLID-kutsun jälkeen — peruu mahdollisen roikkuvan komennon
+   (`(command)` ilman argumentteja = ESC). Defence-in-depth: vaikka
+   joku body olisi aidosti viallinen, se ei enää kaada koko prosessia
+   eikä syö seuraavia komentoja.
+3. **Workdir säilyy levyllä kun accoreconsole exitoi != 0** — aiempi
+   `finally: shutil.rmtree(workdir)` poisti diagnostiikan AINA, vaikka
+   "diagnostics preserved" -viesti lupasi muuta. Nyt extract.log +
+   accoreconsole.log + extract.scr jäävät talteen crash-analyysiä
+   varten.
+
+Tulos: 2krs.dwg:n koneikot (block "4+3") ja lauhduttimet (block
+"kaasunjaahdytin") + raaka-3DSOLIDit tessellöityvät nyt OIKEINA
+IfcFacetedBrep-kappaleina — ei placeholder-laatikoita, ei
+CER-popuppia, ei crashia.
+
 ## v0.2.0-alpha27 — 2026-05-13 (SAB-bbox fallback + handle propagation)
 
 Sukellettiin 4002_2krs.dwg:n kaltaisten tiedostojen kohdalle. Niissä

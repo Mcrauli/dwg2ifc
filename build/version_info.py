@@ -21,14 +21,14 @@ VSVersionInfo(
                     [
                         StringStruct("CompanyName", "Lauri Rekola"),
                         StringStruct("FileDescription", "dxf2ifc DXF to IFC 4 converter"),
-                        StringStruct("FileVersion", "0.2.0a27"),
+                        StringStruct("FileVersion", "0.2.0a28"),
                         StringStruct("InternalName", "dxf2ifc"),
                         StringStruct(
                             "LegalCopyright", "(c) 2026 Lauri Rekola"
                         ),
                         StringStruct("OriginalFilename", "dxf2ifc.exe"),
                         StringStruct("ProductName", "dxf2ifc"),
-                        StringStruct("ProductVersion", "0.2.0a27"),
+                        StringStruct("ProductVersion", "0.2.0a28"),
                     ],
                 )
             ]

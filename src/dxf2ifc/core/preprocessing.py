@@ -220,6 +220,13 @@ _LISP_SETUP = (
     '(setvar "FILEDIA" 0) '
     '(setvar "CMDDIA" 0) '
     '(setvar "FACETRES" 0.1) '
+    # TILEMODE 1 forces the Model tab active. accoreconsole opens a DWG
+    # on whatever tab was active when it was saved — if that is a
+    # paper-space layout, every ``ssget "_X"`` hit on a modelspace
+    # 3DSOLID comes back "1 was not in current space" and STLOUT
+    # rejects it. Switching to modelspace up front makes the bodies
+    # selectable.
+    '(setvar "TILEMODE" 1) '
     # REPORTERROR=0 + SENDREPORTINFO=0 silence AutoCAD's Customer Error
     # Report popup that otherwise appears on every accoreconsole-side
     # crash (e.g. STLOUT failing on a malformed 3DSOLID body). Our caller
@@ -230,7 +237,15 @@ _LISP_SETUP = (
     '(setq solid_out "{solid_out}") '
     '(setq insert_out "{insert_out}") '
     '(setq logf (open (strcat "{log_out}" "extract.log") "w")) '
-    '(defun tryx (tag fn / err) (setq err (vl-catch-all-apply fn)) (if (vl-catch-all-error-p err) (write-line (strcat tag ":" (vl-catch-all-error-message err)) logf))))'
+    '(defun tryx (tag fn / err) (setq err (vl-catch-all-apply fn)) (if (vl-catch-all-error-p err) (write-line (strcat tag ":" (vl-catch-all-error-message err)) logf))) '
+    # flushcmd cancels any half-open command (e.g. STLOUT stuck at its
+    # "Select solids or watertight meshes" prompt after rejecting a
+    # non-watertight 3DSOLID). Without this the next loop iteration's
+    # "_.STLOUT" token is consumed as a selection for the still-pending
+    # command, the command stack corrupts, and accoreconsole dies with
+    # STATUS_STACK_BUFFER_OVERRUN (0xC0000409). (command) with no args
+    # is the AutoLISP equivalent of pressing ESC.
+    '(defun fc () (repeat 8 (if (> (getvar "CMDACTIVE") 0) (command)))))'
 )
 
 # Phase 1: raw ACIS bodies on the layer filter.
@@ -246,6 +261,7 @@ _LISP_PHASE1 = (
     '(setq h (cdr (assoc 5 (entget obj)))) '
     '(write-line (strcat "phase1_handle=" h) logf) '
     '(tryx (strcat "p1_stl_err=" h) (function (lambda () (command "_.STLOUT" obj "" "Y" (strcat solid_out h ".stl"))))) '
+    '(fc) '
     '(setq i (1+ i))))))'
 )
 
@@ -292,6 +308,7 @@ _LISP_PHASE2 = (
     '(write-line (strcat "phase2_handle=" ih "/block=" bname) logf) '
     '(setq ctr 0 toconv (ssadd) iter_cap 1000) '
     '(command "_.EXPLODE" ins) '
+    '(fc) '
     '(setq queue (list (ssget "_P"))) '
     '(while (and queue (> iter_cap 0)) '
     '(setq curss (car queue)) '
@@ -308,12 +325,14 @@ _LISP_PHASE2 = (
     '(cond '
     '((or (eq etype "3DSOLID") (eq etype "SURFACE") (eq etype "REGION") (eq etype "BODY") (eq etype "PLANESURFACE") (eq etype "EXTRUDEDSURFACE") (eq etype "REVOLVEDSURFACE") (eq etype "SWEPTSURFACE") (eq etype "LOFTEDSURFACE") (eq etype "NURBSURFACE")) '
     '(command "_.STLOUT" ent "" "Y" (strcat insert_out ih "_" (itoa ctr) ".stl")) '
+    '(fc) '
     '(setq ctr (1+ ctr))) '
     '((eq etype "INSERT") '
     '(setq sbname (cdr (assoc 2 el))) '
     '(if (and sbname (not (wcmatch (strcase sbname) "{skip_blocks}"))) '
     '(progn '
     '(command "_.EXPLODE" ent) '
+    '(fc) '
     '(setq subss (ssget "_P")) '
     '(if subss (setq queue (cons subss queue)))))) '
     '((and (eq etype "LWPOLYLINE") ethick (> ethick 0.0)) '
@@ -322,6 +341,7 @@ _LISP_PHASE2 = (
     '(if (> (sslength toconv) 0) '
     '(progn '
     '(command "_.CONVTOSOLID" toconv "") '
+    '(fc) '
     '(setq postents (ssget "_P")) '
     '(if postents '
     '(progn '
@@ -332,6 +352,7 @@ _LISP_PHASE2 = (
     '(if (eq (cdr (assoc 0 el)) "3DSOLID") '
     '(progn '
     '(command "_.STLOUT" ent "" "Y" (strcat insert_out ih "_" (itoa ctr) ".stl")) '
+    '(fc) '
     '(setq ctr (1+ ctr)))) '
     '(setq j (1+ j))))))))) '
     '(setq k (1+ k))))))'
@@ -388,6 +409,7 @@ def extract_acis_meshes(
         return {}
 
     workdir = Path(tempfile.mkdtemp(prefix="dxf2ifc_acis_"))
+    preserve_workdir = False
     try:
         # Phase 1 writes raw-solid STLs into out/solid/, Phase 2 writes
         # INSERT-explode children into out/insert/. The split lets the
@@ -489,11 +511,17 @@ def extract_acis_meshes(
             # entity) shows up as a non-zero rc + an AutoCAD CER popup.
             # Surface the workdir to the user so they can attach the logs
             # for diagnosis without us having to ship a debug build.
-            if completed.returncode != 0 and progress is not None:
-                progress(
-                    f"accoreconsole exited with code {completed.returncode}; "
-                    f"diagnostics preserved in {workdir}"
-                )
+            if completed.returncode != 0:
+                # Keep the workdir on disk so the extract.log per-body
+                # trace + extract.scr + accoreconsole.log survive for
+                # diagnosis. The ``finally`` below only cleans up on a
+                # clean (rc == 0) run.
+                preserve_workdir = True
+                if progress is not None:
+                    progress(
+                        f"accoreconsole exited with code {completed.returncode}; "
+                        f"diagnostics preserved in {workdir}"
+                    )
         except subprocess.TimeoutExpired:
             if progress is not None:
                 progress(
@@ -570,7 +598,8 @@ def extract_acis_meshes(
             progress(f"ACIS extraction produced {len(meshes)} meshes")
         return meshes
     finally:
-        shutil.rmtree(workdir, ignore_errors=True)
+        if not preserve_workdir:
+            shutil.rmtree(workdir, ignore_errors=True)
 
 
 def _inject_block_meshes(
