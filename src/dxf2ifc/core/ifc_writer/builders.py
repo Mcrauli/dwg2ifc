@@ -1181,6 +1181,49 @@ _DISTRIBUTION_ELEMENT_CLASSES = frozenset({
     "IfcAirTerminal",       # Tulo/poistoilmapäätelaitteet
 })
 
+# Every IFC type the orchestrator dispatch loop knows how to build. The
+# profile editor's "IFC type" dropdown is sourced from this tuple so the
+# GUI can never offer a type the writer would silently drop. Ordered for
+# readability: ARK/structural base types, refrigeration plant, tanks &
+# flow control, then distribution elements. Pinned to the dispatch loop
+# by tests/test_supported_ifc_types.py.
+SUPPORTED_IFC_TYPES: tuple[str, ...] = (
+    # Structural / ARK base types
+    "IfcWall",
+    "IfcSlab",
+    "IfcDoor",
+    "IfcWindow",
+    # TATE/KYL geometry primitives
+    "IfcPipeSegment",
+    "IfcCableCarrierSegment",
+    "IfcFurniture",
+    "IfcBuildingElementProxy",
+    # Refrigeration plant (_COOLING_EQUIPMENT_CLASSES)
+    "IfcEvaporator",
+    "IfcCondenser",
+    "IfcCompressor",
+    "IfcChiller",
+    "IfcUnitaryEquipment",
+    "IfcCoil",
+    # Tanks & flow control
+    "IfcTank",
+    "IfcFlowController",
+    # Distribution elements (_DISTRIBUTION_ELEMENT_CLASSES)
+    "IfcSensor",
+    "IfcValve",
+    "IfcPump",
+    "IfcWasteTerminal",
+    "IfcInterceptor",
+    "IfcElectricDistributionBoard",
+    "IfcController",
+    "IfcAlarm",
+    "IfcSwitchingDevice",
+    "IfcCommunicationsAppliance",
+    "IfcDuctSegment",
+    "IfcDuctFitting",
+    "IfcAirTerminal",
+)
+
 
 def add_distribution_element(
     ifc,
