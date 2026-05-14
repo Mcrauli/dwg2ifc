@@ -31,12 +31,9 @@ import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
 
 import ezdxf
-
-if TYPE_CHECKING:  # pragma: no cover — type-only import, avoids a runtime cycle
-    from dxf2ifc.profiles.schema import Profile
 
 ACIS_DXF_TYPES: frozenset[str] = frozenset(
     {
@@ -100,64 +97,6 @@ def find_accoreconsole() -> Path | None:
         return None
     candidates = sorted(base.glob("AutoCAD */accoreconsole.exe"), reverse=True)
     return candidates[0] if candidates else None
-
-
-# ---------------------------------------------------------------------------
-# Profile → AutoCAD ssget layer filter
-# ---------------------------------------------------------------------------
-
-
-def _collapse_layer_pattern(pattern: str) -> str | None:
-    """Collapse one profile ``layer_pattern`` to a broadened AutoCAD
-    ``ssget`` wildcard token.
-
-    Returns ``None`` for the bare-``*`` / empty sentinel — meaning "this
-    rule matches everything, so the whole filter must be unconstrained".
-
-    The broadening rule: take the literal prefix before any ``*``, then
-    the prefix up to AND INCLUDING the first ``-`` or space, then append
-    ``*``. So ``KYL-HÖYRYSTI*`` → ``KYL-*``, ``KYL-VIEMARI-32`` →
-    ``KYL-*``, ``LT IMU`` → ``LT *``, ``MUUT_OSAT*`` → ``MUUT_OSAT*``
-    (underscore is intentionally not a delimiter), ``KAAPELIHYLLY*`` →
-    ``KAAPELIHYLLY*``. Being slightly broader than the exact pattern is
-    safe — at worst a handful of extra bodies get tessellated; being too
-    narrow would silently drop geometry.
-    """
-    p = pattern.strip()
-    if p == "" or p == "*":
-        return None
-    head = p.split("*", 1)[0]
-    delim_idxs = [i for i in (head.find("-"), head.find(" ")) if i >= 0]
-    if delim_idxs:
-        i = min(delim_idxs)
-        return head[: i + 1] + "*"
-    return head + "*"  # idempotent when head already ends with '*'
-
-
-def layer_filter_from_profile(profile: "Profile") -> str:
-    """Build an AutoCAD ``ssget`` ``(8 . "...")`` layer-filter string from
-    a mapping profile's rules.
-
-    Collects every ``rule.layer_pattern``, collapses each via
-    :func:`_collapse_layer_pattern`, dedupes case-insensitively (AutoCAD
-    layer matching is case-insensitive) while preserving first-seen
-    order, and joins with commas. Returns ``"*"`` (match everything) when
-    the profile has no rules or any pattern is unconstrained — the result
-    is never narrower than what the profile actually maps.
-    """
-    if not profile.rules:
-        return "*"
-    seen: set[str] = set()
-    tokens: list[str] = []
-    for rule in profile.rules:
-        token = _collapse_layer_pattern(rule.layer_pattern)
-        if token is None:
-            return "*"
-        key = token.upper()
-        if key not in seen:
-            seen.add(key)
-            tokens.append(token)
-    return ",".join(tokens) if tokens else "*"
 
 
 # ---------------------------------------------------------------------------
@@ -297,11 +236,6 @@ _LISP_SETUP = (
     '(if (= (type (getvar "SENDREPORTINFO")) \'INT) (setvar "SENDREPORTINFO" 0)) '
     '(setq solid_out "{solid_out}") '
     '(setq insert_out "{insert_out}") '
-    # lyrfilter is the ssget (8 . ...) layer wildcard. Kept in SETUP (not
-    # substituted inline into PHASE1/PHASE2) because PHASE2 is already
-    # near the 2048-char .scr line cap — a long filter string would push
-    # it over. PHASE1/PHASE2 reference it via (cons 8 lyrfilter).
-    '(setq lyrfilter "{layer_filter}") '
     '(setq logf (open (strcat "{log_out}" "extract.log") "w")) '
     '(defun tryx (tag fn / err) (setq err (vl-catch-all-apply fn)) (if (vl-catch-all-error-p err) (write-line (strcat tag ":" (vl-catch-all-error-message err)) logf))) '
     # flushcmd cancels any half-open command (e.g. STLOUT stuck at its
@@ -311,13 +245,18 @@ _LISP_SETUP = (
     # command, the command stack corrupts, and accoreconsole dies with
     # STATUS_STACK_BUFFER_OVERRUN (0xC0000409). (command) with no args
     # is the AutoLISP equivalent of pressing ESC.
-    '(defun fc () (repeat 8 (if (> (getvar "CMDACTIVE") 0) (command)))))'
+    '(defun fc () (repeat 8 (if (> (getvar "CMDACTIVE") 0) (command)))) '
+    # acis? — is this exploded entity an ACIS-backed body STLOUT can
+    # triangulate? Defined here so PHASE2 can call (acis? etype) instead
+    # of inlining the 10-way (or (eq etype ...)) — keeps PHASE2 under the
+    # 2048-char .scr line cap.
+    '(defun acis? (et) (member et \'("3DSOLID" "SURFACE" "REGION" "BODY" "PLANESURFACE" "EXTRUDEDSURFACE" "REVOLVEDSURFACE" "SWEPTSURFACE" "LOFTEDSURFACE" "NURBSURFACE"))))'
 )
 
-# Phase 1: raw ACIS bodies on the layer filter.
+# Phase 1: every raw ACIS body in modelspace.
 _LISP_PHASE1 = (
     '(progn '
-    '(setq ss (ssget "_X" (list \'(0 . "3DSOLID,SURFACE,REGION,BODY,PLANESURFACE,EXTRUDEDSURFACE,REVOLVEDSURFACE,SWEPTSURFACE,LOFTEDSURFACE,NURBSURFACE") (cons 8 lyrfilter)))) '
+    '(setq ss (ssget "_X" \'((0 . "3DSOLID,SURFACE,REGION,BODY,PLANESURFACE,EXTRUDEDSURFACE,REVOLVEDSURFACE,SWEPTSURFACE,LOFTEDSURFACE,NURBSURFACE")))) '
     '(write-line (strcat "phase1_solids=" (if ss (itoa (sslength ss)) "0")) logf) '
     '(if ss '
     '(progn '
@@ -357,9 +296,18 @@ _LISP_PHASE1 = (
 # (PLANESURFACE / EXTRUDEDSURFACE / REVOLVEDSURFACE / SWEPTSURFACE /
 # LOFTEDSURFACE / NURBSURFACE). KLHYLLY-LEVY / VPUTKI-* still rely on
 # CONVTOSOLID promoting LWPOLYLINE+thickness to 3DSOLID first.
+#
+# PERF: every ACIS body uncovered by the explode walk is collected into
+# ONE selection set ``bodies`` and STLOUT'd in a SINGLE call per INSERT —
+# ``insert_out/<ih>.stl``. The previous version issued one STLOUT (plus a
+# command round-trip + file write + flushcmd) per nested 3DSOLID; a
+# koneikko block with 65 solids meant 65 calls. STLOUT happily accepts a
+# multi-solid selection and concatenates their triangles into one STL,
+# which is exactly the per-INSERT merged mesh the Python side wants
+# anyway — so one call replaces dozens.
 _LISP_PHASE2 = (
     '(progn '
-    '(setq inserts (ssget "_X" (list \'(0 . "INSERT") (cons 8 lyrfilter)))) '
+    '(setq inserts (ssget "_X" \'((0 . "INSERT")))) '
     '(write-line (strcat "phase2_inserts=" (if inserts (itoa (sslength inserts)) "0")) logf) '
     '(if inserts '
     '(progn '
@@ -372,7 +320,7 @@ _LISP_PHASE2 = (
     '(progn '
     '(setq ih (cdr (assoc 5 insel))) '
     '(write-line (strcat "phase2_handle=" ih "/block=" bname) logf) '
-    '(setq ctr 0 toconv (ssadd) iter_cap 1000) '
+    '(setq bodies (ssadd) toconv (ssadd) iter_cap 1000) '
     '(command "_.EXPLODE" ins) '
     '(fc) '
     '(setq queue (list (ssget "_P"))) '
@@ -389,10 +337,8 @@ _LISP_PHASE2 = (
     '(setq etype (cdr (assoc 0 el))) '
     '(setq ethick (cdr (assoc 39 el))) '
     '(cond '
-    '((or (eq etype "3DSOLID") (eq etype "SURFACE") (eq etype "REGION") (eq etype "BODY") (eq etype "PLANESURFACE") (eq etype "EXTRUDEDSURFACE") (eq etype "REVOLVEDSURFACE") (eq etype "SWEPTSURFACE") (eq etype "LOFTEDSURFACE") (eq etype "NURBSURFACE")) '
-    '(command "_.STLOUT" ent "" "Y" (strcat insert_out ih "_" (itoa ctr) ".stl")) '
-    '(fc) '
-    '(setq ctr (1+ ctr))) '
+    '((acis? etype) '
+    '(setq bodies (ssadd ent bodies))) '
     '((eq etype "INSERT") '
     '(setq sbname (cdr (assoc 2 el))) '
     '(if (and sbname (not (wcmatch (strcase sbname) "{skip_blocks}"))) '
@@ -415,12 +361,11 @@ _LISP_PHASE2 = (
     '(while (< j nn2) '
     '(setq ent (ssname postents j)) '
     '(setq el (entget ent)) '
-    '(if (eq (cdr (assoc 0 el)) "3DSOLID") '
-    '(progn '
-    '(command "_.STLOUT" ent "" "Y" (strcat insert_out ih "_" (itoa ctr) ".stl")) '
-    '(fc) '
-    '(setq ctr (1+ ctr)))) '
-    '(setq j (1+ j))))))))) '
+    '(if (eq (cdr (assoc 0 el)) "3DSOLID") (setq bodies (ssadd ent bodies))) '
+    '(setq j (1+ j))))))) '
+    '(if (> (sslength bodies) 0) '
+    '(tryx (strcat "p2_stl_err=" ih) (function (lambda () (command "_.STLOUT" bodies "" "Y" (strcat insert_out ih ".stl")))))) '
+    '(fc))) '
     '(setq k (1+ k))))))'
 )
 
@@ -435,7 +380,6 @@ _LISP_CLEANUP = (
 def extract_acis_meshes(
     dxf_path: str | Path,
     *,
-    layer_filter: str = "*",
     timeout_s: float = 180.0,
     progress: Callable[[str], None] | None = None,
     skip_magicad: bool = False,
@@ -447,9 +391,12 @@ def extract_acis_meshes(
     fails, or the DXF contains no ACIS bodies — never raises. Callers
     should treat absence as "no mesh available, skip this body".
 
-    ``layer_filter`` is an AutoCAD wildcard pattern matched against entity
-    layer names by ``ssget``. Default ``"*"`` extracts every ACIS body;
-    pass e.g. ``"KYL-*,LT *,MT *"`` to limit by domain.
+    Every ACIS body on every layer is extracted. Layer filtering was
+    tried (derive an ssget filter from the active profile) but reverted:
+    equipment INSERTs frequently nest inside container blocks placed on
+    layer "0", so any top-level layer filter on the Phase-2 INSERT select
+    silently dropped whole equipment assemblies. The mapper drops
+    unmapped geometry downstream anyway.
 
     ``skip_magicad`` (default False): when True, the Phase-2 INSERT-
     explode loop additionally skips any block whose name matches
@@ -520,7 +467,6 @@ def extract_acis_meshes(
                 solid_out=solid_posix,
                 insert_out=insert_posix,
                 log_out=out_posix,
-                layer_filter=layer_filter,
             ),
             _LISP_PHASE1,
             _LISP_PHASE2.format(skip_blocks=skip_blocks),
@@ -616,39 +562,20 @@ def extract_acis_meshes(
             if mesh.vertices and mesh.faces:
                 meshes[handle] = mesh
 
-        # Phase 2 — INSERT block contents: merge every child STL into a
-        # single :class:`AcisMeshData` per source INSERT handle, sharing a
-        # vertex pool so the resulting MeshGeometry / IfcFacetedBrep is
-        # de-duplicated. With FACETRES 0.5 each evaporator weighs in at
-        # ~5–15k triangles total (cabinet panels + fan ring + hoses);
-        # 15 evaporators ⇒ ≤ 250k triangles in IFC, manageable.
-        per_insert: dict[str, list[Path]] = {}
+        # Phase 2 — INSERT block contents: PHASE2 STLOUTs the entire
+        # exploded body selection per INSERT into ONE ``<ih>.stl``, so
+        # each file is already the complete per-INSERT mesh (STLOUT
+        # concatenates every selected solid's triangles). No cross-file
+        # merge needed — just parse each file like Phase 1. ``_parse_stl``
+        # already deduplicates the vertex pool.
         for stl_file in insert_dir.glob("*.stl"):
-            handle = stl_file.stem.rsplit("_", 1)[0].upper()
-            per_insert.setdefault(handle, []).append(stl_file)
-        for handle, files in per_insert.items():
-            merged_vertices: list[tuple[float, float, float]] = []
-            merged_faces: list[tuple[int, ...]] = []
-            vertex_to_idx: dict[tuple[float, float, float], int] = {}
-            for stl_file in sorted(files):
-                try:
-                    sub = _parse_stl(stl_file)
-                except Exception:  # noqa: BLE001
-                    continue
-                local_to_merged: list[int] = []
-                for v in sub.vertices:
-                    idx = vertex_to_idx.get(v)
-                    if idx is None:
-                        idx = len(merged_vertices)
-                        vertex_to_idx[v] = idx
-                        merged_vertices.append(v)
-                    local_to_merged.append(idx)
-                for face in sub.faces:
-                    merged_faces.append(tuple(local_to_merged[i] for i in face))
-            if merged_vertices and merged_faces:
-                meshes[handle] = AcisMeshData(
-                    tuple(merged_vertices), tuple(merged_faces)
-                )
+            handle = stl_file.stem.upper()
+            try:
+                mesh = _parse_stl(stl_file)
+            except Exception:  # noqa: BLE001 — corrupt STL must not crash
+                continue
+            if mesh.vertices and mesh.faces:
+                meshes[handle] = mesh
 
         # Inject MESH entities embedded in INSERT blocks (e.g. mounting
         # brackets in evaporator blocks). STLOUT can't safely write these

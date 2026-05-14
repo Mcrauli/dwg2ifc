@@ -6,6 +6,34 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha31 — 2026-05-14 (accoreconsole-tessellointi ~3× nopeampi)
+
+**Nopeutus — yksi STLOUT per INSERT, ei per body**:
+
+Phase 2 teki aiemmin yhden erillisen `STLOUT`-kutsun (+ komento-
+round-trip + tiedostokirjoitus) JOKAISELLE räjäytetylle 3DSOLIDille —
+65-solidinen koneikko-block tarkoitti 65 kutsua. Nyt koko räjäytetty
+body-valintajoukko kerätään yhteen `ssadd`-settiin ja STLOUTataan
+**yhdellä kutsulla** per INSERT (`insert_out/<ih>.stl`). STLOUT
+ketjuttaa kaikkien valittujen solidien kolmiot yhteen STL-tiedostoon,
+mikä on tismalleen se per-INSERT-mesh jonka Python-puoli muutenkin
+haluaa — joten kymmenet kutsut korvautuvat yhdellä. Mitattu
+testitiedostolla: STLOUT-vaihe ~78 s → ~25 s.
+
+ACIS-tyyppitarkistus siirretty SETUP-formin `acis?`-helperiksi (pitää
+PHASE2:n 2048-merkin .scr-rivirajan alla). Python-puolen per-INSERT-
+mesh-merge poistettu — tarpeeton kun STLOUT tuottaa jo yhden tiedoston.
+
+**Peruttu — alpha29:n layer-filter**:
+
+alpha29 johti ssget-layer-suodattimen profiilista rajatakseen
+tessellointia. Se osoittautui hauraaksi: laite-INSERTit ovat usein
+layer "0":lla olevien kontti-blockien sisällä, jolloin
+`KYL-*`-suodatin Phase 2:n INSERT-valinnassa pudotti koko
+laitehaaran. Suodatin peruttu — tessellöidään taas kaikki, mapperi
+pudottaa mappaamattoman geometrian joka tapauksessa. STLOUT-batching
+hoitaa nopeutuksen turvallisesti ilman korrektisuusriskiä.
+
 ## v0.2.0-alpha30 — 2026-05-14 (kerros-korko siirtää geometriaa taas)
 
 **Palautettu — kerros-korko siirtää geometriaa**:

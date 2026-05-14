@@ -249,21 +249,9 @@ def _process_one_file(
 
     acis_meshes: dict[str, object] = {}
     if preprocess_acis:
-        from dxf2ifc.core.preprocessing import (
-            extract_acis_meshes,
-            layer_filter_from_profile,
-        )
-        # Restrict accoreconsole STLOUT to the layers the profile actually
-        # maps — otherwise every architectural / structural XREF 3DSOLID
-        # gets tessellated only to be dropped by apply_profile later.
-        acis_layer_filter = layer_filter_from_profile(profile)
-        if progress is not None and acis_layer_filter != "*":
-            progress(
-                f"ACIS-tessellointi rajataan layereihin: {acis_layer_filter}"
-            )
+        from dxf2ifc.core.preprocessing import extract_acis_meshes
         acis_meshes = extract_acis_meshes(  # type: ignore[arg-type,assignment]
             dxf_path,
-            layer_filter=acis_layer_filter,
             progress=progress,
             skip_magicad=skip_magicad,
         )

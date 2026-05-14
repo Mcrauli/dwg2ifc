@@ -246,33 +246,13 @@ def test_lisp_phase2_under_accoreconsole_line_buffer():
     terminated input line — past that the parser hangs in a multi-paren
     prompt forever. Phase 2 grows when skip_magicad is enabled (extra
     wildcard patterns substitute into the wcmatch skip list); verify it
-    stays safely under the cap. The layer filter no longer substitutes
-    into PHASE2 (it lives in SETUP as the ``lyrfilter`` variable), so the
-    formatted size is now constant regardless of filter length."""
+    stays safely under the cap."""
     from dxf2ifc.core.preprocessing import _LISP_PHASE2
 
     p2_magicad = _LISP_PHASE2.format(
         skip_blocks="*POSITIO*,MAGI*,*MAGICAD*,MAG_*"
     )
     assert len(p2_magicad) < 2048
-
-
-def test_lisp_setup_under_accoreconsole_line_buffer():
-    """SETUP carries the (variable-length) layer filter via the
-    ``lyrfilter`` setq. Even a pathologically long filter must keep the
-    SETUP form under the 2048-char .scr line cap."""
-    from dxf2ifc.core.preprocessing import _LISP_SETUP
-
-    realistic = _LISP_SETUP.format(
-        solid_out="S/", insert_out="I/", log_out="L/",
-        layer_filter="KYL-*,KAAPELIHYLLY*,LT *,MT *,MUUT_OSAT*",
-    )
-    pathological = _LISP_SETUP.format(
-        solid_out="S/", insert_out="I/", log_out="L/",
-        layer_filter="X" * 200,
-    )
-    assert len(realistic) < 2048
-    assert len(pathological) < 2048
 
 
 def test_lisp_phase2_skip_magicad_includes_all_magicad_patterns():
@@ -286,66 +266,6 @@ def test_lisp_phase2_skip_magicad_includes_all_magicad_patterns():
     )
     # The two occurrences must both carry the extended skip list.
     assert p2_magicad.count("*POSITIO*,MAGI*,*MAGICAD*,MAG_*") == 2
-
-
-def test_collapse_layer_pattern_units():
-    """_collapse_layer_pattern broadens each profile pattern to a short
-    AutoCAD ssget wildcard token (prefix up to the first '-'/space + '*'),
-    or None for the bare-* sentinel."""
-    from dxf2ifc.core.preprocessing import _collapse_layer_pattern
-
-    assert _collapse_layer_pattern("KYL-HÖYRYSTI*") == "KYL-*"
-    assert _collapse_layer_pattern("KYL-VIEMARI-32") == "KYL-*"
-    assert _collapse_layer_pattern("KYL-KK-*") == "KYL-*"
-    assert _collapse_layer_pattern("LT IMU") == "LT *"
-    assert _collapse_layer_pattern("MT NESTE") == "MT *"
-    assert _collapse_layer_pattern("MUUT_OSAT*") == "MUUT_OSAT*"
-    assert _collapse_layer_pattern("KAAPELIHYLLY*") == "KAAPELIHYLLY*"
-    assert _collapse_layer_pattern("*") is None
-    assert _collapse_layer_pattern("") is None
-
-
-def test_layer_filter_from_profile_default():
-    """The shipped profile's ~57 layer patterns collapse to a small set
-    of broad ssget tokens — all KYL-* plus a handful of others."""
-    from dxf2ifc.core.preprocessing import layer_filter_from_profile
-    from dxf2ifc.profiles.loader import load_default_profile
-
-    f = layer_filter_from_profile(load_default_profile())
-    assert f != "*"
-    assert set(f.split(",")) == {
-        "KYL-*", "KAAPELIHYLLY*", "LT *", "MT *", "MUUT_OSAT*",
-    }
-
-
-def test_layer_filter_from_profile_empty_returns_star():
-    """A profile with no rules cannot constrain the filter — fall back to
-    extracting every layer."""
-    from dxf2ifc.core.preprocessing import layer_filter_from_profile
-    from dxf2ifc.profiles.schema import Profile
-
-    assert layer_filter_from_profile(Profile(name="t", ifc_schema="IFC4", rules=[])) == "*"
-
-
-def test_layer_filter_from_profile_bare_star_returns_star():
-    """A rule whose layer_pattern is a bare '*' matches everything, so the
-    whole derived filter must be unconstrained."""
-    from dxf2ifc.core.preprocessing import layer_filter_from_profile
-    from dxf2ifc.profiles.schema import Profile, Rule
-
-    profile = Profile(
-        name="t",
-        ifc_schema="IFC4",
-        rules=[
-            Rule(
-                layer_pattern="*",
-                ifc_type="IfcBuildingElementProxy",
-                domain="TATE",
-                lvi_code="T-LVI-02",
-            )
-        ],
-    )
-    assert layer_filter_from_profile(profile) == "*"
 
 
 def test_dxf_contains_acis_bodies_true_for_3dsolid(tmp_path: Path):
@@ -377,7 +297,7 @@ def test_extract_acis_meshes_round_trip(tmp_path: Path):
     if not candidate.is_file():
         pytest.skip("no real ACIS-bearing DXF available for round-trip test")
 
-    meshes = extract_acis_meshes(candidate, layer_filter="KYL-*")
+    meshes = extract_acis_meshes(candidate)
     # We don't pin the count (it depends on the user's drawing) — just that
     # at least one mesh comes through and contains real geometry.
     assert len(meshes) > 0

@@ -4,20 +4,25 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha30 (2026-05-14)
+## Current state — v0.2.0-alpha31 (2026-05-14)
 
-Tuorein julkaistu: **v0.2.0-alpha30** (2026-05-14).
+Tuorein julkaistu: **v0.2.0-alpha31** (2026-05-14).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a30.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a30.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a31.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a31.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–30:n korjaukset tiivistettynä (täysi historia
+Alpha8–31:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha31** (2026-05-14): **accoreconsole-tessellointi ~3× nopeampi** —
+  Phase 2 STLOUTaa koko räjäytetyn body-valintajoukon yhdellä kutsulla
+  per INSERT (ei per body); STLOUT-vaihe ~78s→~25s testitiedostolla.
+  alpha29:n layer-filter peruttu (hauras — laitteet layer-0-konttien
+  sisällä putosivat).
 - **alpha30** (2026-05-14): **Kerros-korko siirtää geometriaa taas** —
   alpha29:n geometriasiirron poisto oli väärä tulkinta, palautettu vanha
   logiikka `world_Z = kerros_korko + dxf_Z` (aina päällä, ei toggle-
