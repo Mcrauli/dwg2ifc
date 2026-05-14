@@ -6,23 +6,30 @@ project uses semantic versioning.
 
 ## Unreleased
 
-## v0.2.0-alpha29 — 2026-05-14 (korkojen tuplalaskenta korjattu + ACIS-tessellointi nopeampi)
+## v0.2.0-alpha30 — 2026-05-14 (kerros-korko siirtää geometriaa taas)
 
-**Korjattu — kerros-korko ei enää siirrä geometriaa**:
+**Palautettu — kerros-korko siirtää geometriaa**:
 
-Aiemmin kerros-korko sovellettiin KAHDESTI: geometria siirrettiin
-`+korko` JA `IfcBuildingStorey` asetettiin samalle korolle, jolloin
-objekti päätyi maailma-Z:hen `korko + dxf_Z`. Lauri:n AutoCAD-pohjat
-on piirretty absoluuttisiin koordinaatteihin (1.krs objektit
-Z≈98000 mm), joten koron lisääminen päälle tuplalaski.
+alpha29 poisti geometrian siirron (kerros-korko vain
+`IfcBuildingStorey.Elevation`-metadataksi). Se oli väärä tulkinta —
+kerros-koron KUULUU liikuttaa objekteja. Palautettu vanha logiikka,
+sama joka oli vanhassa "Lisää 1.krs absoluuttinen korko" -checkboxissa,
+mutta ilman valintanappia — aina päällä:
 
-Korjaus: geometriaa EI enää siirretä. Kerros-korko on kerroksen
-**pohjan taso** — se asettaa vain `IfcBuildingStorey.Elevation`-arvon.
-Objektit säilyttävät raa'an CAD-Z:nsä; `spatial.assign_container`
-laskee storey-suhteellisen sijainnin (`dxf_Z − korko`) automaattisesti
-niin että absoluuttinen maailma-Z säilyy. Korko 0 → CAD-koordinaatit
-sellaisinaan. Poistettu kuollut koodi `_apply_floor_elevation_offset`
-+ `_shift_geometry` + `_shift_point`.
+`world_Z = kerros_korko + dxf_Z`
+
+Eli kunkin tiedoston geometria nostetaan sen rivin Z-arvon verran, ja
+`IfcBuildingStorey` asetetaan samalle korolle. Korko 0 → CAD-koordinaatit
+sellaisinaan (no-op). Tämä on käytännössä alpha28-käyttäytyminen ilman
+alpha29:n välivaihetta.
+
+ACIS-tesselloinnin layer-filter-nopeutus (alpha29) säilyy ennallaan.
+
+## v0.2.0-alpha29 — 2026-05-14 (ACIS-tessellointi nopeampi)
+
+> Huom: alpha29 sisälsi myös kerros-koron geometriasiirron poiston, joka
+> osoittautui vääräksi tulkinnaksi ja palautettiin alpha30:ssä. Vain
+> alla kuvattu nopeutus jäi voimaan.
 
 **Nopeutus — ACIS-tessellointi rajataan profiilin layereihin**:
 

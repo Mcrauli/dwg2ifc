@@ -55,8 +55,63 @@ from dxf2ifc.core.types import (
     MappedEntity,
     MeshGeometry,
     Point3D,
+    PolygonGeometry,
 )
 from dxf2ifc.profiles.schema import Profile
+
+
+def _shift_point(p: Point3D, dz: float) -> Point3D:
+    return Point3D(p.x, p.y, p.z + dz)
+
+
+def _shift_geometry(geometry: object, dz: float) -> object:
+    """Return a copy of ``geometry`` with every Z component offset by ``dz``.
+
+    Geometry dataclasses are frozen, so each variant rebuilds via its
+    constructor with the shifted Point3D fields. Unknown geometry types
+    are returned as-is — defensive against forward-compatible additions.
+    """
+    if isinstance(geometry, LineGeometry):
+        return LineGeometry(
+            start=_shift_point(geometry.start, dz),
+            end=_shift_point(geometry.end, dz),
+        )
+    if isinstance(geometry, PolygonGeometry):
+        return PolygonGeometry(
+            vertices=tuple(_shift_point(v, dz) for v in geometry.vertices),
+            closed=geometry.closed,
+        )
+    if isinstance(geometry, BlockInstance):
+        return BlockInstance(
+            insertion_point=_shift_point(geometry.insertion_point, dz),
+            rotation_rad=geometry.rotation_rad,
+            scale_x=geometry.scale_x,
+            scale_y=geometry.scale_y,
+            scale_z=geometry.scale_z,
+        )
+    if isinstance(geometry, MeshGeometry):
+        return MeshGeometry(
+            vertices=tuple(_shift_point(v, dz) for v in geometry.vertices),
+            faces=geometry.faces,
+        )
+    return geometry
+
+
+def _apply_floor_elevation_offset(mapped: list[MappedEntity], dz: float) -> None:
+    """Mutate every ``MappedEntity.geometry`` in place to add ``dz`` to its
+    Z component(s) — the per-floor elevation offset.
+
+    Each floor's geometry is lifted by that floor's ``elevation_mm`` so
+    the objects land at ``floor_elevation + dxf_Z`` in world space.
+    ``build_ifc_project_skeleton`` places the matching
+    ``IfcBuildingStorey`` at the same elevation, so storey labels and
+    element placements agree. ``dz == 0`` is a no-op (CAD coordinates
+    pass straight through).
+    """
+    if dz == 0.0:
+        return
+    for m in mapped:
+        m.geometry = _shift_geometry(m.geometry, dz)
 
 
 def _emit(progress: object | None, message: str) -> None:
@@ -342,13 +397,12 @@ def _process_one_file(
     # appears as a placeholder box at the right XY position.
     _apply_block_bbox_fallback(mapped, dxf_path, progress=progress)
 
-    # NOTE: geometry is intentionally NOT shifted by the floor elevation.
-    # The storey-elevation field is the floor's base level — objects keep
-    # their raw DXF (CAD) Z. ``build_ifc_project_skeleton`` places the
-    # IfcBuildingStorey at ``file_entry.elevation_mm``, and
-    # ``spatial.assign_container`` rewrites each product's placement to be
-    # storey-relative while preserving its absolute world Z. Net result:
-    # object absolute Z == CAD Z, storey-relative Z == CAD Z − elevation.
+    # Per-floor elevation offset: lift this file's geometry by its
+    # ``elevation_mm`` so objects land at ``elevation + dxf_Z`` in world
+    # space. ``build_ifc_project_skeleton`` puts the matching
+    # IfcBuildingStorey at the same elevation. ``elevation_mm == 0`` is a
+    # no-op — CAD coordinates pass straight through.
+    _apply_floor_elevation_offset(mapped, file_entry.elevation_mm)
 
     return mapped
 

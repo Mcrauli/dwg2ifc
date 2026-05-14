@@ -4,26 +4,28 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha29 (2026-05-14)
+## Current state — v0.2.0-alpha30 (2026-05-14)
 
-Tuorein julkaistu: **v0.2.0-alpha29** (2026-05-14).
+Tuorein julkaistu: **v0.2.0-alpha30** (2026-05-14).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a29.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a29.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a30.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a30.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–29:n korjaukset tiivistettynä (täysi historia
+Alpha8–30:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
-- **alpha29** (2026-05-14): **Korkojen tuplalaskenta korjattu** — kerros-
-  korko ei enää siirrä geometriaa, asettaa vain `IfcBuildingStorey.
-  Elevation`-arvon; objektit säilyttävät CAD-Z:nsä, storey-suhteellinen
-  sijainti = `dxf_Z − korko`. **Nopeutus**: ACIS-tessellointi rajataan
-  profiilin layer-patterneista johdettuun ssget-suodattimeen — XREF-sälää
-  ei tessellöidä turhaan.
+- **alpha30** (2026-05-14): **Kerros-korko siirtää geometriaa taas** —
+  alpha29:n geometriasiirron poisto oli väärä tulkinta, palautettu vanha
+  logiikka `world_Z = kerros_korko + dxf_Z` (aina päällä, ei toggle-
+  nappia). Korko 0 → CAD-koordinaatit sellaisinaan.
+- **alpha29** (2026-05-14): **Nopeutus** — ACIS-tessellointi rajataan
+  profiilin layer-patterneista johdettuun ssget-suodattimeen, XREF-sälää
+  ei tessellöidä turhaan. (Sisälsi myös kerros-koron geometriasiirron
+  poiston, joka palautettiin alpha30:ssä.)
 - **alpha28** (2026-05-14): **Juurisyy-fix accoreconsole-crashille** —
   `(setvar "TILEMODE" 1)` pakottaa modelspacen. Paper-space-tabilla
   tallennetut DWG:t (2krs.dwg) saivat STLOUTin hylkäämään kaikki
