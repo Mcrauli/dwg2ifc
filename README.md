@@ -9,15 +9,20 @@ PropertySettiä per IFC-tuote (`FI_Asennus` / `FI_Geometria` /
 `FI_Komponentti` / `FI_Tuote` / `FI_Tekninen` / `FI_Sijainti`), ja
 Solibri-yhteensopivan IFC4-tiedoston yhdellä konversio-ajolla.
 
-Nykyinen versio: **v0.2.0-alpha28** (2026-05-14). Pre-release-vaiheessa.
+Nykyinen versio: **v0.2.0-alpha29** (2026-05-14). Pre-release-vaiheessa.
 
-## Multi-floor merge (alpha23)
+## Multi-floor merge (alpha23+)
 
 Yksi konversio = N DXF/DWG-tiedostoa = N `IfcBuildingStorey`-kerrosta
 yhteen IFC:hen. Käyttäjä asettaa per kerros labelin (`"1.krs"`,
-`"2.krs"`, `"kellari"`, …) ja Z-koron (mm). Maailman Z =
-`kerroksen_korko + DXF-objektin Z`, joten kun kaikki kerrokset @ 0 mm,
-AutoCADin absoluuttiset Z-koordinaatit menevät IFC:hen sellaisinaan.
+`"2.krs"`, `"kellari"`, …) ja Z-koron (mm).
+
+Kerros-korko on **kerroksen pohjan taso** — se asettaa
+`IfcBuildingStorey.Elevation`-arvon eikä siirrä geometriaa. Objektit
+säilyttävät raa'an CAD-Z:nsä; storey-suhteellinen sijainti on
+`dxf_Z − korko`, absoluuttinen maailma-Z säilyy CADin mukaisena.
+Korko 0 → CAD-koordinaatit sellaisinaan. (Korjattu alpha29:ssä — ennen
+korko tuplalaskettiin geometriaan.)
 
 GUI:ssä on monirivinen taulukko (`Tiedosto` / `Kerros` / `Z (mm)`) +
 "Lisää tiedosto(t)…"-nappi. CLI:ssä toistettava `--floor`-lippu.

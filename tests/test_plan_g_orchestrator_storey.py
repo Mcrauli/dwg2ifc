@@ -32,12 +32,14 @@ def _absolute_placement_z(placement) -> float:
     return z
 
 
-def test_orchestrator_floor_elevation_shifts_pipe_to_absolute_z(tmp_path: Path):
-    """floor_elevation_mm must reach element placements, not just storey
-    Elevation. A pipe drawn at DXF Z=3000 with floor_elevation_mm=12000
-    should land at IFC absolute Z=15000 once the placement chain is
-    fully resolved (storey contributes 12000, pipe contributes 3000
-    relative to the storey)."""
+def test_orchestrator_floor_elevation_does_not_shift_geometry(tmp_path: Path):
+    """The storey-elevation field is the floor's BASE level — it must NOT
+    shift element geometry. A pipe drawn at DXF Z=3000 with
+    floor_elevation_mm=12000 keeps its raw CAD Z=3000 in absolute world
+    space; the IfcBuildingStorey sits at 12000; the pipe's storey-relative
+    placement is therefore 3000 − 12000 = −9000. This is the
+    absolute-coordinate workflow: CAD Z is authoritative, the elevation
+    field only labels where the storey datum sits."""
     import ezdxf
 
     doc = ezdxf.new("R2010")
@@ -48,16 +50,16 @@ def test_orchestrator_floor_elevation_shifts_pipe_to_absolute_z(tmp_path: Path):
         (2000.0, 0.0, 3000.0),
         dxfattribs={"layer": "LT IMU"},
     )
-    dxf_path = tmp_path / "shifted.dxf"
+    dxf_path = tmp_path / "elevated.dxf"
     doc.saveas(dxf_path)
 
     profile = load_default_profile()
-    out_path = tmp_path / "shifted.ifc"
+    out_path = tmp_path / "elevated.ifc"
     convert_dxf(
         dxf_path=dxf_path,
         output_path=out_path,
         profile=profile,
-        project_name="Shifted",
+        project_name="Elevated",
         floor_elevation_mm=12000.0,
     )
 
@@ -67,12 +69,11 @@ def test_orchestrator_floor_elevation_shifts_pipe_to_absolute_z(tmp_path: Path):
     pipes = ifc.by_type("IfcPipeSegment")
     assert len(pipes) == 1
     pipe = pipes[0]
-    assert _absolute_placement_z(pipe.ObjectPlacement) == 15000.0
-    # The pipe's storey-relative Z should equal the original DXF Z —
-    # i.e. "3 m above the ground floor". This is what Solibri shows on
-    # the storey-relative views.
-    assert pipe.ObjectPlacement.RelativePlacement.Location.Coordinates[2] == 3000.0
-    # And storey absolute Z is exactly the floor_elevation_mm.
+    # Object keeps its raw CAD Z — NOT shifted to 15000.
+    assert _absolute_placement_z(pipe.ObjectPlacement) == 3000.0
+    # Storey-relative placement = CAD Z − storey elevation = 3000 − 12000.
+    assert pipe.ObjectPlacement.RelativePlacement.Location.Coordinates[2] == -9000.0
+    # Storey sits at exactly the elevation the user entered.
     storey = ifc.by_type("IfcBuildingStorey")[0]
     assert storey.Elevation == 12000.0
 

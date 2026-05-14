@@ -6,6 +6,38 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha29 — 2026-05-14 (korkojen tuplalaskenta korjattu + ACIS-tessellointi nopeampi)
+
+**Korjattu — kerros-korko ei enää siirrä geometriaa**:
+
+Aiemmin kerros-korko sovellettiin KAHDESTI: geometria siirrettiin
+`+korko` JA `IfcBuildingStorey` asetettiin samalle korolle, jolloin
+objekti päätyi maailma-Z:hen `korko + dxf_Z`. Lauri:n AutoCAD-pohjat
+on piirretty absoluuttisiin koordinaatteihin (1.krs objektit
+Z≈98000 mm), joten koron lisääminen päälle tuplalaski.
+
+Korjaus: geometriaa EI enää siirretä. Kerros-korko on kerroksen
+**pohjan taso** — se asettaa vain `IfcBuildingStorey.Elevation`-arvon.
+Objektit säilyttävät raa'an CAD-Z:nsä; `spatial.assign_container`
+laskee storey-suhteellisen sijainnin (`dxf_Z − korko`) automaattisesti
+niin että absoluuttinen maailma-Z säilyy. Korko 0 → CAD-koordinaatit
+sellaisinaan. Poistettu kuollut koodi `_apply_floor_elevation_offset`
++ `_shift_geometry` + `_shift_point`.
+
+**Nopeutus — ACIS-tessellointi rajataan profiilin layereihin**:
+
+`accoreconsole.exe` STLOUT-tessellöi aiemmin JOKA 3DSOLIDin JOKA
+layerilla (`layer_filter="*"`) — myös arkkitehti/rakenne-XREF:ien
+bodyt jotka mapperi joka tapauksessa pudottaa. Nyt orchestrator johtaa
+ssget-layer-suodattimen aktiivisen profiilin layer-patterneista (esim.
+oletusprofiili → `KYL-*,KAAPELIHYLLY*,LT *,MT *,MUUT_OSAT*`) ja
+välittää sen `extract_acis_meshes`:lle. Suodatin elää SETUP-formin
+`lyrfilter`-muuttujassa (PHASE1/PHASE2 lukevat `(cons 8 lyrfilter)`),
+koska inline-substituutio rikkoisi 2048-merkin .scr-rivirajan.
+Sisäkkäiset block-3DSOLIDit (usein layer "0") tessellöityvät yhä —
+suodatin koskee vain ylätason valintaa. Profiili ilman sääntöjä tai
+`*`-pattern → `"*"` (kaikki).
+
 ## v0.2.0-alpha28 — 2026-05-14 (ROOT CAUSE: TILEMODE — modelspace forced)
 
 **Juurisyy löytyi ja korjattiin.** 2krs.dwg:n kaltaiset tiedostot

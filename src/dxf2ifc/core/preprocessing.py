@@ -31,9 +31,12 @@ import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
 import ezdxf
+
+if TYPE_CHECKING:  # pragma: no cover — type-only import, avoids a runtime cycle
+    from dxf2ifc.profiles.schema import Profile
 
 ACIS_DXF_TYPES: frozenset[str] = frozenset(
     {
@@ -97,6 +100,64 @@ def find_accoreconsole() -> Path | None:
         return None
     candidates = sorted(base.glob("AutoCAD */accoreconsole.exe"), reverse=True)
     return candidates[0] if candidates else None
+
+
+# ---------------------------------------------------------------------------
+# Profile → AutoCAD ssget layer filter
+# ---------------------------------------------------------------------------
+
+
+def _collapse_layer_pattern(pattern: str) -> str | None:
+    """Collapse one profile ``layer_pattern`` to a broadened AutoCAD
+    ``ssget`` wildcard token.
+
+    Returns ``None`` for the bare-``*`` / empty sentinel — meaning "this
+    rule matches everything, so the whole filter must be unconstrained".
+
+    The broadening rule: take the literal prefix before any ``*``, then
+    the prefix up to AND INCLUDING the first ``-`` or space, then append
+    ``*``. So ``KYL-HÖYRYSTI*`` → ``KYL-*``, ``KYL-VIEMARI-32`` →
+    ``KYL-*``, ``LT IMU`` → ``LT *``, ``MUUT_OSAT*`` → ``MUUT_OSAT*``
+    (underscore is intentionally not a delimiter), ``KAAPELIHYLLY*`` →
+    ``KAAPELIHYLLY*``. Being slightly broader than the exact pattern is
+    safe — at worst a handful of extra bodies get tessellated; being too
+    narrow would silently drop geometry.
+    """
+    p = pattern.strip()
+    if p == "" or p == "*":
+        return None
+    head = p.split("*", 1)[0]
+    delim_idxs = [i for i in (head.find("-"), head.find(" ")) if i >= 0]
+    if delim_idxs:
+        i = min(delim_idxs)
+        return head[: i + 1] + "*"
+    return head + "*"  # idempotent when head already ends with '*'
+
+
+def layer_filter_from_profile(profile: "Profile") -> str:
+    """Build an AutoCAD ``ssget`` ``(8 . "...")`` layer-filter string from
+    a mapping profile's rules.
+
+    Collects every ``rule.layer_pattern``, collapses each via
+    :func:`_collapse_layer_pattern`, dedupes case-insensitively (AutoCAD
+    layer matching is case-insensitive) while preserving first-seen
+    order, and joins with commas. Returns ``"*"`` (match everything) when
+    the profile has no rules or any pattern is unconstrained — the result
+    is never narrower than what the profile actually maps.
+    """
+    if not profile.rules:
+        return "*"
+    seen: set[str] = set()
+    tokens: list[str] = []
+    for rule in profile.rules:
+        token = _collapse_layer_pattern(rule.layer_pattern)
+        if token is None:
+            return "*"
+        key = token.upper()
+        if key not in seen:
+            seen.add(key)
+            tokens.append(token)
+    return ",".join(tokens) if tokens else "*"
 
 
 # ---------------------------------------------------------------------------
@@ -236,6 +297,11 @@ _LISP_SETUP = (
     '(if (= (type (getvar "SENDREPORTINFO")) \'INT) (setvar "SENDREPORTINFO" 0)) '
     '(setq solid_out "{solid_out}") '
     '(setq insert_out "{insert_out}") '
+    # lyrfilter is the ssget (8 . ...) layer wildcard. Kept in SETUP (not
+    # substituted inline into PHASE1/PHASE2) because PHASE2 is already
+    # near the 2048-char .scr line cap — a long filter string would push
+    # it over. PHASE1/PHASE2 reference it via (cons 8 lyrfilter).
+    '(setq lyrfilter "{layer_filter}") '
     '(setq logf (open (strcat "{log_out}" "extract.log") "w")) '
     '(defun tryx (tag fn / err) (setq err (vl-catch-all-apply fn)) (if (vl-catch-all-error-p err) (write-line (strcat tag ":" (vl-catch-all-error-message err)) logf))) '
     # flushcmd cancels any half-open command (e.g. STLOUT stuck at its
@@ -251,7 +317,7 @@ _LISP_SETUP = (
 # Phase 1: raw ACIS bodies on the layer filter.
 _LISP_PHASE1 = (
     '(progn '
-    '(setq ss (ssget "_X" \'((0 . "3DSOLID,SURFACE,REGION,BODY,PLANESURFACE,EXTRUDEDSURFACE,REVOLVEDSURFACE,SWEPTSURFACE,LOFTEDSURFACE,NURBSURFACE") (8 . "{filter}")))) '
+    '(setq ss (ssget "_X" (list \'(0 . "3DSOLID,SURFACE,REGION,BODY,PLANESURFACE,EXTRUDEDSURFACE,REVOLVEDSURFACE,SWEPTSURFACE,LOFTEDSURFACE,NURBSURFACE") (cons 8 lyrfilter)))) '
     '(write-line (strcat "phase1_solids=" (if ss (itoa (sslength ss)) "0")) logf) '
     '(if ss '
     '(progn '
@@ -293,7 +359,7 @@ _LISP_PHASE1 = (
 # CONVTOSOLID promoting LWPOLYLINE+thickness to 3DSOLID first.
 _LISP_PHASE2 = (
     '(progn '
-    '(setq inserts (ssget "_X" \'((0 . "INSERT") (8 . "{filter}")))) '
+    '(setq inserts (ssget "_X" (list \'(0 . "INSERT") (cons 8 lyrfilter)))) '
     '(write-line (strcat "phase2_inserts=" (if inserts (itoa (sslength inserts)) "0")) logf) '
     '(if inserts '
     '(progn '
@@ -454,9 +520,10 @@ def extract_acis_meshes(
                 solid_out=solid_posix,
                 insert_out=insert_posix,
                 log_out=out_posix,
+                layer_filter=layer_filter,
             ),
-            _LISP_PHASE1.format(filter=layer_filter),
-            _LISP_PHASE2.format(filter=layer_filter, skip_blocks=skip_blocks),
+            _LISP_PHASE1,
+            _LISP_PHASE2.format(skip_blocks=skip_blocks),
             _LISP_CLEANUP,
         ]
         # Write in binary mode to keep our explicit ``\r\n`` separators
