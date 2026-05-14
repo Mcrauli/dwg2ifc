@@ -128,3 +128,45 @@ def test_rule_edit_dialog_prefills_existing_rule(qtbot):
     assert dialog.layer_pattern_edit.text() == "LT IMU"
     assert dialog.system_name_edit.text() == "Refrigeration LT"
     assert dialog.predefined_type_edit.text() == "REFRIGERATION"
+
+
+def test_rule_edit_dialog_offers_full_ifc_type_set(qtbot):
+    from dxf2ifc.core.ifc_writer.builders import SUPPORTED_IFC_TYPES
+    from dxf2ifc.gui.rule_dialog import RuleEditDialog
+
+    dialog = RuleEditDialog()
+    qtbot.addWidget(dialog)
+    combo = dialog.ifc_type_combo
+    items = {combo.itemText(i) for i in range(combo.count())}
+    for ifc_type in SUPPORTED_IFC_TYPES:
+        assert ifc_type in items, f"{ifc_type} missing from IFC type dropdown"
+
+
+def test_ifc_type_groups_cover_supported_types_exactly(qtbot):
+    from dxf2ifc.core.ifc_writer.builders import SUPPORTED_IFC_TYPES
+    from dxf2ifc.gui.rule_dialog import _IFC_TYPE_GROUPS
+
+    grouped = [t for _label, types in _IFC_TYPE_GROUPS for t in types]
+    assert set(grouped) == set(SUPPORTED_IFC_TYPES)
+    assert len(grouped) == len(set(grouped)), "a type appears in two groups"
+
+
+def test_rule_edit_dialog_accepts_a_distribution_type(qtbot):
+    """A newly-exposed type (e.g. IfcSensor) must round-trip through the
+    dialog — previously it was not selectable at all."""
+    from dxf2ifc.gui.rule_dialog import RuleEditDialog
+
+    dialog = RuleEditDialog()
+    qtbot.addWidget(dialog)
+    dialog.domain_combo.setCurrentText("KYL")
+    dialog.layer_pattern_edit.setText("KYL-CO2-ANTURI*")
+    dialog.entity_kind_combo.setCurrentText("INSERT")
+    dialog.block_name_edit.setText("CO2-anturi")
+    dialog.ifc_type_combo.setCurrentText("IfcSensor")
+    dialog.lvi_code_combo.setCurrentText("")
+    dialog.talotekniikka_code_combo.setCurrentText("T-TATE-02-01-003")
+    dialog._refresh_validation()
+    assert dialog.ok_button.isEnabled()
+    rule = dialog.rule()
+    assert rule is not None
+    assert rule.ifc_type == "IfcSensor"

@@ -5,22 +5,75 @@ from __future__ import annotations
 from PySide6 import QtCore, QtWidgets
 from pydantic import ValidationError
 
+from dxf2ifc.core.ifc_writer.builders import SUPPORTED_IFC_TYPES
 from dxf2ifc.profiles.rava.loader import load_rava_codes
 from dxf2ifc.profiles.schema import Rule
 
-_IFC_TYPES = (
-    "IfcWall",
-    "IfcSlab",
-    "IfcDoor",
-    "IfcWindow",
-    "IfcPipeSegment",
-    "IfcCableCarrierSegment",
-    "IfcFurniture",
-    "IfcBuildingElementProxy",
-    "IfcEvaporator",
-    "IfcCondenser",
-    "IfcCompressor",
+# Display grouping for the IFC type dropdown — labelled groups with
+# separators keep the ~29-type list scannable. Every name here must be
+# in SUPPORTED_IFC_TYPES (enforced by test_gui_rule_dialog).
+_IFC_TYPE_GROUPS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    (
+        "Jäähdytyslaitteet",
+        (
+            "IfcEvaporator",
+            "IfcCondenser",
+            "IfcCompressor",
+            "IfcChiller",
+            "IfcUnitaryEquipment",
+            "IfcCoil",
+        ),
+    ),
+    (
+        "Putket & hyllyt",
+        (
+            "IfcPipeSegment",
+            "IfcCableCarrierSegment",
+        ),
+    ),
+    (
+        "Säiliöt & virtaus",
+        (
+            "IfcTank",
+            "IfcFlowController",
+        ),
+    ),
+    (
+        "Sähkö- & jakelulaitteet",
+        (
+            "IfcSensor",
+            "IfcValve",
+            "IfcPump",
+            "IfcWasteTerminal",
+            "IfcInterceptor",
+            "IfcElectricDistributionBoard",
+            "IfcController",
+            "IfcAlarm",
+            "IfcSwitchingDevice",
+            "IfcCommunicationsAppliance",
+            "IfcDuctSegment",
+            "IfcDuctFitting",
+            "IfcAirTerminal",
+        ),
+    ),
+    (
+        "Rakenne / ARK",
+        (
+            "IfcWall",
+            "IfcSlab",
+            "IfcDoor",
+            "IfcWindow",
+            "IfcBuildingElementProxy",
+            "IfcFurniture",
+        ),
+    ),
 )
+
+# Import-time guard: the display groups and the writer's supported set
+# must not drift apart.
+assert {
+    t for _label, _types in _IFC_TYPE_GROUPS for t in _types
+} == set(SUPPORTED_IFC_TYPES)
 _ENTITY_KINDS = ("LINE", "POLYLINE", "CIRCLE", "INSERT")
 # KYL first so that "Add rule" defaults to refrigeration (this app's
 # primary domain) and the Talo2000 fields stay hidden — those are only
@@ -50,7 +103,10 @@ class RuleEditDialog(QtWidgets.QDialog):
         self.entity_kind_combo.addItems(_ENTITY_KINDS)
         self.block_name_edit = QtWidgets.QLineEdit()
         self.ifc_type_combo = QtWidgets.QComboBox()
-        self.ifc_type_combo.addItems(_IFC_TYPES)
+        for group_index, (_group_label, group_types) in enumerate(_IFC_TYPE_GROUPS):
+            if group_index > 0:
+                self.ifc_type_combo.insertSeparator(self.ifc_type_combo.count())
+            self.ifc_type_combo.addItems(group_types)
         self.predefined_type_edit = QtWidgets.QLineEdit()
         self.domain_combo = QtWidgets.QComboBox()
         self.domain_combo.addItems(_DOMAINS)
