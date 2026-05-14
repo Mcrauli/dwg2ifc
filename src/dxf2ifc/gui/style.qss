@@ -177,18 +177,50 @@ QToolTip {
     padding: 4px 6px;
 }
 
-QScrollBar:vertical, QScrollBar:horizontal {
+QScrollBar:vertical {
+    background-color: rgba(15, 23, 42, 0.55);
+    border: none;
+    width: 14px;
+    margin: 0;
+}
+
+QScrollBar:horizontal {
     background-color: rgba(15, 23, 42, 0.4);
     border: none;
+    height: 10px;
+    margin: 0;
 }
 
-QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+QScrollBar::handle:vertical {
+    background-color: rgba(245, 158, 11, 0.55);
+    border-radius: 5px;
+    min-height: 36px;
+    margin: 2px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: rgba(245, 158, 11, 0.85);
+}
+
+QScrollBar::handle:horizontal {
     background-color: rgba(148, 163, 184, 0.3);
     border-radius: 3px;
+    min-width: 24px;
 }
 
-QScrollBar::handle:vertical:hover, QScrollBar::handle:horizontal:hover {
+QScrollBar::handle:horizontal:hover {
     background-color: rgba(245, 158, 11, 0.4);
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    height: 0;
+    width: 0;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical,
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: transparent;
 }
 
 QHeaderView::section {

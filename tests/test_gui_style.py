@@ -44,3 +44,14 @@ def test_qapplication_accepts_style_sheet(qtbot):
     qss = _load_qss()
     app.setStyleSheet(qss)
     assert app.styleSheet() == qss
+
+
+def test_style_qss_gives_vertical_scrollbar_a_visible_handle():
+    """The 49-row profile table needs a scrollbar whose handle is wide
+    and high-contrast enough to read position at a glance."""
+    qss = _load_qss()
+    assert "QScrollBar:vertical" in qss
+    # widened track + a minimum handle length so the thumb never shrinks
+    # to an invisible sliver on a long table
+    assert "width: 14px" in qss
+    assert "min-height: 36px" in qss
