@@ -6,6 +6,25 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha32 — 2026-05-14 (Phase 2 ohittaa turhat EXPLODE-kutsut)
+
+**Nopeutus — vain ACIS-sisältöiset blockit räjäytetään**:
+
+Phase 2 räjäytti aiemmin JOKAISEN INSERTin nähdäkseen onko sisällä
+3DSOLIDeja. Räjäytys-raskaissa kuvissa suurin osa INSERTeistä on
+dynamic-block-hyllyjä ja 2D-symboleita joissa ei ole yhtään ACIS-bodya
+— ezdxf lukee ne suoraan, accoreconsolea ei tarvita. (Testitiedostossa
+131 INSERTistä vain 53:ssa oli 3DSOLIDeja → 78 turhaa EXPLODE-kutsua.)
+
+Nyt Python skannaa blockimäärittelyt **transitiivisesti** (myös
+sisäkkäisten INSERTtien läpi — tämä hoitaa layer-0-kontit oikein) ja
+välittää accoreconsolelle listan blockeista jotka oikeasti sisältävät
+ACIS-bodyja. Phase 2 räjäyttää vain ne. Tyhjä lista / liian pitkä
+literaali / epävarma blockinimi → "räjäytä kaikki" (turvallinen
+fallback).
+
+Mitattu: 2krs.dwg 10.6s → 8.5s, testitiedosto 36s → 22.6s.
+
 ## v0.2.0-alpha31 — 2026-05-14 (accoreconsole-tessellointi ~3× nopeampi)
 
 **Nopeutus — yksi STLOUT per INSERT, ei per body**:

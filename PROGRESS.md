@@ -4,20 +4,24 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha31 (2026-05-14)
+## Current state — v0.2.0-alpha32 (2026-05-14)
 
-Tuorein julkaistu: **v0.2.0-alpha31** (2026-05-14).
+Tuorein julkaistu: **v0.2.0-alpha32** (2026-05-14).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a31.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a31.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a32.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a32.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–31:n korjaukset tiivistettynä (täysi historia
+Alpha8–32:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha32** (2026-05-14): **Phase 2 ohittaa turhat EXPLODE-kutsut** —
+  Python skannaa transitiivisesti mitkä blockit sisältävät ACIS-bodyja,
+  Phase 2 räjäyttää vain ne (ei dynamic-block-hyllyjä / 2D-symboleita).
+  testitiedosto 36s→22.6s, 2krs.dwg 10.6s→8.5s.
 - **alpha31** (2026-05-14): **accoreconsole-tessellointi ~3× nopeampi** —
   Phase 2 STLOUTaa koko räjäytetyn body-valintajoukon yhdellä kutsulla
   per INSERT (ei per body); STLOUT-vaihe ~78s→~25s testitiedostolla.

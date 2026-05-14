@@ -81,6 +81,60 @@ def dxf_contains_acis_bodies(path: str | Path) -> bool:
     return False
 
 
+def _acis_bearing_block_names(doc: object) -> set[str]:
+    """Upper-cased names of every block that contains ACIS bodies — either
+    directly, or transitively through nested INSERTs.
+
+    Phase 2 of the accoreconsole script EXPLODEs INSERTs to reach the
+    3DSOLIDs sealed inside their block definitions. Exploding an INSERT
+    whose block has no ACIS content anywhere in its tree is pure waste
+    (a command round-trip + an ``ssget "_P"`` that finds nothing) — and
+    in explode-heavy drawings the majority of INSERTs are exactly that
+    (dynamic-block shelves, 2D symbols). This returns the set of block
+    names worth exploding so Phase 2 can skip the rest.
+
+    The transitive walk is essential: equipment is frequently nested
+    inside a container block (e.g. on layer "0") that has no direct
+    3DSOLIDs of its own — that container must still be exploded to reach
+    the equipment. A plain "does this block directly contain ACIS"
+    check would drop it.
+    """
+    # direct[name] = True if the block body has an ACIS entity directly.
+    # children[name] = set of block names this block INSERTs.
+    direct: dict[str, bool] = {}
+    children: dict[str, set[str]] = {}
+    for block in doc.blocks:  # type: ignore[attr-defined]
+        name = block.name.upper()
+        has_acis = False
+        kids: set[str] = set()
+        for entity in block:
+            try:
+                etype = entity.dxftype()
+            except Exception:  # noqa: BLE001 — non-graphical custom entity
+                continue
+            if etype in ACIS_DXF_TYPES:
+                has_acis = True
+            elif etype == "INSERT":
+                try:
+                    kids.add(entity.dxf.name.upper())
+                except Exception:  # noqa: BLE001
+                    continue
+        direct[name] = has_acis
+        children[name] = kids
+
+    # Fixpoint: a block is "worth it" if it has direct ACIS or INSERTs a
+    # block that is worth it. Iterate until the set stops growing.
+    worth: set[str] = {n for n, d in direct.items() if d}
+    changed = True
+    while changed:
+        changed = False
+        for name, kids in children.items():
+            if name not in worth and kids & worth:
+                worth.add(name)
+                changed = True
+    return worth
+
+
 def find_accoreconsole() -> Path | None:
     """Locate ``accoreconsole.exe`` under ``%ProgramFiles%\\Autodesk``.
 
@@ -236,6 +290,13 @@ _LISP_SETUP = (
     '(if (= (type (getvar "SENDREPORTINFO")) \'INT) (setvar "SENDREPORTINFO" 0)) '
     '(setq solid_out "{solid_out}") '
     '(setq insert_out "{insert_out}") '
+    # worthlist — upper-cased names of blocks that contain ACIS bodies,
+    # directly or via nested INSERTs. PHASE2 only EXPLODEs INSERTs whose
+    # block is on this list; everything else (dynamic-block shelves, 2D
+    # symbols) is skipped — ezdxf reads those directly, no accoreconsole
+    # round-trip needed. ``nil`` means "explode everything" (fallback
+    # when the Python-side block scan was empty or hit unsafe names).
+    "(setq worthlist {worthlist}) "
     '(setq logf (open (strcat "{log_out}" "extract.log") "w")) '
     '(defun tryx (tag fn / err) (setq err (vl-catch-all-apply fn)) (if (vl-catch-all-error-p err) (write-line (strcat tag ":" (vl-catch-all-error-message err)) logf))) '
     # flushcmd cancels any half-open command (e.g. STLOUT stuck at its
@@ -316,7 +377,7 @@ _LISP_PHASE2 = (
     '(setq ins (ssname inserts k)) '
     '(setq insel (entget ins)) '
     '(setq bname (cdr (assoc 2 insel))) '
-    '(if (and bname (not (wcmatch (strcase bname) "{skip_blocks}"))) '
+    '(if (and bname (not (wcmatch (strcase bname) "{skip_blocks}")) (or (null worthlist) (member (strcase bname) worthlist))) '
     '(progn '
     '(setq ih (cdr (assoc 5 insel))) '
     '(write-line (strcat "phase2_handle=" ih "/block=" bname) logf) '
@@ -341,7 +402,7 @@ _LISP_PHASE2 = (
     '(setq bodies (ssadd ent bodies))) '
     '((eq etype "INSERT") '
     '(setq sbname (cdr (assoc 2 el))) '
-    '(if (and sbname (not (wcmatch (strcase sbname) "{skip_blocks}"))) '
+    '(if (and sbname (not (wcmatch (strcase sbname) "{skip_blocks}")) (or (null worthlist) (member (strcase sbname) worthlist))) '
     '(progn '
     '(command "_.EXPLODE" ent) '
     '(fc) '
@@ -415,6 +476,26 @@ def extract_acis_meshes(
     if not dxf_contains_acis_bodies(input_path):
         return {}
 
+    # Compute which blocks are worth EXPLODEing in Phase 2 (contain ACIS
+    # bodies directly or transitively). Phase 2 skips the rest, saving an
+    # EXPLODE round-trip per dynamic-block shelf / 2D symbol. ``nil`` ⇒
+    # explode everything: empty set, an over-long literal, or a name that
+    # would break the LISP quoted form all fall back to the safe-but-slow
+    # path.
+    worthlist_lisp = "nil"
+    try:
+        _doc = ezdxf.readfile(str(input_path))
+        _worth = sorted(_acis_bearing_block_names(_doc))
+        _safe = [n for n in _worth if '"' not in n and "\\" not in n]
+        if _worth and len(_safe) == len(_worth):
+            _literal = "'(" + " ".join(f'"{n}"' for n in _safe) + ")"
+            # Keep the SETUP form well under accoreconsole's 2048-char
+            # .scr line cap — fall back to "explode all" if too long.
+            if len(_literal) <= 1200:
+                worthlist_lisp = _literal
+    except Exception:  # noqa: BLE001 — never block extraction on the scan
+        worthlist_lisp = "nil"
+
     accoreconsole = find_accoreconsole()
     if accoreconsole is None:
         if progress is not None:
@@ -467,6 +548,7 @@ def extract_acis_meshes(
                 solid_out=solid_posix,
                 insert_out=insert_posix,
                 log_out=out_posix,
+                worthlist=worthlist_lisp,
             ),
             _LISP_PHASE1,
             _LISP_PHASE2.format(skip_blocks=skip_blocks),
