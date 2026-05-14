@@ -155,33 +155,6 @@ def _seed_fixture_file(panel, fixtures_dir, name: str) -> None:
         panel.add_files_button.click()
 
 
-def test_main_window_apply_profile_after_editor_save(qtbot, fixtures_dir, tmp_path):
-    from dxf2ifc.gui.app import MainWindow
-    from dxf2ifc.profiles.loader import dump_profile, load_default_profile
-    from dxf2ifc.profiles.schema import Profile, Rule
-
-    window = MainWindow()
-    qtbot.addWidget(window)
-    _seed_fixture_file(window.file_panel, fixtures_dir, "simple_wall.dxf")
-
-    extended = load_default_profile()
-    extended_rules = list(extended.rules) + [
-        Rule(
-            layer_pattern="CUSTOM-LAYER*",
-            entity_kind="LINE",
-            ifc_type="IfcWall",
-            talo2000_code="9999",
-            talo2000_name="Custom",
-        )
-    ]
-    extended = Profile.model_validate({**extended.model_dump(), "rules": extended_rules})
-
-    target = tmp_path / "custom.toml"
-    dump_profile(extended, target)
-    window.apply_profile_from_path(target)
-
-    assert any(r.layer_pattern == "CUSTOM-LAYER*" for r in window._profile.rules)
-
 
 def test_main_window_layer_table_updates_when_input_path_set(qtbot, fixtures_dir):
     from dxf2ifc.gui.app import MainWindow
@@ -266,20 +239,6 @@ def _isolated_store(tmp_path):
 
 
 
-def test_main_window_persists_profile_path_after_load(qtbot, tmp_path):
-    from dxf2ifc.gui.app import MainWindow
-    from dxf2ifc.profiles.loader import dump_profile, load_default_profile
-
-    snapshot = tmp_path / "snapshot.toml"
-    dump_profile(load_default_profile(), str(snapshot))
-
-    store = _isolated_store(tmp_path)
-    window = MainWindow(recent_files=store)
-    qtbot.addWidget(window)
-
-    window.apply_profile_from_path(str(snapshot))
-    assert store.last_profile_path == str(snapshot)
-
 
 def test_main_window_preview_log_summarizes_dxf_on_open(qtbot, fixtures_dir):
     from dxf2ifc.gui.app import MainWindow
@@ -292,16 +251,3 @@ def test_main_window_preview_log_summarizes_dxf_on_open(qtbot, fixtures_dir):
     assert "KYL-ULKOSEINA" in text
 
 
-def test_main_window_skips_missing_last_profile(qtbot, tmp_path):
-    from dxf2ifc.gui.app import MainWindow
-
-    store = _isolated_store(tmp_path)
-    store.last_profile_path = str(tmp_path / "ghost.toml")
-
-    window = MainWindow(recent_files=store)
-    qtbot.addWidget(window)
-
-    # Falls back to default profile when last_profile_path no longer exists.
-    assert window._profile.name != "last"
-    # And forgets the dangling path.
-    assert store.last_profile_path is None

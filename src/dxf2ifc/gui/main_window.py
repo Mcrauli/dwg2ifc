@@ -20,7 +20,12 @@ from dxf2ifc.gui.update_banner import (
     UpdateChecker,
     perform_update,
 )
-from dxf2ifc.profiles.loader import load_default_profile, load_profile
+from dxf2ifc.profiles.loader import load_default_profile
+from dxf2ifc.profiles.store import (
+    active_profile_path,
+    clear_active_profile,
+    load_active_profile,
+)
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -37,6 +42,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("dxf2ifc")
         self.resize(1100, 700)
         self._recent_files = recent_files or RecentFilesStore()
+        self._startup_profile_warning: str | None = None
         self._profile = self._load_initial_profile()
         self._worker = ConvertWorker(self)
         self._worker.finished.connect(self._on_convert_finished)
@@ -83,6 +89,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.statusBar().addPermanentWidget(self._version_label)
         self._build_menubar()
         self.set_status("Ready")
+        if self._startup_profile_warning:
+            self.set_status(self._startup_profile_warning, level="error")
 
     def _build_menubar(self) -> None:
         menubar = self.menuBar()
@@ -116,35 +124,43 @@ class MainWindow(QtWidgets.QMainWindow):
         from dxf2ifc.gui.profile_editor import ProfileEditorDialog
 
         dialog = ProfileEditorDialog(self._profile, parent=self)
-        dialog.profile_saved.connect(self.apply_profile_from_path)
-        dialog.profile_loaded.connect(self.apply_profile_from_path)
+        dialog.profile_saved.connect(self._on_profile_saved)
         dialog.exec()
 
+    def _on_profile_saved(self, profile: object) -> None:
+        """ProfileEditorDialog persisted the edited profile to the
+        per-user store and handed us the in-memory copy — adopt it and
+        refresh the layer preview."""
+        self._profile = profile
+        self._refresh_layer_table()
+        self.set_status("Profiili tallennettu", level="success")
+
     def _on_reset_profile(self) -> None:
-        """Discard any cached last_profile_path and reload the bundled default.
-        Useful after an app upgrade ships new default-profile rules — without
-        this, RecentFilesStore keeps pointing at the user's stale TOML."""
-        self._recent_files.last_profile_path = None
+        """Delete the saved active profile and reload the bundled
+        default, so the next launch starts clean too."""
+        clear_active_profile()
         self._profile = load_default_profile()
         self._refresh_layer_table()
         self.set_status("Profile reset to bundled default", level="success")
 
     def _load_initial_profile(self):
-        """Always start with the bundled default profile.
+        """Load the user's saved active profile, or the bundled default.
 
-        ``last_profile_path`` is no longer auto-loaded at startup — when we
-        ship updated default rules (e.g. Bugfix 12 narrowing scope to
-        refrigeration-only), users with a stale on-disk TOML otherwise keep
-        seeing the old rules and have to manually reset. The Load button in
-        the profile editor still lets users open a custom TOML on demand."""
-        self._recent_files.last_profile_path = None
+        The profile editor's Save button persists to a per-user file
+        (see ``profiles.store``); we auto-load it here so edits stick
+        across launches with no manual re-loading. A saved file that is
+        present but unreadable falls back to the bundled default and
+        stashes a warning, surfaced once the status bar exists (see the
+        end of ``__init__``)."""
+        stored = load_active_profile()
+        if stored is not None:
+            return stored
+        if active_profile_path().is_file():
+            self._startup_profile_warning = (
+                "Tallennettu profiili oli viallinen — "
+                "palautettiin oletusprofiili"
+            )
         return load_default_profile()
-
-    def apply_profile_from_path(self, path: str) -> None:
-        self._profile = load_profile(path)
-        self._recent_files.last_profile_path = path
-        self._refresh_layer_table()
-        self.set_status(f"Profile loaded: {path}", level="success")
 
     def _on_convert_requested(self, payload: dict) -> None:
         files = payload.get("files") or []

@@ -1,4 +1,11 @@
-"""Dialog for inspecting and tweaking the active mapping profile."""
+"""Dialog for inspecting and tweaking the active mapping profile.
+
+The edited profile is persisted to the per-user store (profiles.store)
+via the Save button — there is no file-path picker. A search box backed
+by a QSortFilterProxyModel makes the ~49-rule table navigable; Add / Edit
+/ Remove map the selected proxy row back to the source model so they hit
+the right rule even while the table is filtered.
+"""
 
 from __future__ import annotations
 
@@ -7,8 +14,8 @@ from copy import deepcopy
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from dxf2ifc.profiles.loader import dump_profile, load_profile
 from dxf2ifc.profiles.schema import Profile, Rule
+from dxf2ifc.profiles.store import save_active_profile
 
 _log = logging.getLogger(__name__)
 
@@ -97,9 +104,10 @@ class _RuleTableModel(QtCore.QAbstractTableModel):
 
 
 class ProfileEditorDialog(QtWidgets.QDialog):
-    profile_saved = QtCore.Signal(str)
-    profile_loaded = QtCore.Signal(str)
-    profile_load_failed = QtCore.Signal(str, str)
+    # Emitted after a successful Save-to-store, carrying the edited
+    # Profile object so the main window can adopt it without re-reading
+    # anything from disk.
+    profile_saved = QtCore.Signal(object)
 
     def __init__(
         self,
@@ -108,16 +116,49 @@ class ProfileEditorDialog(QtWidgets.QDialog):
     ) -> None:
         super().__init__(parent)
         self.setWindowTitle("Profile editor")
+        self.resize(820, 520)
         self._profile = deepcopy(profile)
         self._model = _RuleTableModel(self._profile.rules, self)
+        self._proxy = QtCore.QSortFilterProxyModel(self)
+        self._proxy.setSourceModel(self._model)
+        self._proxy.setFilterCaseSensitivity(
+            QtCore.Qt.CaseSensitivity.CaseInsensitive
+        )
+        self._proxy.setFilterKeyColumn(-1)  # match against every column
 
         layout = QtWidgets.QVBoxLayout(self)
+
+        # --- search row -------------------------------------------------
+        search_row = QtWidgets.QHBoxLayout()
+        self.search_edit = QtWidgets.QLineEdit()
+        self.search_edit.setPlaceholderText(
+            "Hae sääntöjä (layer, IFC-tyyppi, domain, koodi…)"
+        )
+        self.search_edit.setClearButtonEnabled(True)
+        self.row_count_label = QtWidgets.QLabel()
+        self.row_count_label.setProperty("role", "caption")
+        search_row.addWidget(self.search_edit, stretch=1)
+        search_row.addWidget(self.row_count_label)
+        layout.addLayout(search_row)
+
+        # --- table ------------------------------------------------------
         self.table = QtWidgets.QTableView()
-        self.table.setModel(self._model)
-        self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
-        self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
+        self.table.setModel(self._proxy)
+        self.table.setSelectionBehavior(
+            QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows
+        )
+        self.table.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection
+        )
+        self.table.horizontalHeader().setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeMode.Stretch
+        )
+        self.table.setVerticalScrollMode(
+            QtWidgets.QAbstractItemView.ScrollMode.ScrollPerPixel
+        )
         layout.addWidget(self.table)
 
+        # --- toolbar ----------------------------------------------------
         toolbar = QtWidgets.QHBoxLayout()
         self.add_button = QtWidgets.QPushButton("Add")
         self.add_button.setProperty("secondary", "true")
@@ -125,29 +166,47 @@ class ProfileEditorDialog(QtWidgets.QDialog):
         self.edit_button.setProperty("secondary", "true")
         self.remove_button = QtWidgets.QPushButton("Remove")
         self.remove_button.setProperty("secondary", "true")
-        self.load_button = QtWidgets.QPushButton("Load profile…")
-        self.load_button.setProperty("secondary", "true")
-        self.save_button = QtWidgets.QPushButton("Save profile…")
+        self.close_button = QtWidgets.QPushButton("Sulje")
+        self.close_button.setProperty("secondary", "true")
+        self.save_button = QtWidgets.QPushButton("Tallenna")
         self.save_button.setProperty("primary", "true")
         for button in (self.add_button, self.edit_button, self.remove_button):
             toolbar.addWidget(button)
         toolbar.addStretch(1)
-        toolbar.addWidget(self.load_button)
+        toolbar.addWidget(self.close_button)
         toolbar.addWidget(self.save_button)
         layout.addLayout(toolbar)
 
         self.add_button.clicked.connect(self._on_add)
         self.edit_button.clicked.connect(self._on_edit)
         self.remove_button.clicked.connect(self._on_remove)
-        self.load_button.clicked.connect(self._on_load)
+        self.close_button.clicked.connect(self.reject)
         self.save_button.clicked.connect(self._on_save)
+        self.search_edit.textChanged.connect(self._on_search_changed)
+        self._model.rowsInserted.connect(self._update_row_count)
+        self._model.rowsRemoved.connect(self._update_row_count)
+        self._update_row_count()
 
     def current_rules(self) -> list[Rule]:
         return self._model.rules
 
-    def _selected_row(self) -> int | None:
+    def _on_search_changed(self, text: str) -> None:
+        self._proxy.setFilterFixedString(text)
+        self._update_row_count()
+
+    def _update_row_count(self) -> None:
+        total = self._model.rowCount()
+        shown = self._proxy.rowCount()
+        if shown == total:
+            self.row_count_label.setText(f"{total} riviä")
+        else:
+            self.row_count_label.setText(f"{shown} / {total} riviä")
+
+    def _selected_source_row(self) -> int | None:
         indexes = self.table.selectionModel().selectedRows()
-        return indexes[0].row() if indexes else None
+        if not indexes:
+            return None
+        return self._proxy.mapToSource(indexes[0]).row()
 
     def _on_add(self) -> None:
         from dxf2ifc.gui.rule_dialog import RuleEditDialog
@@ -159,7 +218,7 @@ class ProfileEditorDialog(QtWidgets.QDialog):
                 self._model.append_rule(rule)
 
     def _on_edit(self) -> None:
-        row = self._selected_row()
+        row = self._selected_source_row()
         if row is None:
             return
         from dxf2ifc.gui.rule_dialog import RuleEditDialog
@@ -171,48 +230,26 @@ class ProfileEditorDialog(QtWidgets.QDialog):
                 self._model.replace_rule(row, rule)
 
     def _on_remove(self) -> None:
-        row = self._selected_row()
+        row = self._selected_source_row()
         if row is None:
             return
         self._model.remove_row(row)
 
-    def load_from_path(self, path: str) -> None:
+    def _on_save(self) -> None:
+        updated = self._profile.model_copy(update={"rules": self._model.rules})
         try:
-            loaded = load_profile(path)
-        except Exception as exc:  # surface validation / IO errors to the GUI
-            message = f"{type(exc).__name__}: {exc}"
-            _log.exception("Failed to load profile from %s", path)
-            self.profile_load_failed.emit(path, message)
+            save_active_profile(updated)
+        except OSError as exc:  # disk full, permission, …
+            _log.exception("Failed to save the active profile")
             QtWidgets.QMessageBox.critical(
                 self,
-                "Profile load failed",
-                f"Could not load profile from\n{path}\n\n{message}",
+                "Profiilin tallennus epäonnistui",
+                f"Profiilia ei voitu tallentaa:\n\n{type(exc).__name__}: {exc}",
             )
             return
-        self._profile = deepcopy(loaded)
-        old_model = self._model
-        self._model = _RuleTableModel(self._profile.rules, self)
-        self.table.setModel(self._model)
-        old_model.deleteLater()
-        self.profile_loaded.emit(path)
-
-    def _on_load(self) -> None:
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self, "Load profile", "", "TOML files (*.toml)"
-        )
-        if not path:
-            return
-        self.load_from_path(path)
-
-    def _on_save(self) -> None:
-        path, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self, "Save profile", "", "TOML files (*.toml)"
-        )
-        if not path:
-            return
-        self._profile = self._profile.model_copy(update={"rules": self._model.rules})
-        dump_profile(self._profile, path)
-        self.profile_saved.emit(path)
+        self._profile = updated
+        self.profile_saved.emit(updated)
+        self.accept()
 
 
 # QtGui is imported for downstream consumers expecting it from this module.

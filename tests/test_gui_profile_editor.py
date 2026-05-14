@@ -1,13 +1,24 @@
-"""Plan D Task 18: ProfileEditorDialog shows all rules with Add/Edit/Remove/Save."""
+"""ProfileEditorDialog: searchable rule table + Save-to-store.
+
+The editor no longer has file-path Load/Save dialogs — Save persists to
+the per-user store (profiles/store.py) and emits the edited Profile.
+"""
 
 import os
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+import pytest
+from PySide6 import QtWidgets
+
+
+@pytest.fixture
+def appdata(tmp_path, monkeypatch):
+    monkeypatch.setenv("APPDATA", str(tmp_path))
+    return tmp_path
+
 
 def test_profile_editor_lists_all_default_rules(qtbot):
-    from PySide6 import QtWidgets
-
     from dxf2ifc.gui.profile_editor import ProfileEditorDialog
     from dxf2ifc.profiles.loader import load_default_profile
 
@@ -20,141 +31,121 @@ def test_profile_editor_lists_all_default_rules(qtbot):
     assert table.model().columnCount() == 7
 
 
-def test_profile_editor_remove_drops_selected_rule(qtbot):
+def test_search_filters_rows_and_updates_count(qtbot):
     from dxf2ifc.gui.profile_editor import ProfileEditorDialog
     from dxf2ifc.profiles.loader import load_default_profile
 
     profile = load_default_profile()
     dialog = ProfileEditorDialog(profile)
     qtbot.addWidget(dialog)
-    initial = dialog.table.model().rowCount()
+    total = dialog._model.rowCount()
+    assert dialog.row_count_label.text() == f"{total} riviä"
+
+    dialog.search_edit.setText("zzz-nonexistent-zzz")
+    assert dialog._proxy.rowCount() == 0
+    assert dialog.row_count_label.text() == f"0 / {total} riviä"
+
+    dialog.search_edit.setText("")
+    assert dialog._proxy.rowCount() == total
+    assert dialog.row_count_label.text() == f"{total} riviä"
+
+
+def test_search_matches_ifc_type_column(qtbot):
+    from dxf2ifc.gui.profile_editor import ProfileEditorDialog
+    from dxf2ifc.profiles.loader import load_default_profile
+
+    profile = load_default_profile()
+    dialog = ProfileEditorDialog(profile)
+    qtbot.addWidget(dialog)
+    dialog.search_edit.setText("evaporator")
+    shown = dialog._proxy.rowCount()
+    assert 0 < shown < dialog._model.rowCount()
+    for proxy_row in range(shown):
+        src = dialog._proxy.mapToSource(dialog._proxy.index(proxy_row, 0)).row()
+        assert "evaporator" in dialog._model.rules[src].ifc_type.lower()
+
+
+def test_remove_drops_correct_rule_when_filtered(qtbot):
+    """With the table filtered, Remove must delete the source rule that
+    backs the selected proxy row — not whatever sits at that source index."""
+    from dxf2ifc.gui.profile_editor import ProfileEditorDialog
+    from dxf2ifc.profiles.loader import load_default_profile
+
+    profile = load_default_profile()
+    dialog = ProfileEditorDialog(profile)
+    qtbot.addWidget(dialog)
+    dialog.search_edit.setText("evaporator")
+    first_src = dialog._proxy.mapToSource(dialog._proxy.index(0, 0)).row()
+    target_pattern = dialog._model.rules[first_src].layer_pattern
+    initial = dialog._model.rowCount()
+
     dialog.table.selectRow(0)
     dialog.remove_button.click()
-    assert dialog.table.model().rowCount() == initial - 1
+
+    assert dialog._model.rowCount() == initial - 1
+    assert target_pattern not in [r.layer_pattern for r in dialog._model.rules]
 
 
-def test_profile_editor_save_writes_via_dump_profile(qtbot, tmp_path):
-    from unittest.mock import patch
-
-    from PySide6 import QtWidgets
-
+def test_save_persists_to_store_and_emits_profile(qtbot, appdata):
     from dxf2ifc.gui.profile_editor import ProfileEditorDialog
     from dxf2ifc.profiles.loader import load_default_profile
+    from dxf2ifc.profiles.store import active_profile_path, load_active_profile
 
     profile = load_default_profile()
     dialog = ProfileEditorDialog(profile)
     qtbot.addWidget(dialog)
+    dialog.table.selectRow(0)
+    dialog.remove_button.click()  # make one edit
 
-    target = tmp_path / "saved.toml"
-    with patch(
-        "dxf2ifc.gui.profile_editor.QtWidgets.QFileDialog.getSaveFileName",
-        return_value=(str(target), "TOML files (*.toml)"),
-    ):
-        dialog.save_button.click()
+    received = []
+    dialog.profile_saved.connect(received.append)
+    dialog.save_button.click()
 
-    assert target.is_file()
-    assert "[[rules]]" in target.read_text(encoding="utf-8") or target.read_text(
-        encoding="utf-8"
-    ).startswith("[profile]")
-    # Suppress unused-import warning for QtWidgets when running ruff outside pytest.
-    _ = QtWidgets
-
-
-def test_profile_editor_load_button_replaces_rules(qtbot, tmp_path):
-    from unittest.mock import patch
-
-    from dxf2ifc.gui.profile_editor import ProfileEditorDialog
-    from dxf2ifc.profiles.loader import dump_profile, load_default_profile
-    from dxf2ifc.profiles.schema import Profile, Rule
-
-    default = load_default_profile()
-    custom_path = tmp_path / "tiny.toml"
-    tiny = Profile(
-        name="tiny",
-        ifc_schema="IFC4",
-        rules=[
-            Rule(
-                layer_pattern="ONE",
-                ifc_type="IfcWall",
-                predefined_type="STANDARD",
-                talo2000_code="1241",
-                talo2000_name="Ulkoseinät",
-            )
-        ],
-    )
-    dump_profile(tiny, str(custom_path))
-
-    dialog = ProfileEditorDialog(default)
-    qtbot.addWidget(dialog)
-    assert dialog.table.model().rowCount() == len(default.rules)
-
-    with patch(
-        "dxf2ifc.gui.profile_editor.QtWidgets.QFileDialog.getOpenFileName",
-        return_value=(str(custom_path), "TOML files (*.toml)"),
-    ):
-        dialog.load_button.click()
-
-    assert dialog.table.model().rowCount() == 1
-    assert dialog.current_rules()[0].layer_pattern == "ONE"
+    assert active_profile_path().is_file()
+    assert len(received) == 1
+    assert len(received[0].rules) == len(profile.rules) - 1
+    saved = load_active_profile()
+    assert saved is not None
+    assert len(saved.rules) == len(profile.rules) - 1
 
 
-def test_profile_editor_load_invalid_toml_emits_failure_signal(qtbot, tmp_path):
-    """Bugfix 9: when the user picks a TOML that fails to load
-    (parser error, schema validation, missing file), surface the error
-    via profile_load_failed signal + QMessageBox instead of silently
-    swallowing the exception inside Qt's event loop."""
+def test_save_failure_shows_error_and_keeps_dialog_open(qtbot, appdata):
     from unittest.mock import patch
 
     from dxf2ifc.gui.profile_editor import ProfileEditorDialog
     from dxf2ifc.profiles.loader import load_default_profile
-
-    bad_path = tmp_path / "broken.toml"
-    bad_path.write_text("this is not = valid [toml\n", encoding="utf-8")
 
     dialog = ProfileEditorDialog(load_default_profile())
     qtbot.addWidget(dialog)
-    initial_rows = dialog.table.model().rowCount()
-
-    received: list[tuple[str, str]] = []
-    dialog.profile_load_failed.connect(lambda p, msg: received.append((p, msg)))
+    received = []
+    dialog.profile_saved.connect(received.append)
 
     with (
         patch(
-            "dxf2ifc.gui.profile_editor.QtWidgets.QFileDialog.getOpenFileName",
-            return_value=(str(bad_path), "TOML files (*.toml)"),
+            "dxf2ifc.gui.profile_editor.save_active_profile",
+            side_effect=OSError("disk full"),
         ),
-        patch("dxf2ifc.gui.profile_editor.QtWidgets.QMessageBox.critical") as msgbox,
+        patch(
+            "dxf2ifc.gui.profile_editor.QtWidgets.QMessageBox.critical"
+        ) as msgbox,
     ):
-        dialog.load_button.click()
+        dialog.save_button.click()
 
-    assert len(received) == 1
-    assert received[0][0] == str(bad_path)
-    assert received[0][1]  # non-empty message
     assert msgbox.called
-    # On failure the rule table must not be wiped — keep showing the previous profile.
-    assert dialog.table.model().rowCount() == initial_rows
+    assert received == []
+    assert dialog.result() != QtWidgets.QDialog.DialogCode.Accepted
 
 
-def test_profile_editor_load_emits_loaded_signal(qtbot, tmp_path):
-    from unittest.mock import patch
-
+def test_close_button_rejects_without_saving(qtbot, appdata):
     from dxf2ifc.gui.profile_editor import ProfileEditorDialog
-    from dxf2ifc.profiles.loader import dump_profile, load_default_profile
+    from dxf2ifc.profiles.loader import load_default_profile
+    from dxf2ifc.profiles.store import active_profile_path
 
-    default = load_default_profile()
-    target = tmp_path / "snapshot.toml"
-    dump_profile(default, str(target))
-
-    dialog = ProfileEditorDialog(default)
+    dialog = ProfileEditorDialog(load_default_profile())
     qtbot.addWidget(dialog)
+    dialog.table.selectRow(0)
+    dialog.remove_button.click()
+    dialog.close_button.click()
 
-    received: list[str] = []
-    dialog.profile_loaded.connect(received.append)
-
-    with patch(
-        "dxf2ifc.gui.profile_editor.QtWidgets.QFileDialog.getOpenFileName",
-        return_value=(str(target), "TOML files (*.toml)"),
-    ):
-        dialog.load_button.click()
-
-    assert received == [str(target)]
+    assert dialog.result() == QtWidgets.QDialog.DialogCode.Rejected
+    assert not active_profile_path().is_file()
