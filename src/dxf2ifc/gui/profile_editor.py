@@ -2,7 +2,7 @@
 
 The edited profile is persisted to the per-user store (profiles.store)
 via the Save button — there is no file-path picker. A search box backed
-by a QSortFilterProxyModel makes the ~49-rule table navigable; Add / Edit
+by a QSortFilterProxyModel makes the rule table navigable; Add / Edit
 / Remove map the selected proxy row back to the source model so they hit
 the right rule even while the table is filtered.
 """

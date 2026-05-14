@@ -22,7 +22,7 @@ kipupistettä korjattu:
 
 - **Hakukenttä + selkeä scrollipalkki**: sääntötaulukon yläpuolella
   hakukenttä joka suodattaa rivit elävästi (layer pattern / IFC-tyyppi /
-  domain / koodi). Vieressä "N / 49 riviä" -laskuri. Pystyscrollipalkki
+  domain / koodi). Vieressä laskuri joka kertoo montako sääntöä näkyy / yhteensä. Pystyscrollipalkki
   leveämpi ja korkeakontrastinen amber-vetimellä — näkee yhdellä
   silmäyksellä missä kohtaa listaa ollaan. Add/Edit/Remove osuvat oikeaan
   sääntöön myös suodatettuna.
