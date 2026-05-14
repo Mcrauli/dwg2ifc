@@ -31,7 +31,7 @@ import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Iterable
 
 import ezdxf
 
@@ -133,6 +133,42 @@ def _acis_bearing_block_names(doc: object) -> set[str]:
                 worth.add(name)
                 changed = True
     return worth
+
+
+def _worthlist_literal(worth_names: Iterable[str]) -> str:
+    """Build the AutoLISP ``worthlist`` literal for the accoreconsole
+    SETUP form, or ``"nil"`` when no usable literal can be produced.
+
+    Only ASCII block names go into the literal. Non-ASCII names (the
+    Finnish ``Höyrystin`` / ``Säädin`` equipment blocks etc.) are
+    deliberately left out — and that exclusion is correct, not merely
+    safe:
+
+    * the .scr file is written UTF-8 but accoreconsole reads it in the
+      system ANSI codepage, so a non-ASCII name would arrive mangled, and
+    * AutoLISP ``strcase`` does not case-fold non-ASCII letters the way
+      Python ``str.upper()`` does, so ``(member (strcase bname) worthlist)``
+      would never match even if the bytes survived.
+
+    Phase 2 always EXPLODEs non-ASCII-named blocks via its
+    ``(not (asciip bname))`` escape, so omitting them here does not skip
+    them — it routes them to the unconditional path. ``nil`` (no literal
+    at all) means "explode everything": returned when nothing ASCII-safe
+    is left, or the literal would exceed the .scr line-buffer budget.
+    """
+    safe = sorted(
+        n
+        for n in worth_names
+        if n.isascii() and '"' not in n and "\\" not in n
+    )
+    if not safe:
+        return "nil"
+    literal = "'(" + " ".join(f'"{n}"' for n in safe) + ")"
+    # Keep the SETUP form well under accoreconsole's 2048-char .scr line
+    # cap — fall back to "explode all" if the literal is too long.
+    if len(literal) > 1200:
+        return "nil"
+    return literal
 
 
 def find_accoreconsole() -> Path | None:
@@ -311,7 +347,15 @@ _LISP_SETUP = (
     # triangulate? Defined here so PHASE2 can call (acis? etype) instead
     # of inlining the 10-way (or (eq etype ...)) — keeps PHASE2 under the
     # 2048-char .scr line cap.
-    '(defun acis? (et) (member et \'("3DSOLID" "SURFACE" "REGION" "BODY" "PLANESURFACE" "EXTRUDEDSURFACE" "REVOLVEDSURFACE" "SWEPTSURFACE" "LOFTEDSURFACE" "NURBSURFACE"))))'
+    '(defun acis? (et) (member et \'("3DSOLID" "SURFACE" "REGION" "BODY" "PLANESURFACE" "EXTRUDEDSURFACE" "REVOLVEDSURFACE" "SWEPTSURFACE" "LOFTEDSURFACE" "NURBSURFACE"))) '
+    # asciip — T when every character of S is plain 7-bit ASCII. PHASE2
+    # always EXPLODEs blocks whose name is NOT ascii (Finnish Höyrystin /
+    # Säädin equipment blocks): such names cannot be carried in the UTF-8
+    # .scr ``worthlist`` literal accoreconsole reads as ANSI, and AutoLISP
+    # ``strcase`` would not case-fold them to match anyway — so they are
+    # excluded from the literal on the Python side and caught here
+    # instead. Any non-ASCII byte is >= 128 in every codepage.
+    '(defun asciip (s / i n) (setq i 1 n (strlen s)) (while (and (<= i n) (< (ascii (substr s i 1)) 128)) (setq i (1+ i))) (> i n)))'
 )
 
 # Phase 1: every raw ACIS body in modelspace.
@@ -377,7 +421,7 @@ _LISP_PHASE2 = (
     '(setq ins (ssname inserts k)) '
     '(setq insel (entget ins)) '
     '(setq bname (cdr (assoc 2 insel))) '
-    '(if (and bname (not (wcmatch (strcase bname) "{skip_blocks}")) (or (null worthlist) (member (strcase bname) worthlist))) '
+    '(if (and bname (not (wcmatch (strcase bname) "{skip_blocks}")) (or (null worthlist) (member (strcase bname) worthlist) (not (asciip bname)))) '
     '(progn '
     '(setq ih (cdr (assoc 5 insel))) '
     '(write-line (strcat "phase2_handle=" ih "/block=" bname) logf) '
@@ -402,7 +446,7 @@ _LISP_PHASE2 = (
     '(setq bodies (ssadd ent bodies))) '
     '((eq etype "INSERT") '
     '(setq sbname (cdr (assoc 2 el))) '
-    '(if (and sbname (not (wcmatch (strcase sbname) "{skip_blocks}")) (or (null worthlist) (member (strcase sbname) worthlist))) '
+    '(if (and sbname (not (wcmatch (strcase sbname) "{skip_blocks}")) (or (null worthlist) (member (strcase sbname) worthlist) (not (asciip sbname)))) '
     '(progn '
     '(command "_.EXPLODE" ent) '
     '(fc) '
@@ -478,21 +522,15 @@ def extract_acis_meshes(
 
     # Compute which blocks are worth EXPLODEing in Phase 2 (contain ACIS
     # bodies directly or transitively). Phase 2 skips the rest, saving an
-    # EXPLODE round-trip per dynamic-block shelf / 2D symbol. ``nil`` ⇒
-    # explode everything: empty set, an over-long literal, or a name that
-    # would break the LISP quoted form all fall back to the safe-but-slow
-    # path.
+    # EXPLODE round-trip per dynamic-block shelf / 2D symbol. Non-ASCII /
+    # unsafe / over-long names are dropped from the literal by
+    # ``_worthlist_literal``; Phase 2 still EXPLODEs non-ASCII-named
+    # blocks via its ``(not (asciip ...))`` escape. ``nil`` ⇒ explode
+    # everything (the safe-but-slow fallback).
     worthlist_lisp = "nil"
     try:
         _doc = ezdxf.readfile(str(input_path))
-        _worth = sorted(_acis_bearing_block_names(_doc))
-        _safe = [n for n in _worth if '"' not in n and "\\" not in n]
-        if _worth and len(_safe) == len(_worth):
-            _literal = "'(" + " ".join(f'"{n}"' for n in _safe) + ")"
-            # Keep the SETUP form well under accoreconsole's 2048-char
-            # .scr line cap — fall back to "explode all" if too long.
-            if len(_literal) <= 1200:
-                worthlist_lisp = _literal
+        worthlist_lisp = _worthlist_literal(_acis_bearing_block_names(_doc))
     except Exception:  # noqa: BLE001 — never block extraction on the scan
         worthlist_lisp = "nil"
 

@@ -268,6 +268,78 @@ def test_lisp_phase2_skip_magicad_includes_all_magicad_patterns():
     assert p2_magicad.count("*POSITIO*,MAGI*,*MAGICAD*,MAG_*") == 2
 
 
+# --- worthlist literal (alpha32 Phase-2 EXPLODE skip) -------------------
+
+
+def test_worthlist_literal_all_ascii_names_included():
+    from dxf2ifc.core.preprocessing import _worthlist_literal
+
+    lit = _worthlist_literal({"KONEIKKO", "VPUTKI-32", "F31HC325"})
+    assert lit.startswith("'(") and lit.endswith(")")
+    assert '"KONEIKKO"' in lit
+    assert '"VPUTKI-32"' in lit
+    assert '"F31HC325"' in lit
+    assert lit.isascii()
+
+
+def test_worthlist_literal_excludes_non_ascii_block_names():
+    """Regression (alpha32 → alpha33): the worthlist literal carried
+    Finnish block names (Höyrystin/Säädin) verbatim. The .scr is written
+    UTF-8 but accoreconsole reads it in the ANSI codepage, and AutoLISP
+    ``strcase`` does not fold ``ö → Ö`` the way Python ``str.upper()``
+    does — so ``(member ...)`` never matched and Phase 2 silently skipped
+    every Höyrystin INSERT, leaving evaporators with no tessellated mesh.
+    Non-ASCII names must be left out of the literal entirely; Phase 2
+    explodes them via its ``(not (asciip ...))`` escape instead."""
+    from dxf2ifc.core.preprocessing import _worthlist_literal
+
+    lit = _worthlist_literal({"HÖYRYSTIN 1-PUH", "KONEIKKO", "SÄÄDINKESKUS"})
+    assert lit.isascii(), f"worthlist literal must be ASCII-only, got {lit!r}"
+    assert "HÖYRYSTIN 1-PUH" not in lit
+    assert "SÄÄDINKESKUS" not in lit
+    assert '"KONEIKKO"' in lit
+
+
+def test_worthlist_literal_nil_when_no_safe_names():
+    from dxf2ifc.core.preprocessing import _worthlist_literal
+
+    assert _worthlist_literal(set()) == "nil"
+    # A drawing whose only ACIS-bearing blocks are Finnish-named falls
+    # back to "explode everything" rather than emitting a useless literal.
+    assert _worthlist_literal({"HÖYRYSTIN 1-PUH"}) == "nil"
+
+
+def test_worthlist_literal_excludes_names_breaking_lisp_string():
+    from dxf2ifc.core.preprocessing import _worthlist_literal
+
+    lit = _worthlist_literal({'BAD"NAME', "GOODNAME"})
+    assert '"GOODNAME"' in lit
+    assert 'BAD"NAME' not in lit
+
+
+def test_worthlist_literal_nil_when_too_long():
+    from dxf2ifc.core.preprocessing import _worthlist_literal
+
+    many = {f"BLOCK_NAME_NUMBER_{i:04d}" for i in range(200)}
+    assert _worthlist_literal(many) == "nil"
+
+
+def test_lisp_phase2_explodes_non_ascii_named_blocks():
+    """Phase 2 must always EXPLODE blocks whose name is non-ASCII: they
+    cannot be carried in the worthlist literal, so the guard has to fall
+    through to ``(not (asciip ...))``. Both the top-level and the nested
+    INSERT guard need it, or evaporators sealed inside Finnish-named
+    container blocks would be skipped."""
+    from dxf2ifc.core.preprocessing import _LISP_PHASE2, _LISP_SETUP
+
+    assert "(defun asciip" in _LISP_SETUP
+    p2 = _LISP_PHASE2.format(skip_blocks="*POSITIO*,MAGI*,*MAGICAD*,MAG_*")
+    assert "(not (asciip bname))" in p2
+    assert "(not (asciip sbname))" in p2
+    # The asciip escape must not push Phase 2 over the .scr line-buffer cap.
+    assert len(p2) < 2048
+
+
 def test_dxf_contains_acis_bodies_true_for_3dsolid(tmp_path: Path):
     dxf = tmp_path / "solid.dxf"
     _make_3dsolid_dxf(dxf)

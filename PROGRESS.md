@@ -4,20 +4,28 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha32 (2026-05-14)
+## Current state — v0.2.0-alpha33 (2026-05-14)
 
-Tuorein julkaistu: **v0.2.0-alpha32** (2026-05-14).
+Tuorein julkaistu: **v0.2.0-alpha33** (2026-05-14).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a32.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a32.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a33.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a33.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–32:n korjaukset tiivistettynä (täysi historia
+Alpha8–33:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha33** (2026-05-14): **KORJAUS — höyrystimet jäivät tessellöimättä**
+  (alpha32:n regressio). alpha32:n `worthlist` sisälsi ä/ö-nimisiä
+  blockeja (`Höyrystin 1-puh`) joita LISP-`member` ei pystynyt
+  täsmäämään (UTF-8 `.scr` vs accoreconsolen ANSI-luku + `strcase` ei
+  case-foldaa ei-ASCII:ia) → Phase 2 ohitti kaikkien höyrystin-
+  INSERTtien EXPLODEn → ei meshiä. Korjaus: worthlist-literaaliin vain
+  ASCII-nimet, ei-ASCII-nimiset blockit räjäytetään aina LISP
+  `asciip`-escapen kautta.
 - **alpha32** (2026-05-14): **Phase 2 ohittaa turhat EXPLODE-kutsut** —
   Python skannaa transitiivisesti mitkä blockit sisältävät ACIS-bodyja,
   Phase 2 räjäyttää vain ne (ei dynamic-block-hyllyjä / 2D-symboleita).

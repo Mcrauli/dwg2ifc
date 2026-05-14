@@ -6,6 +6,39 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha33 — 2026-05-14 (KORJAUS: höyrystimet jäivät tessellöimättä)
+
+**Juurisyy-fix alpha32:n regressiolle — höyrystimet tulivat väärin**:
+
+alpha32:n `worthlist`-optimointi kirjoitti accoreconsolen `.scr`-skriptiin
+listan blockeista jotka kannattaa räjäyttää. Lista sisälsi myös
+ä/ö-kirjaimellisia nimiä (`Höyrystin 1-puh`, `Säädinkeskus`) sellaisinaan.
+Kaksi asiaa rikkoi näiden täsmäyksen:
+
+1. `.scr` kirjoitetaan UTF-8:na, mutta accoreconsole lukee sen
+   järjestelmän ANSI-koodisivulla → ei-ASCII-tavut menivät sekaisin.
+2. AutoLISPin `strcase` **ei** muunna `ö → Ö` kuten Python `str.upper()`
+   tekee → `(member (strcase bname) worthlist)` ei osunut vaikka tavut
+   olisivat säilyneetkin.
+
+Tulos: Phase 2 ohitti **jokaisen** höyrystin-INSERTin EXPLODE-vaiheen
+→ ei STLOUT-meshiä → höyrystimet jäivät ilman tessellöityä geometriaa.
+TIKASHYLLY / KONEIKKO / CO2-anturi yms. ovat puhdasta ASCII:ta, joten
+ne toimivat normaalisti — vika osui vain ä/ö-nimisiin blockeihin.
+
+Korjaus:
+
+- **Worthlist-literaaliin vain ASCII-nimet** (`_worthlist_literal`).
+  Ei-ASCII-nimiset blockit jätetään pois listalta tarkoituksella.
+- **Phase 2 räjäyttää ei-ASCII-nimiset blockit aina** uuden LISP
+  `asciip`-escapen kautta (`(not (asciip bname))`). Sama suoja sekä
+  ylätason että sisäkkäisen INSERTin kohdalla.
+
+Nopeutus säilyy ASCII-nimisille blockeille (dynamic-block-hyllyt,
+2D-symbolit) — vain ä/ö-nimiset laitteet kulkevat nyt aina "räjäytä"-
+polun. 564 testiä läpi (6 uutta worthlist-testiä; 2 pre-existing
+fail ei liity tähän).
+
 ## v0.2.0-alpha32 — 2026-05-14 (Phase 2 ohittaa turhat EXPLODE-kutsut)
 
 **Nopeutus — vain ACIS-sisältöiset blockit räjäytetään**:
