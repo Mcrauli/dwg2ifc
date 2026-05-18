@@ -141,7 +141,8 @@ value = "Tikashylly"
 - **GitHub Releases API** — itsepäivitykseen (silent failure jos verkko
   off).
 - **SignPath.io API** — code-signing (opt-in `release.yml`:ssä, ei
-  aktivoitu ennen Foundation-hyväksyntää).
+  aktiivinen — SignPath OSS Foundation hylkäsi hakemuksen, ei muuta
+  signing-suunnitelmaa).
 
 ## Test-strategia
 

@@ -264,9 +264,6 @@ core/quality.py          (optional) ifcopenshell.validate +
 
 ## Open todos
 
-- [ ] **Code signing**: SignPath OSS Foundation -hakemus jätetty 2026-05-04,
-  odottaa hyväksyntää. `release.yml` opt-in-muodossa, aktivoituu kun
-  4 secret/var asetettu. SmartScreen-kitka kunnes.
 - [ ] **`builders.py` (1321 r)** — split into `add_*.py` modules per
   IFC-tyyppi. Vaiheittain (split-suunnitelma `docs/SPLIT_PLAN.md`:ssä).
 - [ ] **`dxf_reader.py` (759 r)** — split per geometry kind

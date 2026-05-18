@@ -76,9 +76,10 @@ Get-FileHash -Algorithm SHA256 dwg2ifc-Setup-vX.Y.Z.exe
 ```
 
 > **Windows SmartScreen** näyttää "Windows protected your PC" -dialogin —
-> binäärit eivät ole code-signattu pre-release-vaiheessa. Napauta
-> **More info → Run anyway**. SignPath OSS Foundation -hakemus on jätetty
-> ja allekirjoitus aktivoituu kun Foundation hyväksyy hakemuksen.
+> binäärit eivät ole code-signattu (SignPath OSS Foundation hylkäsi
+> hakemuksen ladausten vähäisyydestä, eikä muuta signing-suunnitelmaa
+> ole). Napauta **More info → Run anyway**. Työpaikan oma mitigaatio:
+> lisää asennuspolku Windows Defenderin Exclusions-listalle.
 
 GUI:n itsepäivitys-banneri tarjoaa uudet pre-release-tagit automaattisesti
 seuraavalla käynnistyksellä.
