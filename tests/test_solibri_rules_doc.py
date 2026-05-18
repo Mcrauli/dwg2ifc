@@ -1,5 +1,5 @@
 """Plan F Task 7: docs/solibri-rules.md describes every rule shipped in
-tools/solibri/dxf2ifc.bcfzip in Finnish so reviewers can audit the
+tools/solibri/dwg2ifc.bcfzip in Finnish so reviewers can audit the
 quality gate without opening Solibri."""
 
 from __future__ import annotations

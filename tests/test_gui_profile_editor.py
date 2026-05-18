@@ -19,8 +19,8 @@ def appdata(tmp_path, monkeypatch):
 
 
 def test_profile_editor_lists_all_default_rules(qtbot):
-    from dxf2ifc.gui.profile_editor import ProfileEditorDialog
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.gui.profile_editor import ProfileEditorDialog
+    from dwg2ifc.profiles.loader import load_default_profile
 
     profile = load_default_profile()
     dialog = ProfileEditorDialog(profile)
@@ -32,8 +32,8 @@ def test_profile_editor_lists_all_default_rules(qtbot):
 
 
 def test_search_filters_rows_and_updates_count(qtbot):
-    from dxf2ifc.gui.profile_editor import ProfileEditorDialog
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.gui.profile_editor import ProfileEditorDialog
+    from dwg2ifc.profiles.loader import load_default_profile
 
     profile = load_default_profile()
     dialog = ProfileEditorDialog(profile)
@@ -51,8 +51,8 @@ def test_search_filters_rows_and_updates_count(qtbot):
 
 
 def test_search_matches_ifc_type_column(qtbot):
-    from dxf2ifc.gui.profile_editor import ProfileEditorDialog
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.gui.profile_editor import ProfileEditorDialog
+    from dwg2ifc.profiles.loader import load_default_profile
 
     profile = load_default_profile()
     dialog = ProfileEditorDialog(profile)
@@ -68,8 +68,8 @@ def test_search_matches_ifc_type_column(qtbot):
 def test_remove_drops_correct_rule_when_filtered(qtbot):
     """With the table filtered, Remove must delete the source rule that
     backs the selected proxy row — not whatever sits at that source index."""
-    from dxf2ifc.gui.profile_editor import ProfileEditorDialog
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.gui.profile_editor import ProfileEditorDialog
+    from dwg2ifc.profiles.loader import load_default_profile
 
     profile = load_default_profile()
     dialog = ProfileEditorDialog(profile)
@@ -87,9 +87,9 @@ def test_remove_drops_correct_rule_when_filtered(qtbot):
 
 
 def test_save_persists_to_store_and_emits_profile(qtbot, appdata):
-    from dxf2ifc.gui.profile_editor import ProfileEditorDialog
-    from dxf2ifc.profiles.loader import load_default_profile
-    from dxf2ifc.profiles.store import active_profile_path, load_active_profile
+    from dwg2ifc.gui.profile_editor import ProfileEditorDialog
+    from dwg2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.profiles.store import active_profile_path, load_active_profile
 
     profile = load_default_profile()
     dialog = ProfileEditorDialog(profile)
@@ -112,8 +112,8 @@ def test_save_persists_to_store_and_emits_profile(qtbot, appdata):
 def test_save_failure_shows_error_and_keeps_dialog_open(qtbot, appdata):
     from unittest.mock import patch
 
-    from dxf2ifc.gui.profile_editor import ProfileEditorDialog
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.gui.profile_editor import ProfileEditorDialog
+    from dwg2ifc.profiles.loader import load_default_profile
 
     dialog = ProfileEditorDialog(load_default_profile())
     qtbot.addWidget(dialog)
@@ -122,11 +122,11 @@ def test_save_failure_shows_error_and_keeps_dialog_open(qtbot, appdata):
 
     with (
         patch(
-            "dxf2ifc.gui.profile_editor.save_active_profile",
+            "dwg2ifc.gui.profile_editor.save_active_profile",
             side_effect=OSError("disk full"),
         ),
         patch(
-            "dxf2ifc.gui.profile_editor.QtWidgets.QMessageBox.critical"
+            "dwg2ifc.gui.profile_editor.QtWidgets.QMessageBox.critical"
         ) as msgbox,
     ):
         dialog.save_button.click()
@@ -137,9 +137,9 @@ def test_save_failure_shows_error_and_keeps_dialog_open(qtbot, appdata):
 
 
 def test_close_button_rejects_without_saving(qtbot, appdata):
-    from dxf2ifc.gui.profile_editor import ProfileEditorDialog
-    from dxf2ifc.profiles.loader import load_default_profile
-    from dxf2ifc.profiles.store import active_profile_path
+    from dwg2ifc.gui.profile_editor import ProfileEditorDialog
+    from dwg2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.profiles.store import active_profile_path
 
     dialog = ProfileEditorDialog(load_default_profile())
     qtbot.addWidget(dialog)

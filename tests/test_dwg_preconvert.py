@@ -13,11 +13,11 @@ from typing import Any
 
 import pytest
 
-from dxf2ifc.core.dwg_preconvert import (
+from dwg2ifc.core.dwg_preconvert import (
     DwgPreconvertError,
     convert_dwg_to_dxf,
 )
-from dxf2ifc.core.preprocessing import find_accoreconsole
+from dwg2ifc.core.preprocessing import find_accoreconsole
 
 
 def _has_accoreconsole() -> bool:
@@ -29,7 +29,7 @@ def test_raises_filenotfound_when_accoreconsole_missing(
 ) -> None:
     """If find_accoreconsole returns None, surface a clear FileNotFoundError."""
     monkeypatch.setattr(
-        "dxf2ifc.core.dwg_preconvert.find_accoreconsole", lambda: None
+        "dwg2ifc.core.dwg_preconvert.find_accoreconsole", lambda: None
     )
     dwg = tmp_path / "fake.dwg"
     dwg.write_bytes(b"dummy")

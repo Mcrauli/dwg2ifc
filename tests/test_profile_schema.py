@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from dxf2ifc.profiles.schema import Profile, Rule
+from dwg2ifc.profiles.schema import Profile, Rule
 
 
 def test_rule_requires_layer_pattern_and_ifc_type():

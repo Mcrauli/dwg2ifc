@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-RAVA_DIR = Path(__file__).resolve().parent.parent / "src" / "dxf2ifc" / "profiles" / "rava"
+RAVA_DIR = Path(__file__).resolve().parent.parent / "src" / "dwg2ifc" / "profiles" / "rava"
 
 
 def _load(name: str) -> dict:

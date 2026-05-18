@@ -8,8 +8,8 @@ from pathlib import Path
 import ezdxf
 import ifcopenshell
 
-from dxf2ifc.core.ifc_writer import convert_dxf
-from dxf2ifc.profiles.loader import load_default_profile
+from dwg2ifc.core.ifc_writer import convert_dxf
+from dwg2ifc.profiles.loader import load_default_profile
 
 
 def _author_dxf_with_three_shelf_polygons(path: Path) -> Path:

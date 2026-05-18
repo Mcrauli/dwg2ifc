@@ -4,20 +4,36 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha37 (2026-05-18)
+## Current state — v0.3.0-alpha1 (2026-05-18)
 
-Tuorein julkaistu: **v0.2.0-alpha37** (2026-05-18).
-Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
-sen automaattisesti kun käyttäjä avaa GUI:n.
+Tuorein julkaistu: **v0.3.0-alpha1** (2026-05-18). Pre-release-vaiheessa
+GitHub Releases:ssä — itsepäivitysbanneri tarjoaa sen automaattisesti
+kun käyttäjä avaa GUI:n.
+
+**Projekti rebrandattu `dxf2ifc` → `dwg2ifc`** v0.3.0-alpha1:ssä koska
+DWG-syöte on alpha21:stä lähtien ollut ensisijainen polku. Vanhat tagit
+v0.1.x–v0.2.0a37 pysyvät `dxf2ifc`-nimellä historiana — GitHub-redirect
+pitää vanhojen versioiden URL:t toimivina. Inno Setup AppId vaihdettu,
+joten uusi installer (`dwg2ifc-Setup-*.exe`) asentaa
+`C:\Program Files\dwg2ifc\`:hen vanhan `dxf2ifc`-asennuksen rinnalle —
+voi poistaa vanhan käsin Asetukset → Sovellukset.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a37.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a37.exe` — paljas exe
+- `dwg2ifc-Setup-0.3.0a1.exe` — Inno Setup -installer
+- `dwg2ifc-0.3.0a1.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–37:n korjaukset tiivistettynä (täysi historia
+Alpha8–37 + v0.3.0a1 -korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **v0.3.0-alpha1** (2026-05-18): **Rebrand `dxf2ifc` → `dwg2ifc`.**
+  Sama softa, uusi nimi joka kuvaa todellista käyttöä. Folder
+  `src/dxf2ifc/` → `src/dwg2ifc/`, paketti + CLI + GUI + installer +
+  asset-tiedostonimet päivitetty. Repo `Mcrauli/dxf2ifc` → `Mcrauli/dwg2ifc`
+  (GitHub-redirect aktivoituu automaattisesti, vanhat URL:t toimivat).
+  Inno Setup AppId vaihdettu — uusi installer ei päällekirjoita vanhaa
+  `dxf2ifc`-asennusta. README/CLAUDE.md uusiksi luettavammaksi; docs/-
+  arkistosta ei kosketa (säilyttävät historiallisen `dxf2ifc`-viittauksen).
 - **alpha37** (2026-05-18): **KORJAUS — GUI:n itsepäivitys ei
   käynnistänyt appia uudestaan.** Hidden powershell + `Start-Process`
   -pohjainen viivelauncher kuoli hiljaisesti joillain Windows-
@@ -280,4 +296,8 @@ jos tarve syntyy.
 
 ## Releases
 
-<https://github.com/Mcrauli/dxf2ifc/releases>
+<https://github.com/Mcrauli/dwg2ifc/releases>
+
+Vanhat v0.1.x–v0.2.0a37 -tagit elävät samassa repossa (GitHub säilyttää
+ne renamen yli) — `dxf2ifc-*`-tiedostonimillä kuten alunperin julkaistu.
+v0.3.0-alpha1:stä eteenpäin assetit ovat `dwg2ifc-*`.

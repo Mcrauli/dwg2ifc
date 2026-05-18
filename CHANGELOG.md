@@ -6,6 +6,34 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha1 — 2026-05-18 (rebrand `dxf2ifc` → `dwg2ifc`)
+
+- **Projekti uudelleennimetty.** DWG on alpha21:stä lähtien ollut
+  ensisijainen syöte (preconvertataan headless `accoreconsole + DXFOUT`
+  -reitillä), joten nimi `dxf2ifc` ei enää kuvannut todellista käyttöä.
+  Major bump v0.2.0 → v0.3.0 merkkaa identiteetin vaihdon.
+- **Mitä muuttui:** Python-paketti `src/dxf2ifc/` → `src/dwg2ifc/`, CLI
+  `dxf2ifc` → `dwg2ifc`, GUI-launcher `dxf2ifc-gui` → `dwg2ifc-gui`,
+  exe + installer + asset-tiedostot (`dwg2ifc.ico`, `dwg2ifc.png`),
+  PyInstaller-spec + Inno Setup `.iss`, GitHub Actions workflow:t,
+  README/CLAUDE.md/PROGRESS.md ajantasalle. Inno Setup AppId uusittu
+  niin että dwg2ifc on erillinen ohjelma (vanha dxf2ifc-asennus jää
+  rinnalle, käyttäjä voi poistaa sen käsin).
+- **GitHub-repo `Mcrauli/dxf2ifc` → `Mcrauli/dwg2ifc`.** Vanhat URL:t
+  redirectoituvat automaattisesti; alpha37-asennusten autoupdater
+  toimii redirectin yli ja tarjoaa v0.3.0a1:n normaalisti. Olemassa
+  olevassa filesysteemissä exe jää `dxf2ifc.exe`-nimiseksi mutta sisältö
+  on dwg2ifc — siisti migraatio on ajaa uusi `dwg2ifc-Setup-0.3.0a1.exe`
+  käsin ja poistaa vanha dxf2ifc-asennus.
+- **Mitä JÄI koskemattomaksi:** docs/* (ARCHITECTURE.md, CLAUDE_TASKS.md,
+  DWG_MAGICAD_PREPROCESSING.md, plans/, superpowers/) viittaavat
+  tarkoituksellisesti `dxf2ifc`-nimeen historiana, ja tmp/-arkisto +
+  vanhat CHANGELOG-entriet säilyttävät alkuperäisen nimen. Vanhat
+  git-tagit v0.1.x–v0.2.0a37 elävät GitHubilla muuttumattomina.
+- Funktiot kuten `convert_dxf()` ja `_aggregate_3dface_from_insert`
+  pidettiin nimeltään ennallaan — niiden nimet kuvaavat sisäistä
+  toimintaa (DXF-luenta) eivätkä tuotenimeä.
+
 ## v0.2.0-alpha37 — 2026-05-18 (itsepäivityksen uudelleenkäynnistys toimii)
 
 - **KORJAUS — GUI:n itsepäivitys sulki appin mutta ei käynnistänyt sitä

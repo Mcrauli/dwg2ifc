@@ -18,7 +18,7 @@ import ifcopenshell.api.spatial
 import ifcopenshell.api.unit
 import pytest
 
-from dxf2ifc.core.ifc_merger import merge_magicad_ifc
+from dwg2ifc.core.ifc_merger import merge_magicad_ifc
 
 
 def _build_minimal_ifc(

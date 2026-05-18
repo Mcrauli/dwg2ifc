@@ -1,19 +1,54 @@
-# dxf2ifc
+# dwg2ifc
 
-[![Latest release](https://img.shields.io/github/v/release/Mcrauli/dxf2ifc?include_prereleases&sort=semver)](https://github.com/Mcrauli/dxf2ifc/releases/latest)
+[![Latest release](https://img.shields.io/github/v/release/Mcrauli/dwg2ifc?include_prereleases&sort=semver)](https://github.com/Mcrauli/dwg2ifc/releases/latest)
 
-**AutoCAD DXF/DWG → IFC 4 -konvertteri suomalaiseen kylmälaite- ja
+**AutoCAD DWG/DXF → IFC 4 -konvertteri suomalaiseen kylmälaite- ja
 LVI-suunnitteluun.** Layer-pohjainen mappaus tuottaa Talo2000-luokituksen
 (ARK) ja RAVA-LVI / RAVA-TATE -luokituksen (TATE), 6 suomalaista
 PropertySettiä per IFC-tuote (`FI_Asennus` / `FI_Geometria` /
 `FI_Komponentti` / `FI_Tuote` / `FI_Tekninen` / `FI_Sijainti`), ja
 Solibri-yhteensopivan IFC4-tiedoston yhdellä konversio-ajolla.
 
-Nykyinen versio: **v0.2.0-alpha34** (2026-05-14). Pre-release-vaiheessa.
+Nykyinen versio: **v0.3.0-alpha1** (2026-05-18). Pre-release-vaiheessa.
 
-## Multi-floor merge (alpha23+)
+> **Nimenmuutos `dxf2ifc` → `dwg2ifc`:** projekti syntyi DXF-syötteellä,
+> mutta DWG on alpha21:stä lähtien ensisijainen syöte (preconvertoidaan
+> headless `accoreconsole + DXFOUT`-reitillä). v0.3.0 vaihtaa nimen
+> kuvaamaan todellista käyttöä. Vanha `dxf2ifc`-asennus pysyy
+> Sovellukset & ominaisuudet -listassa kunnes käyttäjä poistaa sen
+> manuaalisesti.
 
-Yksi konversio = N DXF/DWG-tiedostoa = N `IfcBuildingStorey`-kerrosta
+## Mitä se osaa
+
+| Input | Tuotos |
+|---|---|
+| **DWG / DXF** (KYL-* layerit, dynamic blockit, 3DSOLID, 3DFACE, INSERT, polylinet) | IFC4 + Talo2000/RAVA + FI_*-PSet:t |
+| **Energiateho-Excel** (xlsx/csv, valinnainen) | tehot → FI_Tekninen-merge POSITIO-linkityksen kautta |
+| **MagiCAD-IFC** (kollegan `-MAGIIFCCD`-tuotos, valinnainen) | yhdistetään master-IFC:hen samaan storey:hin |
+
+DWG-syöte preconvertataan DXF:ksi headless `accoreconsole.exe + DXFOUT`
+-kutsulla (sama tekniikka kuin 3DSOLID-tessellaatiossa) — vaatii
+AutoCAD-asennuksen. MagiCAD-DWG ei ole tuettu syöte; käytä `-MAGIIFCCD`
++ `--magicad-ifc`-mergeä.
+
+**KYL-LISP-elementit** (Lauri:n omat AutoLISP-piirtotyökalut, repo
+[`autocad-lisp-ohjeet`](https://github.com/Mcrauli/autocad-lisp-ohjeet)):
+
+- `KYL-TIKASHYLLY*` → IfcCableCarrierSegment / CABLELADDERSEGMENT
+- `KYL-LEVYHYLLY*` → IfcCableCarrierSegment / CABLETRAYSEGMENT
+- `KYL-KOTELO*` → IfcCableCarrierSegment / CABLETRUNKINGSEGMENT
+- `KYL-HOYRYSTIN*` → IfcEvaporator (T-LVI-01-01-023)
+- `KYL-LAUHDUTIN*`, `KYL-KOMPRESSORI*`, `KYL-VPUTKI-*`, varusteet, …
+
+Dynamic block -muotoiset hyllyt (anonyymit `*U*`-blockit joissa
+`closed LWPOLYLINE + thickness` + `3DFACE`) luetaan ezdxf:n
+`INSERT.virtual_entities()`-kautta — soveltaa INSERT-transformaation
+automaattisesti, ei tarvitse accoreconsole:a tai AutoCAD COM:ia
+(LISP-side: `klhylly.lsp`, `kotelo.lsp`).
+
+## Multi-floor merge
+
+Yksi konversio = N DWG/DXF-tiedostoa = N `IfcBuildingStorey`-kerrosta
 yhteen IFC:hen. Käyttäjä asettaa per kerros labelin (`"1.krs"`,
 `"2.krs"`, `"kellari"`, …) ja Z-koron (mm).
 
@@ -25,22 +60,19 @@ Z-arvon verran ja `IfcBuildingStorey` asetetaan samalle korolle. Korko
 GUI:ssä on monirivinen taulukko (`Tiedosto` / `Kerros` / `Z (mm)`) +
 "Lisää tiedosto(t)…"-nappi. CLI:ssä toistettava `--floor`-lippu.
 
-Vanhat profiili-TOML:t jotka käyttävät `storey_z_levels_mm`-kenttää
-eivät enää validoidu — poista rivi. GUI:n "Lisää 1.krs absoluuttinen
-korko" -valintaruutu on myös poistettu (korko per kerros).
-
 ## Lataa (Windows)
 
-Uusin Windows-build on aina [Releases-sivulla](https://github.com/Mcrauli/dxf2ifc/releases/latest):
+Uusin Windows-build on aina
+[Releases-sivulla](https://github.com/Mcrauli/dwg2ifc/releases/latest):
 
-- `dxf2ifc-Setup-vX.Y.Z.exe` — Inno Setup -installeri (per-user, ei
+- `dwg2ifc-Setup-vX.Y.Z.exe` — Inno Setup -installeri (per-user, ei
   UAC-promptia, Start-menu + valinnainen desktop-shortcut)
-- `dxf2ifc-vX.Y.Z.exe` — paljas exe ilman asennusta (tuplaklikkaus
+- `dwg2ifc-vX.Y.Z.exe` — paljas exe ilman asennusta (tuplaklikkaus
   käynnistää GUI:n)
 - `*.sha256` — checksumit, vahvista PowerShellissä:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 dxf2ifc-Setup-vX.Y.Z.exe
+Get-FileHash -Algorithm SHA256 dwg2ifc-Setup-vX.Y.Z.exe
 ```
 
 > **Windows SmartScreen** näyttää "Windows protected your PC" -dialogin —
@@ -51,40 +83,15 @@ Get-FileHash -Algorithm SHA256 dxf2ifc-Setup-vX.Y.Z.exe
 GUI:n itsepäivitys-banneri tarjoaa uudet pre-release-tagit automaattisesti
 seuraavalla käynnistyksellä.
 
-## Mitä se osaa
-
-| Input | Tuotos |
-|---|---|
-| **DXF / DWG** (KYL-* layerit, dynamic blockit, 3DSOLID, 3DFACE, INSERT, polylinet) | IFC4 + Talo2000/RAVA + FI_*-PSet:t |
-| **Energiateho-Excel** (xlsx/csv, valinnainen) | tehot → FI_Tekninen-merge POSITIO-linkityksen kautta |
-| **MagiCAD-IFC** (kollegan `-MAGIIFCCD`-tuotos, valinnainen) | yhdistetään master-IFC:hen samaan storey:hin |
-
-DWG-syöte preconvertataan DXF:ksi headless `accoreconsole.exe + DXFOUT`
--kutsulla (sama tekniikka kuin 3DSOLID-tessellaatiossa) — vaatii
-AutoCAD-asennuksen. MagiCAD-DWG ei ole tuettu syöte; käytä `-MAGIIFCCD`
-+ `--magicad-ifc`-mergeä.
-
-**KYL-LISP-elementit** (Lauri:n omat AutoLISP-piirtotyökalut):
-
-- KYL-TIKASHYLLY → IfcCableCarrierSegment / CABLELADDERSEGMENT
-- KYL-LEVYHYLLY → IfcCableCarrierSegment / CABLETRAYSEGMENT
-- KYL-HÖYRYSTIMET → IfcEvaporator (T-LVI-01-01-023)
-- KYL-LAUHDUTIN, KYL-KOMPRESSORI, KYL-JV-putket, jne.
-
-Dynamic block -muotoiset hyllyt (anonyymit `*U*`-blockit joissa
-`closed LWPOLYLINE` + `3DFACE`) luetaan ezdxf:n
-`INSERT.virtual_entities()`-kautta — soveltaa INSERT-transformaation
-automaattisesti, ei tarvitse accoreconsole:a tai AutoCAD COM:ia.
-
 ## MagiCAD-tuki
 
-dxf2ifc ei yritä tuottaa MagiCAD-osille natiivia 3D-geometriaa
+dwg2ifc ei yritä tuottaa MagiCAD-osille natiivia 3D-geometriaa
 DXF:stä — käytä MagiCAD:in omaa IFC-exportia ja merge:ä:
 
 1. **Kollega ajaa AutoCAD:in command-linelle `-MAGIIFCCD`** (FULL-MagiCAD).
    MagiCAD tuottaa korkealaatuisen IFC:n oikeilla
    `IfcDuctSegment` / `IfcAirTerminal` / MagiCAD-PSet:eillä.
-2. **Lauri valitsee dxf2ifc-GUI:ssa DXF + tuon MagiCAD-IFC:n**.
+2. **Lauri valitsee dwg2ifc-GUI:ssa DWG/DXF + tuon MagiCAD-IFC:n**.
    Konvertteri yhdistää ne yhdeksi master-IFC:ksi
    (`core/ifc_merger.py`, `ifcopenshell.api.project.append_asset`).
 3. **DXF:n MagiCAD-osat (MAGI*-natiivit luokat + ACAD_PROXY_ENTITY)
@@ -101,13 +108,13 @@ mesh-renderin), muuten ne pudottautuvat pois.
 
 ```bash
 # Yksi tiedosto (kerros = "1.krs" @ Z=0)
-uv run dxf2ifc convert input.dxf output.ifc
-uv run dxf2ifc convert input.dwg output.ifc
-uv run dxf2ifc convert input.dxf output.ifc --magicad-ifc colleague.ifc
-uv run dxf2ifc convert input.dxf output.ifc --energy-specs teholuettelo.xlsx
+uv run dwg2ifc convert input.dwg output.ifc
+uv run dwg2ifc convert input.dxf output.ifc
+uv run dwg2ifc convert input.dwg output.ifc --magicad-ifc colleague.ifc
+uv run dwg2ifc convert input.dwg output.ifc --energy-specs teholuettelo.xlsx
 
 # Monta tiedostoa (per kerros: PATH[:LABEL[:ELEV_MM]])
-uv run dxf2ifc convert output.ifc \
+uv run dwg2ifc convert output.ifc \
     --floor 1krs.dwg:1.krs:0 \
     --floor 2krs.dwg:2.krs:3500 \
     --floor pohja.dwg:kellari:-3000
@@ -126,11 +133,11 @@ Lisävalinnat:
 
 ```bash
 uv pip install -e ".[gui]"
-dxf2ifc-gui   # tai: python -m dxf2ifc.gui
+dwg2ifc-gui   # tai: python -m dwg2ifc.gui
 ```
 
 GUI:n päänäkymässä on monirivinen file-table (`Tiedosto / Kerros / Z (mm)`).
-Klikkaa **"Lisää tiedosto(t)…"**, valitse yksi tai useampi DXF/DWG;
+Klikkaa **"Lisää tiedosto(t)…"**, valitse yksi tai useampi DWG/DXF;
 labelit oletusasennetaan `"1.krs"`, `"2.krs"`, … ja Z=0. Muokkaa
 tarvittaessa. Lisäksi: layerien esikatselu + luokitus-resoluutio,
 energiateho-Excel:n + MagiCAD-IFC:n filepicker:it, taustasäikeen
@@ -139,7 +146,7 @@ itsepäivitys GitHub Releases:istä.
 
 ### Input-formaatit
 
-`.dxf` ja `.dwg` (DWG preconvertataan headless `accoreconsole.exe + DXFOUT`
+`.dwg` ja `.dxf` (DWG preconvertataan headless `accoreconsole.exe + DXFOUT`
 -kutsulla, vaatii AutoCAD-asennuksen). MagiCAD-DWG ei ole tuettu
 sisältö — käytä kollegan `-MAGIIFCCD`-IFC:tä + `--magicad-ifc`-mergeä.
 
@@ -165,6 +172,11 @@ sisältö — käytä kollegan `-MAGIIFCCD`-IFC:tä + `--magicad-ifc`-mergeä.
 | **Versiohistoria** | [`CHANGELOG.md`](CHANGELOG.md) |
 | **Plan A→H -spec (historiallinen)** | [`docs/plans/`](docs/plans/) |
 | **Build #1–#36 -arkisto** | [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md) |
+
+> Historialliset docit (`docs/ARCHITECTURE.md`, `docs/CLAUDE_TASKS.md`,
+> `docs/DWG_MAGICAD_PREPROCESSING.md`, `docs/plans/*`) viittaavat
+> tarkoituksellisesti vielä vanhaan nimeen `dxf2ifc` — ne kuvaavat
+> sen aikaisen toteutuksen historiaa eivätkä nykyistä tilaa.
 
 ## Lisenssi
 

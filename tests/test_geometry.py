@@ -2,7 +2,7 @@
 
 import pytest
 
-from dxf2ifc.core.geometry import (
+from dwg2ifc.core.geometry import (
     CableCarrierSegmentExtrusion,
     DoorBoxExtrusion,
     FurnitureBoxExtrusion,
@@ -18,7 +18,7 @@ from dxf2ifc.core.geometry import (
     panel_to_proxy_solid,
     polygon_to_slab_extrusion,
 )
-from dxf2ifc.core.types import BlockInstance, LineGeometry, Point3D, PolygonGeometry
+from dwg2ifc.core.types import BlockInstance, LineGeometry, Point3D, PolygonGeometry
 
 
 def test_line_to_wall_extrusion_length():

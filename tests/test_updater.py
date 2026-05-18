@@ -15,7 +15,7 @@ from unittest.mock import patch
 
 import pytest
 
-from dxf2ifc.core import updater
+from dwg2ifc.core import updater
 
 
 def _release_payload(
@@ -70,18 +70,18 @@ class TestNormaliseVersion:
 class TestSelectAsset:
     def test_returns_exe_url_and_size(self) -> None:
         release = _release_payload(
-            tag="v0.1.0", version="0.1.0", asset_name="dxf2ifc-0.1.0.exe", asset_size=999
+            tag="v0.1.0", version="0.1.0", asset_name="dwg2ifc-0.1.0.exe", asset_size=999
         )
         assert updater._select_asset(release) == (
-            "https://github.com/x/y/releases/download/v0.1.0/dxf2ifc-0.1.0.exe",
+            "https://github.com/x/y/releases/download/v0.1.0/dwg2ifc-0.1.0.exe",
             999,
         )
 
     def test_skips_sha256_sidecar(self) -> None:
         release = {
             "assets": [
-                {"name": "dxf2ifc-0.1.0.exe.sha256", "browser_download_url": "...", "size": 64},
-                {"name": "dxf2ifc-0.1.0.exe", "browser_download_url": "real.exe", "size": 999},
+                {"name": "dwg2ifc-0.1.0.exe.sha256", "browser_download_url": "...", "size": 64},
+                {"name": "dwg2ifc-0.1.0.exe", "browser_download_url": "real.exe", "size": 999},
             ]
         }
         url, _ = updater._select_asset(release)
@@ -102,22 +102,22 @@ class TestCheckForUpdate:
 
     def test_returns_none_when_no_newer_release(self) -> None:
         releases = [
-            _release_payload(tag="v0.1.0", version="0.1.0", asset_name="dxf2ifc-0.1.0.exe"),
+            _release_payload(tag="v0.1.0", version="0.1.0", asset_name="dwg2ifc-0.1.0.exe"),
         ]
         with self._patch_releases(releases):
             assert updater.check_for_update(current_version="0.1.0") is None
 
     def test_returns_info_when_newer_stable_exists(self) -> None:
         releases = [
-            _release_payload(tag="v0.1.0", version="0.1.0", asset_name="dxf2ifc-0.1.0.exe"),
-            _release_payload(tag="v0.2.0", version="0.2.0", asset_name="dxf2ifc-0.2.0.exe"),
+            _release_payload(tag="v0.1.0", version="0.1.0", asset_name="dwg2ifc-0.1.0.exe"),
+            _release_payload(tag="v0.2.0", version="0.2.0", asset_name="dwg2ifc-0.2.0.exe"),
         ]
         with self._patch_releases(releases):
             info = updater.check_for_update(current_version="0.1.0")
         assert info is not None
         assert info.tag == "v0.2.0"
         assert info.version == "0.2.0"
-        assert "dxf2ifc-0.2.0.exe" in info.download_url
+        assert "dwg2ifc-0.2.0.exe" in info.download_url
 
     def test_picks_highest_version_among_many(self) -> None:
         releases = [
@@ -136,7 +136,7 @@ class TestCheckForUpdate:
                 tag="v0.2.0",
                 version="0.2.0",
                 draft=True,
-                asset_name="dxf2ifc-0.2.0.exe",
+                asset_name="dwg2ifc-0.2.0.exe",
             ),
         ]
         with self._patch_releases(releases):
@@ -148,7 +148,7 @@ class TestCheckForUpdate:
                 tag="v0.2.0-alpha",
                 version="0.2.0a0",
                 prerelease=True,
-                asset_name="dxf2ifc-0.2.0a0.exe",
+                asset_name="dwg2ifc-0.2.0a0.exe",
             ),
         ]
         with self._patch_releases(releases):
@@ -163,7 +163,7 @@ class TestCheckForUpdate:
                 tag="v0.2.0-alpha",
                 version="0.2.0a0",
                 prerelease=True,
-                asset_name="dxf2ifc-0.2.0a0.exe",
+                asset_name="dwg2ifc-0.2.0a0.exe",
             ),
         ]
         with self._patch_releases(releases):
@@ -181,7 +181,7 @@ class TestCheckForUpdate:
     def test_alpha_user_sees_stable_release(self) -> None:
         # Lauri's exact case: installed v0.1.0-alpha, repo has v0.1.0 (stable).
         releases = [
-            _release_payload(tag="v0.1.0", version="0.1.0", asset_name="dxf2ifc-0.1.0.exe"),
+            _release_payload(tag="v0.1.0", version="0.1.0", asset_name="dwg2ifc-0.1.0.exe"),
         ]
         with self._patch_releases(releases):
             info = updater.check_for_update(current_version="0.1.0-alpha")
@@ -352,7 +352,7 @@ class TestFetchExpectedSha256:
     def test_parses_standard_sha256sum_format(self) -> None:
         payload = (
             b"CAD611CBFD6134AE80B5029D5F5AB62EAA52F07737B144B8D65B000197F19088"
-            b"  dxf2ifc-Setup-0.1.9a1.exe\n"
+            b"  dwg2ifc-Setup-0.1.9a1.exe\n"
         )
         with patch(
             "urllib.request.urlopen", return_value=self._patched_response(payload)
@@ -400,7 +400,7 @@ class TestSpawnDelayedLauncher:
     def test_windows_invokes_cmd_with_self_deleting_batch(
         self, tmp_path: Path
     ) -> None:
-        exe = tmp_path / "dxf2ifc.exe"
+        exe = tmp_path / "dwg2ifc.exe"
         exe.write_bytes(b"x")
         with patch("sys.platform", "win32"):
             with patch("subprocess.Popen") as popen:
@@ -421,7 +421,7 @@ class TestSpawnDelayedLauncher:
         assert "del " in script
 
     def test_windows_passes_delay_into_batch(self, tmp_path: Path) -> None:
-        exe = tmp_path / "dxf2ifc.exe"
+        exe = tmp_path / "dwg2ifc.exe"
         exe.write_bytes(b"x")
         with patch("sys.platform", "win32"):
             with patch("subprocess.Popen") as popen:
@@ -439,9 +439,9 @@ class TestSpawnDelayedLauncher:
 
     def test_windows_quotes_paths_with_spaces(self, tmp_path: Path) -> None:
         # Spaces are the realistic Program Files / OneDrive case.
-        sub = tmp_path / "Program Files" / "dxf2ifc"
+        sub = tmp_path / "Program Files" / "dwg2ifc"
         sub.mkdir(parents=True)
-        exe = sub / "dxf2ifc.exe"
+        exe = sub / "dwg2ifc.exe"
         exe.write_bytes(b"x")
         with patch("sys.platform", "win32"):
             with patch("subprocess.Popen") as popen:
@@ -450,7 +450,7 @@ class TestSpawnDelayedLauncher:
         assert f'start "" "{exe}"' in script
 
     def test_windows_includes_extra_args_quoted(self, tmp_path: Path) -> None:
-        exe = tmp_path / "dxf2ifc.exe"
+        exe = tmp_path / "dwg2ifc.exe"
         exe.write_bytes(b"x")
         with patch("sys.platform", "win32"):
             with patch("subprocess.Popen") as popen:
@@ -463,8 +463,8 @@ class TestSpawnDelayedLauncher:
     def test_windows_writes_breadcrumb_log_path(self, tmp_path: Path) -> None:
         # Every step in the batch appends to a single stable log path so a
         # silent failure (Defender quarantine, locked file, missing exe)
-        # leaves diagnosable evidence in %TEMP%\dxf2ifc_restart.log.
-        exe = tmp_path / "dxf2ifc.exe"
+        # leaves diagnosable evidence in %TEMP%\dwg2ifc_restart.log.
+        exe = tmp_path / "dwg2ifc.exe"
         exe.write_bytes(b"x")
         with patch("sys.platform", "win32"):
             with patch("subprocess.Popen") as popen:
@@ -478,7 +478,7 @@ class TestSpawnDelayedLauncher:
     def test_non_windows_spawns_directly_without_helper(
         self, tmp_path: Path
     ) -> None:
-        exe = tmp_path / "dxf2ifc"
+        exe = tmp_path / "dwg2ifc"
         exe.write_bytes(b"x")
         with patch("sys.platform", "linux"):
             with patch("subprocess.Popen") as popen:
@@ -490,8 +490,8 @@ class TestSpawnDelayedLauncher:
 
 class TestSwapHelpers:
     def test_old_path_appends_old_suffix(self, tmp_path: Path) -> None:
-        exe = tmp_path / "dxf2ifc-0.1.0.exe"
-        assert updater._old_path_for(exe).name == "dxf2ifc-0.1.0.exe.old"
+        exe = tmp_path / "dwg2ifc-0.1.0.exe"
+        assert updater._old_path_for(exe).name == "dwg2ifc-0.1.0.exe.old"
 
     def test_cleanup_old_exe_removes_leftover(self, tmp_path: Path) -> None:
         current = tmp_path / "app.exe"

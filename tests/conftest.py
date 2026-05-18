@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for dxf2ifc tests."""
+"""Shared pytest fixtures for dwg2ifc tests."""
 
 import os
 import shutil
@@ -26,7 +26,7 @@ def pytest_collection_modifyitems(config, items):
                 item.add_marker(skip_solibri)
 
     try:
-        from dxf2ifc.core.preprocessing import find_accoreconsole
+        from dwg2ifc.core.preprocessing import find_accoreconsole
         accoreconsole_available = find_accoreconsole() is not None
     except Exception:
         accoreconsole_available = False
@@ -53,7 +53,7 @@ def full_kylmaelement_dxf(tmp_path: Path) -> Path:
     The result is one wall, one partition, one floor slab, one door
     block, one window block, one cooling pipe, one drain pipe, one
     storage shelf block, one cable carrier line, one cold-room panel,
-    and one evaporator block — all on dxf2ifc's default-profile layers.
+    and one evaporator block — all on dwg2ifc's default-profile layers.
     """
     doc = ezdxf.new("R2010")
     layers = [

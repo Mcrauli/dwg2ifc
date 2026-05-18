@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from dxf2ifc.profiles.loader import load_default_profile
-from dxf2ifc.profiles.store import (
+from dwg2ifc.profiles.loader import load_default_profile
+from dwg2ifc.profiles.store import (
     active_profile_path,
     clear_active_profile,
     load_active_profile,
@@ -21,7 +21,7 @@ def appdata(tmp_path, monkeypatch):
 
 
 def test_active_profile_path_lives_under_appdata(appdata):
-    assert active_profile_path() == appdata / "Mcrauli" / "dxf2ifc" / "active_profile.toml"
+    assert active_profile_path() == appdata / "Mcrauli" / "dwg2ifc" / "active_profile.toml"
 
 
 def test_save_then_load_round_trips(appdata):

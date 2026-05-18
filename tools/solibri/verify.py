@@ -2,7 +2,7 @@
 
 Builds the Solibri command line and runs it via :mod:`subprocess`, returning
 the report path on success. The wrapper deliberately does *not* attempt to
-locate Solibri inside the dxf2ifc test sandbox — the actual binary lives on
+locate Solibri inside the dwg2ifc test sandbox — the actual binary lives on
 Lauri's Windows host. CI tests monkey-patch :func:`subprocess.run` and
 :func:`shutil.which` so the wrapper can be exercised without Solibri.
 """

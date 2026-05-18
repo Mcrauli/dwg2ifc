@@ -1,6 +1,6 @@
 """Tests for INSERT-block 3DFACE aggregation — Lauri's KYL-LISP
 shelves now emit dynamic block references (anonymous *U* blocks)
-that contain 3DFACE primitives in block coordinates. dxf2ifc
+that contain 3DFACE primitives in block coordinates. dwg2ifc
 expands them via INSERT.virtual_entities() and aggregates the
 3DFACE faces into a single MeshGeometry per shelf.
 """
@@ -11,8 +11,8 @@ from pathlib import Path
 
 import ezdxf
 
-from dxf2ifc.core.dxf_reader import read_dxf
-from dxf2ifc.core.types import BlockInstance, MeshGeometry
+from dwg2ifc.core.dxf_reader import read_dxf
+from dwg2ifc.core.types import BlockInstance, MeshGeometry
 
 
 def _save_and_read(doc, tmp_path: Path):

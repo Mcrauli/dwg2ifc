@@ -9,12 +9,12 @@ from __future__ import annotations
 
 import pytest
 
-from dxf2ifc.core.ifc_writer import (
+from dwg2ifc.core.ifc_writer import (
     add_wall,
     build_ifc_project_skeleton,
     validate_local_extent,
 )
-from dxf2ifc.core.types import LineGeometry, MappedEntity, Point3D
+from dwg2ifc.core.types import LineGeometry, MappedEntity, Point3D
 
 
 def _wall_skeleton():

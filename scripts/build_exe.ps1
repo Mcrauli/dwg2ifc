@@ -1,20 +1,20 @@
-# Local Windows PyInstaller build for dxf2ifc.
+# Local Windows PyInstaller build for dwg2ifc.
 # Usage:  $env:DXF2IFC_VERSION = "0.1.0"; .\scripts\build_exe.ps1
-# Output: dist/dxf2ifc-<version>.exe + SHA256 printed to stdout.
+# Output: dist/dwg2ifc-<version>.exe + SHA256 printed to stdout.
 
 $ErrorActionPreference = "Stop"
 
 if (-not $env:DXF2IFC_VERSION) {
-    $env:DXF2IFC_VERSION = (Select-String -Path "src/dxf2ifc/_version.py" -Pattern '__version__\s*=\s*"([^"]+)"').Matches[0].Groups[1].Value
+    $env:DXF2IFC_VERSION = (Select-String -Path "src/dwg2ifc/_version.py" -Pattern '__version__\s*=\s*"([^"]+)"').Matches[0].Groups[1].Value
 }
 
-Write-Host "Building dxf2ifc.exe version $($env:DXF2IFC_VERSION)..."
+Write-Host "Building dwg2ifc.exe version $($env:DXF2IFC_VERSION)..."
 
 # Native commands do not trip $ErrorActionPreference; check $LASTEXITCODE
 # explicitly so a uv/pyinstaller failure cannot silently fall through to
 # the Copy-Item step and ship a stale binary.
-$source = "dist/dxf2ifc.exe"
-$target = "dist/dxf2ifc-$($env:DXF2IFC_VERSION).exe"
+$source = "dist/dwg2ifc.exe"
+$target = "dist/dwg2ifc-$($env:DXF2IFC_VERSION).exe"
 
 # Stamp the source with mtime BEFORE the build so we can detect whether
 # PyInstaller actually rebuilt it (vs. silently using a previous output).
@@ -25,7 +25,7 @@ if ($LASTEXITCODE -ne 0) {
     throw "uv sync failed with exit code $LASTEXITCODE"
 }
 
-uv run pyinstaller build/dxf2ifc.spec --clean --noconfirm
+uv run pyinstaller build/dwg2ifc.spec --clean --noconfirm
 if ($LASTEXITCODE -ne 0) {
     throw "pyinstaller failed with exit code $LASTEXITCODE"
 }

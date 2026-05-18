@@ -3,7 +3,7 @@ codes from the four committed JSON files keyed by codeValue."""
 
 from __future__ import annotations
 
-from dxf2ifc.profiles.rava.loader import RAVACode, load_rava_codes
+from dwg2ifc.profiles.rava.loader import RAVACode, load_rava_codes
 
 
 def test_load_rava_codes_returns_dict_of_ravacode():

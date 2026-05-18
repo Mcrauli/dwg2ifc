@@ -3,7 +3,7 @@
 Turns the XML produced by ``Solibri.exe -output <report.xml>`` into a flat
 list of ``RuleResult``-shaped dicts. Each violation gets one entry; passed
 rules are skipped. The parser uses :mod:`xml.etree.ElementTree` from the
-stdlib so dxf2ifc does not pull lxml in just for this helper.
+stdlib so dwg2ifc does not pull lxml in just for this helper.
 """
 
 from __future__ import annotations

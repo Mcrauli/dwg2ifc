@@ -8,7 +8,7 @@ from importlib import metadata
 
 
 def test_version_module_exposes_string() -> None:
-    from dxf2ifc._version import __version__
+    from dwg2ifc._version import __version__
 
     assert isinstance(__version__, str)
     assert __version__.count(".") >= 2

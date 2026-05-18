@@ -15,8 +15,8 @@ from pathlib import Path
 import ezdxf
 import pytest
 
-from dxf2ifc.core.dxf_reader import read_dxf
-from dxf2ifc.core.preprocessing import (
+from dwg2ifc.core.dxf_reader import read_dxf
+from dwg2ifc.core.preprocessing import (
     AcisMeshData,
     _parse_stl,
     _parse_stl_ascii,
@@ -25,7 +25,7 @@ from dxf2ifc.core.preprocessing import (
     extract_acis_meshes,
     find_accoreconsole,
 )
-from dxf2ifc.core.types import MeshGeometry
+from dwg2ifc.core.types import MeshGeometry
 
 
 # --- STL parser ---------------------------------------------------------
@@ -247,7 +247,7 @@ def test_lisp_phase2_under_accoreconsole_line_buffer():
     prompt forever. Phase 2 grows when skip_magicad is enabled (extra
     wildcard patterns substitute into the wcmatch skip list); verify it
     stays safely under the cap."""
-    from dxf2ifc.core.preprocessing import _LISP_PHASE2
+    from dwg2ifc.core.preprocessing import _LISP_PHASE2
 
     p2_magicad = _LISP_PHASE2.format(
         skip_blocks="*POSITIO*,MAGI*,*MAGICAD*,MAG_*"
@@ -259,7 +259,7 @@ def test_lisp_phase2_skip_magicad_includes_all_magicad_patterns():
     """When skip_magicad is requested the wcmatch pattern must match the
     block-name conventions MagiCAD uses in DXF — MAGI* (native types),
     *MAGICAD* (vendor block libraries), MAG_* (legacy prefix)."""
-    from dxf2ifc.core.preprocessing import _LISP_PHASE2
+    from dwg2ifc.core.preprocessing import _LISP_PHASE2
 
     p2_magicad = _LISP_PHASE2.format(
         skip_blocks="*POSITIO*,MAGI*,*MAGICAD*,MAG_*"
@@ -272,7 +272,7 @@ def test_lisp_phase2_skip_magicad_includes_all_magicad_patterns():
 
 
 def test_worthlist_literal_all_ascii_names_included():
-    from dxf2ifc.core.preprocessing import _worthlist_literal
+    from dwg2ifc.core.preprocessing import _worthlist_literal
 
     lit = _worthlist_literal({"KONEIKKO", "VPUTKI-32", "F31HC325"})
     assert lit.startswith("'(") and lit.endswith(")")
@@ -291,7 +291,7 @@ def test_worthlist_literal_excludes_non_ascii_block_names():
     every Höyrystin INSERT, leaving evaporators with no tessellated mesh.
     Non-ASCII names must be left out of the literal entirely; Phase 2
     explodes them via its ``(not (asciip ...))`` escape instead."""
-    from dxf2ifc.core.preprocessing import _worthlist_literal
+    from dwg2ifc.core.preprocessing import _worthlist_literal
 
     lit = _worthlist_literal({"HÖYRYSTIN 1-PUH", "KONEIKKO", "SÄÄDINKESKUS"})
     assert lit.isascii(), f"worthlist literal must be ASCII-only, got {lit!r}"
@@ -301,7 +301,7 @@ def test_worthlist_literal_excludes_non_ascii_block_names():
 
 
 def test_worthlist_literal_nil_when_no_safe_names():
-    from dxf2ifc.core.preprocessing import _worthlist_literal
+    from dwg2ifc.core.preprocessing import _worthlist_literal
 
     assert _worthlist_literal(set()) == "nil"
     # A drawing whose only ACIS-bearing blocks are Finnish-named falls
@@ -310,7 +310,7 @@ def test_worthlist_literal_nil_when_no_safe_names():
 
 
 def test_worthlist_literal_excludes_names_breaking_lisp_string():
-    from dxf2ifc.core.preprocessing import _worthlist_literal
+    from dwg2ifc.core.preprocessing import _worthlist_literal
 
     lit = _worthlist_literal({'BAD"NAME', "GOODNAME"})
     assert '"GOODNAME"' in lit
@@ -318,7 +318,7 @@ def test_worthlist_literal_excludes_names_breaking_lisp_string():
 
 
 def test_worthlist_literal_nil_when_too_long():
-    from dxf2ifc.core.preprocessing import _worthlist_literal
+    from dwg2ifc.core.preprocessing import _worthlist_literal
 
     many = {f"BLOCK_NAME_NUMBER_{i:04d}" for i in range(200)}
     assert _worthlist_literal(many) == "nil"
@@ -330,7 +330,7 @@ def test_lisp_phase2_explodes_non_ascii_named_blocks():
     through to ``(not (asciip ...))``. Both the top-level and the nested
     INSERT guard need it, or evaporators sealed inside Finnish-named
     container blocks would be skipped."""
-    from dxf2ifc.core.preprocessing import _LISP_PHASE2, _LISP_SETUP
+    from dwg2ifc.core.preprocessing import _LISP_PHASE2, _LISP_SETUP
 
     assert "(defun asciip" in _LISP_SETUP
     p2 = _LISP_PHASE2.format(skip_blocks="*POSITIO*,MAGI*,*MAGICAD*,MAG_*")

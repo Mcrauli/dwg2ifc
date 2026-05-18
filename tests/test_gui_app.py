@@ -6,18 +6,18 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 def test_main_window_opens_with_expected_title(qtbot):
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
     window.show()
-    assert window.windowTitle() == "dxf2ifc"
+    assert window.windowTitle() == "dwg2ifc"
 
 
 def test_main_window_has_splitter_layout_and_status_bar(qtbot):
     from PySide6 import QtWidgets
 
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -43,7 +43,7 @@ def _menu_action_texts(window) -> list[str]:
 
 
 def test_main_window_menubar_has_expected_actions(qtbot):
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -54,7 +54,7 @@ def test_main_window_menubar_has_expected_actions(qtbot):
 
 
 def test_main_window_quit_action_closes_window(qtbot):
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -64,7 +64,7 @@ def test_main_window_quit_action_closes_window(qtbot):
 
 
 def test_main_window_set_status_levels(qtbot):
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -90,7 +90,7 @@ def _seed_one_file(panel, tmp_path, name: str = "in.dxf") -> None:
     src = tmp_path / name
     src.write_bytes(b"")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
         return_value=([str(src)], "*"),
     ):
         panel.add_files_button.click()
@@ -99,7 +99,7 @@ def _seed_one_file(panel, tmp_path, name: str = "in.dxf") -> None:
 def test_main_window_convert_flow_updates_status_on_success(qtbot, tmp_path):
     from unittest.mock import patch
 
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -107,7 +107,7 @@ def test_main_window_convert_flow_updates_status_on_success(qtbot, tmp_path):
     _seed_one_file(panel, tmp_path)
     panel.output_edit.setText(str(tmp_path / "out.ifc"))
 
-    with patch("dxf2ifc.gui.convert_worker.convert", return_value=({}, None)):
+    with patch("dwg2ifc.gui.convert_worker.convert", return_value=({}, None)):
         with qtbot.waitSignal(window.convert_finished, timeout=2000):
             panel.convert_button.click()
 
@@ -120,7 +120,7 @@ def test_main_window_convert_flow_updates_status_on_success(qtbot, tmp_path):
 def test_main_window_convert_flow_disables_button_during_run(qtbot, tmp_path):
     from unittest.mock import patch
 
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -128,14 +128,14 @@ def test_main_window_convert_flow_disables_button_during_run(qtbot, tmp_path):
     _seed_one_file(panel, tmp_path)
     panel.output_edit.setText(str(tmp_path / "out.ifc"))
 
-    with patch("dxf2ifc.gui.convert_worker.convert", return_value=({}, None)):
+    with patch("dwg2ifc.gui.convert_worker.convert", return_value=({}, None)):
         panel.convert_button.click()
         assert not panel.convert_button.isEnabled()
         qtbot.waitUntil(lambda: panel.convert_button.isEnabled(), timeout=2000)
 
 
 def test_main_window_profile_menu_has_edit_action(qtbot):
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -149,7 +149,7 @@ def _seed_fixture_file(panel, fixtures_dir, name: str) -> None:
 
     src = str(fixtures_dir / name)
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
         return_value=([src], "*"),
     ):
         panel.add_files_button.click()
@@ -157,7 +157,7 @@ def _seed_fixture_file(panel, fixtures_dir, name: str) -> None:
 
 
 def test_main_window_layer_table_updates_when_input_path_set(qtbot, fixtures_dir):
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -169,8 +169,8 @@ def test_main_window_layer_table_updates_when_input_path_set(qtbot, fixtures_dir
 
 
 def test_main_window_logs_report_errors_in_preview_log(qtbot):
-    from dxf2ifc.core.quality import ValidationReport
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.core.quality import ValidationReport
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -193,7 +193,7 @@ def test_main_window_logs_report_errors_in_preview_log(qtbot):
 def test_main_window_convert_flow_passes_validate_true(qtbot, tmp_path):
     from unittest.mock import patch
 
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -201,7 +201,7 @@ def test_main_window_convert_flow_passes_validate_true(qtbot, tmp_path):
     _seed_one_file(panel, tmp_path)
     panel.output_edit.setText(str(tmp_path / "out.ifc"))
 
-    with patch("dxf2ifc.gui.convert_worker.convert", return_value=({}, None)) as mock_convert:
+    with patch("dwg2ifc.gui.convert_worker.convert", return_value=({}, None)) as mock_convert:
         with qtbot.waitSignal(window.convert_finished, timeout=2000):
             panel.convert_button.click()
 
@@ -211,19 +211,19 @@ def test_main_window_convert_flow_passes_validate_true(qtbot, tmp_path):
 def test_main_window_renders_h1_and_caption_labels(qtbot):
     from PySide6 import QtWidgets
 
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)
     labels = window.findChildren(QtWidgets.QLabel)
     h1 = next((lbl for lbl in labels if lbl.property("role") == "h1"), None)
     caption = next((lbl for lbl in labels if lbl.property("role") == "caption"), None)
-    assert h1 is not None and h1.text() == "dxf2ifc"
+    assert h1 is not None and h1.text() == "dwg2ifc"
     assert caption is not None and "DXF" in caption.text()
 
 
 def test_run_is_callable():
-    from dxf2ifc.gui.app import run
+    from dwg2ifc.gui.app import run
 
     assert callable(run)
 
@@ -231,7 +231,7 @@ def test_run_is_callable():
 def _isolated_store(tmp_path):
     from PySide6 import QtCore
 
-    from dxf2ifc.gui.recent_files import RecentFilesStore
+    from dwg2ifc.gui.recent_files import RecentFilesStore
 
     settings = QtCore.QSettings(str(tmp_path / "settings.ini"), QtCore.QSettings.Format.IniFormat)
     return RecentFilesStore(settings=settings)
@@ -241,7 +241,7 @@ def _isolated_store(tmp_path):
 
 
 def test_main_window_preview_log_summarizes_dxf_on_open(qtbot, fixtures_dir):
-    from dxf2ifc.gui.app import MainWindow
+    from dwg2ifc.gui.app import MainWindow
 
     window = MainWindow()
     qtbot.addWidget(window)

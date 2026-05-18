@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from dxf2ifc.core.types import EntityRecord, FileEntry, LineGeometry, MappedEntity, Point3D
+from dwg2ifc.core.types import EntityRecord, FileEntry, LineGeometry, MappedEntity, Point3D
 
 
 def test_point3d_stores_coords():

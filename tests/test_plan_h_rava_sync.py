@@ -1,6 +1,6 @@
 """Plan H Task 5: tools/rava/sync_codes.py fetches the four RAVA codesets
 from koodistot.suomi.fi and persists them as JSON under
-src/dxf2ifc/profiles/rava/."""
+src/dwg2ifc/profiles/rava/."""
 
 from __future__ import annotations
 

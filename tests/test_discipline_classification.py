@@ -14,18 +14,18 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from dxf2ifc.core.ifc_writer.classification import (
+from dwg2ifc.core.ifc_writer.classification import (
     DISCIPLINE_LABELS,
     discipline_label,
 )
-from dxf2ifc.core.ifc_writer import convert_dxf
-from dxf2ifc.core.types import (
+from dwg2ifc.core.ifc_writer import convert_dxf
+from dwg2ifc.core.types import (
     BlockInstance,
     EntityRecord,
     LineGeometry,
     Point3D,
 )
-from dxf2ifc.profiles.loader import load_default_profile
+from dwg2ifc.profiles.loader import load_default_profile
 
 
 def test_discipline_label_table() -> None:
@@ -155,9 +155,9 @@ def test_step_header_carries_authorization_kylmasuunnittelu(tmp_path: Path) -> N
     ifc = ifcopenshell.open(str(ifc_path))
     fn = ifc.wrapped_data.header().file_name_py()
     assert fn.get_attribute_value(6) == "Kylmäsuunnittelu"
-    # preprocessor_version + originating_system must identify dxf2ifc
-    assert "dxf2ifc" in fn.get_attribute_value(4).lower()
-    assert "dxf2ifc" in fn.get_attribute_value(5).lower()
+    # preprocessor_version + originating_system must identify dwg2ifc
+    assert "dwg2ifc" in fn.get_attribute_value(4).lower()
+    assert "dwg2ifc" in fn.get_attribute_value(5).lower()
 
 
 def test_step_header_lists_building_service_exchange_requirement(
@@ -184,8 +184,8 @@ def test_step_header_lists_building_service_exchange_requirement(
     ), description
 
 
-def test_application_identifier_tagged_dxf2ifc(tmp_path: Path) -> None:
-    """IfcApplication.ApplicationIdentifier is "dxf2ifc-kylmalaite".
+def test_application_identifier_tagged_dwg2ifc(tmp_path: Path) -> None:
+    """IfcApplication.ApplicationIdentifier is "dwg2ifc-kylmalaite".
 
     Solibri uses the producing application as one of the discipline
     auto-detect signals; a generic 'IfcOpenShell' identifier nudges it
@@ -205,8 +205,8 @@ def test_application_identifier_tagged_dxf2ifc(tmp_path: Path) -> None:
     apps = ifc.by_type("IfcApplication")
     assert apps, "no IfcApplication in file"
     for app in apps:
-        assert app.ApplicationIdentifier == "dxf2ifc-kylmalaite"
-        assert "dxf2ifc" in (app.ApplicationFullName or "").lower()
+        assert app.ApplicationIdentifier == "dwg2ifc-kylmalaite"
+        assert "dwg2ifc" in (app.ApplicationFullName or "").lower()
 
 
 def test_project_level_classification_present(tmp_path: Path) -> None:

@@ -4,7 +4,7 @@
 Run with::
 
     python -m tools.solibri verify --ifc model.ifc \\
-        --ruleset tools/solibri/dxf2ifc.bcfzip \\
+        --ruleset tools/solibri/dwg2ifc.bcfzip \\
         --report report.xml
 
 Returns 0 on a clean Solibri report, 1 if any violations were emitted, and

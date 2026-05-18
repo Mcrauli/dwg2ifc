@@ -8,7 +8,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 def _make_store(tmp_path):
     from PySide6 import QtCore
 
-    from dxf2ifc.gui.recent_files import RecentFilesStore
+    from dwg2ifc.gui.recent_files import RecentFilesStore
 
     settings = QtCore.QSettings(str(tmp_path / "settings.ini"), QtCore.QSettings.Format.IniFormat)
     return RecentFilesStore(settings=settings)

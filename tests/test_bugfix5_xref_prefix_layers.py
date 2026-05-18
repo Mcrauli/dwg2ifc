@@ -3,7 +3,7 @@ must match profile rules whose pattern targets the suffix part."""
 
 from __future__ import annotations
 
-from dxf2ifc.core.mapper import layer_matches
+from dwg2ifc.core.mapper import layer_matches
 
 
 def test_layer_matches_strips_xref_prefix():

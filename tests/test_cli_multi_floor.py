@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from dxf2ifc.cli import _parse_floor_arg, build_parser
+from dwg2ifc.cli import _parse_floor_arg, build_parser
 
 
 def test_parse_floor_path_only():

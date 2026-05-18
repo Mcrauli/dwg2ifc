@@ -24,8 +24,8 @@ from unittest.mock import patch
 
 import ezdxf
 
-from dxf2ifc.core.dxf_reader import _record_from_entity, read_dxf
-from dxf2ifc.core.types import LineGeometry, PolygonGeometry
+from dwg2ifc.core.dxf_reader import _record_from_entity, read_dxf
+from dwg2ifc.core.types import LineGeometry, PolygonGeometry
 
 
 def _line_entity(start, end, layer="0"):

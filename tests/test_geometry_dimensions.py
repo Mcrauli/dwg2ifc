@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from dxf2ifc.core.ifc_writer import (
+from dwg2ifc.core.ifc_writer import (
     add_building_element_proxy,
     add_cable_carrier_segment,
     add_cooling_equipment,
@@ -23,7 +23,7 @@ from dxf2ifc.core.ifc_writer import (
     add_window,
     build_ifc_project_skeleton,
 )
-from dxf2ifc.core.types import (
+from dwg2ifc.core.types import (
     BlockInstance,
     LineGeometry,
     MappedEntity,

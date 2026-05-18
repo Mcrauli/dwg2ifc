@@ -2,10 +2,10 @@
 
 import pytest
 
-from dxf2ifc.core.mapper import apply_profile, layer_matches
-from dxf2ifc.core.types import BlockInstance, EntityRecord, LineGeometry, Point3D
-from dxf2ifc.profiles.loader import load_default_profile
-from dxf2ifc.profiles.schema import Profile, Rule
+from dwg2ifc.core.mapper import apply_profile, layer_matches
+from dwg2ifc.core.types import BlockInstance, EntityRecord, LineGeometry, Point3D
+from dwg2ifc.profiles.loader import load_default_profile
+from dwg2ifc.profiles.schema import Profile, Rule
 
 
 @pytest.mark.parametrize(

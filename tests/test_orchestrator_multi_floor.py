@@ -6,8 +6,8 @@ import ezdxf
 import ifcopenshell
 import pytest
 
-from dxf2ifc.core.ifc_writer import FileEntry, convert
-from dxf2ifc.profiles.loader import load_default_profile
+from dwg2ifc.core.ifc_writer import FileEntry, convert
+from dwg2ifc.profiles.loader import load_default_profile
 
 
 def _write_minimal_dxf(path: Path, layer: str = "KYL-LEVYHYLLY") -> None:

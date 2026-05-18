@@ -2,7 +2,7 @@
 JSON API (Plan H Section 2 Task 5).
 
 Each codeset becomes a JSON file under
-``src/dxf2ifc/profiles/rava/<scheme_snakecase>.json``. Tests stub
+``src/dwg2ifc/profiles/rava/<scheme_snakecase>.json``. Tests stub
 ``fetch_json`` so the real network call is only made when Lauri runs the
 script manually.
 """
@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-DEFAULT_TARGET_DIR = REPO_ROOT / "src" / "dxf2ifc" / "profiles" / "rava"
+DEFAULT_TARGET_DIR = REPO_ROOT / "src" / "dwg2ifc" / "profiles" / "rava"
 
 CODESETS: tuple[str, ...] = (
     "LVI-TUOTEOSA",

@@ -15,9 +15,9 @@ def appdata(tmp_path, monkeypatch):
 
 
 def test_main_window_loads_saved_profile_on_startup(qtbot, appdata):
-    from dxf2ifc.gui.main_window import MainWindow
-    from dxf2ifc.profiles.schema import Profile, Rule
-    from dxf2ifc.profiles.store import save_active_profile
+    from dwg2ifc.gui.main_window import MainWindow
+    from dwg2ifc.profiles.schema import Profile, Rule
+    from dwg2ifc.profiles.store import save_active_profile
 
     custom = Profile(
         name="custom-test-profile",
@@ -41,8 +41,8 @@ def test_main_window_loads_saved_profile_on_startup(qtbot, appdata):
 
 
 def test_main_window_falls_back_to_default_when_nothing_saved(qtbot, appdata):
-    from dxf2ifc.gui.main_window import MainWindow
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.gui.main_window import MainWindow
+    from dwg2ifc.profiles.loader import load_default_profile
 
     window = MainWindow()
     qtbot.addWidget(window)
@@ -50,9 +50,9 @@ def test_main_window_falls_back_to_default_when_nothing_saved(qtbot, appdata):
 
 
 def test_main_window_warns_on_corrupt_saved_profile(qtbot, appdata):
-    from dxf2ifc.gui.main_window import MainWindow
-    from dxf2ifc.profiles.loader import load_default_profile
-    from dxf2ifc.profiles.store import active_profile_path
+    from dwg2ifc.gui.main_window import MainWindow
+    from dwg2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.profiles.store import active_profile_path
 
     path = active_profile_path()
     path.parent.mkdir(parents=True)

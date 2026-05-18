@@ -17,9 +17,9 @@ from pathlib import Path
 
 import ezdxf
 
-from dxf2ifc.core.ifc_writer import convert_dxf
-from dxf2ifc.profiles.loader import load_default_profile
-from dxf2ifc.profiles.schema import CRSConfig
+from dwg2ifc.core.ifc_writer import convert_dxf
+from dwg2ifc.profiles.loader import load_default_profile
+from dwg2ifc.profiles.schema import CRSConfig
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 FIXTURE_PATH = REPO_ROOT / "tests" / "fixtures" / "solibri_reference_full.ifc"

@@ -7,11 +7,11 @@ from pathlib import Path
 
 import ifcopenshell
 
-from dxf2ifc import cli
+from dwg2ifc import cli
 
 
 def _run_cli(*args: str, cwd: Path | None = None) -> subprocess.CompletedProcess:
-    cmd = [sys.executable, "-m", "dxf2ifc", *args]
+    cmd = [sys.executable, "-m", "dwg2ifc", *args]
     env = os.environ.copy()
     src_path = str(Path(__file__).resolve().parent.parent / "src")
     env["PYTHONPATH"] = src_path + os.pathsep + env.get("PYTHONPATH", "")
@@ -39,7 +39,7 @@ def test_cli_convert_validate_flag_exit_one_on_errors(
 ):
     """When --validate is given and validate_ifc reports errors, the CLI
     must exit 1 and print the error description on stderr."""
-    from dxf2ifc.core import quality
+    from dwg2ifc.core import quality
 
     def _fake_validate(path):
         return quality.ValidationReport(
@@ -76,7 +76,7 @@ def test_cli_convert_without_validate_does_not_call_validate(
 
     def _spy(path):
         called["n"] += 1
-        from dxf2ifc.core.quality import ValidationReport
+        from dwg2ifc.core.quality import ValidationReport
 
         return ValidationReport(errors=[], warnings=[], summary="")
 

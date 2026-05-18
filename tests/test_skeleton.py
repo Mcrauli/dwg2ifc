@@ -2,7 +2,7 @@
 
 import pytest
 
-from dxf2ifc.core.ifc_writer.skeleton import build_ifc_project_skeleton
+from dwg2ifc.core.ifc_writer.skeleton import build_ifc_project_skeleton
 
 
 def test_default_single_storey_named_kerros_1():

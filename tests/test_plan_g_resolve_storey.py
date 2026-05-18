@@ -4,7 +4,7 @@ storeys[0] (the lowest level)."""
 
 from __future__ import annotations
 
-from dxf2ifc.core.ifc_writer import build_ifc_project_skeleton, resolve_storey
+from dwg2ifc.core.ifc_writer import build_ifc_project_skeleton, resolve_storey
 
 
 def _three_storey_ifc():

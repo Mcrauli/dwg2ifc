@@ -7,7 +7,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 def _load_qss() -> str:
-    return resources.files("dxf2ifc.gui").joinpath("style.qss").read_text(encoding="utf-8")
+    return resources.files("dwg2ifc.gui").joinpath("style.qss").read_text(encoding="utf-8")
 
 
 def test_style_qss_is_loaded_via_importlib_resources():

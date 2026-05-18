@@ -4,15 +4,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from dxf2ifc.core.ifc_writer import (
+from dwg2ifc.core.ifc_writer import (
     add_wall,
     build_ifc_project_skeleton,
     convert_dxf,
     write_ifc,
 )
-from dxf2ifc.core.quality import ValidationReport, validate_ifc
-from dxf2ifc.core.types import LineGeometry, MappedEntity, Point3D
-from dxf2ifc.profiles.loader import load_default_profile
+from dwg2ifc.core.quality import ValidationReport, validate_ifc
+from dwg2ifc.core.types import LineGeometry, MappedEntity, Point3D
+from dwg2ifc.profiles.loader import load_default_profile
 
 
 def test_validation_report_is_dataclass_with_errors_and_warnings():
@@ -87,7 +87,7 @@ def _build_ifc_with_unclassified_pipe_segment(out_path: Path) -> None:
     IfcRelAssociatesClassification — exercises the RAVA warning path."""
     ifc = build_ifc_project_skeleton(project_name="RAVA Warning Test")
     storey = ifc.by_type("IfcBuildingStorey")[0]
-    from dxf2ifc.core.ifc_writer import add_pipe_segment
+    from dwg2ifc.core.ifc_writer import add_pipe_segment
 
     mapped = MappedEntity(
         layer="LT IMU",

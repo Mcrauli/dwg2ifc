@@ -6,7 +6,7 @@ attributes to its underlying ``.file``."""
 
 from __future__ import annotations
 
-from dxf2ifc.core.ifc_writer import IfcSkeleton, build_ifc_project_skeleton
+from dwg2ifc.core.ifc_writer import IfcSkeleton, build_ifc_project_skeleton
 
 
 def test_build_returns_ifcskeleton_dataclass():

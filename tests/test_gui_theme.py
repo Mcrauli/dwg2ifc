@@ -8,7 +8,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 def test_apply_theme_registers_brand_font_families(qtbot):
     from PySide6 import QtGui, QtWidgets
 
-    from dxf2ifc.gui.theme import apply_theme
+    from dwg2ifc.gui.theme import apply_theme
 
     app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
     apply_theme(app)
@@ -21,7 +21,7 @@ def test_apply_theme_registers_brand_font_families(qtbot):
 def test_apply_theme_sets_non_empty_stylesheet(qtbot):
     from PySide6 import QtWidgets
 
-    from dxf2ifc.gui.theme import apply_theme
+    from dwg2ifc.gui.theme import apply_theme
 
     app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
     apply_theme(app)
@@ -31,7 +31,7 @@ def test_apply_theme_sets_non_empty_stylesheet(qtbot):
 def test_apply_theme_sets_default_inter_font(qtbot):
     from PySide6 import QtWidgets
 
-    from dxf2ifc.gui.theme import apply_theme
+    from dwg2ifc.gui.theme import apply_theme
 
     app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
     apply_theme(app)

@@ -36,14 +36,14 @@ jobs:
               prefix = '🟡'
           elif lower.startswith('feat') or lower.startswith('fix') or lower.startswith('add'):
               prefix = '✨'
-          content = f"{prefix} dxf2ifc — {pusher}: {msg} ({sha})\n{url}"
+          content = f"{prefix} dwg2ifc — {pusher}: {msg} ({sha})\n{url}"
           data = json.dumps({'content': content}).encode()
           req = urllib.request.Request(
               os.environ['DISCORD_WEBHOOK'],
               data=data,
               headers={
                   'Content-Type': 'application/json',
-                  'User-Agent': 'dxf2ifc-routine-bot (https://github.com/Mcrauli/dxf2ifc, 1.0)',
+                  'User-Agent': 'dwg2ifc-routine-bot (https://github.com/Mcrauli/dwg2ifc, 1.0)',
               },
           )
           resp = urllib.request.urlopen(req)

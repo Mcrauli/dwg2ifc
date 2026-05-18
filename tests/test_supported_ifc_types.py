@@ -10,7 +10,7 @@ from __future__ import annotations
 
 
 def test_supported_ifc_types_matches_orchestrator_dispatch():
-    from dxf2ifc.core.ifc_writer.builders import (
+    from dwg2ifc.core.ifc_writer.builders import (
         SUPPORTED_IFC_TYPES,
         _COOLING_EQUIPMENT_CLASSES,
         _DISTRIBUTION_ELEMENT_CLASSES,
@@ -36,6 +36,6 @@ def test_supported_ifc_types_matches_orchestrator_dispatch():
 
 
 def test_supported_ifc_types_has_no_duplicates():
-    from dxf2ifc.core.ifc_writer.builders import SUPPORTED_IFC_TYPES
+    from dwg2ifc.core.ifc_writer.builders import SUPPORTED_IFC_TYPES
 
     assert len(SUPPORTED_IFC_TYPES) == len(set(SUPPORTED_IFC_TYPES))

@@ -1,5 +1,5 @@
-"""Plan F Task 5: dxf2ifc.bcfzip Solibri rule-set fixture lives at
-tools/solibri/dxf2ifc.bcfzip and exposes the YTV 2012 + Talo2000 minimum
+"""Plan F Task 5: dwg2ifc.bcfzip Solibri rule-set fixture lives at
+tools/solibri/dwg2ifc.bcfzip and exposes the YTV 2012 + Talo2000 minimum
 rules as BCF 2.1 topics."""
 
 from __future__ import annotations
@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
-BCFZIP_PATH = Path(__file__).resolve().parent.parent / "tools" / "solibri" / "dxf2ifc.bcfzip"
+BCFZIP_PATH = Path(__file__).resolve().parent.parent / "tools" / "solibri" / "dwg2ifc.bcfzip"
 
 REQUIRED_RULE_TITLES = {
     "Units are millimetres",

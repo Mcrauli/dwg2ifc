@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import ifcopenshell
 
-from dxf2ifc.core.ifc_writer.mesh import (
+from dwg2ifc.core.ifc_writer.mesh import (
     _mesh_to_triangulated_face_set,
     _triangulate,
 )
-from dxf2ifc.core.types import MeshGeometry, Point3D
+from dwg2ifc.core.types import MeshGeometry, Point3D
 
 
 def test_triangulate_passthroughs_triangle():
@@ -79,9 +79,9 @@ def test_mesh_to_triangulated_face_set_writes_correct_indices():
 def test_add_mesh_product_branches_on_source():
     """Tessellation source → IfcTriangulatedFaceSet + Tessellation type;
     acis source → IfcFacetedBrep + Brep type."""
-    from dxf2ifc.core.ifc_writer.mesh import _add_mesh_product
-    from dxf2ifc.core.ifc_writer.skeleton import build_ifc_project_skeleton
-    from dxf2ifc.core.types import MappedEntity
+    from dwg2ifc.core.ifc_writer.mesh import _add_mesh_product
+    from dwg2ifc.core.ifc_writer.skeleton import build_ifc_project_skeleton
+    from dwg2ifc.core.types import MappedEntity
 
     # Tessellation path
     skel = build_ifc_project_skeleton(project_name="t")

@@ -8,7 +8,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 def test_panel_starts_empty_and_disabled(qtbot):
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
@@ -17,14 +17,14 @@ def test_panel_starts_empty_and_disabled(qtbot):
 
 
 def test_add_file_appends_row_with_defaults(qtbot, tmp_path):
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
     path = tmp_path / "1krs.dwg"
     path.write_bytes(b"")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
         return_value=([str(path)], "AutoCAD-piirustukset (*.dxf *.dwg)"),
     ):
         panel.add_files_button.click()
@@ -35,7 +35,7 @@ def test_add_file_appends_row_with_defaults(qtbot, tmp_path):
 
 
 def test_add_multiple_files_auto_increments_label(qtbot, tmp_path):
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
@@ -43,7 +43,7 @@ def test_add_multiple_files_auto_increments_label(qtbot, tmp_path):
     for p in (p1, p2, p3):
         p.write_bytes(b"")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
         return_value=([str(p1), str(p2), str(p3)], "*"),
     ):
         panel.add_files_button.click()
@@ -52,7 +52,7 @@ def test_add_multiple_files_auto_increments_label(qtbot, tmp_path):
 
 
 def test_remove_button_drops_selected_row(qtbot, tmp_path):
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
@@ -60,7 +60,7 @@ def test_remove_button_drops_selected_row(qtbot, tmp_path):
     for p in (p1, p2):
         p.write_bytes(b"")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
         return_value=([str(p1), str(p2)], "*"),
     ):
         panel.add_files_button.click()
@@ -72,7 +72,7 @@ def test_remove_button_drops_selected_row(qtbot, tmp_path):
 def test_duplicate_label_disables_convert(qtbot, tmp_path):
     from PySide6 import QtWidgets
 
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
@@ -81,7 +81,7 @@ def test_duplicate_label_disables_convert(qtbot, tmp_path):
     for p in (p1, p2):
         p.write_bytes(b"")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
         return_value=([str(p1), str(p2)], "*"),
     ):
         panel.add_files_button.click()
@@ -91,14 +91,14 @@ def test_duplicate_label_disables_convert(qtbot, tmp_path):
 
 
 def test_convert_button_enables_after_add_and_output(qtbot, tmp_path):
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
     p1 = tmp_path / "1krs.dwg"
     p1.write_bytes(b"")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
         return_value=([str(p1)], "*"),
     ):
         panel.add_files_button.click()
@@ -109,7 +109,7 @@ def test_convert_button_enables_after_add_and_output(qtbot, tmp_path):
 
 
 def test_convert_requested_emits_file_entries(qtbot, tmp_path):
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
@@ -117,7 +117,7 @@ def test_convert_requested_emits_file_entries(qtbot, tmp_path):
     p1 = tmp_path / "1krs.dwg"
     p1.write_bytes(b"")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
         return_value=([str(p1)], "*"),
     ):
         panel.add_files_button.click()
@@ -138,7 +138,7 @@ def test_convert_requested_emits_file_entries(qtbot, tmp_path):
 
 
 def test_convert_requested_emits_energy_and_magicad_paths(qtbot, tmp_path):
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
@@ -148,7 +148,7 @@ def test_convert_requested_emits_energy_and_magicad_paths(qtbot, tmp_path):
     p1 = tmp_path / "1krs.dwg"
     p1.write_bytes(b"")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
         return_value=([str(p1)], "*"),
     ):
         panel.add_files_button.click()
@@ -163,14 +163,14 @@ def test_convert_requested_emits_energy_and_magicad_paths(qtbot, tmp_path):
 def test_table_row_z_is_editable(qtbot, tmp_path):
     from PySide6 import QtWidgets
 
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
     p1 = tmp_path / "1krs.dwg"
     p1.write_bytes(b"")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
         return_value=([str(p1)], "*"),
     ):
         panel.add_files_button.click()
@@ -184,14 +184,14 @@ def test_table_row_z_is_editable(qtbot, tmp_path):
 
 
 def test_browse_output_fills_line_edit(qtbot, tmp_path):
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
 
     fake_path = str(tmp_path / "output.ifc")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getSaveFileName",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getSaveFileName",
         return_value=(fake_path, "IFC files (*.ifc)"),
     ):
         panel.browse_output_button.click()
@@ -199,14 +199,14 @@ def test_browse_output_fills_line_edit(qtbot, tmp_path):
 
 
 def test_browse_energy_fills_line_edit(qtbot, tmp_path):
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
 
     fake_path = str(tmp_path / "energy.xlsx")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileName",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileName",
         return_value=(fake_path, "Excel & CSV (*.xlsx *.xlsm *.csv *.tsv)"),
     ):
         panel.browse_energy_button.click()
@@ -214,14 +214,14 @@ def test_browse_energy_fills_line_edit(qtbot, tmp_path):
 
 
 def test_browse_magicad_ifc_fills_line_edit(qtbot, tmp_path):
-    from dxf2ifc.gui.file_panel import FilePanel
+    from dwg2ifc.gui.file_panel import FilePanel
 
     panel = FilePanel()
     qtbot.addWidget(panel)
 
     fake_path = str(tmp_path / "magicad.ifc")
     with patch(
-        "dxf2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileName",
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileName",
         return_value=(fake_path, "IFC-tiedostot (*.ifc)"),
     ):
         panel.browse_magicad_ifc_button.click()

@@ -18,7 +18,7 @@ def _populate_valid_line_rule(dialog) -> None:
 
 
 def test_rule_edit_dialog_ok_button_disabled_for_invalid_insert(qtbot):
-    from dxf2ifc.gui.rule_dialog import RuleEditDialog
+    from dwg2ifc.gui.rule_dialog import RuleEditDialog
 
     dialog = RuleEditDialog()
     qtbot.addWidget(dialog)
@@ -33,7 +33,7 @@ def test_rule_edit_dialog_ok_button_disabled_for_invalid_insert(qtbot):
 
 
 def test_rule_edit_dialog_ok_button_enabled_for_valid_input(qtbot):
-    from dxf2ifc.gui.rule_dialog import RuleEditDialog
+    from dwg2ifc.gui.rule_dialog import RuleEditDialog
 
     dialog = RuleEditDialog()
     qtbot.addWidget(dialog)
@@ -51,7 +51,7 @@ def test_rule_edit_dialog_domain_combo_toggles_rava_fields(qtbot):
     """When the user picks an MEP domain (KYL or TATE), the Talo2000
     inputs hide and the RAVA code combos appear (LVI + TATE codesets).
     Switching to ARK reverses the visibility."""
-    from dxf2ifc.gui.rule_dialog import RuleEditDialog
+    from dwg2ifc.gui.rule_dialog import RuleEditDialog
 
     dialog = RuleEditDialog()
     qtbot.addWidget(dialog)
@@ -75,7 +75,7 @@ def test_rule_edit_dialog_domain_combo_toggles_rava_fields(qtbot):
 def test_rule_edit_dialog_tate_lvi_rule_validates(qtbot):
     """Bugfix 11: a TATE rule with one LVI-TUOTEOSA code selected must
     pass schema validation and round-trip through .rule()."""
-    from dxf2ifc.gui.rule_dialog import RuleEditDialog
+    from dwg2ifc.gui.rule_dialog import RuleEditDialog
 
     dialog = RuleEditDialog()
     qtbot.addWidget(dialog)
@@ -97,7 +97,7 @@ def test_rule_edit_dialog_tate_lvi_rule_validates(qtbot):
 def test_rule_edit_dialog_tate_requires_exactly_one_rava_code(qtbot):
     """Bugfix 11: a TATE rule with both lvi_code and talotekniikka_code
     set must fail validation (schema rule)."""
-    from dxf2ifc.gui.rule_dialog import RuleEditDialog
+    from dwg2ifc.gui.rule_dialog import RuleEditDialog
 
     dialog = RuleEditDialog()
     qtbot.addWidget(dialog)
@@ -111,8 +111,8 @@ def test_rule_edit_dialog_tate_requires_exactly_one_rava_code(qtbot):
 
 
 def test_rule_edit_dialog_prefills_existing_rule(qtbot):
-    from dxf2ifc.gui.rule_dialog import RuleEditDialog
-    from dxf2ifc.profiles.schema import Rule
+    from dwg2ifc.gui.rule_dialog import RuleEditDialog
+    from dwg2ifc.profiles.schema import Rule
 
     rule = Rule(
         layer_pattern="LT IMU",
@@ -131,8 +131,8 @@ def test_rule_edit_dialog_prefills_existing_rule(qtbot):
 
 
 def test_rule_edit_dialog_offers_full_ifc_type_set(qtbot):
-    from dxf2ifc.core.ifc_writer.builders import SUPPORTED_IFC_TYPES
-    from dxf2ifc.gui.rule_dialog import RuleEditDialog
+    from dwg2ifc.core.ifc_writer.builders import SUPPORTED_IFC_TYPES
+    from dwg2ifc.gui.rule_dialog import RuleEditDialog
 
     dialog = RuleEditDialog()
     qtbot.addWidget(dialog)
@@ -143,8 +143,8 @@ def test_rule_edit_dialog_offers_full_ifc_type_set(qtbot):
 
 
 def test_ifc_type_groups_cover_supported_types_exactly(qtbot):
-    from dxf2ifc.core.ifc_writer.builders import SUPPORTED_IFC_TYPES
-    from dxf2ifc.gui.rule_dialog import _IFC_TYPE_GROUPS
+    from dwg2ifc.core.ifc_writer.builders import SUPPORTED_IFC_TYPES
+    from dwg2ifc.gui.rule_dialog import _IFC_TYPE_GROUPS
 
     grouped = [t for _label, types in _IFC_TYPE_GROUPS for t in types]
     assert set(grouped) == set(SUPPORTED_IFC_TYPES)
@@ -154,7 +154,7 @@ def test_ifc_type_groups_cover_supported_types_exactly(qtbot):
 def test_rule_edit_dialog_accepts_a_distribution_type(qtbot):
     """A newly-exposed type (e.g. IfcSensor) must round-trip through the
     dialog — previously it was not selectable at all."""
-    from dxf2ifc.gui.rule_dialog import RuleEditDialog
+    from dwg2ifc.gui.rule_dialog import RuleEditDialog
 
     dialog = RuleEditDialog()
     qtbot.addWidget(dialog)

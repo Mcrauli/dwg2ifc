@@ -1,11 +1,11 @@
-# PyInstaller Win32 VSVersionInfo for dxf2ifc.
+# PyInstaller Win32 VSVersionInfo for dwg2ifc.
 # Loaded by EXE(version='build/version_info.py', ...).
-# Keep in sync with src/dxf2ifc/_version.py — bump both when releasing.
+# Keep in sync with src/dwg2ifc/_version.py — bump both when releasing.
 
 VSVersionInfo(
     ffi=FixedFileInfo(
-        filevers=(0, 2, 0, 0),
-        prodvers=(0, 2, 0, 0),
+        filevers=(0, 3, 0, 0),
+        prodvers=(0, 3, 0, 0),
         mask=0x3F,
         flags=0x0,
         OS=0x40004,
@@ -20,15 +20,15 @@ VSVersionInfo(
                     "040904B0",
                     [
                         StringStruct("CompanyName", "Lauri Rekola"),
-                        StringStruct("FileDescription", "dxf2ifc DXF to IFC 4 converter"),
-                        StringStruct("FileVersion", "0.2.0a37"),
-                        StringStruct("InternalName", "dxf2ifc"),
+                        StringStruct("FileDescription", "dwg2ifc DWG/DXF to IFC 4 converter"),
+                        StringStruct("FileVersion", "0.3.0a1"),
+                        StringStruct("InternalName", "dwg2ifc"),
                         StringStruct(
                             "LegalCopyright", "(c) 2026 Lauri Rekola"
                         ),
-                        StringStruct("OriginalFilename", "dxf2ifc.exe"),
-                        StringStruct("ProductName", "dxf2ifc"),
-                        StringStruct("ProductVersion", "0.2.0a37"),
+                        StringStruct("OriginalFilename", "dwg2ifc.exe"),
+                        StringStruct("ProductName", "dwg2ifc"),
+                        StringStruct("ProductVersion", "0.3.0a1"),
                     ],
                 )
             ]

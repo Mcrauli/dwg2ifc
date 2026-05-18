@@ -6,7 +6,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 def test_preview_log_panel_appends_info_lines(qtbot):
-    from dxf2ifc.gui.preview_log import PreviewLogPanel
+    from dwg2ifc.gui.preview_log import PreviewLogPanel
 
     panel = PreviewLogPanel()
     qtbot.addWidget(panel)
@@ -18,7 +18,7 @@ def test_preview_log_panel_appends_info_lines(qtbot):
 
 
 def test_preview_log_panel_appends_success_and_error(qtbot):
-    from dxf2ifc.gui.preview_log import PreviewLogPanel
+    from dwg2ifc.gui.preview_log import PreviewLogPanel
 
     panel = PreviewLogPanel()
     qtbot.addWidget(panel)
@@ -30,7 +30,7 @@ def test_preview_log_panel_appends_success_and_error(qtbot):
 
 
 def test_preview_log_panel_set_dxf_summary_lists_layers(qtbot):
-    from dxf2ifc.gui.preview_log import PreviewLogPanel
+    from dwg2ifc.gui.preview_log import PreviewLogPanel
 
     panel = PreviewLogPanel()
     qtbot.addWidget(panel)
@@ -47,7 +47,7 @@ def test_preview_log_panel_set_dxf_summary_lists_layers(qtbot):
 
 
 def test_preview_log_panel_clear_resets_buffer(qtbot):
-    from dxf2ifc.gui.preview_log import PreviewLogPanel
+    from dwg2ifc.gui.preview_log import PreviewLogPanel
 
     panel = PreviewLogPanel()
     qtbot.addWidget(panel)
@@ -57,7 +57,7 @@ def test_preview_log_panel_clear_resets_buffer(qtbot):
 
 
 def test_preview_log_panel_uses_jetbrains_mono(qtbot):
-    from dxf2ifc.gui.preview_log import PreviewLogPanel
+    from dwg2ifc.gui.preview_log import PreviewLogPanel
 
     panel = PreviewLogPanel()
     qtbot.addWidget(panel)

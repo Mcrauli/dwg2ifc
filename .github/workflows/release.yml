@@ -43,7 +43,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v3
 
-      - name: Build dxf2ifc.exe
+      - name: Build dwg2ifc.exe
         shell: pwsh
         run: |
           .\scripts\build_exe.ps1
@@ -54,8 +54,8 @@ jobs:
           # The bundled exe is windowed (console=False), so `--version`
           # cannot write to stdout reliably under PyInstaller. We simply
           # verify the artifact exists and has plausible size (> 50 MB).
-          $exe = Get-ChildItem dist/dxf2ifc-*.exe | Where-Object { $_.Name -notmatch '\.sha256$' } | Select-Object -First 1
-          if (-not $exe) { throw "No dxf2ifc-*.exe in dist/" }
+          $exe = Get-ChildItem dist/dwg2ifc-*.exe | Where-Object { $_.Name -notmatch '\.sha256$' } | Select-Object -First 1
+          if (-not $exe) { throw "No dwg2ifc-*.exe in dist/" }
           if ($exe.Length -lt 50MB) { throw "exe smaller than 50 MB: $($exe.Length)" }
           Write-Host "Smoke OK: $($exe.Name) ($([int]($exe.Length/1MB)) MB)"
 
@@ -68,8 +68,8 @@ jobs:
         id: upload-unsigned
         uses: actions/upload-artifact@v4
         with:
-          name: dxf2ifc-unsigned
-          path: dist/dxf2ifc-*.exe
+          name: dwg2ifc-unsigned
+          path: dist/dwg2ifc-*.exe
           if-no-files-found: error
 
       - name: Check SignPath configuration
@@ -107,7 +107,7 @@ jobs:
         run: |
           # Signing changes the exe bytes (Authenticode signature appended),
           # so the .sha256 produced by build_exe.ps1 is now stale.
-          $exe = Get-ChildItem dist/dxf2ifc-*.exe | Where-Object { $_.Name -notmatch '\.sha256$' } | Select-Object -First 1
+          $exe = Get-ChildItem dist/dwg2ifc-*.exe | Where-Object { $_.Name -notmatch '\.sha256$' } | Select-Object -First 1
           if (-not $exe) { throw "No signed exe in dist/ after SignPath step" }
           $h = (Get-FileHash -Algorithm SHA256 -Path $exe.FullName).Hash
           Set-Content -Path "$($exe.FullName).sha256" -Value "$h  $($exe.Name)"
@@ -125,7 +125,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path "dist" | Out-Null
           $out = "dist/LICENSES.md"
           $sections = @(
-            "# Third-party licenses bundled with dxf2ifc.exe",
+            "# Third-party licenses bundled with dwg2ifc.exe",
             "",
             "## Fonts (Inter, Space Grotesk, JetBrains Mono — SIL Open Font License)",
             "",
@@ -148,7 +148,7 @@ jobs:
           )
           $sections -join "`n" | Set-Content -Encoding UTF8 -Path $out
 
-      - name: Build dxf2ifc installer
+      - name: Build dwg2ifc installer
         shell: pwsh
         run: |
           .\scripts\build_installer.ps1
@@ -158,27 +158,27 @@ jobs:
         run: |
           # Windowed PyInstaller exe (console=False) cannot reliably write to
           # stdout, so smoke is artifact-existence + plausible size.
-          $exe = Get-ChildItem dist/dxf2ifc-*.exe `
+          $exe = Get-ChildItem dist/dwg2ifc-*.exe `
             | Where-Object { $_.Name -notlike "*Setup*" } `
             | Select-Object -First 1
-          if (-not $exe) { throw "No dxf2ifc-*.exe in dist/" }
+          if (-not $exe) { throw "No dwg2ifc-*.exe in dist/" }
           if ($exe.Length -lt 50MB) { throw "exe smaller than 50 MB: $($exe.Length)" }
           Write-Host "Exe OK      : $($exe.Name) ($([int]($exe.Length/1MB)) MB)"
 
-          $setup = Get-ChildItem dist/dxf2ifc-Setup-*.exe | Select-Object -First 1
-          if (-not $setup) { throw "No dxf2ifc-Setup-*.exe in dist/" }
+          $setup = Get-ChildItem dist/dwg2ifc-Setup-*.exe | Select-Object -First 1
+          if (-not $setup) { throw "No dwg2ifc-Setup-*.exe in dist/" }
           if ($setup.Length -lt 30MB) { throw "installer smaller than 30 MB: $($setup.Length)" }
           Write-Host "Installer OK: $($setup.Name) ($([int]($setup.Length/1MB)) MB)"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dxf2ifc-windows-release
+          name: dwg2ifc-windows-release
           path: |
-            dist/dxf2ifc-*.exe
-            dist/dxf2ifc-*.exe.sha256
-            dist/dxf2ifc-Setup-*.exe
-            dist/dxf2ifc-Setup-*.exe.sha256
+            dist/dwg2ifc-*.exe
+            dist/dwg2ifc-*.exe.sha256
+            dist/dwg2ifc-Setup-*.exe
+            dist/dwg2ifc-Setup-*.exe.sha256
             dist/LICENSES.md
           if-no-files-found: error
 
@@ -191,9 +191,9 @@ jobs:
           # Include both the raw exe and the Inno Setup installer
           # plus their .sha256 sidecars in the GitHub release.
           $assets = @(
-            (Get-ChildItem dist/dxf2ifc-*.exe `
+            (Get-ChildItem dist/dwg2ifc-*.exe `
               | Where-Object { $_.Name -notmatch '\.sha256$' }).FullName,
-            (Get-ChildItem dist/dxf2ifc-*.exe.sha256).FullName,
+            (Get-ChildItem dist/dwg2ifc-*.exe.sha256).FullName,
             "dist/LICENSES.md"
           )
           # Publish as prerelease (not draft) so the GUI's auto-update
@@ -207,8 +207,8 @@ jobs:
 
       - name: Trigger autocad-lisp-ohjeet version-pin sync
         # Lahettaa repository_dispatch -eventin Mcrauli/autocad-lisp-ohjeet:lle
-        # joka triggeroi sen sync-dxf2ifc-version.yml -workflow:n ja
-        # paivittaa dxf2ifc.html-sivun pinnauksen tahan tagiin saman tien
+        # joka triggeroi sen sync-dwg2ifc-version.yml -workflow:n ja
+        # paivittaa dwg2ifc.html-sivun pinnauksen tahan tagiin saman tien
         # (muuten cron paivittaa tunnin sisalla).
         #
         # Vaatii repository_dispatch-permissioilla varustetun PAT-tokenin
@@ -225,6 +225,6 @@ jobs:
         run: |
           gh api repos/Mcrauli/autocad-lisp-ohjeet/dispatches `
             -X POST `
-            -f event_type=dxf2ifc-release `
+            -f event_type=dwg2ifc-release `
             -F "client_payload[tag]=${env:GITHUB_REF_NAME}"
           Write-Host "Sync dispatch sent for $env:GITHUB_REF_NAME"

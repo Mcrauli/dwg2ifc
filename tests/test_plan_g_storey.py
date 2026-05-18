@@ -5,7 +5,7 @@ the level value."""
 
 from __future__ import annotations
 
-from dxf2ifc.core.ifc_writer import build_ifc_project_skeleton
+from dwg2ifc.core.ifc_writer import build_ifc_project_skeleton
 
 
 def test_default_skeleton_has_one_storey_named_kerros1():

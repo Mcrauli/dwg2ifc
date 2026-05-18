@@ -1,13 +1,13 @@
-; Inno Setup script for dxf2ifc.
+; Inno Setup script for dwg2ifc.
 ;
 ; Compiled by `scripts/build_installer.ps1` after PyInstaller has produced
-; `dist/dxf2ifc.exe`. The driver script passes paths and version through
+; `dist/dwg2ifc.exe`. The driver script passes paths and version through
 ; /D defines so the .iss does not hardcode any absolute path.
 ;
 ; Manual build:
 ;   "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" ^
 ;     /DAppVersion=0.1.0 ^
-;     /DSourceExe=C:\path\to\dist\dxf2ifc.exe ^
+;     /DSourceExe=C:\path\to\dist\dwg2ifc.exe ^
 ;     /DLicensesFile=C:\path\to\dist\LICENSES.md ^
 ;     /DOutputDir=C:\path\to\dist ^
 ;     build\installer.iss
@@ -17,7 +17,7 @@
 #endif
 
 #ifndef SourceExe
-  #define SourceExe "..\dist\dxf2ifc.exe"
+  #define SourceExe "..\dist\dwg2ifc.exe"
 #endif
 
 #ifndef LicensesFile
@@ -38,16 +38,19 @@
 
 [Setup]
 ; Stable AppId — required for upgrade/uninstall identity. Do not change.
-AppId={{B1F1E1E2-3A8C-4F7D-9C61-2A6F1E5F3B2A}
-AppName=dxf2ifc
+; v0.3.0-alpha1 rebrand from dxf2ifc -> dwg2ifc bumped this to a new GUID so
+; the new install lives alongside the legacy dxf2ifc one in Apps & Features
+; (users can uninstall the dxf2ifc-named entry manually after the migration).
+AppId={{2991C7F6-5C6D-4472-BF37-A9D9E4AE61AD}
+AppName=dwg2ifc
 AppVersion={#AppVersion}
-AppVerName=dxf2ifc {#AppVersion}
+AppVerName=dwg2ifc {#AppVersion}
 AppPublisher=Lauri Rekola
-AppPublisherURL=https://github.com/Mcrauli/dxf2ifc
-AppSupportURL=https://github.com/Mcrauli/dxf2ifc/issues
-AppUpdatesURL=https://github.com/Mcrauli/dxf2ifc/releases
-DefaultDirName={autopf}\dxf2ifc
-DefaultGroupName=dxf2ifc
+AppPublisherURL=https://github.com/Mcrauli/dwg2ifc
+AppSupportURL=https://github.com/Mcrauli/dwg2ifc/issues
+AppUpdatesURL=https://github.com/Mcrauli/dwg2ifc/releases
+DefaultDirName={autopf}\dwg2ifc
+DefaultGroupName=dwg2ifc
 DisableProgramGroupPage=yes
 DisableDirPage=auto
 ; Per-user install by default → no UAC prompt → less SmartScreen friction.
@@ -55,18 +58,18 @@ DisableDirPage=auto
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog commandline
 OutputDir={#OutputDir}
-OutputBaseFilename=dxf2ifc-Setup-{#AppVersion}
+OutputBaseFilename=dwg2ifc-Setup-{#AppVersion}
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-UninstallDisplayName=dxf2ifc {#AppVersion}
-UninstallDisplayIcon={app}\dxf2ifc.exe
+UninstallDisplayName=dwg2ifc {#AppVersion}
+UninstallDisplayIcon={app}\dwg2ifc.exe
 VersionInfoVersion={#AppNumericVersion}
 VersionInfoCompany=Lauri Rekola
-VersionInfoDescription=dxf2ifc DXF to IFC 4 converter installer
-VersionInfoProductName=dxf2ifc
+VersionInfoDescription=dwg2ifc DXF to IFC 4 converter installer
+VersionInfoProductName=dwg2ifc
 VersionInfoProductVersion={#AppNumericVersion}
 VersionInfoProductTextVersion={#AppVersion}
 VersionInfoCopyright=(c) 2026 Lauri Rekola
@@ -86,14 +89,14 @@ Name: "finnish"; MessagesFile: "compiler:Languages\Finnish.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-Source: "{#SourceExe}"; DestDir: "{app}"; DestName: "dxf2ifc.exe"; Flags: ignoreversion
+Source: "{#SourceExe}"; DestDir: "{app}"; DestName: "dwg2ifc.exe"; Flags: ignoreversion
 Source: "{#LicensesFile}"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "..\CHANGELOG.md"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 
 [Icons]
-Name: "{autoprograms}\dxf2ifc"; Filename: "{app}\dxf2ifc.exe"
-Name: "{autodesktop}\dxf2ifc"; Filename: "{app}\dxf2ifc.exe"; Tasks: desktopicon
+Name: "{autoprograms}\dwg2ifc"; Filename: "{app}\dwg2ifc.exe"
+Name: "{autodesktop}\dwg2ifc"; Filename: "{app}\dwg2ifc.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\dxf2ifc.exe"; Description: "{cm:LaunchProgram,dxf2ifc}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\dwg2ifc.exe"; Description: "{cm:LaunchProgram,dwg2ifc}"; Flags: nowait postinstall skipifsilent

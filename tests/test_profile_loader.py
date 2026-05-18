@@ -4,14 +4,14 @@ from pathlib import Path
 
 import pytest
 
-from dxf2ifc.profiles.loader import dump_profile, load_default_profile, load_profile
-from dxf2ifc.profiles.schema import Profile
+from dwg2ifc.profiles.loader import dump_profile, load_default_profile, load_profile
+from dwg2ifc.profiles.schema import Profile
 
 
 def test_default_profile_resource_uses_new_name():
     from importlib import resources
 
-    package_files = resources.files("dxf2ifc.profiles")
+    package_files = resources.files("dwg2ifc.profiles")
     assert package_files.joinpath("default_kylmalaite.toml").is_file()
     assert not package_files.joinpath("default_kylmalaite_talo2000.toml").is_file()
 

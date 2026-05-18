@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from dxf2ifc.core.types import FileEntry
+from dwg2ifc.core.types import FileEntry
 
 
 def _one_floor(tmp_path) -> list[FileEntry]:
@@ -14,12 +14,12 @@ def _one_floor(tmp_path) -> list[FileEntry]:
 
 
 def test_convert_worker_emits_finished_with_output_path(qtbot, tmp_path):
-    from dxf2ifc.gui.convert_worker import ConvertWorker
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.gui.convert_worker import ConvertWorker
+    from dwg2ifc.profiles.loader import load_default_profile
 
     worker = ConvertWorker()
     out = str(tmp_path / "out.ifc")
-    with patch("dxf2ifc.gui.convert_worker.convert", return_value=({}, None)) as mock_convert:
+    with patch("dwg2ifc.gui.convert_worker.convert", return_value=({}, None)) as mock_convert:
         with qtbot.waitSignal(worker.finished, timeout=2000) as sig:
             worker.run(files=_one_floor(tmp_path), out=out, profile=load_default_profile())
     assert sig.args == [out]
@@ -27,15 +27,15 @@ def test_convert_worker_emits_finished_with_output_path(qtbot, tmp_path):
 
 
 def test_convert_worker_emits_failed_on_exception(qtbot, tmp_path):
-    from dxf2ifc.gui.convert_worker import ConvertWorker
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.gui.convert_worker import ConvertWorker
+    from dwg2ifc.profiles.loader import load_default_profile
 
     worker = ConvertWorker()
 
     def boom(**kwargs):
         raise RuntimeError("boom")
 
-    with patch("dxf2ifc.gui.convert_worker.convert", side_effect=boom):
+    with patch("dwg2ifc.gui.convert_worker.convert", side_effect=boom):
         with qtbot.waitSignal(worker.failed, timeout=2000) as sig:
             worker.run(
                 files=_one_floor(tmp_path),
@@ -46,9 +46,9 @@ def test_convert_worker_emits_failed_on_exception(qtbot, tmp_path):
 
 
 def test_convert_worker_emits_report_ready_when_validate_true(qtbot, tmp_path):
-    from dxf2ifc.core.quality import ValidationReport
-    from dxf2ifc.gui.convert_worker import ConvertWorker
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.core.quality import ValidationReport
+    from dwg2ifc.gui.convert_worker import ConvertWorker
+    from dwg2ifc.profiles.loader import load_default_profile
 
     worker = ConvertWorker()
     report = ValidationReport(
@@ -58,7 +58,7 @@ def test_convert_worker_emits_report_ready_when_validate_true(qtbot, tmp_path):
     )
 
     out = str(tmp_path / "out.ifc")
-    with patch("dxf2ifc.gui.convert_worker.convert", return_value=({}, report)) as mock_convert:
+    with patch("dwg2ifc.gui.convert_worker.convert", return_value=({}, report)) as mock_convert:
         with qtbot.waitSignal(worker.report_ready, timeout=2000) as sig:
             worker.run(
                 files=_one_floor(tmp_path),
@@ -71,13 +71,13 @@ def test_convert_worker_emits_report_ready_when_validate_true(qtbot, tmp_path):
 
 
 def test_convert_worker_does_not_emit_report_when_validate_false(qtbot, tmp_path):
-    from dxf2ifc.gui.convert_worker import ConvertWorker
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.gui.convert_worker import ConvertWorker
+    from dwg2ifc.profiles.loader import load_default_profile
 
     worker = ConvertWorker()
 
     out = str(tmp_path / "out.ifc")
-    with patch("dxf2ifc.gui.convert_worker.convert", return_value=({}, None)) as mock_convert:
+    with patch("dwg2ifc.gui.convert_worker.convert", return_value=({}, None)) as mock_convert:
         with qtbot.assertNotEmitted(worker.report_ready, wait=200):
             with qtbot.waitSignal(worker.finished, timeout=2000):
                 worker.run(files=_one_floor(tmp_path), out=out, profile=load_default_profile())

@@ -21,7 +21,7 @@ import pytest
 from ezdxf.acis import api as acis_api
 from ezdxf.render import MeshBuilder
 
-from dxf2ifc.core.preprocessing import (
+from dwg2ifc.core.preprocessing import (
     AcisMeshData,
     _undo_stlout_z_shift,
     _world_min_z_by_handle,

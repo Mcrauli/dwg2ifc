@@ -17,8 +17,8 @@ from pathlib import Path
 import ifcopenshell
 import pytest
 
-from dxf2ifc.core.ifc_writer import convert_dxf
-from dxf2ifc.profiles.loader import load_default_profile
+from dwg2ifc.core.ifc_writer import convert_dxf
+from dwg2ifc.profiles.loader import load_default_profile
 
 
 def _origin(product) -> tuple[float, float, float]:

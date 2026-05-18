@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import pytest
 
-from dxf2ifc.core.mapper import layer_matches
-from dxf2ifc.profiles.loader import load_default_profile
+from dwg2ifc.core.mapper import layer_matches
+from dwg2ifc.profiles.loader import load_default_profile
 
 
 @pytest.mark.parametrize(

@@ -9,7 +9,7 @@ import ezdxf
 import ifcopenshell
 import pytest
 
-from dxf2ifc.core.finnish_psets import (
+from dwg2ifc.core.finnish_psets import (
     add_fi_asennus,
     add_fi_geometria,
     add_fi_komponentti,
@@ -17,16 +17,16 @@ from dxf2ifc.core.finnish_psets import (
     add_fi_tekninen,
     add_fi_tuote,
 )
-from dxf2ifc.core.geometry import GeometryExtents, extents_from_geometry
-from dxf2ifc.core.ifc_writer import convert_dxf
-from dxf2ifc.core.types import (
+from dwg2ifc.core.geometry import GeometryExtents, extents_from_geometry
+from dwg2ifc.core.ifc_writer import convert_dxf
+from dwg2ifc.core.types import (
     BlockInstance,
     LineGeometry,
     MeshGeometry,
     Point3D,
     PolygonGeometry,
 )
-from dxf2ifc.profiles.loader import load_default_profile
+from dwg2ifc.profiles.loader import load_default_profile
 
 
 # --- Helper: build a minimal IFC4 file + product ---------------------------
@@ -214,7 +214,7 @@ def test_fi_tekninen_emits_dict_fields_verbatim():
 
 
 def test_fi_tekninen_default_fields_per_ifc_type():
-    from dxf2ifc.core.finnish_psets import fi_tekninen_default_fields
+    from dwg2ifc.core.finnish_psets import fi_tekninen_default_fields
 
     evap = fi_tekninen_default_fields("IfcEvaporator")
     assert "Jäähdytysteho" in evap
@@ -359,7 +359,7 @@ def test_convert_dxf_emits_fi_psets_on_pipe_segment(tmp_path: Path):
 
 
 def test_index_positio_markers_finds_blocks_by_pattern(tmp_path: Path):
-    from dxf2ifc.core.positio import index_positio_markers
+    from dwg2ifc.core.positio import index_positio_markers
 
     dxf = tmp_path / "p.dxf"
     doc = ezdxf.new("R2018")
@@ -382,7 +382,7 @@ def test_index_positio_markers_finds_blocks_by_pattern(tmp_path: Path):
 
 
 def test_find_nearest_positio_returns_closer_marker():
-    from dxf2ifc.core.positio import PositioMarker, find_nearest_positio
+    from dwg2ifc.core.positio import PositioMarker, find_nearest_positio
 
     near = PositioMarker((1000.0, 1000.0), "1", "JK1", "AAA")
     far = PositioMarker((5000.0, 5000.0), "2", "JK2", "BBB")
@@ -391,7 +391,7 @@ def test_find_nearest_positio_returns_closer_marker():
 
 
 def test_find_nearest_positio_returns_none_outside_radius():
-    from dxf2ifc.core.positio import PositioMarker, find_nearest_positio
+    from dwg2ifc.core.positio import PositioMarker, find_nearest_positio
 
     far = PositioMarker((10_000.0, 10_000.0), "1", "JK1", "AAA")
     assert (

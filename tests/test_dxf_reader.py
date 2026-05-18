@@ -6,8 +6,8 @@ from pathlib import Path
 import ezdxf
 import pytest
 
-from dxf2ifc.core.dxf_reader import list_layers, read_dxf
-from dxf2ifc.core.types import (
+from dwg2ifc.core.dxf_reader import list_layers, read_dxf
+from dwg2ifc.core.types import (
     BlockInstance,
     LineGeometry,
     MeshGeometry,
@@ -98,7 +98,7 @@ def test_read_open_lwpolyline_yields_line_segments(tmp_path: Path):
     fan out to one LineGeometry record per consecutive vertex pair so
     the profile mapper can route them through the LineGeometry-only
     builders (add_pipe_segment, add_cable_carrier_segment)."""
-    from dxf2ifc.core.types import LineGeometry
+    from dwg2ifc.core.types import LineGeometry
 
     dxf = tmp_path / "open.dxf"
     pts = [(0.0, 0.0), (1000.0, 0.0), (1000.0, 1000.0)]

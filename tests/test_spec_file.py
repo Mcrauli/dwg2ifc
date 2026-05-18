@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-SPEC_PATH = Path(__file__).resolve().parents[1] / "build" / "dxf2ifc.spec"
+SPEC_PATH = Path(__file__).resolve().parents[1] / "build" / "dwg2ifc.spec"
 VERSION_INFO_PATH = Path(__file__).resolve().parents[1] / "build" / "version_info.py"
 
 
@@ -16,12 +16,12 @@ def _spec_text() -> str:
 def test_spec_invokes_analysis_with_gui_entry_point() -> None:
     text = _spec_text()
     assert "Analysis(" in text
-    assert "src/dxf2ifc/gui/__main__.py" in text
+    assert "src/dwg2ifc/gui/__main__.py" in text
 
 
-def test_spec_names_dxf2ifc_and_is_windowed() -> None:
+def test_spec_names_dwg2ifc_and_is_windowed() -> None:
     text = _spec_text()
-    assert "name='dxf2ifc'" in text or 'name="dxf2ifc"' in text
+    assert "name='dwg2ifc'" in text or 'name="dwg2ifc"' in text
     assert "console=False" in text
 
 
@@ -29,8 +29,8 @@ def test_spec_bundles_runtime_assets() -> None:
     """Runtime resources (profile TOML, QSS, fonts, font licences) must ship."""
     text = _spec_text()
     expected_sources = [
-        "src/dxf2ifc/profiles/default_kylmalaite.toml",
-        "src/dxf2ifc/gui/style.qss",
+        "src/dwg2ifc/profiles/default_kylmalaite.toml",
+        "src/dwg2ifc/gui/style.qss",
         "assets/fonts/Inter-Regular.ttf",
         "assets/fonts/Inter-Medium.ttf",
         "assets/fonts/Inter-SemiBold.ttf",
@@ -47,9 +47,9 @@ def test_spec_bundles_runtime_assets() -> None:
         assert source in text, f"datas missing source: {source}"
 
     expected_destinations = [
-        "dxf2ifc/profiles",
-        "dxf2ifc/gui",
-        "dxf2ifc/gui/fonts",
+        "dwg2ifc/profiles",
+        "dwg2ifc/gui",
+        "dwg2ifc/gui/fonts",
     ]
     for dest in expected_destinations:
         assert dest in text, f"datas missing destination: {dest}"
@@ -83,8 +83,8 @@ def test_version_info_file_carries_company_and_version() -> None:
     text = VERSION_INFO_PATH.read_text(encoding="utf-8")
     assert "VSVersionInfo" in text
     assert "Lauri Rekola" in text
-    assert "dxf2ifc" in text
-    from dxf2ifc._version import __version__
+    assert "dwg2ifc" in text
+    from dwg2ifc._version import __version__
 
     assert __version__ in text
 

@@ -5,7 +5,7 @@ from pathlib import Path
 import ifcopenshell
 import pytest
 
-from dxf2ifc.core.ifc_writer import (
+from dwg2ifc.core.ifc_writer import (
     _mesh_to_brep,
     add_building_element_proxy,
     add_cable_carrier,
@@ -25,7 +25,7 @@ from dxf2ifc.core.ifc_writer import (
     convert_dxf,
     write_ifc,
 )
-from dxf2ifc.core.types import (
+from dwg2ifc.core.types import (
     BlockInstance,
     LineGeometry,
     MappedEntity,
@@ -33,7 +33,7 @@ from dxf2ifc.core.types import (
     Point3D,
     PolygonGeometry,
 )
-from dxf2ifc.profiles.loader import load_default_profile
+from dwg2ifc.profiles.loader import load_default_profile
 
 
 def test_build_project_creates_ifc4_file_with_hierarchy(tmp_path: Path):

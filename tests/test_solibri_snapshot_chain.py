@@ -16,7 +16,7 @@ import pytest
 from tools.solibri import diff_snapshot, parse_report, verify
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-RULESET = REPO_ROOT / "tools" / "solibri" / "dxf2ifc.bcfzip"
+RULESET = REPO_ROOT / "tools" / "solibri" / "dwg2ifc.bcfzip"
 REFERENCE_IFC = REPO_ROOT / "tests" / "fixtures" / "solibri_reference_full.ifc"
 SNAPSHOT = REPO_ROOT / "tests" / "snapshots" / "solibri" / "full_kylmaelement.json"
 

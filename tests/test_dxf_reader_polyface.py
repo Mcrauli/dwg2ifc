@@ -7,8 +7,8 @@ from pathlib import Path
 
 import ezdxf
 
-from dxf2ifc.core.dxf_reader import read_dxf
-from dxf2ifc.core.types import MeshGeometry
+from dwg2ifc.core.dxf_reader import read_dxf
+from dwg2ifc.core.types import MeshGeometry
 
 
 def _save_and_read(doc, tmp_path: Path):
@@ -105,7 +105,7 @@ def test_open_polyline_still_emits_lines(tmp_path: Path):
     """A regular open POLYLINE (NOT polyface) keeps the existing
     LineGeometry behaviour. Regression guard so adding the polyface
     branch doesn't swallow ordinary 3D-polylines."""
-    from dxf2ifc.core.types import LineGeometry
+    from dwg2ifc.core.types import LineGeometry
 
     doc = ezdxf.new("R2010")
     doc.layers.add(name="LT IMU")

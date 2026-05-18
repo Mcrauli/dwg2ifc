@@ -1,7 +1,7 @@
 [project]
-name = "dxf2ifc"
-version = "0.2.0a37"
-description = "AutoCAD DXF to IFC 4 converter for Finnish refrigeration design (RAVA3Pro classification)"
+name = "dwg2ifc"
+version = "0.3.0a1"
+description = "AutoCAD DWG/DXF to IFC 4 converter for Finnish refrigeration design (RAVA3Pro classification)"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
@@ -28,32 +28,32 @@ gui = [
 ]
 
 [project.scripts]
-dxf2ifc = "dxf2ifc.cli:main"
-dxf2ifc-gui = "dxf2ifc.gui.app:run"
+dwg2ifc = "dwg2ifc.cli:main"
+dwg2ifc-gui = "dwg2ifc.gui.app:run"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/dxf2ifc"]
+packages = ["src/dwg2ifc"]
 
 [tool.hatch.build.targets.wheel.force-include]
-"src/dxf2ifc/profiles/default_kylmalaite.toml" = "dxf2ifc/profiles/default_kylmalaite.toml"
-"src/dxf2ifc/gui/style.qss" = "dxf2ifc/gui/style.qss"
-"assets/dxf2ifc.ico" = "dxf2ifc/gui/dxf2ifc.ico"
-"assets/dxf2ifc.png" = "dxf2ifc/gui/dxf2ifc.png"
-"assets/fonts/Inter-Regular.ttf" = "dxf2ifc/gui/fonts/Inter-Regular.ttf"
-"assets/fonts/Inter-Medium.ttf" = "dxf2ifc/gui/fonts/Inter-Medium.ttf"
-"assets/fonts/Inter-SemiBold.ttf" = "dxf2ifc/gui/fonts/Inter-SemiBold.ttf"
-"assets/fonts/Inter-Bold.ttf" = "dxf2ifc/gui/fonts/Inter-Bold.ttf"
-"assets/fonts/SpaceGrotesk-Medium.ttf" = "dxf2ifc/gui/fonts/SpaceGrotesk-Medium.ttf"
-"assets/fonts/SpaceGrotesk-Bold.ttf" = "dxf2ifc/gui/fonts/SpaceGrotesk-Bold.ttf"
-"assets/fonts/JetBrainsMono-Medium.ttf" = "dxf2ifc/gui/fonts/JetBrainsMono-Medium.ttf"
-"assets/fonts/LICENSES.md" = "dxf2ifc/gui/fonts/LICENSES.md"
-"assets/fonts/Inter-LICENSE.txt" = "dxf2ifc/gui/fonts/Inter-LICENSE.txt"
-"assets/fonts/SpaceGrotesk-LICENSE.txt" = "dxf2ifc/gui/fonts/SpaceGrotesk-LICENSE.txt"
-"assets/fonts/JetBrainsMono-LICENSE.txt" = "dxf2ifc/gui/fonts/JetBrainsMono-LICENSE.txt"
+"src/dwg2ifc/profiles/default_kylmalaite.toml" = "dwg2ifc/profiles/default_kylmalaite.toml"
+"src/dwg2ifc/gui/style.qss" = "dwg2ifc/gui/style.qss"
+"assets/dwg2ifc.ico" = "dwg2ifc/gui/dwg2ifc.ico"
+"assets/dwg2ifc.png" = "dwg2ifc/gui/dwg2ifc.png"
+"assets/fonts/Inter-Regular.ttf" = "dwg2ifc/gui/fonts/Inter-Regular.ttf"
+"assets/fonts/Inter-Medium.ttf" = "dwg2ifc/gui/fonts/Inter-Medium.ttf"
+"assets/fonts/Inter-SemiBold.ttf" = "dwg2ifc/gui/fonts/Inter-SemiBold.ttf"
+"assets/fonts/Inter-Bold.ttf" = "dwg2ifc/gui/fonts/Inter-Bold.ttf"
+"assets/fonts/SpaceGrotesk-Medium.ttf" = "dwg2ifc/gui/fonts/SpaceGrotesk-Medium.ttf"
+"assets/fonts/SpaceGrotesk-Bold.ttf" = "dwg2ifc/gui/fonts/SpaceGrotesk-Bold.ttf"
+"assets/fonts/JetBrainsMono-Medium.ttf" = "dwg2ifc/gui/fonts/JetBrainsMono-Medium.ttf"
+"assets/fonts/LICENSES.md" = "dwg2ifc/gui/fonts/LICENSES.md"
+"assets/fonts/Inter-LICENSE.txt" = "dwg2ifc/gui/fonts/Inter-LICENSE.txt"
+"assets/fonts/SpaceGrotesk-LICENSE.txt" = "dwg2ifc/gui/fonts/SpaceGrotesk-LICENSE.txt"
+"assets/fonts/JetBrainsMono-LICENSE.txt" = "dwg2ifc/gui/fonts/JetBrainsMono-LICENSE.txt"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

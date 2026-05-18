@@ -1,4 +1,4 @@
-"""Build tools/solibri/dxf2ifc.bcfzip — the YTV 2012 + Talo2000 minimum
+"""Build tools/solibri/dwg2ifc.bcfzip — the YTV 2012 + Talo2000 minimum
 rule-set encoded as a BCF 2.1 archive with one Topic per rule.
 
 Run from the repo root:
@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from zipfile import ZipInfo
 
-BCFZIP_PATH = Path(__file__).resolve().parent / "dxf2ifc.bcfzip"
+BCFZIP_PATH = Path(__file__).resolve().parent / "dwg2ifc.bcfzip"
 EPOCH = (2026, 4, 28, 0, 0, 0)
 DETERMINISTIC_DATE = "2026-04-28T00:00:00Z"
 AUTHOR = "Lauri Rekola (Radika Oy)"

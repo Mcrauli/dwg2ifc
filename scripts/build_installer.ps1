@@ -1,15 +1,15 @@
-# Build dxf2ifc Inno Setup installer.
+# Build dwg2ifc Inno Setup installer.
 #
 # Pipeline:
-#   1. Run scripts/build_exe.ps1 → dist/dxf2ifc.exe + dist/dxf2ifc-<v>.exe
+#   1. Run scripts/build_exe.ps1 → dist/dwg2ifc.exe + dist/dwg2ifc-<v>.exe
 #   2. Ensure dist/LICENSES.md exists (generate fallback if missing).
 #   3. Locate ISCC.exe (Inno Setup 6 compiler).
-#   4. Compile build/installer.iss → dist/dxf2ifc-Setup-<v>.exe
+#   4. Compile build/installer.iss → dist/dwg2ifc-Setup-<v>.exe
 #   5. Print + write SHA256 sidecar.
 #
 # Usage:  .\scripts\build_installer.ps1
-# Output: dist/dxf2ifc-Setup-<version>.exe
-#         dist/dxf2ifc-Setup-<version>.exe.sha256
+# Output: dist/dwg2ifc-Setup-<version>.exe
+#         dist/dwg2ifc-Setup-<version>.exe.sha256
 
 $ErrorActionPreference = "Stop"
 
@@ -21,7 +21,7 @@ if (-not $version) { throw "DXF2IFC_VERSION not set after build_exe.ps1" }
 
 $root = (Resolve-Path "$PSScriptRoot\..").Path
 $dist = Join-Path $root "dist"
-$sourceExe = Join-Path $dist "dxf2ifc.exe"
+$sourceExe = Join-Path $dist "dwg2ifc.exe"
 $licensesFile = Join-Path $dist "LICENSES.md"
 
 if (-not (Test-Path $sourceExe)) {
@@ -32,10 +32,10 @@ if (-not (Test-Path $sourceExe)) {
 #    builds and build.yml CI need a placeholder so [Files] does not skip it.
 if (-not (Test-Path $licensesFile)) {
     @(
-        "# dxf2ifc - third-party licenses",
+        "# dwg2ifc - third-party licenses",
         "",
         "Full license text and source links:",
-        "https://github.com/Mcrauli/dxf2ifc"
+        "https://github.com/Mcrauli/dwg2ifc"
     ) -join "`n" | Set-Content -Encoding UTF8 -Path $licensesFile
 }
 
@@ -53,8 +53,8 @@ if (-not $iscc) {
     throw "ISCC.exe not found. Install Inno Setup 6 (https://jrsoftware.org/isinfo.php) or set `$env:ISCC."
 }
 
-# 4. Optional brand icon (assets/dxf2ifc.ico arrives in a follow-up commit).
-$iconFile = Join-Path $root "assets\dxf2ifc.ico"
+# 4. Optional brand icon (assets/dwg2ifc.ico arrives in a follow-up commit).
+$iconFile = Join-Path $root "assets\dwg2ifc.ico"
 $hasIcon = Test-Path $iconFile
 
 # Inno Setup's VersionInfoVersion accepts only pure-numeric X.Y.Z.W —
@@ -83,7 +83,7 @@ Write-Host "Compiling installer with ISCC: $iscc"
 if ($LASTEXITCODE -ne 0) { throw "ISCC failed (exit $LASTEXITCODE)" }
 
 # 5. Hash the installer.
-$installer = Join-Path $dist "dxf2ifc-Setup-$version.exe"
+$installer = Join-Path $dist "dwg2ifc-Setup-$version.exe"
 if (-not (Test-Path $installer)) { throw "Installer missing after ISCC: $installer" }
 
 $hash = Get-FileHash -Algorithm SHA256 -Path $installer

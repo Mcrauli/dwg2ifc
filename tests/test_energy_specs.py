@@ -7,7 +7,7 @@ from pathlib import Path
 import openpyxl
 import pytest
 
-from dxf2ifc.core.energy_specs import (
+from dwg2ifc.core.energy_specs import (
     EnergySpec,
     load_energy_specs,
     load_energy_specs_with_headers,
@@ -176,7 +176,7 @@ class TestLauriExcelFormat:
     the column labelled 'REV.' (not a real revision column)."""
 
     def test_rev_column_recognised_as_koneikko(self) -> None:
-        from dxf2ifc.core.energy_specs import _resolve_key_columns
+        from dwg2ifc.core.energy_specs import _resolve_key_columns
 
         headers = ["REV.", "POS.", "NIMI", "Kylmäteho"]
         keys = _resolve_key_columns(headers)

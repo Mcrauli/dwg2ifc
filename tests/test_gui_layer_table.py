@@ -8,8 +8,8 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 def test_layer_table_uses_jetbrains_mono_for_layer_column(qtbot):
-    from dxf2ifc.gui.layer_table import LayerTable
-    from dxf2ifc.profiles.loader import load_default_profile
+    from dwg2ifc.gui.layer_table import LayerTable
+    from dwg2ifc.profiles.loader import load_default_profile
 
     table = LayerTable()
     qtbot.addWidget(table)

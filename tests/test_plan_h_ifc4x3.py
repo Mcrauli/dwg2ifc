@@ -10,9 +10,9 @@ from pathlib import Path
 import ifcopenshell
 import ifcopenshell.validate
 
-from dxf2ifc import cli
-from dxf2ifc.core.ifc_writer import build_ifc_project_skeleton, convert_dxf
-from dxf2ifc.profiles.loader import load_default_profile
+from dwg2ifc import cli
+from dwg2ifc.core.ifc_writer import build_ifc_project_skeleton, convert_dxf
+from dwg2ifc.profiles.loader import load_default_profile
 
 
 def test_skeleton_default_schema_is_ifc4():
@@ -87,7 +87,7 @@ def test_cli_convert_schema_default_is_ifc4(fixtures_dir: Path, tmp_path: Path):
 def test_validate_ifc_summary_reports_ifc4x3_when_input_is_ifc4x3(
     full_kylmaelement_dxf: Path, tmp_path: Path
 ):
-    from dxf2ifc.core.quality import validate_ifc
+    from dwg2ifc.core.quality import validate_ifc
 
     out = tmp_path / "full_ifc4x3.ifc"
     convert_dxf(
@@ -103,7 +103,7 @@ def test_validate_ifc_summary_reports_ifc4x3_when_input_is_ifc4x3(
 def test_validate_ifc_summary_reports_ifc4_when_input_is_ifc4(
     full_kylmaelement_dxf: Path, tmp_path: Path
 ):
-    from dxf2ifc.core.quality import validate_ifc
+    from dwg2ifc.core.quality import validate_ifc
 
     out = tmp_path / "full_ifc4.ifc"
     convert_dxf(

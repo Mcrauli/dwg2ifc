@@ -60,7 +60,7 @@ def test_build_workflow_invokes_build_exe_script():
     )
 
 
-def test_build_workflow_uploads_dxf2ifc_windows_artifact():
+def test_build_workflow_uploads_dwg2ifc_windows_artifact():
     data = _load_workflow()
     upload_steps: list[dict] = []
     for job in data["jobs"].values():
@@ -69,7 +69,7 @@ def test_build_workflow_uploads_dxf2ifc_windows_artifact():
             if uses.startswith("actions/upload-artifact"):
                 upload_steps.append(step)
     names = [step.get("with", {}).get("name", "") for step in upload_steps]
-    assert any("dxf2ifc-windows" in name for name in names), names
+    assert any("dwg2ifc-windows" in name for name in names), names
 
 
 def test_build_workflow_includes_ubuntu_smoke_job():
