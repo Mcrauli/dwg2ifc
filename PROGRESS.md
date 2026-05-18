@@ -4,20 +4,30 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha35 (2026-05-18)
+## Current state — v0.2.0-alpha36 (2026-05-18)
 
-Tuorein julkaistu: **v0.2.0-alpha35** (2026-05-18).
+Tuorein julkaistu: **v0.2.0-alpha36** (2026-05-18).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a35.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a35.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a36.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a36.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–35:n korjaukset tiivistettynä (täysi historia
+Alpha8–36:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha36** (2026-05-18): **KORJAUS — KYL-KOTELOn leveä yläseinämä
+  näytti vajoavan sisäänpäin.** `_aggregate_3dface_from_insert`-funktion
+  `block_max_top`-laskenta käytti `max(polyline_elev) +
+  DEFAULT_TOP_OFFSET_MM (9)` -fallbackia myös silloin kun 3DFACEt olivat
+  läsnä; kotelon yläslab elev=118.2 inflatoi sen 127.2:een, jolloin
+  ohuet sivuseinämät törröttivät 7.2 mm yli todellisen 3DFACE-katon
+  z=120 ja yläslab näytti niiden alta sisäänpainuneelta. Nyt 3DFACEt
+  ovat autoritaariset kun ne ovat läsnä; +9-fallback käytetään vain
+  3DFACE-vapaille blokeille. Lisäksi KYL-KOTELO-sääntö täydennetty
+  levyhyllyn kaavan mukaisilla FI_Tekninen + FI_Tuote -PSeteillä.
 - **alpha35** (2026-05-18): **KORJAUS — negatiivisessa Z:ssä olevat
   3DSOLID-laitteet litistyivät kerroskorkoon.** AutoCAD:n `STLOUT`
   kieltäytyy kirjoittamasta geometriaa Z=0:n alapuolelle ja siirtää

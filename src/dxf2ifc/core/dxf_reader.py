@@ -233,15 +233,24 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
     # the deck thickness) but the highest top in the block — the
     # rim wraps the entire shelf height.
     THIN_RIM_THRESHOLD_MM = 5.0
-    block_max_top = max(
-        (fz for _, fz, _ in face_records),
-        default=0.0,
-    )
-    if polyline_records:
-        block_max_top = max(
-            block_max_top,
-            max(p[1] for p in polyline_records) + DEFAULT_TOP_OFFSET_MM,
+    # 3DFACEs are authoritative for the block's true top. The
+    # ``max(polyline_elev) + DEFAULT_TOP_OFFSET_MM`` fallback is only
+    # useful when the block has no 3DFACE info at all (legacy
+    # outline-only blocks where the rim has to guess its own height) —
+    # using it alongside 3DFACEs inflates ``block_max_top`` whenever a
+    # polyline sits high in the block. KYL-KOTELO's top slab is a
+    # polyline at elev=118.2; without this guard the thin side-wall
+    # rims would extrude to 118.2 + 9 = 127.2 instead of the real
+    # 3DFACE-defined top z=120, leaving the wide top slab visually
+    # recessed below the protruding side walls.
+    if face_records:
+        block_max_top = max(fz for _, fz, _ in face_records)
+    elif polyline_records:
+        block_max_top = (
+            max(p[1] for p in polyline_records) + DEFAULT_TOP_OFFSET_MM
         )
+    else:
+        block_max_top = 0.0
     for pts2d, base_z in polyline_records:
         xs = [p[0] for p in pts2d]
         ys = [p[1] for p in pts2d]

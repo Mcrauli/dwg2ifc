@@ -205,6 +205,57 @@ def test_insert_3d_rotated_polyline_extrudes_along_block_local_z(tmp_path: Path)
     )
 
 
+def test_insert_kotelo_thin_rim_extrudes_to_3dface_top_not_polyline_default(tmp_path: Path):
+    """Mixed-elevation polylines + 3DFACEs (the KYL-KOTELO block shape)
+    must extrude thin-rim side walls to the 3DFACE-defined block top, not
+    to ``max(polyline_elev) + DEFAULT_TOP_OFFSET_MM`` — the latter
+    overshoots whenever a polyline sits high in the block (kotelo's top
+    slab is a polyline at elev=118.2, so the +9 fallback would push the
+    side walls up to z=127.2 instead of the real top z=120).
+    """
+    doc = ezdxf.new("R2018")
+    doc.layers.add(name="KYL-KOTELO")
+    blk = doc.blocks.new(name="KOTELO")
+    # Wide bottom slab — full footprint, thin Z extent
+    p = blk.add_lwpolyline([(0, 0), (1000, 0), (1000, 305), (0, 305)], close=True)
+    p.dxf.thickness = 1.8
+    # Wide top slab — full footprint, elev=118.2 (the elevation that trips the bug)
+    p = blk.add_lwpolyline([(0, 0), (1000, 0), (1000, 305), (0, 305)], close=True)
+    p.dxf.elevation = 118.2
+    p.dxf.thickness = 1.8
+    # Thin side wall — qualifies as "thin rim" (min side 1.8 mm <= 5 mm)
+    p = blk.add_lwpolyline([(0, 0), (1000, 0), (1000, 1.8), (0, 1.8)], close=True)
+    p.dxf.thickness = 120
+    # Thin side wall opposite
+    p = blk.add_lwpolyline(
+        [(0, 303.2), (1000, 303.2), (1000, 305), (0, 305)], close=True
+    )
+    p.dxf.thickness = 120
+    # 3DFACEs define the kotelo's true block top at z=120
+    blk.add_3dface([(0, 0, 0), (1000, 0, 0), (1000, 305, 0), (0, 305, 0)])
+    blk.add_3dface([(0, 0, 1.8), (1000, 0, 1.8), (1000, 305, 1.8), (0, 305, 1.8)])
+    blk.add_3dface(
+        [(0, 0, 118.2), (1000, 0, 118.2), (1000, 305, 118.2), (0, 305, 118.2)]
+    )
+    blk.add_3dface([(0, 0, 120), (1000, 0, 120), (1000, 305, 120), (0, 305, 120)])
+    doc.modelspace().add_blockref(
+        "KOTELO", (0, 0, 0), dxfattribs={"layer": "KYL-KOTELO"}
+    )
+
+    records = _save_and_read(doc, tmp_path)
+    insert_records = [
+        r for r in records if r.dxf_type == "INSERT"
+        and isinstance(r.geometry, MeshGeometry)
+    ]
+    assert len(insert_records) == 1
+    zs = [v.z for v in insert_records[0].geometry.vertices]
+    # The mesh top must match the 3DFACE-defined real top (120), not the
+    # polyline-elevation fallback (118.2 + 9 = 127.2).
+    assert abs(max(zs) - 120.0) < 0.01, (
+        f"thin-rim side walls overshot block top: max Z = {max(zs)} (expected 120)"
+    )
+
+
 def test_insert_without_3dface_falls_back_to_blockinstance(tmp_path: Path):
     """If a block has no 3DFACE entities, INSERT must still yield a
     BlockInstance — the existing fallback path for height-extrusion

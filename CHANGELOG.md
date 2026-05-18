@@ -6,6 +6,26 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha36 — 2026-05-18 (KYL-KOTELO geometria + FI_*-PSetit täydennetty)
+
+- **KORJAUS — kotelon leveä yläseinämä näytti vajoavan sisäänpäin
+  sivuseinämien yli.** `_aggregate_3dface_from_insert` laski
+  `block_max_top`:n kaavalla `max(3DFACE_z, max(polyline_elev) +
+  DEFAULT_TOP_OFFSET_MM)`. KYL-KOTELO-blokin yläslab on LWPOLYLINE
+  elevaatiossa 118.2 → fallback 118.2 + 9 = **127.2** voitti todellisen
+  3DFACE-katon z=120. Ohuet sivuseinämä-LWPOLYLINEt (leveys ≤ 5 mm,
+  "thin rim") ekstrudoituivat tähän inflatoituun kattoon, joten ne
+  törröttivät 7.2 mm yli kotelon todellisesta yläpinnasta ja yläseinämä
+  jäi visuaalisesti niiden alle "sisäänpäin". Korjaus: kun blokissa
+  on 3DFACEt, niitä pidetään autoritaarisina; +9-fallback käytetään
+  vain blokeille joissa ei ole yhtään 3DFACEa (legacy outline-blokit,
+  KLHYLLY ei regressoi koska sen kaikki polylinet ovat pohjassa z=0).
+- **KYL-KOTELO-säännölle täydet FI_*-PSetit** (alpha35:n minimaalinen
+  versio jäi vaillinaiseksi): nyt levyhyllyn kaavan mukaisesti
+  `fi_tekninen` (Materiaali=Teräs, Pinnoite=Polyesterimaalattu) +
+  `fi_tuote` (nimi=Kotelo, valmistaja=MEKA). Käyttäjä voi yliajaa
+  valmistaja-kohtaiset speksit custom profile:n kautta.
+
 ## v0.2.0-alpha35 — 2026-05-18 (negatiivisen Z:n STLOUT-korjaus + KYL-KOTELO-mappaus)
 
 - **KORJAUS — negatiivisessa Z:ssä olevat 3DSOLID-laitteet litistyivät

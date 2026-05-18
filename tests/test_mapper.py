@@ -132,6 +132,14 @@ def test_apply_profile_maps_kotelo_via_default_profile():
     assert kotelo.ifc_type == "IfcCableCarrierSegment"
     assert kotelo.predefined_type == "CABLETRUNKINGSEGMENT"
     assert kotelo.talotekniikka_code == "T-TATE-01-01-001"
+    # Same FI_* PSet shape as KYL-LEVYHYLLY so Solibri's tuoteosa view
+    # finds Materiaali + Pinnoite + nimi + valmistaja on a kotelo too.
+    assert kotelo.fi_tekninen is not None
+    assert kotelo.fi_tekninen.get("Materiaali") == "Teräs"
+    assert kotelo.fi_tekninen.get("Pinnoite") == "Polyesterimaalattu"
+    assert kotelo.fi_tuote is not None
+    assert kotelo.fi_tuote.get("nimi") == "Kotelo"
+    assert kotelo.fi_tuote.get("valmistaja") == "MEKA"
 
 
 def test_apply_profile_propagates_system_name_to_extra_props():
