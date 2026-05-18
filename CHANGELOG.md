@@ -6,6 +6,18 @@ project uses semantic versioning.
 
 ## Unreleased
 
+- **KORJAUS — negatiivisessa Z:ssä olevat 3DSOLID-laitteet litistyivät
+  kerroskorkoon.** AutoCAD:n `STLOUT` kieltäytyy kirjoittamasta
+  geometriaa datumin (Z=0) alapuolelle: se siirtää koko kappaleen +Z:ssä
+  ylös niin että viety STL alkaa tismalleen Z=0:sta (X ja Y säilyvät).
+  Niinpä Z=-5000:een piirretty koneikko palautui tessellöitynä Z=0:aan,
+  ja kerroskorko-offsetin jälkeen *jokainen* datumin alapuolinen laite
+  romahti kerroskorkoon (esim. objekti -5000 + kerros 1000 → 1000, ei
+  -4000). Korjaus: `preprocessing.py` lukee jokaisen ACIS-bodyn todellisen
+  maailmankoordinaatti-min-Z:n DXF:stä (ezdxf:n ACIS-purku, SAT + SAB) jo
+  ennen accoreconsole-ajoa ja kumoaa STLOUT:n siirron meshikohtaisesti.
+  Vain selvästi siirretyt kappaleet korjataan (STL ~Z=0 + lähdegeometria
+  aidosti negatiivinen) — datumin yläpuolinen geometria ei regressoi.
 - **Uusi layer-mappaus: `KYL-KOTELO*`** → `IfcCableCarrierSegment` /
   `CABLETRUNKINGSEGMENT`. Kotelo on koteloitu (suljettu) kaapelireitti;
   `CABLETRUNKINGSEGMENT` erottaa sen avoimista tikas-/levyhyllyistä

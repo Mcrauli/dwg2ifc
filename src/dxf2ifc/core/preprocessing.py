@@ -171,6 +171,152 @@ def _worthlist_literal(worth_names: Iterable[str]) -> str:
     return literal
 
 
+# ---------------------------------------------------------------------------
+# STLOUT positive-Z-shift correction
+#
+# AutoCAD's STLOUT command refuses to write geometry below Z=0: whenever a
+# solid dips under the datum, STLOUT translates the *whole* body up in +Z so
+# the exported STL has min Z == 0 exactly (X and Y are left untouched). A
+# koneikko drawn at Z=-5000 therefore comes back tessellated at Z=0, and every
+# piece of equipment below the storey datum collapses onto the storey
+# elevation. To undo it we need each body's *true* world-space min Z, which we
+# read straight from the DXF via ezdxf's ACIS decoder before accoreconsole
+# runs.
+# ---------------------------------------------------------------------------
+
+
+def _scan_sab_positions(data: bytes) -> list[tuple[float, float, float]]:
+    """Crude vertex cloud from a SAB body: every ``0x14`` position opcode
+    followed by three little-endian doubles, filtered to a building-scale
+    window so random byte runs that decode as 1e30 / NaN are dropped.
+
+    Fallback for the rare body ezdxf's structured ACIS parser cannot crack.
+    """
+    out: list[tuple[float, float, float]] = []
+    if len(data) < 25:
+        return out
+    end = len(data) - 25
+    for i in range(end):
+        if data[i] != 0x14:
+            continue
+        try:
+            x, y, z = struct.unpack_from("<ddd", data, i + 1)
+        except struct.error:
+            continue
+        if -1e9 < x < 1e9 and -1e9 < y < 1e9 and -1e9 < z < 1e9:
+            out.append((x, y, z))
+    return out
+
+
+def _acis_body_vertices(acis_data: object) -> list[tuple[float, float, float]]:
+    """Decode an ACIS body's vertices (SAT text or SAB binary).
+
+    Uses ezdxf's structured ACIS parser (exact tessellated vertices); if
+    that fails or yields nothing, falls back to the raw SAB position-token
+    byte scan. Returns an empty list when neither path produces coordinates.
+    """
+    if not acis_data:
+        return []
+    try:
+        from ezdxf.acis import api as _acis_api
+
+        verts: list[tuple[float, float, float]] = []
+        for body in _acis_api.load(acis_data):
+            for mesh in _acis_api.mesh_from_body(body):
+                verts.extend(
+                    (float(v[0]), float(v[1]), float(v[2])) for v in mesh.vertices
+                )
+        if verts:
+            return verts
+    except Exception:  # noqa: BLE001 — ezdxf ACIS parser is best-effort
+        pass
+    if isinstance(acis_data, (bytes, bytearray)):
+        return _scan_sab_positions(bytes(acis_data))
+    return []
+
+
+def _insert_acis_world_vertices(
+    insert: object, _depth: int = 0
+) -> list[tuple[float, float, float]]:
+    """Every ACIS-body vertex reachable from an INSERT, transformed into
+    world space. Recurses into nested INSERTs (depth-capped) so compound
+    equipment assemblies — a koneikko block whose definition references a
+    compressor + condenser sub-block — are covered in full."""
+    if _depth > 16:
+        return []
+    try:
+        matrix = insert.matrix44()  # type: ignore[attr-defined]
+        block = insert.doc.blocks.get(insert.dxf.name)  # type: ignore[attr-defined]
+    except Exception:  # noqa: BLE001
+        return []
+    if block is None:
+        return []
+    local: list[tuple[float, float, float]] = []
+    for ent in block:
+        try:
+            etype = ent.dxftype()
+        except Exception:  # noqa: BLE001 — non-graphical custom entity
+            continue
+        if etype in ACIS_DXF_TYPES:
+            local.extend(_acis_body_vertices(getattr(ent, "acis_data", None)))
+        elif etype == "INSERT":
+            local.extend(_insert_acis_world_vertices(ent, _depth + 1))
+    if not local:
+        return []
+    return [(v.x, v.y, v.z) for v in matrix.transform_vertices(local)]
+
+
+def _world_min_z_by_handle(doc: object) -> dict[str, float]:
+    """Map every modelspace 3DSOLID and INSERT handle to the minimum
+    world-space Z of its ACIS geometry — the datum STLOUT's positive-Z
+    shift must be undone against. Best-effort: handles whose geometry
+    cannot be decoded are simply absent (no correction applied)."""
+    result: dict[str, float] = {}
+    try:
+        msp = doc.modelspace()  # type: ignore[attr-defined]
+    except Exception:  # noqa: BLE001
+        return result
+    for ent in msp:
+        try:
+            etype = ent.dxftype()
+            handle = str(ent.dxf.handle).upper()
+        except Exception:  # noqa: BLE001
+            continue
+        if etype in ACIS_DXF_TYPES:
+            verts = _acis_body_vertices(getattr(ent, "acis_data", None))
+        elif etype == "INSERT":
+            verts = _insert_acis_world_vertices(ent)
+        else:
+            continue
+        if verts:
+            result[handle] = min(v[2] for v in verts)
+    return result
+
+
+def _undo_stlout_z_shift(
+    handle: str, mesh: AcisMeshData, world_min_z: dict[str, float]
+) -> AcisMeshData:
+    """Translate a parsed STL mesh back onto its true world Z.
+
+    STLOUT's signature is unmistakable: an STL whose min Z sits at ~0 while
+    the source body's true world min Z is genuinely negative. Only that
+    exact case is corrected — solids STLOUT left alone (already at/above the
+    datum) keep their STL coordinates untouched, so positive-Z geometry
+    carries zero regression risk.
+    """
+    true_min = world_min_z.get(handle)
+    if true_min is None or not mesh.vertices:
+        return mesh
+    stl_min = min(v[2] for v in mesh.vertices)
+    if abs(stl_min) >= 1.0 or true_min >= -1.0:
+        return mesh
+    dz = true_min - stl_min
+    return AcisMeshData(
+        tuple((x, y, z + dz) for (x, y, z) in mesh.vertices),
+        mesh.faces,
+    )
+
+
 def find_accoreconsole() -> Path | None:
     """Locate ``accoreconsole.exe`` under ``%ProgramFiles%\\Autodesk``.
 
@@ -528,9 +674,14 @@ def extract_acis_meshes(
     # blocks via its ``(not (asciip ...))`` escape. ``nil`` ⇒ explode
     # everything (the safe-but-slow fallback).
     worthlist_lisp = "nil"
+    handle_world_min_z: dict[str, float] = {}
     try:
         _doc = ezdxf.readfile(str(input_path))
         worthlist_lisp = _worthlist_literal(_acis_bearing_block_names(_doc))
+        # Capture each body's true world min Z so the STLOUT positive-Z
+        # shift can be undone after the meshes come back (see
+        # ``_undo_stlout_z_shift``).
+        handle_world_min_z = _world_min_z_by_handle(_doc)
     except Exception:  # noqa: BLE001 — never block extraction on the scan
         worthlist_lisp = "nil"
 
@@ -680,7 +831,9 @@ def extract_acis_meshes(
             except Exception:  # noqa: BLE001 — corrupt STL must not crash
                 continue
             if mesh.vertices and mesh.faces:
-                meshes[handle] = mesh
+                meshes[handle] = _undo_stlout_z_shift(
+                    handle, mesh, handle_world_min_z
+                )
 
         # Phase 2 — INSERT block contents: PHASE2 STLOUTs the entire
         # exploded body selection per INSERT into ONE ``<ih>.stl``, so
@@ -695,7 +848,9 @@ def extract_acis_meshes(
             except Exception:  # noqa: BLE001 — corrupt STL must not crash
                 continue
             if mesh.vertices and mesh.faces:
-                meshes[handle] = mesh
+                meshes[handle] = _undo_stlout_z_shift(
+                    handle, mesh, handle_world_min_z
+                )
 
         # Inject MESH entities embedded in INSERT blocks (e.g. mounting
         # brackets in evaporator blocks). STLOUT can't safely write these
