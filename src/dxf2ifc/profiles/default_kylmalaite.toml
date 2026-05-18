@@ -230,6 +230,22 @@ fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjest
 fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Polyesterimaalattu" }
 fi_tuote = { nimi = "KRA-60-500 L=3000 M", valmistaja = "MEKA" }
 
+# Kotelo — koteloitu (suljettu) kaapelireitti / asennuskotelo. Sama
+# polyline+thickness-dynamic-block-rakenne kuin KLHYLLY-hyllyillä, mutta
+# CABLETRUNKINGSEGMENT-predefined type erottaa sen avoimista LADDER/TRAY-
+# hyllyistä. Layer KYL-KOTELO, piirretään autocad-lisp-ohjeet/files/kotelo.lsp
+# -työkalulla. FI_Tekninen/FI_Tuote jätetty pois — käyttäjä lisää valmistaja-
+# kohtaiset speksit custom profile:n kautta (vrt. shelving-kommentti yllä).
+[[rules]]
+layer_pattern = "KYL-KOTELO*"
+ifc_type = "IfcCableCarrierSegment"
+predefined_type = "CABLETRUNKINGSEGMENT"
+domain = "KYL"
+talotekniikka_code = "T-TATE-01-01-001"
+system_name = "Refrigeration plant"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Kotelo", yleistunnus = "AHJ.LVI" }
+fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjestelmien_tunnukset = "AHJ.LVI" }
+
 # -----------------------------------------------------------------------------
 # Section 4: Cable carriers (electrical) — RAVA T-TATE-01-01-001.
 # -----------------------------------------------------------------------------

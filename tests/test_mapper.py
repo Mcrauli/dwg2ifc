@@ -122,6 +122,18 @@ def test_apply_profile_maps_storage_shelves_via_default_profile():
     assert tikas_v.predefined_type == "CABLELADDERSEGMENT"
 
 
+def test_apply_profile_maps_kotelo_via_default_profile():
+    """Kotelo (enclosed cable trunking) maps to IfcCableCarrierSegment with
+    CABLETRUNKINGSEGMENT — distinct from the open LADDER/TRAY shelves."""
+    profile = load_default_profile()
+    entities = [_sample_line_record(layer="KYL-KOTELO-1200")]
+    mapped = apply_profile(entities, profile)
+    kotelo = {m.layer: m for m in mapped}["KYL-KOTELO-1200"]
+    assert kotelo.ifc_type == "IfcCableCarrierSegment"
+    assert kotelo.predefined_type == "CABLETRUNKINGSEGMENT"
+    assert kotelo.talotekniikka_code == "T-TATE-01-01-001"
+
+
 def test_apply_profile_propagates_system_name_to_extra_props():
     profile = Profile(
         name="system",
