@@ -25,7 +25,7 @@ from dwg2ifc.core.updater import (
     download_asset,
     fetch_expected_sha256,
     is_running_bundled,
-    schedule_replace_and_restart,
+    replace_exe,
 )
 
 
@@ -216,16 +216,14 @@ def perform_update(
     dialog = UpdateProgressDialog(info, parent)
 
     def on_ok(downloaded_path: Path) -> None:
-        # Surface progress before the swap+spawn so the user knows the
-        # app is closing on purpose — the previous flow shut the window
-        # silently and made the (multi-second) restart wait look like a
-        # crash.
-        dialog.setLabelText("Asennetaan päivitys ja käynnistetään uudelleen…")
+        # Tell the user the swap is happening before doing it so the
+        # closing window doesn't look like a crash.
+        dialog.setLabelText("Asennetaan päivitys…")
         dialog.setCancelButton(None)  # past the point of no return
         dialog.setRange(0, 0)  # indeterminate progress for the swap
         QtWidgets.QApplication.processEvents()
         try:
-            schedule_replace_and_restart(downloaded_path)
+            replace_exe(downloaded_path)
         except Exception as exc:  # noqa: BLE001
             dialog.close()
             QtWidgets.QMessageBox.critical(
@@ -235,15 +233,26 @@ def perform_update(
                 f"Lataa manuaalisesti: {info.release_url}",
             )
             return
+        # No more auto-restart. Spawning the freshly-swapped exe via a
+        # helper process consistently hit "Failed to load Python DLL"
+        # on unsigned PyInstaller onefile builds — the bootloader's
+        # ``_MEI*`` extraction races Windows Defender's real-time scan.
+        # Asking the user to reopen manually side-steps that race: by
+        # the time they double-click the desktop / Start-menu shortcut,
+        # Defender has scanned the new exe and ``LoadLibrary`` succeeds.
+        dialog.close()
+        QtWidgets.QMessageBox.information(
+            parent,
+            "Päivitys asennettu",
+            f"dwg2ifc {info.tag} on nyt asennettu.\n\n"
+            f"Avaa dwg2ifc uudelleen työpöydältä tai Käynnistä-valikosta.",
+        )
         # Skip Qt's normal cleanup chain — the PyInstaller bootloader's
         # _MEI*** cleanup races against the about-to-launch new process
         # and pops a "Failed to remove temporary directory" warning if
         # left to its atexit hooks. ``os._exit`` returns to the OS
         # immediately; Windows reclaims our %TEMP%\\_MEI*** naturally
-        # the next time it sweeps the temp dir. The launcher spawned
-        # by ``schedule_replace_and_restart`` waits a few seconds before
-        # invoking the new exe, so by the time its bootloader extracts
-        # we are fully gone and Defender has finished scanning.
+        # the next time it sweeps the temp dir.
         os._exit(0)
 
     def on_fail(message: str) -> None:

@@ -6,6 +6,24 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha3 — 2026-05-18 (itsepäivitys ei enää yritä käynnistää itseään)
+
+- **Auto-restart pois itsepäivityksestä.** alpha37:n cmd-launcher
+  korjasi "ei käynnisty ollenkaan" -ongelman, mutta unsigned
+  PyInstaller-onefile-buildin bootloader-race Windows Defenderin
+  reaaliaikatarkistuksen kanssa tuotti yhä `Failed to load Python DLL`
+  -virheen launcher-spawnatussa restartissa. SignPath ei toteudu, joten
+  cleaner ratkaisu on luopua koko auto-restartista: päivitys lataa +
+  vaihtaa exen + näyttää "Päivitys asennettu. Avaa dwg2ifc uudelleen
+  työpöydältä tai Käynnistä-valikosta." -dialogin + sulkee appin.
+  Käyttäjän manuaalinen klikkaus työpöytäpikakuvaketta antaa Defenderille
+  riittävän skannausajan → DLL-race ei laukea.
+- **Tekninen**: `schedule_replace_and_restart` säilyy backward-compat-
+  aliaksena joka kutsuu uutta `replace_exe`:ä — `extra_args` ja
+  `delay_seconds` -parametrit hyväksytään mutta ohitetaan. cmd-launcher-
+  koodi (`_spawn_delayed_launcher` + batch-builderit) jää lähdekoodiin
+  jos joskus tulee allekirjoitettu build jolloin auto-restart toimisi.
+
 ## v0.3.0-alpha2 — 2026-05-18 (näkyvät DXF-jäänteet + launcher-ikkuna piiloon)
 
 - **KORJAUS — itse-päivitys vilkutti hetken cmd-ikkunaa.** v0.3.0a1:n

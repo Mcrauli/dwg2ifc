@@ -532,19 +532,40 @@ class TestSwapHelpers:
         updater.cleanup_old_exe(current)
         assert current.exists()
 
-    def test_schedule_replace_swaps_files_and_spawns(self, tmp_path: Path) -> None:
+    def test_replace_exe_swaps_files_without_spawning(self, tmp_path: Path) -> None:
+        # Auto-restart was dropped — unsigned PyInstaller onefile + Defender
+        # raced reliably enough that asking the user to reopen manually is
+        # the only reliable path. The swap itself must still happen.
         current = tmp_path / "app.exe"
         new = tmp_path / "downloaded.exe"
         current.write_bytes(b"OLD")
         new.write_bytes(b"NEW")
 
         with patch("subprocess.Popen") as popen:
-            updater.schedule_replace_and_restart(new, current_exe=current)
+            updater.replace_exe(new, current_exe=current)
 
         assert current.read_bytes() == b"NEW"
         assert updater._old_path_for(current).read_bytes() == b"OLD"
         assert not new.exists()
-        popen.assert_called_once()
+        popen.assert_not_called()
+
+    def test_schedule_replace_and_restart_is_backward_compat_alias(
+        self, tmp_path: Path
+    ) -> None:
+        # The legacy callable is kept as a thin no-spawn alias so older
+        # plugin code / scripts that imported it keep working.
+        current = tmp_path / "app.exe"
+        new = tmp_path / "downloaded.exe"
+        current.write_bytes(b"OLD")
+        new.write_bytes(b"NEW")
+
+        with patch("subprocess.Popen") as popen:
+            updater.schedule_replace_and_restart(
+                new, current_exe=current, extra_args=["ignored"], delay_seconds=99
+            )
+
+        assert current.read_bytes() == b"NEW"
+        popen.assert_not_called()
 
     def test_schedule_replace_cleans_prior_old(self, tmp_path: Path) -> None:
         current = tmp_path / "app.exe"

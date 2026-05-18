@@ -429,34 +429,28 @@ def _spawn_delayed_launcher(
     )
 
 
-def schedule_replace_and_restart(
+def replace_exe(
     new_exe: Path,
     *,
     current_exe: Path | None = None,
-    extra_args: list[str] | None = None,
-    delay_seconds: int = 5,
 ) -> None:
-    """Swap ``current_exe`` for ``new_exe`` and schedule a delayed restart.
+    """Swap ``current_exe`` for ``new_exe``. No restart, no helper process.
 
     Caller is responsible for quitting the Qt event loop right after
     this returns so that the OS releases the ``.old`` handle. The
-    helper is synchronous: by the time it returns, ``current_exe``
-    points at the new bytes and a detached PowerShell launcher has
-    been spawned that will run the new exe ``delay_seconds`` later.
-
-    The delay (3 s default) lets the outgoing process release the
-    ``.old`` exe handle and gives Windows Defender time to finish its
-    real-time scan on the freshly-written current exe — both observed
-    contributors to "Failed to start embedded python interpreter" right
-    after self-update.
+    user reopens the app manually from the desktop / Start menu —
+    that delay gives Windows Defender ample time to finish its
+    real-time scan of the freshly-written exe, side-stepping the
+    "Failed to load Python DLL" race that an automatic restart used
+    to trigger on unsigned onefile PyInstaller builds.
 
     Raises :class:`RuntimeError` if not running inside a bundled exe.
     """
     if current_exe is None:
         if not is_running_bundled():
             raise RuntimeError(
-                "schedule_replace_and_restart requires a frozen exe; "
-                "running from source has nothing meaningful to swap."
+                "replace_exe requires a frozen exe; running from source "
+                "has nothing meaningful to swap."
             )
         current_exe = Path(sys.executable)
 
@@ -474,12 +468,29 @@ def schedule_replace_and_restart(
 
     # Windows quirk: os.rename on the running exe succeeds; the OS
     # tracks the file by handle, not by path. Once the running process
-    # exits, the .old file becomes deletable.
+    # exits, the .old file becomes deletable on next launch via
+    # ``cleanup_old_exe``.
     current_exe.rename(old_path)
     shutil.move(str(new_exe), str(current_exe))
 
-    _spawn_delayed_launcher(
-        current_exe,
-        extra_args=extra_args,
-        delay_seconds=delay_seconds,
-    )
+
+def schedule_replace_and_restart(
+    new_exe: Path,
+    *,
+    current_exe: Path | None = None,
+    extra_args: list[str] | None = None,
+    delay_seconds: int = 5,
+) -> None:
+    """Deprecated thin alias around :func:`replace_exe`.
+
+    Kept for backward compatibility; the auto-restart attempt was
+    dropped because unsigned PyInstaller onefile bootloaders racing
+    Windows Defender's real-time scan reliably surface "Failed to
+    load Python DLL" on the launcher-spawned restart. Asking the
+    user to reopen manually side-steps that race entirely.
+
+    The ``extra_args`` and ``delay_seconds`` parameters are accepted
+    but ignored — no helper process is spawned anymore.
+    """
+    del extra_args, delay_seconds  # no-op for backward compatibility
+    replace_exe(new_exe, current_exe=current_exe)
