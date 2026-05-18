@@ -4,20 +4,28 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha34 (2026-05-14)
+## Current state — v0.2.0-alpha35 (2026-05-18)
 
-Tuorein julkaistu: **v0.2.0-alpha34** (2026-05-14).
+Tuorein julkaistu: **v0.2.0-alpha35** (2026-05-18).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a34.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a34.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a35.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a35.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–34:n korjaukset tiivistettynä (täysi historia
+Alpha8–35:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha35** (2026-05-18): **KORJAUS — negatiivisessa Z:ssä olevat
+  3DSOLID-laitteet litistyivät kerroskorkoon.** AutoCAD:n `STLOUT`
+  kieltäytyy kirjoittamasta geometriaa Z=0:n alapuolelle ja siirtää
+  kappaleen +Z:ssä ylös; korjaus lukee jokaisen ACIS-bodyn todellisen
+  maailmankoordinaatti-min-Z:n DXF:stä ezdxf:n ACIS-purulla (SAT + SAB)
+  ja kumoaa siirron meshikohtaisesti. Myös uusi `KYL-KOTELO*`-mappaus
+  → `IfcCableCarrierSegment` / `CABLETRUNKINGSEGMENT` koteloiduille
+  kaapelireiteille.
 - **alpha34** (2026-05-14): **Profiilieditori käyttökelpoisemmaksi** —
   hakukenttä + rivilaskuri + selkeä scrollipalkki sääntötaulukkoon,
   täysi IFC-tyyppivalikko (`SUPPORTED_IFC_TYPES`, 11 → ~29 tyyppiä,

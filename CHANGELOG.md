@@ -6,6 +6,8 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha35 — 2026-05-18 (negatiivisen Z:n STLOUT-korjaus + KYL-KOTELO-mappaus)
+
 - **KORJAUS — negatiivisessa Z:ssä olevat 3DSOLID-laitteet litistyivät
   kerroskorkoon.** AutoCAD:n `STLOUT` kieltäytyy kirjoittamasta
   geometriaa datumin (Z=0) alapuolelle: se siirtää koko kappaleen +Z:ssä
