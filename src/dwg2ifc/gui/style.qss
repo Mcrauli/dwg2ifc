@@ -1,4 +1,4 @@
-/* dxf2ifc brand stylesheet (Plan D Task 5).
+/* dwg2ifc brand stylesheet (Plan D Task 5).
    Mirrors the autocad-lisp-ohjeet site palette and typography:
    slate gradient background, amber primary, blue secondary,
    Inter for body / Space Grotesk for headings / JetBrains Mono for code. */

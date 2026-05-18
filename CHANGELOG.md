@@ -6,6 +6,28 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha2 — 2026-05-18 (näkyvät DXF-jäänteet + launcher-ikkuna piiloon)
+
+- **KORJAUS — itse-päivitys vilkutti hetken cmd-ikkunaa.** v0.3.0a1:n
+  `DETACHED_PROCESS | CREATE_NO_WINDOW`-kombo on Microsoftin
+  dokumentaation mukaan toisensa poissulkeva: `CREATE_NO_WINDOW`
+  jätetään huomiotta kun `DETACHED_PROCESS` on asetettu, ja cmd.exe
+  saa silti konsoli-ikkunan. Tilalle canonical hidden-console-child-
+  resepti: `STARTUPINFO.dwFlags |= STARTF_USESHOWWINDOW` +
+  `wShowWindow = SW_HIDE` + `CREATE_NO_WINDOW`. Cmd-child elää
+  edelleen vanhemman `os._exit`-kutsun yli (Windows ei kasvattele
+  prosessikuolemia ilman job objectia).
+- **GUI-stringit DXF → DWG/DXF**: alpha1 jätti kolme näkyvää
+  jäännettä — About-dialogin teksti ("AutoCAD DXF → IFC 4 …"),
+  pääikkunan caption ja CLI:n `--help`-description sanoivat vielä
+  pelkkää "DXF". Nyt "DWG/DXF" kuvaa todellista syötetukea.
+  `style.qss`:n kommentti `/* dxf2ifc brand stylesheet */` siistitty.
+- **Itse-päivityksen viive 3 s → 5 s**: mitigoi unsigned PyInstaller-
+  onefile-buildin + Windows Defenderin reaaliaikatarkistuksen välistä
+  race-conditionia (`Failed to load Python DLL`-virhe). Ei lopullinen
+  korjaus — käyttäjälle suositeltava polku jos virhe toistuu: tuplaklikkaa
+  exe uudestaan, Defender on ehtinyt skannata ja toinen yritys onnistuu.
+
 ## v0.3.0-alpha1 — 2026-05-18 (rebrand `dxf2ifc` → `dwg2ifc`)
 
 - **Projekti uudelleennimetty.** DWG on alpha21:stä lähtien ollut

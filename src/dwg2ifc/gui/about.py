@@ -15,7 +15,7 @@ class AboutDialog(QtWidgets.QDialog):
         version = importlib.metadata.version("dwg2ifc")
         self._summary = (
             f"<h1>dwg2ifc {version}</h1>"
-            "<p>AutoCAD DXF → IFC 4 -konvertteri suomalaiseen "
+            "<p>AutoCAD DWG/DXF → IFC 4 -konvertteri suomalaiseen "
             "kylmäsuunnitteluun (RAVA3Pro).</p>"
             '<p><a href="https://mcrauli.github.io/autocad-lisp-ohjeet/dwg2ifc.html">'
             "Käyttöohjeet ja lataukset</a></p>"

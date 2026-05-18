@@ -38,7 +38,7 @@ def _parse_floor_arg(value: str, *, default_index: int) -> FileEntry:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="dwg2ifc",
-        description="Convert AutoCAD DXF drawings to IFC 4 for refrigeration design (RAVA3Pro classification).",
+        description="Convert AutoCAD DWG/DXF drawings to IFC 4 for refrigeration design (RAVA3Pro classification).",
     )
     parser.add_argument("--version", action="version", version=f"dwg2ifc {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)

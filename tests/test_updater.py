@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import subprocess
 from pathlib import Path
 from unittest.mock import patch
 
@@ -474,6 +475,27 @@ class TestSpawnDelayedLauncher:
         assert str(log_path) in script
         # At minimum: pre-sleep, pre-launch and post-launch breadcrumbs.
         assert script.count(">>") >= 3
+
+    def test_windows_hides_cmd_window_via_startupinfo(self, tmp_path: Path) -> None:
+        # ``CREATE_NO_WINDOW`` alone is not enough — without
+        # ``STARTF_USESHOWWINDOW + SW_HIDE`` Windows still flashes a
+        # console for the cmd child. Users reported the visible flash
+        # after v0.3.0-alpha1; this guards against the regression.
+        import sys as _sys
+        if _sys.platform != "win32":
+            pytest.skip("STARTUPINFO is a win32-only Popen field")
+        exe = tmp_path / "dwg2ifc.exe"
+        exe.write_bytes(b"x")
+        with patch("sys.platform", "win32"):
+            with patch("subprocess.Popen") as popen:
+                updater._spawn_delayed_launcher(exe)
+        kwargs = popen.call_args.kwargs
+        startupinfo = kwargs.get("startupinfo")
+        assert startupinfo is not None, "STARTUPINFO must be set to hide cmd"
+        # SW_HIDE = 0; STARTF_USESHOWWINDOW = 1.
+        assert startupinfo.dwFlags & subprocess.STARTF_USESHOWWINDOW
+        assert startupinfo.wShowWindow == subprocess.SW_HIDE
+        assert kwargs.get("creationflags") == subprocess.CREATE_NO_WINDOW
 
     def test_non_windows_spawns_directly_without_helper(
         self, tmp_path: Path

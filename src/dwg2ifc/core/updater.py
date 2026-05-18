@@ -353,7 +353,7 @@ def _spawn_delayed_launcher(
     current_exe: Path,
     *,
     extra_args: list[str] | None = None,
-    delay_seconds: int = 3,
+    delay_seconds: int = 5,
 ) -> None:
     """Spawn a hidden helper that waits ``delay_seconds`` then starts ``current_exe``.
 
@@ -408,13 +408,23 @@ def _spawn_delayed_launcher(
     except OSError:
         pass
 
-    DETACHED_PROCESS = 0x00000008
-    CREATE_NEW_PROCESS_GROUP = 0x00000200
-    CREATE_NO_WINDOW = 0x08000000
-    flags = DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW
+    # Hide the cmd window completely. ``CREATE_NO_WINDOW`` alone is not
+    # enough — Windows still flashes a console for cmd.exe unless the
+    # STARTUPINFO explicitly asks for SW_HIDE. ``DETACHED_PROCESS`` was
+    # the previous attempt but it is mutually exclusive with
+    # ``CREATE_NO_WINDOW`` (the latter is ignored when the former is set)
+    # and the visible console flash users reported confirms it. The
+    # canonical hidden-console-child recipe on Windows is
+    # ``STARTF_USESHOWWINDOW + SW_HIDE`` *plus* ``CREATE_NO_WINDOW``. The
+    # cmd child survives our ``os._exit`` regardless — Windows does not
+    # cascade-kill non-job-tracked children when the parent terminates.
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startupinfo.wShowWindow = subprocess.SW_HIDE
     subprocess.Popen(
         ["cmd.exe", "/c", str(batch_path)],
-        creationflags=flags,
+        startupinfo=startupinfo,
+        creationflags=subprocess.CREATE_NO_WINDOW,
         close_fds=True,
     )
 
@@ -424,7 +434,7 @@ def schedule_replace_and_restart(
     *,
     current_exe: Path | None = None,
     extra_args: list[str] | None = None,
-    delay_seconds: int = 3,
+    delay_seconds: int = 5,
 ) -> None:
     """Swap ``current_exe`` for ``new_exe`` and schedule a delayed restart.
 
