@@ -216,10 +216,18 @@ def perform_update(
     dialog = UpdateProgressDialog(info, parent)
 
     def on_ok(downloaded_path: Path) -> None:
-        dialog.close()
+        # Surface progress before the swap+spawn so the user knows the
+        # app is closing on purpose — the previous flow shut the window
+        # silently and made the (multi-second) restart wait look like a
+        # crash.
+        dialog.setLabelText("Asennetaan päivitys ja käynnistetään uudelleen…")
+        dialog.setCancelButton(None)  # past the point of no return
+        dialog.setRange(0, 0)  # indeterminate progress for the swap
+        QtWidgets.QApplication.processEvents()
         try:
             schedule_replace_and_restart(downloaded_path)
         except Exception as exc:  # noqa: BLE001
+            dialog.close()
             QtWidgets.QMessageBox.critical(
                 parent,
                 "Päivitys epäonnistui",

@@ -25,6 +25,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -291,9 +292,61 @@ def cleanup_old_exe(exe_path: Path | None = None) -> None:
         pass
 
 
-def _ps_quote(s: str) -> str:
-    """Escape a string for use inside a PowerShell single-quoted literal."""
-    return "'" + s.replace("'", "''") + "'"
+def _restart_log_path() -> Path:
+    """Where the delayed-launcher writes its breadcrumb log.
+
+    Single fixed location in ``%TEMP%`` so users (and bug reports) can
+    find evidence of a silent restart failure without hunting through
+    per-launch temp dirs.
+    """
+    return Path(tempfile.gettempdir()) / "dxf2ifc_restart.log"
+
+
+def _cmd_quote(s: str) -> str:
+    """Escape a string for use as a double-quoted cmd.exe argument.
+
+    cmd.exe has no real escaping — embedded ``"`` is the only character
+    that breaks parsing; replace it with the conventional empty
+    ``""`` (``cmd /c`` interprets ``""`` inside a quoted string as a
+    literal ``"``). Path strings authored by Windows itself never
+    contain ``"``, so this is overwhelmingly a no-op in practice.
+    """
+    return '"' + s.replace('"', '""') + '"'
+
+
+def _build_restart_batch(
+    current_exe: Path,
+    extra_args: list[str] | None,
+    delay_seconds: int,
+    log_path: Path,
+) -> str:
+    """Build the cmd.exe batch script the delayed launcher executes.
+
+    The batch sleeps, launches the new exe via ``start ""`` (detached
+    from cmd, so cmd can exit without waiting), and self-deletes the
+    batch file afterwards. Every step writes a breadcrumb to
+    ``log_path`` so silent failures (Defender quarantine, locked file,
+    missing exe) can be diagnosed from a stable location.
+    """
+    args_quoted = ""
+    if extra_args:
+        args_quoted = " " + " ".join(_cmd_quote(a) for a in extra_args)
+    exe_quoted = _cmd_quote(str(current_exe))
+    log_quoted = _cmd_quote(str(log_path))
+    lines = [
+        "@echo off",
+        f"echo [%date% %time%] launcher started, will wait {delay_seconds}s >> {log_quoted}",
+        f"timeout /t {delay_seconds} /nobreak >nul 2>&1",
+        f"echo [%date% %time%] launching {exe_quoted}{args_quoted} >> {log_quoted}",
+        f"start \"\" {exe_quoted}{args_quoted}",
+        f"if errorlevel 1 (echo [%date% %time%] start FAILED errorlevel=%errorlevel% >> {log_quoted}) else (echo [%date% %time%] start ok >> {log_quoted})",
+        "(goto) 2>nul & del \"%~f0\"",
+    ]
+    # cmd.exe expects CRLF line endings and the OEM codepage; Lauri's
+    # install paths are ASCII so the codepage rarely matters, but
+    # writing as cp1252 keeps Finnish characters in env-derived paths
+    # (e.g. usernames with ä/ö) intact for the breadcrumb log.
+    return "\r\n".join(lines) + "\r\n"
 
 
 def _spawn_delayed_launcher(
@@ -313,7 +366,17 @@ def _spawn_delayed_launcher(
     Defender real-time scanning the freshly-downloaded unsigned exe at
     the same time as its bootloader extracts to ``%TEMP%``.
 
-    On Windows the helper is a hidden ``powershell.exe`` invocation.
+    On Windows the helper is a self-deleting ``.cmd`` batch invoked via
+    a detached ``cmd.exe`` child. cmd is preferred over powershell here
+    because the previous powershell-based launcher failed silently on
+    some users' machines (suspected execution-policy or ``Start-Process``
+    quirks under ``-NonInteractive``), leaving the app shut down with
+    no restart. cmd has no execution policy, no profile, and ``start ""``
+    is the canonical Windows way to spawn a detached GUI process.
+
+    A breadcrumb log is appended to ``%TEMP%\\dxf2ifc_restart.log`` on
+    every step so a silent failure leaves diagnosable evidence.
+
     Non-Windows platforms fall back to a direct detached spawn (no
     delay) — we don't ship bundled binaries there, so race conditions
     do not apply; the path exists for tests on dev machines.
@@ -326,31 +389,31 @@ def _spawn_delayed_launcher(
         )
         return
 
-    exe_quoted = _ps_quote(str(current_exe))
-    if extra_args:
-        args_list = ", ".join(_ps_quote(a) for a in extra_args)
-        start_cmd = f"Start-Process -FilePath {exe_quoted} -ArgumentList {args_list}"
-    else:
-        start_cmd = f"Start-Process -FilePath {exe_quoted}"
-
-    script = (
-        f"$ErrorActionPreference='SilentlyContinue'; "
-        f"Start-Sleep -Seconds {delay_seconds}; "
-        f"{start_cmd}"
+    log_path = _restart_log_path()
+    batch_dir = Path(tempfile.mkdtemp(prefix="dxf2ifc_restart_"))
+    batch_path = batch_dir / "restart.cmd"
+    batch_path.write_text(
+        _build_restart_batch(current_exe, extra_args, delay_seconds, log_path),
+        encoding="cp1252",
     )
+
+    # Best-effort log entry on the Python side: confirms the spawn was
+    # at least attempted even if cmd never runs.
+    try:
+        with log_path.open("a", encoding="cp1252") as fh:
+            fh.write(
+                f"[python] spawning {batch_path} for {current_exe} "
+                f"(delay={delay_seconds}s)\r\n"
+            )
+    except OSError:
+        pass
 
     DETACHED_PROCESS = 0x00000008
     CREATE_NEW_PROCESS_GROUP = 0x00000200
     CREATE_NO_WINDOW = 0x08000000
     flags = DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW
     subprocess.Popen(
-        [
-            "powershell.exe",
-            "-NoProfile",
-            "-NonInteractive",
-            "-WindowStyle", "Hidden",
-            "-Command", script,
-        ],
+        ["cmd.exe", "/c", str(batch_path)],
         creationflags=flags,
         close_fds=True,
     )

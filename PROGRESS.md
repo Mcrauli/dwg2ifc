@@ -4,20 +4,29 @@ Volatile state — current build + known facts + open todos. Yksityiskohtainen
 versiohistoria löytyy [`CHANGELOG.md`](CHANGELOG.md):stä, ja Plan A→H +
 Build #1–#36 -arkisto on [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md):ssä.
 
-## Current state — v0.2.0-alpha36 (2026-05-18)
+## Current state — v0.2.0-alpha37 (2026-05-18)
 
-Tuorein julkaistu: **v0.2.0-alpha36** (2026-05-18).
+Tuorein julkaistu: **v0.2.0-alpha37** (2026-05-18).
 Pre-release-vaiheessa GitHub Releases:ssä — itsepäivitysbanneri tarjoaa
 sen automaattisesti kun käyttäjä avaa GUI:n.
 
 Pakkaukset:
-- `dxf2ifc-Setup-0.2.0a36.exe` — Inno Setup -installer
-- `dxf2ifc-0.2.0a36.exe` — paljas exe
+- `dxf2ifc-Setup-0.2.0a37.exe` — Inno Setup -installer
+- `dxf2ifc-0.2.0a37.exe` — paljas exe
 - `*.sha256` -checksumit + `LICENSES.md`
 
-Alpha8–36:n korjaukset tiivistettynä (täysi historia
+Alpha8–37:n korjaukset tiivistettynä (täysi historia
 [`CHANGELOG.md`](CHANGELOG.md):ssä):
 
+- **alpha37** (2026-05-18): **KORJAUS — GUI:n itsepäivitys ei
+  käynnistänyt appia uudestaan.** Hidden powershell + `Start-Process`
+  -pohjainen viivelauncher kuoli hiljaisesti joillain Windows-
+  asennuksilla (execution policy / `-NonInteractive`-quirkit). Tilalle
+  cmd-pohjainen launcher (`cmd /c restart.cmd` + `timeout` + `start ""`),
+  joka on canonical Windowsin detached-spawn ilman policy-pulmia. Lisäksi
+  näkyvä "Asennetaan päivitys ja käynnistetään uudelleen…" -status
+  dialogissa + breadcrumb-log `%TEMP%\dxf2ifc_restart.log`:iin silent
+  failures -diagnoosia varten.
 - **alpha36** (2026-05-18): **KORJAUS — KYL-KOTELOn leveä yläseinämä
   näytti vajoavan sisäänpäin.** `_aggregate_3dface_from_insert`-funktion
   `block_max_top`-laskenta käytti `max(polyline_elev) +

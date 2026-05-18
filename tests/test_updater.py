@@ -387,11 +387,17 @@ class TestFetchExpectedSha256:
 
 
 class TestSpawnDelayedLauncher:
-    """The PowerShell launcher delays the new exe's start to side-step
+    """The cmd-based launcher delays the new exe's start to side-step
     "Failed to start embedded python interpreter" right after self-update
-    (Defender real-time scan + outgoing process not fully released)."""
+    (Defender real-time scan + outgoing process not fully released).
 
-    def test_windows_invokes_powershell_with_hidden_window(
+    cmd is preferred over the historical powershell launcher because the
+    latter failed silently on some users' machines (suspected execution-
+    policy or ``Start-Process`` quirks under ``-NonInteractive``),
+    leaving the app shut down with no restart and no diagnostic trail.
+    """
+
+    def test_windows_invokes_cmd_with_self_deleting_batch(
         self, tmp_path: Path
     ) -> None:
         exe = tmp_path / "dxf2ifc.exe"
@@ -402,37 +408,48 @@ class TestSpawnDelayedLauncher:
         popen.assert_called_once()
         args, kwargs = popen.call_args
         cmd = args[0]
-        assert cmd[0] == "powershell.exe"
-        # WindowStyle Hidden + NonInteractive prevent a visible flash.
-        assert "-WindowStyle" in cmd and "Hidden" in cmd
-        assert "-NonInteractive" in cmd
-        assert "-NoProfile" in cmd
-        # Script body asks Start-Sleep with the requested delay and
-        # then Start-Process-launches the (single-quoted) exe path.
-        script = cmd[cmd.index("-Command") + 1]
-        assert "Start-Sleep -Seconds 3" in script
-        assert f"Start-Process -FilePath '{exe}'" in script
+        assert cmd[0] == "cmd.exe"
+        assert cmd[1] == "/c"
+        batch_path = Path(cmd[2])
+        assert batch_path.name == "restart.cmd"
+        script = batch_path.read_text(encoding="cp1252")
+        # Sleep with the requested delay, then start the exe detached
+        # via ``start ""`` (so cmd can exit without waiting on the GUI).
+        assert "timeout /t 3 /nobreak" in script
+        assert f'start "" "{exe}"' in script
+        # The batch self-deletes so we don't accumulate %TEMP% cruft.
+        assert "del " in script
 
-    def test_windows_passes_delay_into_script(self, tmp_path: Path) -> None:
+    def test_windows_passes_delay_into_batch(self, tmp_path: Path) -> None:
         exe = tmp_path / "dxf2ifc.exe"
         exe.write_bytes(b"x")
         with patch("sys.platform", "win32"):
             with patch("subprocess.Popen") as popen:
                 updater._spawn_delayed_launcher(exe, delay_seconds=7)
-        script = popen.call_args[0][0][popen.call_args[0][0].index("-Command") + 1]
-        assert "Start-Sleep -Seconds 7" in script
+        script = Path(popen.call_args[0][0][2]).read_text(encoding="cp1252")
+        assert "timeout /t 7 /nobreak" in script
 
-    def test_windows_quotes_paths_with_apostrophe(self, tmp_path: Path) -> None:
-        # PowerShell single-quoted strings escape ' as ''.
-        exe = tmp_path / "wei'rd.exe"
+    def test_cmd_quote_escapes_embedded_double_quote(self) -> None:
+        # cmd has no real escape character; the conventional dodge is to
+        # double the quote: ``""`` inside a quoted string. Real Windows
+        # filenames cannot contain ``"`` so this guards against pathological
+        # user-supplied extra_args rather than realistic exe paths.
+        assert updater._cmd_quote('C:\\Path\\app.exe') == '"C:\\Path\\app.exe"'
+        assert updater._cmd_quote('a"b') == '"a""b"'
+
+    def test_windows_quotes_paths_with_spaces(self, tmp_path: Path) -> None:
+        # Spaces are the realistic Program Files / OneDrive case.
+        sub = tmp_path / "Program Files" / "dxf2ifc"
+        sub.mkdir(parents=True)
+        exe = sub / "dxf2ifc.exe"
         exe.write_bytes(b"x")
         with patch("sys.platform", "win32"):
             with patch("subprocess.Popen") as popen:
                 updater._spawn_delayed_launcher(exe)
-        script = popen.call_args[0][0][popen.call_args[0][0].index("-Command") + 1]
-        assert "'" + str(exe).replace("'", "''") + "'" in script
+        script = Path(popen.call_args[0][0][2]).read_text(encoding="cp1252")
+        assert f'start "" "{exe}"' in script
 
-    def test_windows_includes_extra_args(self, tmp_path: Path) -> None:
+    def test_windows_includes_extra_args_quoted(self, tmp_path: Path) -> None:
         exe = tmp_path / "dxf2ifc.exe"
         exe.write_bytes(b"x")
         with patch("sys.platform", "win32"):
@@ -440,10 +457,25 @@ class TestSpawnDelayedLauncher:
                 updater._spawn_delayed_launcher(
                     exe, extra_args=["convert", "in.dxf"]
                 )
-        script = popen.call_args[0][0][popen.call_args[0][0].index("-Command") + 1]
-        assert "-ArgumentList 'convert', 'in.dxf'" in script
+        script = Path(popen.call_args[0][0][2]).read_text(encoding="cp1252")
+        assert f'start "" "{exe}" "convert" "in.dxf"' in script
 
-    def test_non_windows_spawns_directly_without_powershell(
+    def test_windows_writes_breadcrumb_log_path(self, tmp_path: Path) -> None:
+        # Every step in the batch appends to a single stable log path so a
+        # silent failure (Defender quarantine, locked file, missing exe)
+        # leaves diagnosable evidence in %TEMP%\dxf2ifc_restart.log.
+        exe = tmp_path / "dxf2ifc.exe"
+        exe.write_bytes(b"x")
+        with patch("sys.platform", "win32"):
+            with patch("subprocess.Popen") as popen:
+                updater._spawn_delayed_launcher(exe)
+        script = Path(popen.call_args[0][0][2]).read_text(encoding="cp1252")
+        log_path = updater._restart_log_path()
+        assert str(log_path) in script
+        # At minimum: pre-sleep, pre-launch and post-launch breadcrumbs.
+        assert script.count(">>") >= 3
+
+    def test_non_windows_spawns_directly_without_helper(
         self, tmp_path: Path
     ) -> None:
         exe = tmp_path / "dxf2ifc"

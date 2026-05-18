@@ -6,6 +6,26 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.2.0-alpha37 — 2026-05-18 (itsepäivityksen uudelleenkäynnistys toimii)
+
+- **KORJAUS — GUI:n itsepäivitys sulki appin mutta ei käynnistänyt sitä
+  uudestaan.** Vanha viivästetty launcher käytti hidden powershell.exe:tä +
+  ``Start-Process``-cmdlet:iä; jollain Windows-asennuksilla (execution-
+  policy ``Restricted`` / ``AllSigned`` tai ``-NonInteractive``-yhteensopivuus-
+  ongelma) launcher kuoli hiljaisesti eikä uutta exeä koskaan startannut.
+  Tilalle cmd-pohjainen launcher: ``cmd.exe /c restart.cmd`` jossa
+  ``timeout /t 3 /nobreak`` + ``start "" "<exe>"`` (canonical Windowsin
+  detached-spawn) + itsensä poistava .cmd. Ei execution policya, ei
+  profile-latausta, ei interaktiivisuus-quirkeja.
+- **Näkyvä status päivityksen lopussa**: latauksen valmistuttua dialogi
+  vaihtaa tekstiin "Asennetaan päivitys ja käynnistetään uudelleen…" +
+  indeterminate-progress + Peruuta-nappi pois. Käyttäjä näkee ettei
+  appin sulkeutuminen ole kaatuminen, vaan tarkoituksellinen viive.
+- **Breadcrumb-log silent failure -tapauksiin**: launcher kirjoittaa
+  jokaisesta vaiheesta ``%TEMP%\\dxf2ifc_restart.log``:iin (sleep,
+  launch, errorlevel) jotta myöhempiä silent-failures voi
+  diagnosoida ilman patchatun build:n lähettämistä takaisin.
+
 ## v0.2.0-alpha36 — 2026-05-18 (KYL-KOTELO geometria + FI_*-PSetit täydennetty)
 
 - **KORJAUS — kotelon leveä yläseinämä näytti vajoavan sisäänpäin
