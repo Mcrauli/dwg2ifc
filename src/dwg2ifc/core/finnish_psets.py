@@ -326,6 +326,54 @@ _FI_TEKNINEN_DEFAULTS: dict[str, dict[str, str]] = {
 }
 
 
+# Per-IFC-type fallback for FI_Tuote "Tuotetyypin nimi" — a human-
+# readable device label that appears in Solibri whenever the profile
+# rule does not supply its own ``fi_tuote.nimi`` and the user has not
+# added a per-instance ATTRIB override. Lets Solibri's tuoteosa view
+# always answer "what device is this?" at a glance.
+#
+# Layer-specific names (KYL-LEVYHYLLY → "Levyhylly", KYL-KOTELO →
+# "Kotelo") come from profile TOML rules and override this fallback.
+_FI_TUOTE_DEFAULT_NIMI: dict[str, str] = {
+    "IfcEvaporator": "Höyrystin",
+    "IfcCondenser": "Lauhdutin",
+    "IfcCompressor": "Kompressori",
+    "IfcUnitaryEquipment": "Koneikko",
+    "IfcChiller": "Vesijäähdytin",
+    "IfcCoil": "Kierukka",
+    "IfcCoolingTower": "Jäähdytystorni",
+    "IfcTank": "Säiliö",
+    "IfcFlowController": "Säädin",
+    "IfcSensor": "Anturi",
+    "IfcAlarm": "Hälytin",
+    "IfcCommunicationsAppliance": "Tiedonsiirtolaite",
+    "IfcElectricDistributionBoard": "Sähkökeskus",
+    "IfcController": "Ohjain",
+    "IfcSwitchingDevice": "Kytkin",
+    "IfcCableCarrierSegment": "Asennushylly",
+    "IfcPipeSegment": "Putki",
+    "IfcWall": "Seinä",
+    "IfcSlab": "Laatta",
+    "IfcDoor": "Ovi",
+    "IfcWindow": "Ikkuna",
+    "IfcBuildingElementProxy": "Sähkölaite",
+    "IfcFurniture": "Kaluste",
+    "IfcDistributionElement": "Tuoteosa",
+}
+
+
+def fi_tuote_default_nimi(ifc_type: str) -> str | None:
+    """Return the default ``Tuotetyypin nimi`` for a given IFC entity
+    type, or ``None`` when no mapping exists.
+
+    Used as the fallback when the profile rule does not specify
+    ``fi_tuote.nimi`` and no per-instance ATTRIB has overridden it.
+    """
+    if not ifc_type:
+        return None
+    return _FI_TUOTE_DEFAULT_NIMI.get(ifc_type)
+
+
 def fi_tekninen_default_fields(ifc_type: str) -> dict[str, str]:
     """Return the default FI_Tekninen field set for an IFC entity type.
 
@@ -484,12 +532,16 @@ def add_finnish_psets(
     )
 
     # FI_Tuote — always emitted so the Solibri tab is visible. Profile
-    # TOML can supply nimi/kuvaus/valmistaja/etc; otherwise empty.
+    # TOML can supply nimi/kuvaus/valmistaja/etc; "Tuotetyypin nimi"
+    # falls back to a per-IFC-type Finnish device label
+    # (``fi_tuote_default_nimi``) so the tuoteosa view always answers
+    # "what device is this?" instead of an empty placeholder.
     fi_t = mapped.fi_tuote or {}
+    nimi = fi_t.get("nimi") or fi_tuote_default_nimi(mapped.ifc_type)
     add_fi_tuote(
         ifc,
         product,
-        nimi=fi_t.get("nimi"),
+        nimi=nimi,
         kuvaus=fi_t.get("kuvaus"),
         kommentti=fi_t.get("kommentti"),
         valmistaja=fi_t.get("valmistaja"),

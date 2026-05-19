@@ -6,6 +6,33 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha7 — 2026-05-19 (FI_Tuote.Tuotetyypin nimi auto-täyttyy)
+
+- **"Tuotetyypin nimi" -kenttä on aina täytetty** Solibrin tuoteosa-
+  näkymässä: tyhjän placeholderin tilalla on suomenkielinen
+  laitenimike per IFC-tyyppi, kun profiili tai ATTRIB ei aseta omaa
+  arvoa. Käyttäjä näkee yhdellä silmäyksellä mistä laitteesta on kyse.
+  Auto-mappaus:
+  - IfcEvaporator → "Höyrystin"
+  - IfcCondenser → "Lauhdutin"
+  - IfcCompressor → "Kompressori"
+  - IfcUnitaryEquipment → "Koneikko"
+  - IfcChiller → "Vesijäähdytin"
+  - IfcTank → "Säiliö", IfcFlowController → "Säädin"
+  - IfcSensor → "Anturi", IfcAlarm → "Hälytin",
+    IfcElectricDistributionBoard → "Sähkökeskus", IfcController →
+    "Ohjain", IfcSwitchingDevice → "Kytkin"
+  - IfcCableCarrierSegment → "Asennushylly" (yleinen — KYL-LEVYHYLLY*
+    / KYL-TIKASHYLLY* / KYL-KOTELO* -säännöt ohittavat tämän omilla
+    nimillä "Levyhylly" / "Tikashylly" / "Kotelo")
+  - IfcWall → "Seinä", IfcSlab → "Laatta", IfcDoor → "Ovi",
+    IfcWindow → "Ikkuna", IfcPipeSegment → "Putki",
+    IfcBuildingElementProxy → "Sähkölaite", IfcFurniture → "Kaluste"
+- **Per-laite ATTRIB-tagit FI_Tuotteeseen** (LAITE / VALMISTAJA / …)
+  jätetty myöhemmin — tämä release vain täyttää automaattisesti
+  laitetyypin nimen, käyttäjän per-instanssi-override tulee toisessa
+  releasessa kun tarve vahvistuu.
+
 ## v0.3.0-alpha6 — 2026-05-19 (KORJAUS — mapper menetti ATTRIB-tiedot)
 
 - **KORJAUS — alpha5:n block-ATTRIB-tuki ei toiminut**: `apply_profile`

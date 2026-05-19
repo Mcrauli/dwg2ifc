@@ -237,6 +237,35 @@ def test_fi_tekninen_default_fields_per_ifc_type():
     assert "Eristys" in pipe
 
 
+def test_fi_tuote_default_nimi_per_ifc_type():
+    """Solibri's tuoteosa view should always answer 'what device is
+    this?' — when the profile rule does not supply ``fi_tuote.nimi`` and
+    no ATTRIB overrides it, a Finnish device label is filled in from
+    the IFC type so the field is never just an empty placeholder.
+    """
+    from dwg2ifc.core.finnish_psets import fi_tuote_default_nimi
+
+    # Refrigeration plant equipment — the user-asked-for cases.
+    assert fi_tuote_default_nimi("IfcEvaporator") == "Höyrystin"
+    assert fi_tuote_default_nimi("IfcCondenser") == "Lauhdutin"
+    assert fi_tuote_default_nimi("IfcCompressor") == "Kompressori"
+    assert fi_tuote_default_nimi("IfcUnitaryEquipment") == "Koneikko"
+    # Cooling-equipment family extras.
+    assert fi_tuote_default_nimi("IfcChiller") == "Vesijäähdytin"
+    assert fi_tuote_default_nimi("IfcTank") == "Säiliö"
+    # Cable carrier fallback is a generic label; layer-specific names
+    # ("Levyhylly", "Tikashylly", "Kotelo") still come from the profile
+    # rule when the layer matches a KYL-LEVYHYLLY*/KYL-KOTELO* pattern.
+    assert fi_tuote_default_nimi("IfcCableCarrierSegment") == "Asennushylly"
+    # Architectural elements get Finnish names too so ARK roundtrips
+    # produce a meaningful tuoteosa label.
+    assert fi_tuote_default_nimi("IfcWall") == "Seinä"
+    assert fi_tuote_default_nimi("IfcDoor") == "Ovi"
+    # Unknown types return None — caller leaves the field empty.
+    assert fi_tuote_default_nimi("IfcSpecialUnusedType") is None
+    assert fi_tuote_default_nimi("") is None
+
+
 def test_fi_sijainti_emits_two_fields():
     ifc, product = _make_ifc_with_product()
     add_fi_sijainti(
