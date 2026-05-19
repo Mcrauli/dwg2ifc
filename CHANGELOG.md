@@ -6,6 +6,26 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha4 — 2026-05-19 (FI_Tekninen-kenttien nimiin yksiköt suluissa)
+
+- **Numeerisilla FI_Tekninen-kentillä yksikkö nimen perässä suluissa.**
+  Solibrin tuoteosa-näkymä esitti ennen "Jäähdytysteho: 12.5" — yksikkö
+  jäi kenttänimestä uupumaan ja käyttäjä joutui arvaamaan onko luku
+  W vai kW. Nyt avaimena "Jäähdytysteho (kW)" ja arvona pelkkä numero
+  "12.5". Päivitetyt kentät:
+  - Jäähdytysteho (kW), Lauhdutusteho (kW), Sähköteho (kW), Vastusteho (kW)
+  - Jännite (V), Ilmavirta (m³/h), Ääniteho (dB(A))
+  - Käyttölämpötila (°C), Höyrystymislämpötila (°C), Lauhtumislämpötila (°C)
+  - Jäähdyttävä vaikutus (kW), Eristyspaksuus (mm), Painekestävyys (bar)
+- **Tekstikentät** (Kylmäaine, Materiaali, Pinnoite, Eristys) jätetään
+  ilman yksikköä — eivät ole numeerisia.
+- **Excel-luku** toimii muuttumatta: `_normalise_header` strippaa
+  yksikkö-suluet ennen alias-matchausta, joten "Jäähdytysteho [kW]"
+  -niminen sarake mappautuu yhä oikein uuteen kanoniseen nimeen
+  "Jäähdytysteho (kW)".
+- **Vanhat IFC-tiedostot** säilyttävät vanhat kenttänimet (Solibrissa
+  rinnakkain uusien kanssa); ei kosketa olemassaolevia tiedostoja.
+
 ## v0.3.0-alpha3 — 2026-05-18 (itsepäivitys ei enää yritä käynnistää itseään)
 
 - **Auto-restart pois itsepäivityksestä.** alpha37:n cmd-launcher

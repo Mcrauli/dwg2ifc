@@ -276,34 +276,38 @@ def add_fi_tuote(
 # refrigeration fields on a shelf. User can override the entire set via
 # TOML (``fi_tekninen = { ... }``).
 _FI_TEKNINEN_DEFAULTS: dict[str, dict[str, str]] = {
+    # Numeerisilla teho-/sähkö-/virtauskentillä yksikkö nimen perässä
+    # suluissa (Solibri näyttää sen avaimena, ja arvo jää puhtaaksi
+    # numeroksi). Tekstikentät (Kylmäaine, Materiaali, Pinnoite,
+    # Eristys) jätetään ilman yksikköä.
     "IfcEvaporator": {
-        "Jäähdytysteho": "",
-        "Sähköteho": "",
-        "Vastusteho": "",
-        "Jännite": "",
+        "Jäähdytysteho (kW)": "",
+        "Sähköteho (kW)": "",
+        "Vastusteho (kW)": "",
+        "Jännite (V)": "",
         "Kylmäaine": "",
-        "Ilmavirta": "",
-        "Ääniteho": "",
-        "Käyttölämpötila": "",
-        "Jäähdyttävä vaikutus": "",
+        "Ilmavirta (m³/h)": "",
+        "Ääniteho (dB(A))": "",
+        "Käyttölämpötila (°C)": "",
+        "Jäähdyttävä vaikutus (kW)": "",
     },
     "IfcCondenser": {
-        "Lauhdutusteho": "",
-        "Sähköteho": "",
-        "Vastusteho": "",
-        "Jännite": "",
+        "Lauhdutusteho (kW)": "",
+        "Sähköteho (kW)": "",
+        "Vastusteho (kW)": "",
+        "Jännite (V)": "",
         "Kylmäaine": "",
-        "Ilmavirta": "",
-        "Ääniteho": "",
-        "Käyttölämpötila": "",
+        "Ilmavirta (m³/h)": "",
+        "Ääniteho (dB(A))": "",
+        "Käyttölämpötila (°C)": "",
     },
     "IfcCompressor": {
-        "Jäähdytysteho": "",
-        "Sähköteho": "",
+        "Jäähdytysteho (kW)": "",
+        "Sähköteho (kW)": "",
         "Kylmäaine": "",
-        "Höyrystymislämpötila": "",
-        "Lauhtumislämpötila": "",
-        "Ääniteho": "",
+        "Höyrystymislämpötila (°C)": "",
+        "Lauhtumislämpötila (°C)": "",
+        "Ääniteho (dB(A))": "",
     },
     "IfcCableCarrierSegment": {
         # Hyllyt: Lauri:n päätös 2026-05-08 — vain matsku + pinnoite
@@ -316,8 +320,8 @@ _FI_TEKNINEN_DEFAULTS: dict[str, dict[str, str]] = {
     "IfcPipeSegment": {
         "Materiaali": "",
         "Eristys": "",
-        "Eristyspaksuus": "",
-        "Painekestävyys": "",
+        "Eristyspaksuus (mm)": "",
+        "Painekestävyys (bar)": "",
     },
 }
 

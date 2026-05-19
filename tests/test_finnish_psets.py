@@ -217,7 +217,7 @@ def test_fi_tekninen_default_fields_per_ifc_type():
     from dwg2ifc.core.finnish_psets import fi_tekninen_default_fields
 
     evap = fi_tekninen_default_fields("IfcEvaporator")
-    assert "Jäähdytysteho" in evap
+    assert "Jäähdytysteho (kW)" in evap
     assert "Kylmäaine" in evap
 
     shelf = fi_tekninen_default_fields("IfcCableCarrierSegment")
@@ -230,7 +230,7 @@ def test_fi_tekninen_default_fields_per_ifc_type():
     assert "Paino" not in shelf
     assert "Kuormitus" not in shelf
     # Refrigeration fields must NOT leak onto shelves.
-    assert "Jäähdytysteho" not in shelf
+    assert "Jäähdytysteho (kW)" not in shelf
 
     pipe = fi_tekninen_default_fields("IfcPipeSegment")
     assert "Materiaali" in pipe

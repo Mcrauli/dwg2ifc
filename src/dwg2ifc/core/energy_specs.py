@@ -35,8 +35,13 @@ from typing import Any, Iterable
 # Canonical FI_Tekninen field name → list of recognised aliases.
 # Matching is case-insensitive against the column header after stripping
 # whitespace, brackets, and the unit ("[kW]", "(kW)" etc.).
+# Canonical FI_Tekninen field names carry the unit suffix in parentheses
+# ("Jäähdytysteho (kW)") so Solibri's tuoteosa view shows the unit
+# alongside the bare numeric value. The alias tuples stay unit-stripped
+# because ``_normalise_header`` strips brackets/parens from Excel
+# headers before matching — "Jäähdytysteho [kW]" still matches.
 _FIELD_ALIASES: dict[str, tuple[str, ...]] = {
-    "Jäähdytysteho": (
+    "Jäähdytysteho (kW)": (
         "jäähdytysteho",
         "jaahdytysteho",
         "jäähdytys",
@@ -50,7 +55,7 @@ _FIELD_ALIASES: dict[str, tuple[str, ...]] = {
         "qe",
         "qe_kw",
     ),
-    "Lauhdutusteho": (
+    "Lauhdutusteho (kW)": (
         "lauhdutusteho",
         "lauhdutus teho",
         "lauhdutus",
@@ -59,7 +64,7 @@ _FIELD_ALIASES: dict[str, tuple[str, ...]] = {
         "condensing capacity",
         "condenser power",
     ),
-    "Sähköteho": (
+    "Sähköteho (kW)": (
         "sähköteho",
         "sahkoteho",
         "sähkö teho",
@@ -78,7 +83,7 @@ _FIELD_ALIASES: dict[str, tuple[str, ...]] = {
         "refrigerant",
         "aine",
     ),
-    "Ilmavirta": (
+    "Ilmavirta (m³/h)": (
         "ilmavirta",
         "ilma virta",
         "air flow",
@@ -87,7 +92,7 @@ _FIELD_ALIASES: dict[str, tuple[str, ...]] = {
         "m3/h",
         "m³/h",
     ),
-    "Ääniteho": (
+    "Ääniteho (dB(A))": (
         "ääniteho",
         "aaniteho",
         "ääni teho",
@@ -98,7 +103,7 @@ _FIELD_ALIASES: dict[str, tuple[str, ...]] = {
         "db(a)",
         "lwa",
     ),
-    "Käyttölämpötila": (
+    "Käyttölämpötila (°C)": (
         "käyttölämpötila",
         "kayttolampotila",
         "käyttö lämpötila",
@@ -106,20 +111,20 @@ _FIELD_ALIASES: dict[str, tuple[str, ...]] = {
         "lämpötila",
         "lampotila",
     ),
-    "Höyrystymislämpötila": (
+    "Höyrystymislämpötila (°C)": (
         "höyrystymislämpötila",
         "hoyrystymislampotila",
         "evaporation temperature",
         "te",
         "to",
     ),
-    "Lauhtumislämpötila": (
+    "Lauhtumislämpötila (°C)": (
         "lauhtumislämpötila",
         "lauhtumislampotila",
         "condensing temperature",
         "tc",
     ),
-    "Vastusteho": (
+    "Vastusteho (kW)": (
         "vastusteho",
         "sulatusteho",
         "vastus teho",
@@ -127,13 +132,13 @@ _FIELD_ALIASES: dict[str, tuple[str, ...]] = {
         "defrost power",
         "heater",
     ),
-    "Jännite": (
+    "Jännite (V)": (
         "jännite",
         "jannite",
         "voltage",
         "u_v",
     ),
-    "Jäähdyttävä vaikutus": (
+    "Jäähdyttävä vaikutus (kW)": (
         "jäähdyttävä vaikutus",
         "jaahdyttava vaikutus",
         "cooling effect",

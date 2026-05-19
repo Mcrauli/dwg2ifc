@@ -44,7 +44,7 @@ class TestLoadEnergySpecsCSV:
         specs = load_energy_specs(path)
         assert ("jk1", "5") in specs
         spec = specs[("jk1", "5")]
-        assert spec.fields == {"Jäähdytysteho": "5.2", "Sähköteho": "0.45"}
+        assert spec.fields == {"Jäähdytysteho (kW)": "5.2", "Sähköteho (kW)": "0.45"}
         assert spec.koneikko == "JK1"
         assert spec.laitetunnus == "5"
 
@@ -64,7 +64,7 @@ class TestLoadEnergySpecsCSV:
         _write_csv(
             path,
             [
-                ["Koneikko", "Laitetunnus", "Jäähdytysteho"],
+                ["Koneikko", "Laitetunnus", "Jäähdytysteho (kW)"],
                 [],
                 ["JK1", "5", "5.2"],
                 ["", "", ""],
@@ -87,7 +87,7 @@ class TestLoadEnergySpecsCSV:
         specs = load_energy_specs(path)
         spec = specs[("jk1", "5")]
         assert spec.fields == {
-            "Jäähdytysteho": "5.2",
+            "Jäähdytysteho (kW)": "5.2",
             "Kylmäaine": "R454C",
         }
 
@@ -106,7 +106,7 @@ class TestLoadEnergySpecsXLSX:
         specs = load_energy_specs(path)
         spec = specs[("jk1", "5")]
         # Numeric laitetunnus 5 in Excel matches "5" string from POSITIO.
-        assert spec.fields == {"Jäähdytysteho": "5.2", "Kylmäaine": "R454C"}
+        assert spec.fields == {"Jäähdytysteho (kW)": "5.2", "Kylmäaine": "R454C"}
 
     def test_xlsx_skips_title_rows(self, tmp_path: Path) -> None:
         # User often has a title row (or two) above the table.
@@ -116,7 +116,7 @@ class TestLoadEnergySpecsXLSX:
             [
                 ["Energialista 2026"],
                 [None],
-                ["Koneikko", "Laitetunnus", "Jäähdytysteho", "Kylmäaine"],
+                ["Koneikko", "Laitetunnus", "Jäähdytysteho (kW)", "Kylmäaine"],
                 ["JK1", 5, 5.2, "R454C"],
             ],
         )
@@ -128,12 +128,12 @@ class TestLoadEnergySpecsXLSX:
         _write_xlsx(
             path,
             [
-                ["Koneikko", "Laitetunnus", "Sähköteho"],
+                ["Koneikko", "Laitetunnus", "Sähköteho (kW)"],
                 ["JK1", 5, 1.0],  # Excel often stores ints as floats
             ],
         )
         spec = load_energy_specs(path)[("jk1", "5")]
-        assert spec.fields["Sähköteho"] == "1"
+        assert spec.fields["Sähköteho (kW)"] == "1"
 
 
 class TestKeyDetection:
@@ -153,7 +153,7 @@ class TestKeyDetection:
         _write_csv(
             path,
             [
-                ["Koneikko", "Laitetunnus", "Jäähdytysteho"],
+                ["Koneikko", "Laitetunnus", "Jäähdytysteho (kW)"],
                 ["", "", "5.2"],
                 ["JK1", "", "5.2"],
                 ["JK1", "5", "5.2"],
@@ -197,7 +197,7 @@ class TestLauriExcelFormat:
         sheet.append([None])
         sheet.append(["PAKASTEET JK1"])
         sheet.append(
-            ["REV.", "POS.", "NIMI", "Kylmäteho", "Sähköteho", "Vastusteho", "JÄNNITE", "Jäähdyttävä vaikutus"]
+            ["REV.", "POS.", "NIMI", "Kylmäteho", "Sähköteho (kW)", "Vastusteho (kW)", "JÄNNITE", "Jäähdyttävä vaikutus (kW)"]
         )
         sheet.append([None, None, None, "[kW]", "[kW]", "[kW]"])
         sheet.append(["JK1", 1, "Pakastehuone", 4.5, 0.3, 5.3, 230, 0.27])
@@ -209,11 +209,11 @@ class TestLauriExcelFormat:
         assert len(specs) == 2
         spec = specs[("jk1", "1")]
         assert spec.fields == {
-            "Jäähdytysteho": "4.5",  # via "Kylmäteho" alias
-            "Sähköteho": "0.3",
-            "Vastusteho": "5.3",
-            "Jännite": "230",
-            "Jäähdyttävä vaikutus": "0.27",
+            "Jäähdytysteho (kW)": "4.5",  # via "Kylmäteho" alias
+            "Sähköteho (kW)": "0.3",
+            "Vastusteho (kW)": "5.3",
+            "Jännite (V)": "230",
+            "Jäähdyttävä vaikutus (kW)": "0.27",
         }
 
     def test_multi_sheet_xlsx(self, tmp_path: Path) -> None:
@@ -261,13 +261,13 @@ class TestLoadWithHeaders:
         wb = openpyxl.Workbook()
         s1 = wb.active
         s1.title = "Pakasteet"
-        s1.append(["REV.", "POS.", "Kylmäteho", "Sähköteho"])
+        s1.append(["REV.", "POS.", "Kylmäteho", "Sähköteho (kW)"])
         s1.append(["JK1", 1, 5.2, 0.3])
         wb.save(str(path))
 
         specs, headers = load_energy_specs_with_headers(path)
         assert "Pakasteet" in headers
-        assert headers["Pakasteet"] == ["REV.", "POS.", "Kylmäteho", "Sähköteho"]
+        assert headers["Pakasteet"] == ["REV.", "POS.", "Kylmäteho", "Sähköteho (kW)"]
 
     def test_no_table_returns_empty_with_headers_per_sheet(
         self, tmp_path: Path
@@ -290,7 +290,7 @@ class TestNewFieldAliases:
             "Koneikko,Laitetunnus,Vastusteho\nJK1,5,5.3\n", encoding="utf-8"
         )
         spec = load_energy_specs(path)[("jk1", "5")]
-        assert spec.fields == {"Vastusteho": "5.3"}
+        assert spec.fields == {"Vastusteho (kW)": "5.3"}
 
     def test_jannite_alias(self, tmp_path: Path) -> None:
         path = tmp_path / "v.csv"
@@ -298,7 +298,7 @@ class TestNewFieldAliases:
             "Koneikko,Laitetunnus,JÄNNITE\nJK1,5,400\n", encoding="utf-8"
         )
         spec = load_energy_specs(path)[("jk1", "5")]
-        assert spec.fields == {"Jännite": "400"}
+        assert spec.fields == {"Jännite (V)": "400"}
 
     def test_jaahdyttava_vaikutus_alias(self, tmp_path: Path) -> None:
         path = tmp_path / "v.csv"
@@ -307,14 +307,14 @@ class TestNewFieldAliases:
             encoding="utf-8",
         )
         spec = load_energy_specs(path)[("jk1", "5")]
-        assert spec.fields == {"Jäähdyttävä vaikutus": "0.27"}
+        assert spec.fields == {"Jäähdyttävä vaikutus (kW)": "0.27"}
 
 
 class TestLookupSpec:
     def test_case_insensitive_and_whitespace_tolerant(self) -> None:
         specs = {
             ("jk1", "5"): EnergySpec(
-                koneikko="JK1", laitetunnus="5", fields={"Jäähdytysteho": "5.2"}
+                koneikko="JK1", laitetunnus="5", fields={"Jäähdytysteho (kW)": "5.2"}
             )
         }
         assert lookup_spec(specs, koneikko="JK1", laitetunnus="5") is not None
@@ -324,7 +324,7 @@ class TestLookupSpec:
     def test_missing_returns_none(self) -> None:
         specs = {
             ("jk1", "5"): EnergySpec(
-                koneikko="JK1", laitetunnus="5", fields={"Jäähdytysteho": "5.2"}
+                koneikko="JK1", laitetunnus="5", fields={"Jäähdytysteho (kW)": "5.2"}
             )
         }
         assert lookup_spec(specs, koneikko="JK1", laitetunnus="9") is None
@@ -348,9 +348,9 @@ class TestSlashSeparatedHeader:
         specs = load_energy_specs(path)
         assert ("jk1", "5") in specs
         spec = specs[("jk1", "5")]
-        assert spec.fields["Jäähdytysteho"] == "4"
-        assert spec.fields["Sähköteho"] == "0.3"
-        assert spec.fields["Vastusteho"] == "3.7"
+        assert spec.fields["Jäähdytysteho (kW)"] == "4"
+        assert spec.fields["Sähköteho (kW)"] == "0.3"
+        assert spec.fields["Vastusteho (kW)"] == "3.7"
 
 
 class TestSectionHeaderAndForwardFill:
