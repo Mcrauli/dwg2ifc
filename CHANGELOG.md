@@ -6,6 +6,24 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha6 — 2026-05-19 (KORJAUS — mapper menetti ATTRIB-tiedot)
+
+- **KORJAUS — alpha5:n block-ATTRIB-tuki ei toiminut**: `apply_profile`
+  rakensi uuden `MappedEntity`:n EntityRecord:istä mutta unohti
+  kopioida `block_attribs`-kentän. Kaikki muut (layer, attributes,
+  block_name, handle, jne.) propagoituvat, vain ATTRIB tag→value -kartta
+  jäi default-tyhjäksi. `apply_block_attribs` näki siten tyhjän dictin
+  eikä tehnyt mitään → Solibrin FI_Tekninen-PSet näytti pelkät tyhjät
+  default-kentät vaikka käyttäjä oli täyttänyt Properties-paletissa
+  arvot blokille.
+- **Vahvistettu Laurin testitiedostoilla** (Lauhdutin atttest.dwg +
+  Koneikko atttest.dwg): kaikki 8 ATTRIB-kenttää (Lauhdutusteho,
+  Sähköteho, Vastusteho, Jännite, Kylmäaine, Ilmavirta, Ääniteho,
+  Käyttölämpötila) päätyvät nyt FI_Tekniseen oikeilla yksiköillä
+  sekä IfcCondenser- että IfcUnitaryEquipment-tuotteille.
+- **Regressiotesti** `test_mapper.py::test_apply_profile_propagates_block_attribs_to_mapped_entity`
+  estää saman bugin uudelleenilmaantumisen.
+
 ## v0.3.0-alpha5 — 2026-05-19 (block-ATTRIB:t → FI_Tekninen per-laite)
 
 - **AutoCAD/BricsCAD-blokkien ATTRIB-arvot mergetään suoraan

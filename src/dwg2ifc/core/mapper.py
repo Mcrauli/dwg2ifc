@@ -54,6 +54,15 @@ def apply_profile(entities: list[EntityRecord], profile: Profile) -> list[Mapped
                 block_name=entity.block_name,
                 xform=entity.xform,
                 handle=entity.handle,
+                # ``block_attribs`` carries the INSERT's ATTRIB tag→value
+                # map. ``orchestrator._process_one_file`` calls
+                # ``apply_block_attribs`` later which merges them into
+                # ``fi_tekninen``; without propagating them here that
+                # merge sees an empty dict and the user's per-device
+                # tech-spec values never reach Solibri.
+                block_attribs=dict(entity.block_attribs)
+                if entity.block_attribs
+                else {},
                 ifc_type=rule.ifc_type,
                 predefined_type=rule.predefined_type,
                 domain=rule.domain,

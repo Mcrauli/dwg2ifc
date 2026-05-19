@@ -142,6 +142,24 @@ def test_apply_profile_maps_kotelo_via_default_profile():
     assert kotelo.fi_tuote.get("valmistaja") == "MEKA"
 
 
+def test_apply_profile_propagates_block_attribs_to_mapped_entity():
+    """Mapper must carry INSERT ATTRIB tag→value pairs across to the
+    MappedEntity so the orchestrator's apply_block_attribs step has
+    something to merge into FI_Tekninen. Forgetting to copy this field
+    silently dropped every per-device tech-spec value the user typed
+    into BricsCAD's Properties palette (regression observed v0.3.0a5)."""
+    profile = load_default_profile()
+    record = EntityRecord(
+        layer="KYL-LAUHDUTIN",
+        dxf_type="INSERT",
+        geometry=BlockInstance(insertion_point=Point3D(0, 0, 0)),
+        block_attribs={"LAUHDUTUSTEHO": "30", "JANNITE": "400"},
+    )
+    mapped = apply_profile([record], profile)
+    assert len(mapped) == 1
+    assert mapped[0].block_attribs == {"LAUHDUTUSTEHO": "30", "JANNITE": "400"}
+
+
 def test_apply_profile_propagates_system_name_to_extra_props():
     profile = Profile(
         name="system",
