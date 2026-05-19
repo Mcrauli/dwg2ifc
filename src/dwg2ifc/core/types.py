@@ -100,6 +100,15 @@ class EntityRecord:
     block_name: str | None = None
     xform: Any | None = None
     handle: str | None = None
+    # INSERT-block ATTRIB tag → value mapping for tech-spec overrides.
+    # AutoCAD's ``ATTDEF`` lets a block carry typed user fields (tag,
+    # prompt, value); ``INSERT.attribs`` exposes them as Attrib
+    # subentities. dwg2ifc maps the upper-case tag through the same
+    # alias system as Excel headers (energy_specs._FIELD_ALIASES) into
+    # FI_Tekninen keys, so users can fill per-device specs (cooling
+    # capacity, voltage, refrigerant, …) directly on a lauhdutin /
+    # koneikko block via Properties palette without a sidecar Excel.
+    block_attribs: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass

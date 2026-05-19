@@ -377,6 +377,13 @@ def _process_one_file(
             mapped, energy_specs_path, profile=profile, progress=progress
         )
 
+    # Per-block ATTRIB tech-spec overrides. Runs AFTER the energy-spec
+    # Excel merge so per-instance values on a specific lauhdutin /
+    # koneikko block win over project-wide spreadsheet rows.
+    from dwg2ifc.core.block_attribs import apply_block_attribs
+
+    apply_block_attribs(mapped)
+
     # Bbox fallback: when accoreconsole STLOUT crashed (or didn't run),
     # cooling equipment / proxies / etc. remain BlockInstance-only and
     # the builder dispatch would skip them entirely. Compute a bbox

@@ -712,6 +712,24 @@ def _record_from_entity(
 
     if dxftype == "INSERT":
         handle = _handle()
+        # ATTRIB subentities carry user-typed tech-spec fields (tag,
+        # value) and travel with the INSERT in the DWG. We expose them
+        # to the orchestrator which merges non-empty values into
+        # FI_Tekninen via the existing energy_specs alias system.
+        # ``hasattr(entity, "attribs")`` guards: not every INSERT-like
+        # virtual entity exposes the attribute (e.g. proxy-graphics
+        # synthetic INSERTs).
+        block_attribs: dict[str, str] = {}
+        try:
+            for attr in getattr(entity, "attribs", []) or []:
+                tag = str(getattr(attr.dxf, "tag", "")).strip()
+                if not tag:
+                    continue
+                text = getattr(attr.dxf, "text", "") or ""
+                block_attribs[tag] = str(text).strip()
+        except Exception:  # noqa: BLE001 — malformed attrib must not crash
+            block_attribs = {}
+
         mesh_data = acis_meshes.get(handle)
         if mesh_data is not None:
             # accoreconsole EXPLODEd this INSERT and STLOUTed every
@@ -731,6 +749,7 @@ def _record_from_entity(
                     attributes={},
                     block_name=entity.dxf.name,
                     handle=handle,
+                    block_attribs=block_attribs,
                 )]
         # Try aggregating any 3DFACE entities the block carries —
         # Lauri's KYL-LISP shelves now emit dynamic block references
@@ -748,6 +767,7 @@ def _record_from_entity(
                 attributes={},
                 block_name=entity.dxf.name,
                 handle=handle,
+                block_attribs=block_attribs,
             )]
         insert = Point3D(
             float(entity.dxf.insert.x),
@@ -768,6 +788,7 @@ def _record_from_entity(
             attributes={},
             block_name=entity.dxf.name,
             handle=handle,
+            block_attribs=block_attribs,
         )]
 
     if dxftype == "MESH":

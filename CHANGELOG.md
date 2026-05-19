@@ -6,6 +6,31 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha5 — 2026-05-19 (block-ATTRIB:t → FI_Tekninen per-laite)
+
+- **AutoCAD/BricsCAD-blokkien ATTRIB-arvot mergetään suoraan
+  FI_Tekninen-PSettiin** per-laite-pohjaisesti. Lauhduttimille +
+  koneikoille ei tarvita enää erillistä Excel-tiedostoa: lisää
+  ATTDEF-määritykset blokin lähde-DWG:hen, käyttäjä täyttää arvot
+  Properties-paletista (tai tuplaklikistä), dwg2ifc lukee ne
+  `INSERT.attribs`:sta ja mappaa kanonisiksi FI_Tekninen-kentiksi
+  saman alias-systeemin kautta kuin Excel-headerit.
+- **Tag-konventio**: tagi on iso kirjain, ei ääkkösiä, ei välilyöntejä,
+  ei yksikköjä — esim. `LAUHDUTUSTEHO` → kanoninen "Lauhdutusteho (kW)".
+  Englanninkielisetkin aliakset toimivat (`VOLTAGE`, `REFRIGERANT`).
+  Tuntemattomat tagit ohitetaan (ei tipu junkkina PSetiin).
+- **Konflikti-politiikka**: per-laite ATTRIB voittaa projektin-laajuisen
+  Excel-arvon — instanssi-spesifinen tieto on aina tarkempaa. Tyhjä /
+  whitespace-only ATTRIB ohitetaan eikä korvaa olemassaolevaa arvoa.
+- **Step-by-step-ohje BricsCAD/AutoCAD:lle**: ks.
+  [`docs/BLOCK_ATTRIBS.md`](docs/BLOCK_ATTRIBS.md). Sama `_ATTDEF` toimii
+  molemmissa CAD-ohjelmissa identtisesti, DXF-tasolla on standardia.
+- **Tekninen**: uusi `core/block_attribs.py`-moduli + 11 testiä.
+  `EntityRecord.block_attribs` kantaa tag→value-mappauksen kun
+  `dxf_reader` lukee INSERT:n; `orchestrator._process_one_file` kutsuu
+  `apply_block_attribs(mapped)` heti energy-spec-luvun jälkeen, joten
+  Excel + ATTRIB toimivat saumattomasti yhdessä.
+
 ## v0.3.0-alpha4 — 2026-05-19 (FI_Tekninen-kenttien nimiin yksiköt suluissa)
 
 - **Numeerisilla FI_Tekninen-kentillä yksikkö nimen perässä suluissa.**
