@@ -13,6 +13,7 @@ import ezdxf
 from ezdxf.render import MeshBuilder
 
 from dwg2ifc.core.types import (
+    BlockAttrib,
     BlockInstance,
     EntityRecord,
     LineGeometry,
@@ -20,6 +21,55 @@ from dwg2ifc.core.types import (
     Point3D,
     PolygonGeometry,
 )
+
+
+def _read_block_attribs(entity) -> list[BlockAttrib]:
+    """Read an INSERT's ATTRIB subentities into :class:`BlockAttrib` records.
+
+    ATTRIB entities carry only ``tag`` + ``text`` (the value); the
+    human-readable ``prompt`` lives on the matching ATTDEF in the block
+    definition. We look the block up via ``entity.doc.blocks`` and build
+    a ``{TAG: prompt}`` map first so the FI_Tekninen property can keep
+    the name the block author chose.
+
+    Any failure (proxy-graphics synthetic INSERT, missing block,
+    malformed attrib) degrades to an empty list rather than aborting
+    the whole DXF read.
+    """
+    attribs = list(getattr(entity, "attribs", []) or [])
+    if not attribs:
+        return []
+    # {upper-tag: prompt} from the block definition's ATTDEFs.
+    prompts: dict[str, str] = {}
+    try:
+        doc = getattr(entity, "doc", None)
+        block_name = getattr(entity.dxf, "name", None)
+        block_def = doc.blocks.get(block_name) if doc and block_name else None
+        if block_def is not None:
+            for attdef in block_def.query("ATTDEF"):
+                tag = str(getattr(attdef.dxf, "tag", "") or "").strip()
+                if tag:
+                    prompt = str(getattr(attdef.dxf, "prompt", "") or "").strip()
+                    prompts.setdefault(tag.upper(), prompt)
+    except Exception:  # noqa: BLE001 — prompt lookup is best-effort
+        prompts = {}
+    result: list[BlockAttrib] = []
+    try:
+        for attr in attribs:
+            tag = str(getattr(attr.dxf, "tag", "") or "").strip()
+            if not tag:
+                continue
+            value = str(getattr(attr.dxf, "text", "") or "").strip()
+            result.append(
+                BlockAttrib(
+                    tag=tag,
+                    prompt=prompts.get(tag.upper(), ""),
+                    value=value,
+                )
+            )
+    except Exception:  # noqa: BLE001 — malformed attrib must not crash
+        return []
+    return result
 
 
 def list_layers(path: str | Path) -> list[str]:
@@ -712,23 +762,11 @@ def _record_from_entity(
 
     if dxftype == "INSERT":
         handle = _handle()
-        # ATTRIB subentities carry user-typed tech-spec fields (tag,
-        # value) and travel with the INSERT in the DWG. We expose them
-        # to the orchestrator which merges non-empty values into
-        # FI_Tekninen via the existing energy_specs alias system.
-        # ``hasattr(entity, "attribs")`` guards: not every INSERT-like
-        # virtual entity exposes the attribute (e.g. proxy-graphics
-        # synthetic INSERTs).
-        block_attribs: dict[str, str] = {}
-        try:
-            for attr in getattr(entity, "attribs", []) or []:
-                tag = str(getattr(attr.dxf, "tag", "")).strip()
-                if not tag:
-                    continue
-                text = getattr(attr.dxf, "text", "") or ""
-                block_attribs[tag] = str(text).strip()
-        except Exception:  # noqa: BLE001 — malformed attrib must not crash
-            block_attribs = {}
+        # ATTRIB subentities carry user-typed fields (tag, prompt,
+        # value) that travel with the INSERT in the DWG. apply_block_-
+        # attribs (run later by the orchestrator) routes each one into
+        # FI_Tuote / FI_Tekninen.
+        block_attribs = _read_block_attribs(entity)
 
         mesh_data = acis_meshes.get(handle)
         if mesh_data is not None:

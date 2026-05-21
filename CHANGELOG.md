@@ -6,6 +6,36 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha9 — 2026-05-21 (ATTRIB → FI_Tekninen verbatim, ei aliasarvausta)
+
+- **ATTRIB-kentät näkyvät Solibrissa nyt täsmälleen siinä muodossa kuin
+  ne on blokin ATTDEF:eissä.** Aiempi reititys ajoi jokaisen tagin
+  energy-Excelille tarkoitetun alias-systeemin läpi, mikä koneikon ja
+  lauhduttimen oikeilla blokeilla **pudotti puolet kentistä ja mappasi
+  toisen puolen väärin** — esim. `RAKENNEPAINE` ja äänenpainetaso
+  näkyivät Solibrissa nimellä "Kylmäaine" (osajono "aine" osui
+  Kylmäaine-aliakseen).
+- **Uusi reititys** ([`core/block_attribs.py`](src/dwg2ifc/core/block_attribs.py)):
+  - Tuotetietotagit (`MALLI`/`VALMISTAJA`/`KUVAUS`/`KOMMENTTI`/`LINKKI`)
+    → FI_Tuote, kuten ennen.
+  - **Kaikki muut ATTDEF:t → FI_Tekninen sellaisenaan.** Solibrissa
+    näkyvä kentän nimi = ATTDEFin **prompt** (tai raaka tag jos prompt
+    on tyhjä). Ei alias- eikä kanonista-nimi-arvausta — blokki on speksi.
+  - Tyhjä arvo säilyy tyhjänä paikkamerkkirivinä (tekninen välilehti
+    toimii täytettävänä speksilomakkeena) muttei ylikirjoita aiempaa
+    arvoa (esim. energy-Excel-mergeä).
+- **ATTDEF-blokit eivät enää saa tyyppikohtaista oletuskenttäsettiä.**
+  Jos blokilla on omat ATTDEF:t, ne ovat koko FI_Tekninen — ei
+  `_FI_TEKNINEN_DEFAULTS`-templatea päälle ([`finnish_psets.py`](src/dwg2ifc/core/finnish_psets.py)).
+- ATTDEFin **prompt** luetaan nyt blokin määrityksestä ja kuljetetaan
+  mukana: `EntityRecord.block_attribs` on `dict[str,str]`:n sijaan
+  järjestyksen säilyttävä `list[BlockAttrib]` (tag, prompt, value).
+- Energy-spec Excel -tuonti käyttää yhä omaa alias-systeemiään
+  (`energy_specs._FIELD_ALIASES`) — se on erillinen syötepolku eikä
+  muuttunut.
+- Ohje [`docs/BLOCK_ATTRIBS.md`](docs/BLOCK_ATTRIBS.md) kirjoitettu
+  uusiksi: prompt = Solibri-nimi, tag = vapaa tunniste.
+
 ## v0.3.0-alpha8 — 2026-05-21 (FI_Tuote valmistaja + malli ATTRIB:eilla)
 
 - **Block-ATTRIB:t ohjautuvat nyt myös FI_Tuotteeseen**, eivät vain

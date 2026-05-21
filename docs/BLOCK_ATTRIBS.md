@@ -1,97 +1,84 @@
-# Tehotiedot AutoCAD/BricsCAD-blokin ATTRIB:eilla
+# Laitetiedot AutoCAD/BricsCAD-blokin ATTRIB:eilla
 
 dwg2ifc lukee blokki-instanssien **ATTRIB-arvot** automaattisesti ja
-ohjaa ne suoraan FI_Tekninen-kenttiin Solibrissa. Ei tarvita erillistä
-Exceliä lauhduttimille / koneikoille / muille per-laitteille speksattaville
-kohteille — arvot kulkevat DWG:ssä mukana ja niitä voi muokata milloin
-tahansa Properties-paletista.
+näyttää ne Solibrissa FI_Tekninen- ja FI_Tuote-välilehdillä. Ei tarvita
+erillistä Exceliä — arvot kulkevat DWG:ssä mukana ja niitä voi muokata
+milloin tahansa Properties-paletista.
 
-> Tuettu v0.3.0-alpha5:stä lähtien. Toimii sekä BricsCAD:ssa että
-> AutoCAD:ssa — ATTRIB on DXF-standardia, ei vendor-spesifinen.
+> ATTRIB-tuki uudistettu v0.3.0-alpha9:ssä. Toimii sekä BricsCAD:ssa
+> että AutoCAD:ssa — ATTRIB on DXF-standardia, ei vendor-spesifinen.
+
+## Tärkein sääntö
+
+**Solibrissa näkyvä kentän nimi = ATTDEFin _prompt_, sellaisenaan.**
+
+- **Prompt** = ihmisluettava nimi. Kirjoita se juuri niin kuin haluat
+  sen näkyvän Solibrissa, yksikkö mukaan lukien — esim.
+  `Lauhdutusteho (kW)`. Tämä on ainoa kenttä joka ratkaisee miltä
+  FI_Tekninen näyttää.
+- **Tag** = lyhyt sisäinen tunniste. Sillä ei ole väliä miltä se
+  näyttää, **paitsi** tuotetietokentillä (`MALLI`, `VALMISTAJA`,
+  `KUVAUS`, `KOMMENTTI`, `LINKKI`) — niiden tagi ohjaa kentän
+  FI_Tuote-välilehdelle. Kaikki muut tagit menevät FI_Teknieen.
+- **Default / arvo** = mitä Solibri näyttää arvona. Tyhjä kenttä
+  näkyy tyhjänä paikkamerkkirivinä.
+
+Ei enää alias- tai kanoninen-nimi-arvausta. Mitä kirjoitat promptiin,
+sen Solibri näyttää. Jos prompt on tyhjä, näkyy raaka tag.
 
 **Oikopolku jos olet kiire:**
 
 ```
 1. Avaa blokin lähde-DWG (esim. Lauhdutin.dwg) BricsCAD:ssa
-2. Komento _BEDIT  →  valitse blokki  →  Open
-3. Komento _ATTDEF →  Tag = LAUHDUTUSTEHO, Prompt = "Lauhdutusteho (kW):",
-                       Default tyhjä, Mode → Invisible ☑
-4. Klikkaa "Pick Point" ja sijoita näkymätön marker block-origon viereen
-5. Toista jokaiselle spec-kentälle (taulukko alla)
-6. _BSAVE + _BCLOSE
-7. INSERT blokin piirustukseen, täytä arvot Properties-paletista
+2. Komento _ATTDEF
+   →  Tag    = TEHO              (lyhyt tunniste, vapaa)
+   →  Prompt = Teho (kW)         (TÄMÄ näkyy Solibrissa)
+   →  Default tyhjä, Mode → Invisible ☑
+3. Klikkaa "Pick Point" ja sijoita marker block-origon viereen
+4. Toista jokaiselle kentälle
+5. Tallenna DWG (_QSAVE)
+6. INSERT blokin piirustukseen, täytä arvot Properties-paletista
    (Ctrl+1 → Attributes-osio)
 ```
 
-Lisätietoa, esimerkit ja vianhaku jatkossa.
-
 ---
 
-## 1. Mitä ATTRIB on ja miksi se on hyvä
+## 1. Mitä ATTRIB on
 
 **ATTDEF** (Attribute Definition) on AutoCAD/BricsCAD-objekti jonka
-sijoitat blokin **lähde-DWG:hen** kun määrittelet blokkia. Jokainen
-ATTDEF muodostaa "kentän" jonka jokainen blokki-instanssi tuottaa
-**ATTRIB**:nä — se on labeleitu tieto (tag + arvo) joka kulkee
-INSERT:n mukana ja jota voi muokata jälkikäteen ilman, että blokkia
-joutuu purkamaan / piirtämään uudelleen.
+sijoitat blokin **lähde-DWG:hen**. Jokainen ATTDEF muodostaa "kentän"
+jonka jokainen blokki-instanssi tuottaa **ATTRIB**:nä — labeleitu
+tieto (tag + prompt + arvo) joka kulkee INSERT:n mukana ja jota voi
+muokata jälkikäteen ilman blokin purkamista.
 
 | Etu | Mitä se tarkoittaa |
 |---|---|
-| **Data DWG:ssä mukana** | Ei erillistä Exceliä eikä projektikohtaista tiedostoa hukattavaksi |
-| **Per-laite arvot** | Jokainen blokki-instanssi voi olla erilainen, vaikka ne käyttäisivät samaa blokin määritelmää |
-| **Editoitavissa jälkikäteen** | Properties-palettista tai tuplaklikistä, ilman block edit -tilaa |
-| **dwg2ifc lukee automaattisesti** | ATTRIB-tag mappautuu kanoniseksi FI_Tekninen-kentäksi → Solibri näkee sen |
+| **Data DWG:ssä mukana** | Ei erillistä Exceliä hukattavaksi |
+| **Per-laite arvot** | Jokainen instanssi voi olla erilainen |
+| **Editoitavissa jälkikäteen** | Properties-paletista tai tuplaklikistä |
+| **dwg2ifc näyttää sen 1:1** | Prompt → FI_Tekninen-kentän nimi, arvo → arvo |
 
-Sopii erinomaisesti **lauhduttimille, koneikoille, höyrystimille**
-joiden tehotiedot vaihtelevat per-laite. Excel-pohjainen energy_specs
-toimii yhä rinnalla höyrystimille (samat kentät, kollegan teholuettelo
-elää) — jos sama kenttä on sekä Excelissä että ATTRIB:ssä, **ATTRIB
-voittaa** (per-laite > per-projekti).
+Sopii lauhduttimille, koneikoille, höyrystimille joiden laitetiedot
+vaihtelevat per-laite.
 
 ---
 
-## 2. Esimerkki — Lauhduttimen ATTDEF:t alusta loppuun
+## 2. Esimerkki — Lauhduttimen ATTDEF:t
 
-Käytetään esimerkkinä `Lauhdutin.dwg`-blokin lähde-DWG:tä.
-Tavoite: lisätä kuusi näkymätöntä ATTRIB-kenttää (Lauhdutusteho,
-Sähköteho, Jännite, Ilmavirta, Ääniteho, Käyttölämpötila), jotka
-Lauri voi täyttää Properties-paletista jokaiselle sijoitetulle
-lauhduttimelle.
+Tavoite: lisätä `Lauhdutin.dwg`-blokkiin näkymättömät ATTRIB-kentät
+jotka Lauri täyttää Properties-paletista jokaiselle lauhduttimelle.
 
 ### Vaihe 1 — Avaa blokin lähde-DWG
-
-Lauhdutin-blokin pitää olla **olemassa**. Kaksi vaihtoehtoa:
-
-**A) Blokki on määritelty omassa DWG-tiedostossa** (esim.
-`files/Lauhdutin.dwg` kotelo/klhylly-konvention mukaan):
 
 ```
 File → Open → Lauhdutin.dwg
 ```
 
 ATTDEF-objektit lisätään modelspaceen blokin geometrian rinnalle.
+(Jos blokki on nimettynä nykyisessä piirustuksessa, käytä `_BEDIT`
+block-editoria — muuten työvaiheet ovat samat.)
 
-**B) Blokki on osa nykyistä piirustustasi** (sisäisesti nimetty):
-
-Pysy nykyisessä piirustuksessa, käytä `_BEDIT` block-editor.
-
-### Vaihe 2 — Käynnistä Block Editor (jos käytät vaihtoehtoa B)
-
-Komentoriville:
-
-```
-_BEDIT
-```
-
-Dialogi "Edit Block Definition" avautuu. Listassa kaikki nimetyt
-blokit. Valitse `LAUHDUTIN` (tai oma nimesi) → **OK**.
-
-Block-editor avaa erillisen näkymän (tausta on vaalea, statusbarissa
-"Block Editor" -merkki). Voit nyt muokata blokin sisältöä — sekä
-geometriaa että ATTDEF-määrityksiä.
-
-### Vaihe 3 — Lisää ensimmäinen ATTDEF
+### Vaihe 2 — Lisää ATTDEF
 
 Komentoriville:
 
@@ -99,308 +86,153 @@ Komentoriville:
 _ATTDEF
 ```
 
-(Tai BricsCAD-valikossa: Insert → Define Attributes.)
+Dialogi "Define Attribute" avautuu.
 
-Dialogi "Define Attribute" avautuu. Täytä **vain alla mainitut kentät**
-— muut voivat olla oletuksia:
+#### Mode (checkbox-rivi)
 
-#### Mode (vasen yläkulma — checkbox-rivi)
-
-| Flag | Aseta | Mitä se tekee |
+| Flag | Aseta | Selitys |
 |---|---|---|
-| **Invisible** | ☑ **päälle** | Attribuutti ei näy piirustuksessa mutta on tallessa + queryable Properties:sta |
-| Constant | ☐ | Pidä pois — me haluamme käyttäjän voivan muokata arvoa |
-| Verify | ☐ | Pidä pois — turha tuplakysely |
-| Preset | ☐ | Pidä pois — jos päällä, ei kysytä lainkaan INSERT:ssä |
+| **Invisible** | ☑ päälle | Ei näy piirustuksessa, mutta tallessa + näkyy Properties:ssa |
+| Constant | ☐ pois | Haluamme käyttäjän voivan muokata arvoa |
+| Verify | ☐ pois | Turha tuplakysely |
+| Preset | ☐ pois | Jos päällä, ei kysytä INSERT:ssä |
 
-#### Attribute (oikea puoli — kolme tekstikenttää)
+#### Attribute (kolme tekstikenttää)
 
-| Kenttä | Arvo | Selitys |
+| Kenttä | Esimerkki | Selitys |
 |---|---|---|
-| **Tag** | `LAUHDUTUSTEHO` | **Ainoa kenttä jolla on väliä dwg2ifc:lle.** ISO kirjain, EI ääkkösiä, EI yksikköjä, EI välilyöntejä. Tämä tagi mappaa dwg2ifc:ssä kanoniseksi nimeksi "Lauhdutusteho (kW)". |
-| **Prompt** | **(jätä tyhjäksi)** | dwg2ifc EI lue tätä lainkaan. Pelkkä CAD-puolen kysymysteksti joka näkyy vain jos attribuutti ei ole Invisible-modessa. Voit jättää tyhjäksi tai kirjoittaa omaksi avuksesi mitä tahansa — ei vaikuta konvertointiin. |
-| **Default** | (jätä tyhjäksi) | Aloitusarvo. Tyhjä → käyttäjä täyttää myöhemmin Properties:sta. Jos haluat oletuksen ("400" jännitteelle) niin laita se. |
+| **Tag** | `TEHO` | Lyhyt sisäinen tunniste. Vapaa — paitsi tuotetietotagit (ks. §4). Ei välilyöntejä (CAD ei salli). |
+| **Prompt** | `Teho (kW)` | **TÄMÄ näkyy Solibrissa kentän nimenä.** Kirjoita se täsmälleen halutussa muodossa, yksikkö mukaan. Ääkköset OK. |
+| **Default** | (tyhjä) | Aloitusarvo. Tyhjä → käyttäjä täyttää myöhemmin. Voit laittaa oletuksen jos haluat (esim. `400` jännitteelle). |
 
-#### Insertion Point (vasen alakulma)
+#### Insertion Point
 
-```
-Pick Point ✓  (klikkaa nappia ja näytä paikka piirustuksessa)
-```
-
-Klikkaa nappia ja **klikkaa paikka block-geometrian viereen** (esim.
-0,0 -tienoot). Sijoituspiste ei haittaa kun Invisible on päällä —
-mihin tahansa kohtaan käy. Yleinen tapa on stack:ata kaikki ATTDEF:t
-päällekkäin block-origon ympärille jotta ne löytyvät myöhemmin
-helposti edit-tilassa.
-
-#### Text Settings (oikea alakulma)
-
-Pidä oletukset:
-- Height: 2.5 mm (näkyy edit-tilassa, ei häiritse Invisible-modessa)
-- Rotation: 0°
+Klikkaa "Pick Point" ja näytä paikka block-geometrian viereen.
+Invisible-modessa sijoituspisteellä ei ole väliä — yleinen tapa on
+stack:ata kaikki ATTDEF:t block-origon ympärille.
 
 Lopuksi → **OK**.
 
-Näet block-editorissa pienen tekstipätkän "LAUHDUTUSTEHO"
-(itse tag-nimi näkyy editori-tilassa block-geometrian rinnalla).
-Tämä on pelkkä paikkamerkki sinulle — käyttäjä ei näe sitä
-INSERT-tilassa kun Invisible on päällä.
+### Vaihe 3 — Toista jokaiselle kentälle
 
-### Vaihe 4 — Toista jokaiselle spec-kentälle
+Aja `_ATTDEF` per kenttä. Lauhduttimen esimerkkisetti:
 
-Aja `_ATTDEF` uudestaan kuhunkin tag:iin alla (Mode → Invisible
-☑ joka kerta). Lauhduttimen kokonaissetti (taulukko 4. luvussa):
-
-| Tag (kirjoita exactly) | Prompt (oma valinta) |
+| Tag (vapaa) | Prompt (= Solibri-nimi) |
 |---|---|
-| `LAUHDUTUSTEHO` | `Lauhdutusteho (kW):` |
-| `SAHKOTEHO` | `Sähköteho (kW):` |
-| `VASTUSTEHO` | `Vastusteho — sulatusvastus (kW):` |
-| `JANNITE` | `Jännite (V):` |
-| `KYLMAAINE` | `Kylmäaine:` |
-| `ILMAVIRTA` | `Ilmavirta (m³/h):` |
-| `AANITEHO` | `Ääniteho (dB(A)):` |
-| `KAYTTOLAMPOTILA` | `Käyttölämpötila (°C):` |
+| `TEHO` | `Teho (kW)` |
+| `SAHKOTEHO` | `Sähköteho (kW)` |
+| `JANNITE` | `Jännite (V)` |
+| `KYLMAAINE` | `Kylmäaine` |
+| `ILMAMAARA` | `Ilmamäärä (m³/h)` |
+| `RAKENNEPAINE` | `Rakennepaine (bar)` |
+| `AANITEHO` | `Maksimi äänen tehotaso dB(A)` |
 
-Sijoituspisteet — klikkaa eri kohtiin tai stack:aa samaan paikkaan.
+> Promptin saa kirjoittaa juuri niin kuin haluaa — isoilla, pienillä,
+> yksiköineen. Solibri näyttää sen 1:1.
 
-### Vaihe 5 — Tallenna blokin uusi määritelmä
+### Vaihe 4 — Tallenna
 
-Block-editor-tilassa:
+Erillinen lähde-DWG: `_QSAVE`. Block-editorissa: `_BSAVE` + `_BCLOSE`.
 
-```
-_BSAVE     (tallenna nykyinen blokki)
-_BCLOSE    (sulje block-editor)
-```
+### Vaihe 5 — Täytä arvot Properties-paletista
 
-BricsCAD palauttaa modelspaceen. Tai jos käytit vaihtoehtoa A
-(erillinen Lauhdutin.dwg), tallenna tavallisella `_QSAVE`.
+1. INSERT blokki piirustukseen (`_INSERT` → valitse blokki)
+2. Valitse instanssi → **Ctrl+1** → **Attributes**-osio
+3. Klikkaa "Value"-saraketta ja kirjoita arvo. Tyhjät voi jättää —
+   ne näkyvät Solibrissa tyhjänä rivinä.
 
-### Vaihe 6 — Testaa: INSERT uusi instanssi
-
-Avaa testipiirustus, aja `_INSERT` → valitse `LAUHDUTIN`-blokki.
-
-- Jos jätit ATTDEF:t Invisible-modeen → BricsCAD ei prompttaa
-  arvoista. Blokki sijoittuu ja näyttää siltä kuin sillä ei olisi
-  attribuutteja.
-- Jos olisit jättänyt Invisible-flagin pois, BricsCAD prompttaisi
-  jokaista Prompt-tekstiä — paina Enter ohittaaksesi.
-
-### Vaihe 7 — Täytä arvot Properties-paletista
-
-1. Valitse äsken sijoittamasi block (klikkaa kerran)
-2. Aktivoi Properties-paletti: **Ctrl+1** (tai komento `_PROPERTIES`)
-3. Vieritä alas — **Attributes**-osio listaa jokaisen ATTDEF-tagisi
-4. Klikkaa "Value"-saraketta sen tagin riviltä → kirjoita arvo →
-   Enter
-5. Toista jokaiselle täytettävälle kentälle. Tyhjät voi jättää.
-
-### Vaihe 8 — Vahvista että arvo tallentui
-
-Aja `_LIST` ja klikkaa block-instanssia. Output sisältää:
-
-```
-INSERT Layer: "KYL-LAUHDUTIN"
-...
-Attribute: "LAUHDUTUSTEHO" = "30.5"
-Attribute: "JANNITE"       = "400"
-...
-```
-
-Jos näet arvosi, blokki kantaa ne. Konvertoi piirustus dwg2ifc:llä —
-Solibrissa lauhduttimen FI_Tekninen-PSet:ssä on `Lauhdutusteho (kW):
-30.5` + `Jännite (V): 400`.
+Konvertoi piirustus dwg2ifc:llä → Solibrin FI_Tekninen-välilehdellä
+näkyy täsmälleen ne kentät jotka blokissa on, promptin mukaisin nimin.
 
 ---
 
-## 3. Muokkaaminen jälkikäteen — kolme tapaa
+## 3. Muokkaaminen jälkikäteen
 
-### A) Tuplaklikkaus (helpoin yksittäiselle blokille)
-
-Tuplaklikkaa block-instanssia → "Enhanced Attribute Editor" -dialogi
-avautuu. Listaa kaikki ATTRIB-tagit. Klikkaa tagia, muokkaa
-Value-kenttää, OK. Nopea kun haluat muokata samaa blokkia useamman
-kerran.
-
-### B) Properties-paletti (helpoin kun monta blokkia rinnakkain)
-
-Valitse useita block-instansseja kerralla → **Ctrl+1** → Attributes-
-osiossa muokkaa arvot. Hyvä kun haluat yhdellä silmäyksellä nähdä
-millä arvoja on, millä ei.
-
-### C) `_EATTEDIT` / `_DDATTE` -komennot
-
-Komentoriviltä jos haluat command-line-oriented työnkulun. Sama
-dialogi kuin tuplaklikistä.
+- **Tuplaklikkaus** block-instanssia → "Enhanced Attribute Editor".
+- **Properties-paletti** (Ctrl+1) → Attributes-osio. Hyvä monelle
+  blokille rinnakkain.
+- **`_EATTEDIT`** komentoriviltä — sama dialogi kuin tuplaklikistä.
 
 ---
 
-## 4. Tag-konventio — kanoniset nimet
+## 4. Tagikonventio
 
-dwg2ifc tunnistaa ATTRIB-tagin tag-nimen perusteella ja ohjaa sen
-oikeaan PSet:iin. Tagi on **iso kirjain, ei välilyöntejä, ei
-ääkkösiä, ei yksikköjä**.
+### FI_Tuote — tuotetiedot (reititys tagin mukaan)
 
-### FI_Tuote — tuotetiedot (valmistaja, malli, kuvaus)
+Nämä tagit ohjaavat kentän FI_Tuote-välilehdelle. Tagilla on siis
+väliä — käytä täsmälleen näitä:
 
-| ATTRIB tag    | FI_Tuote-kenttä Solibrissa        |
-|---------------|-----------------------------------|
-| `MALLI`       | Tuotetyypin nimi                  |
-| `VALMISTAJA`  | Tuotetyypin valmistaja            |
-| `KUVAUS`      | Tuotetyypin kuvaus                |
-| `KOMMENTTI`   | Tuotteen kommentti                |
-| `LINKKI`      | Tuotetyypin valmistajan linkki    |
+| ATTRIB tag | FI_Tuote-kenttä Solibrissa |
+|---|---|
+| `MALLI` | Tuotetyypin nimi |
+| `VALMISTAJA` | Tuotetyypin valmistaja |
+| `KUVAUS` | Tuotetyypin kuvaus |
+| `KOMMENTTI` | Tuotteen kommentti |
+| `LINKKI` | Tuotetyypin valmistajan linkki |
 
-`MALLI`-aliakset: `LAITE`, `NIMI`, `MODEL`, `TUOTENIMI`, `TUOTE`.
-Englanniksi myös `MANUFACTURER`/`BRAND`, `DESCRIPTION`/`DESC`,
-`COMMENT`, `LINK`/`URL`/`DATASHEET`.
+Aliakset: `MALLI` ↔ `LAITE`/`NIMI`/`MODEL`/`TUOTENIMI`/`TUOTE`;
+`VALMISTAJA` ↔ `MANUFACTURER`/`BRAND`; `KUVAUS` ↔ `DESCRIPTION`/`DESC`;
+`KOMMENTTI` ↔ `COMMENT`/`MUISTIINPANO`; `LINKKI` ↔ `LINK`/`URL`/
+`DATASHEET`. Näiden prompt-kenttää ei käytetä — kohde on kiinteä.
 
-> **"Tuotetyypin nimi" -kentän etusijajärjestys:** `MALLI`-ATTRIB →
-> profiilin sääntö (`fi_tuote.nimi`) → IFC-tyypin auto-laitenimike
-> ("Koneikko" / "Lauhdutin" / "Höyrystin"). Eli jos jätät `MALLI`:n
-> tyhjäksi, näkyy yhä laitetyyppi; jos täytät sen, näkyy malli.
-> Laitetyyppi löytyy joka tapauksessa FI_Komponentti → yleisnimi
-> -kentästä.
+> **"Tuotetyypin nimi" -etusija:** `MALLI`-ATTRIB → profiilin sääntö
+> (`fi_tuote.nimi`) → IFC-tyypin auto-laitenimike ("Koneikko" /
+> "Lauhdutin" / "Höyrystin"). Tyhjä `MALLI` → näkyy laitetyyppi.
 
-### FI_Tekninen — tekniset arvot (tehot, jännite, kylmäaine)
+### FI_Tekninen — kaikki muut kentät
 
-dwg2ifc käyttää samaa alias-systeemiä kuin energy-Excel-headerit.
-Yksikkö lisätään automaattisesti kanoniseen nimeen.
+**Jokainen tagi joka EI ole yllä oleva tuotetietotagi menee
+FI_Teknieen, nimellä = ATTDEFin prompt.** Ei kanonisia nimiä, ei
+aliaksia, ei tagin sisällön arvaamista. Tag voi olla mitä vain;
+prompt ratkaisee näkyvän nimen.
 
-| ATTRIB tag         | FI_Tekninen-kenttä Solibrissa  |
-|--------------------|-------------------------------|
-| `JAAHDYTYSTEHO`    | Jäähdytysteho (kW)            |
-| `LAUHDUTUSTEHO`    | Lauhdutusteho (kW)            |
-| `SAHKOTEHO`        | Sähköteho (kW)                |
-| `VASTUSTEHO`       | Vastusteho (kW)               |
-| `JANNITE`          | Jännite (V)                   |
-| `ILMAVIRTA`        | Ilmavirta (m³/h)              |
-| `AANITEHO`         | Ääniteho (dB(A))              |
-| `KAYTTOLAMPOTILA`  | Käyttölämpötila (°C)          |
-| `HOYRYSTYMISLAMPOTILA` | Höyrystymislämpötila (°C) |
-| `LAUHTUMISLAMPOTILA`   | Lauhtumislämpötila (°C)   |
-| `JAAHDYTTAVAVAIKUTUS`  | Jäähdyttävä vaikutus (kW) |
-| `KYLMAAINE`        | Kylmäaine                     |
+- Prompt tyhjä → kenttä näkyy raa'alla tagilla.
+- Arvo tyhjä → kenttä näkyy tyhjänä paikkamerkkirivinä.
+- Mikään tagi ei "tipu pois" — jos se on ATTDEF, se näkyy.
 
-Englanninkieliset aliakset toimivat myös (`VOLTAGE` → Jännite,
-`REFRIGERANT` → Kylmäaine, jne. — sama lista kuin
-`core/energy_specs.py:_FIELD_ALIASES`).
-
-**Tuntematon tagi ohitetaan** — ei tipu PSetiin junkkina. Eli
-voit lisätä omiakin "kommentti"-tageja blokkiin ilman että ne
-sotkevat IFC-vientiä.
-
-### Suositellut spec-setit per laitetyyppi
-
-Lisää jokaiseen laite-blokkiin sekä **tuotetiedot** (`MALLI`,
-`VALMISTAJA`) että laitetyypin **tekniset arvot**. Jos haluat PSet:n
-näyttävän kaikki kentät vaikka useimmat olisivat tyhjiä, lisää
-kaikki tagit ATTDEF:nä.
-
-**Kaikille laitteille (FI_Tuote)**:
-- `MALLI`, `VALMISTAJA` — minimisetti. Halutessa myös `KUVAUS`,
-  `KOMMENTTI`, `LINKKI`.
-
-**Lauhdutin (IfcCondenser) — FI_Tekninen**:
-- `LAUHDUTUSTEHO`, `SAHKOTEHO`, `VASTUSTEHO`, `JANNITE`,
-  `KYLMAAINE`, `ILMAVIRTA`, `AANITEHO`, `KAYTTOLAMPOTILA`
-
-**Koneikko (IfcUnitaryEquipment) / kompressori (IfcCompressor) — FI_Tekninen**:
-- `JAAHDYTYSTEHO`, `SAHKOTEHO`, `KYLMAAINE`,
-  `HOYRYSTYMISLAMPOTILA`, `LAUHTUMISLAMPOTILA`, `AANITEHO`
-
-**Höyrystin (IfcEvaporator) — FI_Tekninen**:
-- `JAAHDYTYSTEHO`, `SAHKOTEHO`, `VASTUSTEHO`, `JANNITE`,
-  `KYLMAAINE`, `ILMAVIRTA`, `AANITEHO`, `KAYTTOLAMPOTILA`,
-  `JAAHDYTTAVAVAIKUTUS`
-- Tämä toimii Excel-kierron rinnalla; ATTRIB voittaa jos sama kenttä
-  on molemmissa.
+Jos blokilla on omat ATTDEF:t, dwg2ifc **ei** lisää tyyppikohtaista
+oletuskenttäsettiä (höyrystin/lauhdutin-templatea) — blokin ATTDEF:t
+ovat koko FI_Tekninen, eivät mitään muuta.
 
 ---
 
-## 5. ATTDEF olemassaolevaan blokkiin (jonka instansseja on jo piirustuksessa)
+## 5. ATTDEF olemassaolevaan blokkiin
 
-Tämä on yleinen tilanne: olet jo piirtänyt 12 lauhdutinta, ja vasta
-nyt päätit lisätä ATTRIB-kenttiä blokkiin. Steppi:
+Jos olet jo piirtänyt instansseja ja vasta nyt lisäät/muutat
+ATTDEF:eja, synkkaa vanhat instanssit:
 
-1. **Lisää ATTDEF:t blokin määritelmään** (Vaiheet 1–5 yllä —
-   `_BEDIT` → `_ATTDEF` per kenttä → `_BSAVE` + `_BCLOSE`)
-2. **Synkkaa olemassa olevat instanssit** uusiin tageihin:
+- **BricsCAD:** `_ATTSYNC` → Name=<blokki> tai Select
+- **AutoCAD:** `_BATTMAN` → valitse blokki → Sync
 
-   **BricsCAD:**
-   ```
-   _ATTSYNC      (kysyy "Name/Select", anna joko Name=LAUHDUTIN tai
-                   Select → klikkaa block-instanssia)
-   ```
-
-   **AutoCAD:**
-   ```
-   _BATTMAN      (avaa Block Attribute Manager)
-   → valitse blokki → Sync
-   ```
-
-3. Tarkista että uudet kentät näkyvät Properties:ssa kun valitset
-   olemassa olevan blokin.
-
-Jos et tee `_ATTSYNC`:ä, **vanhat instanssit eivät tiedä uusista
-tageista** ja Properties näyttää vain alkuperäisen settin. Uudet
-INSERT:it saavat uudet kentät automaattisesti.
+Ilman synkkausta vanhat instanssit eivät tiedä uusista/muuttuneista
+tageista. Uudet INSERT:it saavat ne automaattisesti. dwg2ifc-puolella
+koneikko/lauhdutin-LSP redefinetoi blokin uusimmasta DWG:stä joka
+ajolla, joten uudet sijoitukset ovat aina ajan tasalla.
 
 ---
 
-## 6. Mitä Solibri näkee
+## 6. Vianhaku
 
-Sinun täyttämät ATTRIB-arvot päätyvät jokaiselle laitteelle
-FI_Tekninen-PSet:iin:
+### Sama tagi kahdesti samassa blokissa
+Älä laita kahta ATTDEF:ä samalla tagilla. CAD itse menee sekaisin ja
+dwg2ifc:ssä jälkimmäinen samanniminen rivi voittaa. Anna jokaiselle
+oma tag (esim. `KYLMATEHO_8C` ja `KYLMATEHO_33C`).
 
-- **Tyhjät tai pelkkä whitespace** → ohitetaan (ei korvaa Excel-arvoa
-  jos sellainen on olemassa samalle kentälle)
-- **Täytetyt** → **ohittavat** Excel-arvot (per-laite > per-projekti)
-- **Tuntemattomat tagit** → ei tipu PSetiin
+### Kenttä näkyy Solibrissa tagina, ei haluttuna nimenä
+ATTDEFin prompt on tyhjä. Avaa ATTDEF (block-editorissa, tai poista +
+luo uusi) ja täytä Prompt-kenttä.
 
-Konvertoi DWG dwg2ifc:llä → avaa IFC Solibrissa → valitse
-lauhdutin/koneikko → tuoteosa-näkymä → FI_Tekninen-välilehti näyttää
-arvot kanonisilla nimillä yksiköiden kanssa.
-
----
-
-## 7. Vianhaku
-
-### ATTRIB ei näy Solibrissa
-- **Tagi pieni tai ääkkösellä**: Properties näyttää tagin sellaisenaan.
-  Jos siellä on "Jäähdytysteho" tai "jaahdytysteho", se ei matchaa —
-  pitää olla `JAAHDYTYSTEHO`.
-- **Arvo on tyhjä**: pelkkä whitespace ei riitä. Kirjoita oikea numero
-  tai teksti.
-- **Block-instanssin layer ei matchaa profile-pattern:iin**: ilman
-  layer-mappausta (esim. `KYL-LAUHDUTIN*` →`IfcCondenser`) blokki ei
-  tule mappatuksi → ei FI_Tekninen-PSettiä.
+### ATTRIB ei näy Solibrissa lainkaan
+- Arvo on tyhjä **ja** kenttä on tuotetietotagi (`MALLI` ym.) — tyhjä
+  tuotetieto ohitetaan. FI_Tekninen-kentät näkyvät tyhjänäkin.
+- Block-instanssin layer ei matchaa profiili-patterniin (esim.
+  `KYL-LAUHDUTIN*` → `IfcCondenser`) → blokkia ei mapata → ei PSettiä.
 
 ### INSERT ei kysy ATTDEF-arvoa
-- ATTDEF on Invisible-modessa (suositeltu konventio). Properties-
-  palettin kautta täytetään arvot. Jos haluat promptin, ATTDEF Mode
-  pois Invisible-flagista (mutta tekstit näkyvät piirustuksessa).
-
-### Olen lisännyt uusia ATTDEF:eja mutta vanhat instanssit eivät kuule
-- Aja `_ATTSYNC` (BricsCAD) tai `_BATTMAN` → Sync (AutoCAD) — ks. §5.
-
-### ATTDEF-marker näkyy edit-tilassa mutta haittaa
-- Sijoita ne block-origon päälle (samaan pisteeseen) tai jonnekin
-  block-geometrian taakse. Edit-tilassa ne ovat aina näkyvissä, mutta
-  käyttäjälle Invisible-modessa eivät häiritse INSERT:n jälkeen.
-
-### Pelkään että rikon olemassaolevat instanssit
-- ATTSYNC kysyy vahvistuksen ennen kuin koskee. Voit testata yhdellä
-  block-instanssilla `_ATTSYNC` → Select-vaihtoehdolla — vaikuttaa
-  vain valittuun.
-
-### Voinko poistaa ATTDEF:n jälkikäteen?
-- Block-editorissa valitse ATTDEF-objekti → `_ERASE`. Tallenna
-  blokki. Olemassa olevat instanssit säilyttävät edelleen vanhan
-  ATTRIB:n datassaan kunnes ajat `_ATTSYNC`:n joka strippaa
-  ylimääräiset.
+ATTDEF on Invisible-modessa (suositeltu). Arvot täytetään
+Properties-paletista.
 
 ### dwg2ifc:n virhelokit
-- Konvertoi `_validate`-flagilla niin näkee mahd. varoitukset.
-  ATTRIB-luenta ei kaada konvertointia missään tapauksessa
-  (try/except-suojaus dxf_reader.py:ssä).
+ATTRIB-luenta ei kaada konvertointia missään tapauksessa
+(try/except-suojaus `dxf_reader.py`:ssä). Konvertoi `_validate`-flagilla
+nähdäksesi varoitukset.

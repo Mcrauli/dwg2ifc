@@ -548,13 +548,18 @@ def add_finnish_psets(
         valmistajan_linkki=fi_t.get("valmistajan_linkki"),
     )
 
-    # FI_Tekninen — schema differs per IFC entity type. Profile TOML
-    # may provide an explicit field set per rule; otherwise we pick a
-    # sensible default for the rule's ifc_type (refrigeration fields
-    # for evaporators, kuormitus/materiaali for shelves, materiaali/
-    # eristys for pipes — see ``_FI_TEKNINEN_DEFAULTS``).
+    # FI_Tekninen — schema differs per IFC entity type. Priority:
+    #   1. fields populated from the block's own ATTDEFs / energy-spec
+    #      Excel (``mapped.fi_tekninen``) — used verbatim.
+    #   2. when the block carried ATTDEFs (``mapped.block_attribs``) the
+    #      ATTDEFs ARE the spec — never fall back to a generic template,
+    #      even if every attdef value is still blank.
+    #   3. otherwise a sensible per-ifc_type default template
+    #      (refrigeration fields for evaporators, materiaali/pinnoite
+    #      for shelves, materiaali/eristys for pipes — see
+    #      ``_FI_TEKNINEN_DEFAULTS``).
     fi_te = mapped.fi_tekninen
-    if not fi_te:
+    if not fi_te and not mapped.block_attribs:
         fi_te = fi_tekninen_default_fields(mapped.ifc_type)
     add_fi_tekninen(ifc, product, fields=fi_te)
 

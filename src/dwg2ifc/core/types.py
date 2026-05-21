@@ -81,6 +81,26 @@ class BlockInstance:
     scale_z: float = 1.0
 
 
+@dataclass(frozen=True)
+class BlockAttrib:
+    """One ATTRIB field read from an INSERT block reference.
+
+    AutoCAD's ``ATTDEF`` defines a typed field on a block (tag, prompt,
+    default value); every placed instance carries an ``ATTRIB``
+    subentity holding the tag and the user-entered value. The
+    human-readable ``prompt`` lives on the ATTDEF in the block
+    definition — not on the ATTRIB — so :func:`dwg2ifc.core.dxf_reader`
+    copies it across when it builds this record.
+
+    ``prompt`` is the empty string when the block author left it unset;
+    downstream routing then falls back to the raw ``tag`` for display.
+    """
+
+    tag: str
+    prompt: str
+    value: str
+
+
 @dataclass
 class EntityRecord:
     """One DXF entity as read from the source file.
@@ -100,15 +120,15 @@ class EntityRecord:
     block_name: str | None = None
     xform: Any | None = None
     handle: str | None = None
-    # INSERT-block ATTRIB tag → value mapping for tech-spec overrides.
-    # AutoCAD's ``ATTDEF`` lets a block carry typed user fields (tag,
-    # prompt, value); ``INSERT.attribs`` exposes them as Attrib
-    # subentities. dwg2ifc maps the upper-case tag through the same
-    # alias system as Excel headers (energy_specs._FIELD_ALIASES) into
-    # FI_Tekninen keys, so users can fill per-device specs (cooling
-    # capacity, voltage, refrigerant, …) directly on a lauhdutin /
-    # koneikko block via Properties palette without a sidecar Excel.
-    block_attribs: dict[str, str] = field(default_factory=dict)
+    # INSERT-block ATTRIB fields (tag, prompt, value), one per ATTDEF
+    # the block author placed, in DWG order. ``INSERT.attribs`` exposes
+    # the values; the prompts are copied from the block definition's
+    # ATTDEFs. ``block_attribs.apply_block_attribs`` routes each entry
+    # into FI_Tuote (product-identity tags: MALLI, VALMISTAJA, …) or
+    # FI_Tekninen (every other field, verbatim — the prompt becomes the
+    # Solibri property name). Lets users fill per-device specs directly
+    # on a lauhdutin / koneikko block via the Properties palette.
+    block_attribs: list[BlockAttrib] = field(default_factory=list)
 
 
 @dataclass

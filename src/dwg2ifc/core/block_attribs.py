@@ -1,39 +1,41 @@
-"""Map AutoCAD block ATTRIB values into Finnish PSet fields.
+"""Route AutoCAD block ATTRIB fields into the Finnish PSets.
 
 AutoCAD's ``ATTDEF`` lets a block carry typed user fields (tag,
-prompt, value) that travel with every instance in the DWG. The user
-edits them post-placement via the Properties palette or by
-double-clicking the block. dwg2ifc exposes the per-instance values as
-``EntityRecord.block_attribs`` (tag → value) and this module routes
-each tag to the right Finnish PSet:
+prompt, default value) that travel with every instance in the DWG.
+The user edits the values post-placement via the Properties palette
+or by double-clicking the block. dwg2ifc exposes the per-instance
+fields as ``EntityRecord.block_attribs`` — a list of
+:class:`dwg2ifc.core.types.BlockAttrib` records (tag, prompt, value) —
+and this module routes each one to the right Finnish PSet:
 
-- **FI_Tuote** — product identity. Tags: ``MALLI`` / ``LAITE`` /
-  ``NIMI`` → ``nimi`` ("Tuotetyypin nimi"); ``VALMISTAJA``;
-  ``KUVAUS``; ``KOMMENTTI``; ``LINKKI``.
-- **FI_Tekninen** — technical specs (cooling capacity, voltage,
-  refrigerant, …). Tag → canonical name via
-  :func:`energy_specs._resolve_field_name`, the same alias system
-  that handles Excel column headers, so an ATTDEF tag of
-  ``LAUHDUTUSTEHO`` lands as ``Lauhdutusteho (kW)`` without extra
-  config.
+- **FI_Tuote** — product identity. Tags ``MALLI`` / ``LAITE`` /
+  ``NIMI`` / ``MODEL`` → ``nimi`` ("Tuotetyypin nimi"); ``VALMISTAJA``;
+  ``KUVAUS``; ``KOMMENTTI``; ``LINKKI``. These are resolved by tag
+  because they map onto fixed, schema-defined FI_Tuote slots.
 
-Conflict policy: ATTRIB values **override** any previously-set value
-on the same canonical key (profile defaults, Excel rows). Per-instance
-data is more specific than project-wide defaults. For FI_Tuote
-"Tuotetyypin nimi" the precedence is: ``MALLI`` ATTRIB → profile-rule
-``fi_tuote.nimi`` → per-IFC-type auto-label (``fi_tuote_default_nimi``).
+- **FI_Tekninen** — every other ATTDEF, taken **verbatim**. The Solibri
+  property name is the ATTDEF's *prompt* — the human-readable label the
+  block author typed — falling back to the raw tag when the prompt was
+  left empty. There is deliberately no alias / canonical-name lookup
+  here: the block IS the spec, so "what the block carries" is exactly
+  "what Solibri shows". (The energy-spec Excel importer keeps its own
+  alias system for spreadsheet column headers — that is a separate
+  input path and unaffected.)
 
-Empty / whitespace-only ATTRIB values are ignored so a freshly placed
-block with unset fields does not blank out a default or Excel value.
-Tags that do not resolve through either alias system are skipped
-silently — unknown tags leave no trace in the IFC.
+Empty-value policy:
+
+- FI_Tuote — a blank ATTRIB value is skipped so an unfilled field does
+  not wipe a profile-supplied / auto-label name.
+- FI_Tekninen — a blank value is kept as an empty placeholder row (so
+  the technical tab shows the full field list to fill in), but it
+  never overwrites a value already present from an earlier source
+  (e.g. an energy-spec Excel merge).
 """
 
 from __future__ import annotations
 
 from typing import Iterable
 
-from dwg2ifc.core.energy_specs import _resolve_field_name
 from dwg2ifc.core.types import MappedEntity
 
 
@@ -65,22 +67,12 @@ _FI_TUOTE_TAG_TO_FIELD: dict[str, str] = {
 }
 
 
-def canonical_fi_tekninen_field(tag_or_header: str) -> str | None:
-    """Resolve an ATTRIB tag (or Excel header) to its canonical
-    FI_Tekninen field name with unit suffix.
-
-    Returns ``None`` for unknown tags so callers can ignore them
-    without leaking junk keys into the PSet.
-    """
-    if not tag_or_header:
-        return None
-    return _resolve_field_name(str(tag_or_header))
-
-
 def resolve_fi_tuote_field(tag: str) -> str | None:
     """Resolve an ATTRIB tag to its FI_Tuote field name (or ``None``).
 
     Case-insensitive: ``MALLI`` / ``malli`` / ``Malli`` all match.
+    ``None`` means the tag is not a product-identity field — the caller
+    then routes it to FI_Tekninen instead.
     """
     if not tag:
         return None
@@ -88,39 +80,43 @@ def resolve_fi_tuote_field(tag: str) -> str | None:
 
 
 def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
-    """Route each non-empty ``block_attribs`` value into the right
-    Finnish PSet on the MappedEntity, in place.
+    """Route each INSERT's ATTRIB fields into the right Finnish PSet.
 
-    Resolution order per tag:
-      1. FI_Tuote — product-identity tags (MALLI, VALMISTAJA, …)
-      2. FI_Tekninen — technical-spec tags via the energy_specs alias
-         system (LAUHDUTUSTEHO, JANNITE, KYLMAAINE, …)
-      3. Unrecognised — silently ignored
+    Per :class:`~dwg2ifc.core.types.BlockAttrib`:
 
-    ATTRIB values override anything previously set on the same
-    canonical key (profile defaults, Excel rows).
+      1. **FI_Tuote** — product-identity tags (MALLI, VALMISTAJA, …)
+         resolved by :func:`resolve_fi_tuote_field`. Blank values are
+         skipped so an unfilled ATTRIB never wipes an existing name.
+      2. **FI_Tekninen** — every other field, verbatim. The property
+         name is the ATTDEF prompt, or the raw tag when the prompt is
+         empty. A blank value is kept as a placeholder row but never
+         overwrites a value already set on the same label.
+
+    Mutates each MappedEntity's ``fi_tuote`` / ``fi_tekninen`` in place.
     """
     for entity in mapped:
-        attribs = entity.block_attribs or {}
-        if not attribs:
-            continue
-        for tag, value in attribs.items():
-            text = (value or "").strip()
-            if not text:
+        for attrib in entity.block_attribs or []:
+            tag = (attrib.tag or "").strip()
+            if not tag:
                 continue
-            # 1. FI_Tuote — product identity (its tag set is checked
-            #    first; the two alias systems do not share tags).
+            value = (attrib.value or "").strip()
+
+            # 1. FI_Tuote — product identity.
             tuote_field = resolve_fi_tuote_field(tag)
             if tuote_field is not None:
+                if not value:
+                    # Blank ATTRIB must not blank a profile / auto value.
+                    continue
                 if entity.fi_tuote is None:
                     entity.fi_tuote = {}
-                entity.fi_tuote[tuote_field] = text
+                entity.fi_tuote[tuote_field] = value
                 continue
-            # 2. FI_Tekninen — technical specs.
-            tekninen_field = canonical_fi_tekninen_field(tag)
-            if tekninen_field is not None:
-                if entity.fi_tekninen is None:
-                    entity.fi_tekninen = {}
-                entity.fi_tekninen[tekninen_field] = text
-                continue
-            # 3. Unknown tag — silently ignored.
+
+            # 2. FI_Tekninen — verbatim, prompt as the Solibri label.
+            label = (attrib.prompt or "").strip() or tag
+            if entity.fi_tekninen is None:
+                entity.fi_tekninen = {}
+            # Non-empty value always wins; an empty value only creates a
+            # placeholder row and never clobbers an existing value.
+            if value or label not in entity.fi_tekninen:
+                entity.fi_tekninen[label] = value
