@@ -117,8 +117,8 @@ Dialogi "Define Attribute" avautuu. Täytä **vain alla mainitut kentät**
 
 | Kenttä | Arvo | Selitys |
 |---|---|---|
-| **Tag** | `LAUHDUTUSTEHO` | ISO kirjain, EI ääkkösiä, EI yksikköjä, EI välilyöntejä. Tämä tagi mappaa dwg2ifc:ssä kanoniseksi nimeksi "Lauhdutusteho (kW)". Tagi on **avain**, ei käyttäjälle näkyvä. |
-| **Prompt** | `Lauhdutusteho (kW):` | Mitä BricsCAD kysyy INSERT:n yhteydessä jos attribuutti ei ole Invisible-modessa. Invisible-tapauksessa ei nähdä, mutta hyvä silti täyttää (näkyy Properties-paletissa kenttänimenä joissain CAD-versioissa). |
+| **Tag** | `LAUHDUTUSTEHO` | **Ainoa kenttä jolla on väliä dwg2ifc:lle.** ISO kirjain, EI ääkkösiä, EI yksikköjä, EI välilyöntejä. Tämä tagi mappaa dwg2ifc:ssä kanoniseksi nimeksi "Lauhdutusteho (kW)". |
+| **Prompt** | **(jätä tyhjäksi)** | dwg2ifc EI lue tätä lainkaan. Pelkkä CAD-puolen kysymysteksti joka näkyy vain jos attribuutti ei ole Invisible-modessa. Voit jättää tyhjäksi tai kirjoittaa omaksi avuksesi mitä tahansa — ei vaikuta konvertointiin. |
 | **Default** | (jätä tyhjäksi) | Aloitusarvo. Tyhjä → käyttäjä täyttää myöhemmin Properties:sta. Jos haluat oletuksen ("400" jännitteelle) niin laita se. |
 
 #### Insertion Point (vasen alakulma)
