@@ -22,6 +22,13 @@ and this module routes each one to the right Finnish PSet:
   alias system for spreadsheet column headers — that is a separate
   input path and unaffected.)
 
+  One cosmetic touch: a label written entirely in CAPS (a tag, or a
+  prompt typed with caps lock on) is converted to sentence case so
+  Solibri does not shout — ``TEHO [KW]`` → ``Teho [kw]``. A label that
+  already contains a lowercase letter is kept verbatim, so the block
+  author can still pin exact casing (``Kylmäteho -8C [kW]``) by typing
+  the prompt with any lowercase character.
+
 Empty-value policy:
 
 - FI_Tuote — a blank ATTRIB value is skipped so an unfilled field does
@@ -112,8 +119,14 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
                 entity.fi_tuote[tuote_field] = value
                 continue
 
-            # 2. FI_Tekninen — verbatim, prompt as the Solibri label.
+            # 2. FI_Tekninen — prompt as the Solibri label (raw tag when
+            #    the prompt is empty). A label written entirely in CAPS
+            #    is sentence-cased so Solibri does not shout; a label
+            #    that already has a lowercase letter is kept verbatim
+            #    (the author pinned that casing on purpose).
             label = (attrib.prompt or "").strip() or tag
+            if label.isupper():
+                label = label.capitalize()
             if entity.fi_tekninen is None:
                 entity.fi_tekninen = {}
             # Non-empty value always wins; an empty value only creates a

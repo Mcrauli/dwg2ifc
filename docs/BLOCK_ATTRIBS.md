@@ -26,6 +26,13 @@ milloin tahansa Properties-paletista.
 Ei enää alias- tai kanoninen-nimi-arvausta. Mitä kirjoitat promptiin,
 sen Solibri näyttää. Jos prompt on tyhjä, näkyy raaka tag.
 
+Pieni siistintä: jos nimi on kirjoitettu **kokonaan isoilla** (tagi tai
+caps lockilla kirjoitettu prompt), Solibri-nimi muutetaan lauseasuun —
+`TEHO [KW]` → `Teho [kw]`. Jos nimessä on edes yksi pieni kirjain, se
+näkyy täsmälleen kirjoitetussa muodossa (esim. `Kylmäteho -8C [kW]`) —
+eli halutessasi voit lukita kirjainkoon kirjoittamalla promptin
+lauseasussa.
+
 **Oikopolku jos olet kiire:**
 
 ```

@@ -76,10 +76,10 @@ def _equipment_with_attribs(attribs: list[BlockAttrib]) -> MappedEntity:
 
 def test_attrib_uses_prompt_as_label():
     e = _equipment_with_attribs(
-        [BlockAttrib(tag="TEHO[KW]", prompt="TEHO [KW]", value="30")]
+        [BlockAttrib(tag="TEHO", prompt="Teho (kW)", value="30")]
     )
     apply_block_attribs([e])
-    assert e.fi_tekninen == {"TEHO [KW]": "30"}
+    assert e.fi_tekninen == {"Teho (kW)": "30"}
 
 
 def test_attrib_falls_back_to_tag_when_prompt_empty():
@@ -87,18 +87,37 @@ def test_attrib_falls_back_to_tag_when_prompt_empty():
         [BlockAttrib(tag="KYLMAAINE", prompt="", value="R744")]
     )
     apply_block_attribs([e])
-    assert e.fi_tekninen == {"KYLMAAINE": "R744"}
+    # Tag fallback; the all-caps tag is sentence-cased for display.
+    assert e.fi_tekninen == {"Kylmaaine": "R744"}
+
+
+def test_attrib_allcaps_label_sentence_cased():
+    # A prompt typed with caps lock on is de-shouted for Solibri.
+    e = _equipment_with_attribs(
+        [BlockAttrib(tag="X", prompt="PUHALTIMIEN YHTEISTEHO [KW]", value="2.5")]
+    )
+    apply_block_attribs([e])
+    assert e.fi_tekninen == {"Puhaltimien yhteisteho [kw]": "2.5"}
+
+
+def test_attrib_mixedcase_label_kept_verbatim():
+    # Any lowercase letter present → the author pinned the casing.
+    e = _equipment_with_attribs(
+        [BlockAttrib(tag="X", prompt="Kylmäteho -8C [kW]", value="5")]
+    )
+    apply_block_attribs([e])
+    assert e.fi_tekninen == {"Kylmäteho -8C [kW]": "5"}
 
 
 def test_attrib_no_alias_misrouting():
     # Regression: the old energy-spec alias system substring-matched
     # "RAKENNEPAINE" onto "Kylmäaine" via the "aine" alias. The verbatim
-    # router must keep the field under its own prompt.
+    # router must keep the field under its own prompt (sentence-cased).
     e = _equipment_with_attribs(
         [BlockAttrib(tag="RAKENNEPAINE[BAR]", prompt="RAKENNEPAINE [BAR]", value="40")]
     )
     apply_block_attribs([e])
-    assert e.fi_tekninen == {"RAKENNEPAINE [BAR]": "40"}
+    assert e.fi_tekninen == {"Rakennepaine [bar]": "40"}
 
 
 def test_attrib_strips_whitespace_value():
@@ -209,7 +228,7 @@ def test_attrib_merges_tuote_and_tekninen_together():
     )
     apply_block_attribs([e])
     assert e.fi_tuote == {"nimi": "Polar XYZ-100", "valmistaja": "Polar"}
-    assert e.fi_tekninen == {"TEHO [KW]": "30", "RAKENNEPAINE [BAR]": "40"}
+    assert e.fi_tekninen == {"Teho [kw]": "30", "Rakennepaine [bar]": "40"}
 
 
 # --- end-to-end through dxf_reader -------------------------------------

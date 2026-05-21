@@ -6,6 +6,19 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha10 — 2026-05-21 (FI_Tekninen-kenttänimet lauseasuun)
+
+- **Kokonaan isoilla kirjoitettu FI_Tekninen-kentän nimi siistitään
+  lauseasuun.** ATTDEF-prompt tai -tagi joka on kirjoitettu CAPS
+  LOCKilla (esim. lauhduttimen `TEHO [KW]`, koneikon tagi `KYLMAAINE`)
+  näkyy Solibrissa nyt muodossa `Teho [kw]` / `Kylmaaine` — ei enää
+  huutavana versaalina.
+- Jos nimessä on **edes yksi pieni kirjain**, se näytetään täsmälleen
+  kirjoitetussa muodossa (esim. `Kylmäteho -8C [kW]`). Näin blokin
+  tekijä voi lukita kirjainkoon kirjoittamalla promptin lauseasussa.
+- Koskee vain FI_Tekninen-kenttien **nimiä**; arvot ja FI_Tuote
+  säilyvät ennallaan.
+
 ## v0.3.0-alpha9 — 2026-05-21 (ATTRIB → FI_Tekninen verbatim, ei aliasarvausta)
 
 - **ATTRIB-kentät näkyvät Solibrissa nyt täsmälleen siinä muodossa kuin
