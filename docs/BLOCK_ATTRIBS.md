@@ -237,10 +237,35 @@ dialogi kuin tuplaklikistä.
 
 ## 4. Tag-konventio — kanoniset nimet
 
-dwg2ifc tunnistaa ATTRIB-tagin samalla alias-systeemillä kuin
-energy-Excel-headerit. Tagi on **iso kirjain, ei välilyöntejä, ei
-ääkkösiä, ei yksikköjä**. Yksikkö lisätään automaattisesti
-kanoniseen nimeen.
+dwg2ifc tunnistaa ATTRIB-tagin tag-nimen perusteella ja ohjaa sen
+oikeaan PSet:iin. Tagi on **iso kirjain, ei välilyöntejä, ei
+ääkkösiä, ei yksikköjä**.
+
+### FI_Tuote — tuotetiedot (valmistaja, malli, kuvaus)
+
+| ATTRIB tag    | FI_Tuote-kenttä Solibrissa        |
+|---------------|-----------------------------------|
+| `MALLI`       | Tuotetyypin nimi                  |
+| `VALMISTAJA`  | Tuotetyypin valmistaja            |
+| `KUVAUS`      | Tuotetyypin kuvaus                |
+| `KOMMENTTI`   | Tuotteen kommentti                |
+| `LINKKI`      | Tuotetyypin valmistajan linkki    |
+
+`MALLI`-aliakset: `LAITE`, `NIMI`, `MODEL`, `TUOTENIMI`, `TUOTE`.
+Englanniksi myös `MANUFACTURER`/`BRAND`, `DESCRIPTION`/`DESC`,
+`COMMENT`, `LINK`/`URL`/`DATASHEET`.
+
+> **"Tuotetyypin nimi" -kentän etusijajärjestys:** `MALLI`-ATTRIB →
+> profiilin sääntö (`fi_tuote.nimi`) → IFC-tyypin auto-laitenimike
+> ("Koneikko" / "Lauhdutin" / "Höyrystin"). Eli jos jätät `MALLI`:n
+> tyhjäksi, näkyy yhä laitetyyppi; jos täytät sen, näkyy malli.
+> Laitetyyppi löytyy joka tapauksessa FI_Komponentti → yleisnimi
+> -kentästä.
+
+### FI_Tekninen — tekniset arvot (tehot, jännite, kylmäaine)
+
+dwg2ifc käyttää samaa alias-systeemiä kuin energy-Excel-headerit.
+Yksikkö lisätään automaattisesti kanoniseen nimeen.
 
 | ATTRIB tag         | FI_Tekninen-kenttä Solibrissa  |
 |--------------------|-------------------------------|
@@ -267,19 +292,24 @@ sotkevat IFC-vientiä.
 
 ### Suositellut spec-setit per laitetyyppi
 
-Sama kuin Excel-version `_FI_TEKNINEN_DEFAULTS`:ssa. Jos haluat
-PSet näyttävän kaikki kentät vaikka useimmat olisivat tyhjiä, lisää
+Lisää jokaiseen laite-blokkiin sekä **tuotetiedot** (`MALLI`,
+`VALMISTAJA`) että laitetyypin **tekniset arvot**. Jos haluat PSet:n
+näyttävän kaikki kentät vaikka useimmat olisivat tyhjiä, lisää
 kaikki tagit ATTDEF:nä.
 
-**Lauhdutin (IfcCondenser)**:
+**Kaikille laitteille (FI_Tuote)**:
+- `MALLI`, `VALMISTAJA` — minimisetti. Halutessa myös `KUVAUS`,
+  `KOMMENTTI`, `LINKKI`.
+
+**Lauhdutin (IfcCondenser) — FI_Tekninen**:
 - `LAUHDUTUSTEHO`, `SAHKOTEHO`, `VASTUSTEHO`, `JANNITE`,
   `KYLMAAINE`, `ILMAVIRTA`, `AANITEHO`, `KAYTTOLAMPOTILA`
 
-**Koneikko / kompressori (IfcCompressor)**:
+**Koneikko (IfcUnitaryEquipment) / kompressori (IfcCompressor) — FI_Tekninen**:
 - `JAAHDYTYSTEHO`, `SAHKOTEHO`, `KYLMAAINE`,
   `HOYRYSTYMISLAMPOTILA`, `LAUHTUMISLAMPOTILA`, `AANITEHO`
 
-**Höyrystin (IfcEvaporator)**:
+**Höyrystin (IfcEvaporator) — FI_Tekninen**:
 - `JAAHDYTYSTEHO`, `SAHKOTEHO`, `VASTUSTEHO`, `JANNITE`,
   `KYLMAAINE`, `ILMAVIRTA`, `AANITEHO`, `KAYTTOLAMPOTILA`,
   `JAAHDYTTAVAVAIKUTUS`

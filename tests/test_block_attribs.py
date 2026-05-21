@@ -1,11 +1,11 @@
-"""Tests for ATTRIB → FI_Tekninen merging.
+"""Tests for ATTRIB → FI_Tuote / FI_Tekninen merging.
 
-AutoCAD ``ATTDEF`` lets a block carry user-typed tech-spec fields
-that travel with each instance in the DWG and can be edited
-post-placement via Properties palette. dwg2ifc reads
-``INSERT.attribs`` into ``EntityRecord.block_attribs`` and this module
-merges non-empty values into ``MappedEntity.fi_tekninen`` via the same
-alias system used for Excel headers.
+AutoCAD ``ATTDEF`` lets a block carry user-typed fields that travel
+with each instance in the DWG and can be edited post-placement via
+the Properties palette. dwg2ifc reads ``INSERT.attribs`` into
+``EntityRecord.block_attribs`` and this module routes each tag to the
+right Finnish PSet — FI_Tuote (product identity) or FI_Tekninen
+(technical specs).
 """
 
 from __future__ import annotations
@@ -17,6 +17,7 @@ import ezdxf
 from dwg2ifc.core.block_attribs import (
     apply_block_attribs,
     canonical_fi_tekninen_field,
+    resolve_fi_tuote_field,
 )
 from dwg2ifc.core.dxf_reader import read_dxf
 from dwg2ifc.core.types import (
@@ -43,6 +44,34 @@ def test_canonical_resolves_english_alias():
 def test_canonical_unknown_tag_returns_none():
     assert canonical_fi_tekninen_field("RANDOMSTUFF") is None
     assert canonical_fi_tekninen_field("") is None
+
+
+# --- FI_Tuote tag resolution -------------------------------------------
+
+
+def test_resolve_fi_tuote_nimi_aliases():
+    # "Tuotetyypin nimi" — per-instance product name / model.
+    assert resolve_fi_tuote_field("MALLI") == "nimi"
+    assert resolve_fi_tuote_field("LAITE") == "nimi"
+    assert resolve_fi_tuote_field("NIMI") == "nimi"
+    assert resolve_fi_tuote_field("MODEL") == "nimi"
+
+
+def test_resolve_fi_tuote_other_fields():
+    assert resolve_fi_tuote_field("VALMISTAJA") == "valmistaja"
+    assert resolve_fi_tuote_field("KUVAUS") == "kuvaus"
+    assert resolve_fi_tuote_field("KOMMENTTI") == "tuotteen_kommentti"
+    assert resolve_fi_tuote_field("LINKKI") == "valmistajan_linkki"
+
+
+def test_resolve_fi_tuote_case_insensitive():
+    assert resolve_fi_tuote_field("valmistaja") == "valmistaja"
+    assert resolve_fi_tuote_field("Malli") == "nimi"
+
+
+def test_resolve_fi_tuote_unknown_returns_none():
+    assert resolve_fi_tuote_field("RANDOMTAG") is None
+    assert resolve_fi_tuote_field("") is None
 
 
 # --- merge behaviour ---------------------------------------------------
@@ -114,6 +143,53 @@ def test_apply_block_attribs_skips_entities_without_attribs():
     e.fi_tekninen = {"Jäähdytysteho (kW)": "from-excel"}
     apply_block_attribs([e])
     assert e.fi_tekninen == {"Jäähdytysteho (kW)": "from-excel"}
+
+
+# --- FI_Tuote merging --------------------------------------------------
+
+
+def test_apply_block_attribs_routes_malli_into_fi_tuote_nimi():
+    e = _evaporator_with_attribs({"MALLI": "KOJU-100"})
+    apply_block_attribs([e])
+    assert e.fi_tuote == {"nimi": "KOJU-100"}
+    assert e.fi_tekninen is None  # nothing leaked into the tech PSet
+
+
+def test_apply_block_attribs_routes_valmistaja_into_fi_tuote():
+    e = _evaporator_with_attribs({"VALMISTAJA": "Polar"})
+    apply_block_attribs([e])
+    assert e.fi_tuote == {"valmistaja": "Polar"}
+
+
+def test_apply_block_attribs_malli_overrides_profile_fi_tuote_nimi():
+    # Per-instance MALLI wins over the profile-rule / auto-label name.
+    e = _evaporator_with_attribs({"MALLI": "MEKA KOJU-100"})
+    e.fi_tuote = {"nimi": "Höyrystin", "valmistaja": "MEKA"}
+    apply_block_attribs([e])
+    assert e.fi_tuote == {"nimi": "MEKA KOJU-100", "valmistaja": "MEKA"}
+
+
+def test_apply_block_attribs_skips_empty_fi_tuote_value():
+    # Empty FI_Tuote ATTRIB must not blank out an existing value.
+    e = _evaporator_with_attribs({"MALLI": "   "})
+    e.fi_tuote = {"nimi": "from-profile"}
+    apply_block_attribs([e])
+    assert e.fi_tuote == {"nimi": "from-profile"}
+
+
+def test_apply_block_attribs_merges_tuote_and_tekninen_together():
+    e = _evaporator_with_attribs({
+        "MALLI": "Polar XYZ-100",
+        "VALMISTAJA": "Polar",
+        "LAUHDUTUSTEHO": "30",
+        "JANNITE": "400",
+    })
+    apply_block_attribs([e])
+    assert e.fi_tuote == {"nimi": "Polar XYZ-100", "valmistaja": "Polar"}
+    assert e.fi_tekninen == {
+        "Lauhdutusteho (kW)": "30",
+        "Jännite (V)": "400",
+    }
 
 
 # --- end-to-end through dxf_reader -------------------------------------

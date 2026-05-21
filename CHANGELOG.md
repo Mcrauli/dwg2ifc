@@ -6,6 +6,28 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha8 — 2026-05-21 (FI_Tuote valmistaja + malli ATTRIB:eilla)
+
+- **Block-ATTRIB:t ohjautuvat nyt myös FI_Tuotteeseen**, eivät vain
+  FI_Tekniseen. Koneikoille ja lauhduttimille voi merkitä per-laite
+  valmistajan ja mallin suoraan blokin ATTRIB:eihin → Solibrin
+  tuoteosa-näkymä täyttyy ilman erillistä Exceliä tai profile-sääntöä:
+  - `MALLI` (aliakset `LAITE`/`NIMI`/`MODEL`/`TUOTENIMI`/`TUOTE`) →
+    "Tuotetyypin nimi"
+  - `VALMISTAJA` (`MANUFACTURER`/`BRAND`) → "Tuotetyypin valmistaja"
+  - `KUVAUS` (`DESCRIPTION`) → "Tuotetyypin kuvaus"
+  - `KOMMENTTI` (`COMMENT`) → "Tuotteen kommentti"
+  - `LINKKI` (`LINK`/`URL`/`DATASHEET`) → "Tuotetyypin valmistajan linkki"
+- **"Tuotetyypin nimi" -etusijajärjestys**: `MALLI`-ATTRIB → profiilin
+  `fi_tuote.nimi` → alpha7:n IFC-tyyppi-auto-laitenimike. Eli tyhjä
+  `MALLI` jättää näkyviin "Koneikko"/"Lauhdutin", täytetty `MALLI`
+  korvaa sen oikealla mallinimellä. Laitetyyppi säilyy joka tapauksessa
+  FI_Komponentti → yleisnimi -kentässä.
+- `block_attribs.py` reitittää tagin ensin FI_Tuote-alias-systeemin
+  läpi, sitten FI_Tekninen-systeemin (energy_specs); tuntematon tagi
+  ohitetaan. Ohje [`docs/BLOCK_ATTRIBS.md`](docs/BLOCK_ATTRIBS.md)
+  päivitetty FI_Tuote-tagitaulukolla.
+
 ## v0.3.0-alpha7 — 2026-05-19 (FI_Tuote.Tuotetyypin nimi auto-täyttyy)
 
 - **"Tuotetyypin nimi" -kenttä on aina täytetty** Solibrin tuoteosa-
