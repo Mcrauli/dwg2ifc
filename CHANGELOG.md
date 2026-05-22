@@ -6,6 +6,25 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha11 — 2026-05-22 (anonyymiblokit STLOUT-polulle)
+
+- **Korjattu: BEDITissä muokattu tai kopioitu laite (esim. koneikko)
+  jäi ilman 3D-geometriaa ja putosi bbox-placeholder-laatikoksi.**
+  Kun blokkia muokataan BEDITissä tai se kopioituu, AutoCAD tekee siitä
+  anonyymin blokin (`*U`-alkuinen nimi). Phase 2:n STLOUT-suodatin
+  (worthlist) rakennetaan ezdxf:n näkemillä blokkinimillä, mutta
+  AutoCAD **uudelleennumeroi anonyymit blokit** DXF:ää ladatessaan —
+  ezdxf:n `*U8` palaa accoreconsolessa nimellä `*U7`, jolloin
+  worthlist-jäsenyystesti ei osu ja laite ohitettiin STLOUT-polulta.
+- Korjaus (`core/preprocessing.py`, `_LISP_PHASE2`): `*`-alkuiset
+  anonyymit blokit räjäytetään ja STLOUTataan nyt aina, ohi
+  worthlist-tarkistuksen — samaan tapaan kuin ei-ASCII-nimiset jo
+  aiemmin. Worthlist ei voi taata nimeä joka ei ole stabiili
+  ezdxf↔accoreconsole-rajan yli. Koskee sekä ylätason INSERT-silmukkaa
+  että sisäkkäistä rekursiota.
+- Vahvistettu testitiedostolla: anonyymiksi muuttunut koneikko tuottaa
+  nyt täyden meshin (4140 verteksiä) bbox-laatikon sijaan.
+
 ## v0.3.0-alpha10 — 2026-05-21 (FI_Tekninen-kenttänimet lauseasuun)
 
 - **Kokonaan isoilla kirjoitettu FI_Tekninen-kentän nimi siistitään

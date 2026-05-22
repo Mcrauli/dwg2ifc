@@ -543,6 +543,17 @@ _LISP_PHASE1 = (
 # recursion the first EXPLODE would surface only the sub-INSERT
 # wrappers, never reaching the 3DSOLID children inside.
 #
+# Anonymous blocks (``*U`` / ``*D`` / … names) are EXPLODEd
+# unconditionally, bypassing the worthlist membership test. AutoCAD
+# renumbers anonymous blocks when it loads the DXF, so a name the
+# ezdxf-side worthlist scan recorded as ``*U8`` can come back as ``*U7``
+# inside accoreconsole — ``(member "*U7" worthlist)`` then misses and
+# real equipment silently drops to a bbox placeholder. (A koneikko
+# copied or edited via BEDIT becomes exactly such an anonymous block.)
+# The worthlist cannot vouch for a name that is not stable across the
+# ezdxf↔accoreconsole boundary, so ``*``-prefixed names are treated
+# like non-ASCII ones: always exploded.
+#
 # ACIS types caught: 3DSOLID + SURFACE + REGION + BODY + *SURFACE
 # (PLANESURFACE / EXTRUDEDSURFACE / REVOLVEDSURFACE / SWEPTSURFACE /
 # LOFTEDSURFACE / NURBSURFACE). KLHYLLY-LEVY / VPUTKI-* still rely on
@@ -567,7 +578,7 @@ _LISP_PHASE2 = (
     '(setq ins (ssname inserts k)) '
     '(setq insel (entget ins)) '
     '(setq bname (cdr (assoc 2 insel))) '
-    '(if (and bname (not (wcmatch (strcase bname) "{skip_blocks}")) (or (null worthlist) (member (strcase bname) worthlist) (not (asciip bname)))) '
+    '(if (and bname (not (wcmatch (strcase bname) "{skip_blocks}")) (or (null worthlist) (member (strcase bname) worthlist) (not (asciip bname)) (= (substr bname 1 1) "*"))) '
     '(progn '
     '(setq ih (cdr (assoc 5 insel))) '
     '(write-line (strcat "phase2_handle=" ih "/block=" bname) logf) '
@@ -592,7 +603,7 @@ _LISP_PHASE2 = (
     '(setq bodies (ssadd ent bodies))) '
     '((eq etype "INSERT") '
     '(setq sbname (cdr (assoc 2 el))) '
-    '(if (and sbname (not (wcmatch (strcase sbname) "{skip_blocks}")) (or (null worthlist) (member (strcase sbname) worthlist) (not (asciip sbname)))) '
+    '(if (and sbname (not (wcmatch (strcase sbname) "{skip_blocks}")) (or (null worthlist) (member (strcase sbname) worthlist) (not (asciip sbname)) (= (substr sbname 1 1) "*"))) '
     '(progn '
     '(command "_.EXPLODE" ent) '
     '(fc) '
