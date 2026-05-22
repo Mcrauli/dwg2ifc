@@ -215,18 +215,23 @@ PySide6. Slate-gradient-tausta, amber/blue-aksentit. Fontit Inter /
 Space Grotesk / JetBrains Mono. Värit + fontit lukittuja — älä lisää
 uusia ilman lupaa. Tyylit: `src/dwg2ifc/gui/style.qss`.
 
-## Liittyvä projekti
+## AutoLISP-piirtotyökalut (`autocad-tools/`)
 
-[`autocad-lisp-ohjeet`](https://github.com/Mcrauli/autocad-lisp-ohjeet) —
-Lauri Rekolan AutoLISP-piirtotyökalut, joista syntyvät `KYL-*`-layerit ja
--blokit ovat dwg2ifc:n pääsyöte. Jos `KYL-*`-layerien nimet tai
-blokki-attribuutit muuttuvat siellä, `default_kylmalaite.toml` ja
-`block_attribs.py` voivat tarvita päivitystä.
+dwg2ifc:n syöte syntyy AutoCAD/BricsCAD-piirtotyökaluilla jotka tuottavat
+`KYL-*`-layerit ja -blokit. Näiden työkalujen lähde (`.lsp` + blokki-
+`.dwg`) on repon kansiossa [`autocad-tools/`](autocad-tools/) — LISP-puoli
+ja parseri ovat sama kytketty kokonaisuus, joten ne ylläpidetään yhdessä.
+
+Jos `KYL-*`-layerien nimet tai blokkien ATTDEF-attribuutit muuttuvat,
+`profiles/default_kylmalaite.toml` ja `core/block_attribs.py` voivat
+tarvita päivitystä. Lisätiedot ja suhde loppukäyttäjän jakelusivustoon:
+[`autocad-tools/README.md`](autocad-tools/README.md).
 
 ## Hakemistorakenne
 
 ```
 src/dwg2ifc/        lähdekoodi (core/ = pipeline, gui/ = PySide6, profiles/ = layer-säännöt)
+autocad-tools/      AutoLISP-piirtotyökalut + blokki-DWG:t (dwg2ifc:n syöte-puoli)
 tests/              ~520 pytest-testiä
 docs/               arkkitehtuuri + reference-aineisto
 build/              PyInstaller-spec + Inno Setup + version_info
