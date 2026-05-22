@@ -124,10 +124,12 @@ class EntityRecord:
     # the block author placed, in DWG order. ``INSERT.attribs`` exposes
     # the values; the prompts are copied from the block definition's
     # ATTDEFs. ``block_attribs.apply_block_attribs`` routes each entry
-    # into FI_Tuote (product-identity tags: MALLI, VALMISTAJA, …) or
-    # FI_Tekninen (every other field, verbatim — the prompt becomes the
-    # Solibri property name). Lets users fill per-device specs directly
-    # on a lauhdutin / koneikko block via the Properties palette.
+    # into FI_Tuote (product-identity tags: MALLI, VALMISTAJA, …),
+    # FI_Komponentti (device-tag fields: LAITETUNNUS,
+    # LAITETUNNUS(YKSILÖLLINEN)) or FI_Tekninen (every other field,
+    # verbatim — the prompt becomes the Solibri property name). Lets
+    # users fill per-device specs directly on a lauhdutin / koneikko
+    # block via the Properties palette.
     block_attribs: list[BlockAttrib] = field(default_factory=list)
 
 

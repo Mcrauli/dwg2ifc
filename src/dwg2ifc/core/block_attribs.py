@@ -13,6 +13,16 @@ and this module routes each one to the right Finnish PSet:
   ``KUVAUS``; ``KOMMENTTI``; ``LINKKI``. These are resolved by tag
   because they map onto fixed, schema-defined FI_Tuote slots.
 
+- **FI_Komponentti** — device-tag ATTDEFs. Tags ``LAITETUNNUS`` and
+  ``LAITETUNNUS(YKSILÖLLINEN)`` (matched on a punctuation-insensitive
+  normalised form) carry the device identifier; they land on the
+  FI_Komponentti tab — device classification — next to the
+  POSITIO-derived ``Koneikko`` field, **not** on the FI_Tekninen
+  per-device tech-spec tab. They route through ``extra_props`` (the
+  same channel the POSITIO-marker pairing uses), so a non-blank block
+  value overrides a POSITIO-derived one and a blank value never wipes
+  it.
+
 - **FI_Tekninen** — every other ATTDEF, taken **verbatim**. The Solibri
   property name is the ATTDEF's *prompt* — the human-readable label the
   block author typed — falling back to the raw tag when the prompt was
@@ -41,6 +51,7 @@ Empty-value policy:
 
 from __future__ import annotations
 
+import re
 from typing import Iterable
 
 from dwg2ifc.core.types import MappedEntity
@@ -86,6 +97,47 @@ def resolve_fi_tuote_field(tag: str) -> str | None:
     return _FI_TUOTE_TAG_TO_FIELD.get(str(tag).strip().upper())
 
 
+# FI_Komponentti device-tag ATTDEFs. The block author can stamp the
+# device identifier straight onto a koneikko / lauhdutin block; it
+# belongs on the FI_Komponentti tab. Both values route through
+# ``extra_props`` — the same channel ``positio.py`` uses — under these
+# keys, which ``finnish_psets.add_finnish_psets`` feeds into
+# ``add_fi_komponentti``.
+_FI_KOMPONENTTI_LAITETUNNUS = "laitetunnus"
+_FI_KOMPONENTTI_LAITETUNNUS_YKSILOLLINEN = "laitetunnus_yksilollinen"
+
+
+def _normalise_komponentti_tag(tag: str) -> str:
+    """Lower-case ``tag`` and drop every non-alphanumeric character.
+
+    Punctuation- and spacing-insensitive so the block author can write
+    ``LAITETUNNUS(YKSILÖLLINEN)``, ``Laitetunnus, yksilöllinen`` or
+    ``LAITETUNNUS_YKSILOLLINEN`` and still hit the same slot.
+    """
+    return re.sub(r"[^0-9a-zåäö]", "", str(tag).casefold())
+
+
+def resolve_fi_komponentti_field(tag: str) -> str | None:
+    """Resolve an ATTRIB tag to its FI_Komponentti ``extra_props`` key.
+
+    Returns ``"laitetunnus"`` for a plain device-tag ATTDEF and
+    ``"laitetunnus_yksilollinen"`` for the per-instance unique variant
+    — any ``laitetunnus…`` tag that also mentions "yksil". ``None``
+    means the tag is not a device-tag field; the caller then routes it
+    to FI_Tuote / FI_Tekninen instead.
+    """
+    if not tag:
+        return None
+    n = _normalise_komponentti_tag(tag)
+    if not n.startswith("laitetunnus"):
+        return None
+    if "yksil" in n:
+        return _FI_KOMPONENTTI_LAITETUNNUS_YKSILOLLINEN
+    if n == "laitetunnus":
+        return _FI_KOMPONENTTI_LAITETUNNUS
+    return None
+
+
 def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
     """Route each INSERT's ATTRIB fields into the right Finnish PSet.
 
@@ -94,12 +146,18 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
       1. **FI_Tuote** — product-identity tags (MALLI, VALMISTAJA, …)
          resolved by :func:`resolve_fi_tuote_field`. Blank values are
          skipped so an unfilled ATTRIB never wipes an existing name.
-      2. **FI_Tekninen** — every other field, verbatim. The property
+      2. **FI_Komponentti** — device-tag fields (LAITETUNNUS,
+         LAITETUNNUS(YKSILÖLLINEN)) resolved by
+         :func:`resolve_fi_komponentti_field`. Written into
+         ``extra_props`` so a non-blank block value overrides a
+         POSITIO-derived one; a blank value is skipped.
+      3. **FI_Tekninen** — every other field, verbatim. The property
          name is the ATTDEF prompt, or the raw tag when the prompt is
          empty. A blank value is kept as a placeholder row but never
          overwrites a value already set on the same label.
 
-    Mutates each MappedEntity's ``fi_tuote`` / ``fi_tekninen`` in place.
+    Mutates each MappedEntity's ``fi_tuote`` / ``extra_props`` /
+    ``fi_tekninen`` in place.
     """
     for entity in mapped:
         for attrib in entity.block_attribs or []:
@@ -119,7 +177,20 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
                 entity.fi_tuote[tuote_field] = value
                 continue
 
-            # 2. FI_Tekninen — prompt as the Solibri label (raw tag when
+            # 2. FI_Komponentti — device-tag ATTDEFs (Laitetunnus /
+            #    Laitetunnus, yksilöllinen). Routed via extra_props, the
+            #    same channel the POSITIO-marker pairing uses; because
+            #    apply_block_attribs runs after the POSITIO pass a
+            #    non-blank block value wins over a POSITIO-derived one.
+            #    A blank value is skipped — it must not wipe a POSITIO
+            #    value, and these fields never belong on FI_Tekninen.
+            komponentti_key = resolve_fi_komponentti_field(tag)
+            if komponentti_key is not None:
+                if value:
+                    entity.extra_props[komponentti_key] = value
+                continue
+
+            # 3. FI_Tekninen — prompt as the Solibri label (raw tag when
             #    the prompt is empty). A label written entirely in CAPS
             #    is sentence-cased so Solibri does not shout; a label
             #    that already has a lowercase letter is kept verbatim

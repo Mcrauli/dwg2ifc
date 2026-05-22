@@ -163,6 +163,22 @@ def test_fi_komponentti_includes_koneikko_and_laitetunnus():
     assert props["Laitetunnus"] == "501"
 
 
+def test_fi_komponentti_includes_laitetunnus_yksilollinen():
+    # The LAITETUNNUS(YKSILÖLLINEN) ATTDEF feeds its own slot.
+    ifc, product = _make_ifc_with_product()
+    add_fi_komponentti(
+        ifc,
+        product,
+        paaryhma="LAITTEISTOT - LVI",
+        koneikko="JK1",
+        laitetunnus="JK1",
+        laitetunnus_yksilollinen="501",
+    )
+    props = _pset_props(product, "FI_Komponentti")
+    assert props["Laitetunnus"] == "JK1"
+    assert props["Laitetunnus, yksilöllinen"] == "501"
+
+
 # --- FI_Tuote --------------------------------------------------------------
 
 

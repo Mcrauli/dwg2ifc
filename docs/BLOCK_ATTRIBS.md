@@ -1,9 +1,9 @@
 # Laitetiedot AutoCAD/BricsCAD-blokin ATTRIB:eilla
 
 dwg2ifc lukee blokki-instanssien **ATTRIB-arvot** automaattisesti ja
-näyttää ne Solibrissa FI_Tekninen- ja FI_Tuote-välilehdillä. Ei tarvita
-erillistä Exceliä — arvot kulkevat DWG:ssä mukana ja niitä voi muokata
-milloin tahansa Properties-paletista.
+näyttää ne Solibrissa FI_Tekninen-, FI_Tuote- ja FI_Komponentti-
+välilehdillä. Ei tarvita erillistä Exceliä — arvot kulkevat DWG:ssä
+mukana ja niitä voi muokata milloin tahansa Properties-paletista.
 
 > ATTRIB-tuki uudistettu v0.3.0-alpha9:ssä. Toimii sekä BricsCAD:ssa
 > että AutoCAD:ssa — ATTRIB on DXF-standardia, ei vendor-spesifinen.
@@ -19,7 +19,9 @@ milloin tahansa Properties-paletista.
 - **Tag** = lyhyt sisäinen tunniste. Sillä ei ole väliä miltä se
   näyttää, **paitsi** tuotetietokentillä (`MALLI`, `VALMISTAJA`,
   `KUVAUS`, `KOMMENTTI`, `LINKKI`) — niiden tagi ohjaa kentän
-  FI_Tuote-välilehdelle. Kaikki muut tagit menevät FI_Teknieen.
+  FI_Tuote-välilehdelle — ja laitetunnustageilla (`LAITETUNNUS`,
+  `LAITETUNNUS(YKSILÖLLINEN)`) — ne menevät FI_Komponentti-
+  välilehdelle. Kaikki muut tagit menevät FI_Teknieen.
 - **Default / arvo** = mitä Solibri näyttää arvona. Tyhjä kenttä
   näkyy tyhjänä paikkamerkkirivinä.
 
@@ -186,10 +188,31 @@ Aliakset: `MALLI` ↔ `LAITE`/`NIMI`/`MODEL`/`TUOTENIMI`/`TUOTE`;
 > (`fi_tuote.nimi`) → IFC-tyypin auto-laitenimike ("Koneikko" /
 > "Lauhdutin" / "Höyrystin"). Tyhjä `MALLI` → näkyy laitetyyppi.
 
+### FI_Komponentti — laitetunnukset (reititys tagin mukaan)
+
+Koneikoille ja lauhduttimille voi leimata laitetunnuksen suoraan
+blokkiin. Nämä tagit ohjaavat kentän **FI_Komponentti**-välilehdelle —
+laiteluokittelu, ei tekninen arvo, joten ne **eivät** mene
+FI_Teknieen:
+
+| ATTRIB tag | FI_Komponentti-kenttä Solibrissa |
+|---|---|
+| `LAITETUNNUS` | Laitetunnus |
+| `LAITETUNNUS(YKSILÖLLINEN)` | Laitetunnus, yksilöllinen |
+
+Tunnistus on välimerkki- ja kirjainkokoriippumaton: `Laitetunnus`,
+`LAITETUNNUS_YKSILOLLINEN`, `Laitetunnus, yksilöllinen` jne. osuvat
+samoihin kenttiin. Promptia ei käytetä — kohde on kiinteä.
+
+Jos piirustuksessa on POSITIO-blokkeja, ne täyttävät FI_Komponentin
+`Koneikko`- ja `Laitetunnus`-kentät automaattisesti. Blokkiin täytetty
+`LAITETUNNUS`-arvo voittaa POSITIO-arvon; tyhjä blokkikenttä ei pyyhi
+POSITIO-arvoa.
+
 ### FI_Tekninen — kaikki muut kentät
 
-**Jokainen tagi joka EI ole yllä oleva tuotetietotagi menee
-FI_Teknieen, nimellä = ATTDEFin prompt.** Ei kanonisia nimiä, ei
+**Jokainen tagi joka EI ole yllä oleva tuotetieto- tai laitetunnustagi
+menee FI_Teknieen, nimellä = ATTDEFin prompt.** Ei kanonisia nimiä, ei
 aliaksia, ei tagin sisällön arvaamista. Tag voi olla mitä vain;
 prompt ratkaisee näkyvän nimen.
 

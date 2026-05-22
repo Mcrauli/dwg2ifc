@@ -198,16 +198,23 @@ def add_fi_komponentti(
     yleistunnus: str | None = None,
     koneikko: str | None = None,
     laitetunnus: str | None = None,
+    laitetunnus_yksilollinen: str | None = None,
     status: str | None = "New",
 ) -> object | None:
     """Attach FI_Komponentti with classification metadata.
 
     Static fields (paaryhma / alaryhma / yleisnimi / yleistunnus) come
     from the profile rule's ``fi_komponentti`` table. Per-instance
-    fields ``koneikko`` (group / refrigeration unit, e.g. "JK1" from
-    POSITIO TEKSTI) and ``laitetunnus`` (unique device number, e.g.
-    "501" from POSITIO NUMERO) skip when not supplied. ``status``
-    defaults to ``"New"`` per RAVA3Pro convention.
+    fields skip when not supplied:
+
+    * ``koneikko`` — group / refrigeration unit, e.g. "JK1" from a
+      POSITIO TEKSTI attribute.
+    * ``laitetunnus`` — device tag, e.g. a POSITIO NUMERO or a
+      ``LAITETUNNUS`` ATTDEF the block author stamped on the block.
+    * ``laitetunnus_yksilollinen`` — per-instance unique device tag
+      from a ``LAITETUNNUS(YKSILÖLLINEN)`` ATTDEF.
+
+    ``status`` defaults to ``"New"`` per RAVA3Pro convention.
     """
     return _emit_pset(
         ifc,
@@ -221,6 +228,7 @@ def add_fi_komponentti(
             ("05 Komponentin yleistunnus", "IfcText", yleistunnus),
             ("Koneikko", "IfcText", koneikko),
             ("Laitetunnus", "IfcText", laitetunnus),
+            ("Laitetunnus, yksilöllinen", "IfcText", laitetunnus_yksilollinen),
             ("Status", "IfcText", status),
         ],
     )
@@ -529,6 +537,7 @@ def add_finnish_psets(
         yleistunnus=fi_k.get("yleistunnus"),
         koneikko=extras.get("koneikko"),
         laitetunnus=extras.get("laitetunnus"),
+        laitetunnus_yksilollinen=extras.get("laitetunnus_yksilollinen"),
     )
 
     # FI_Tuote — always emitted so the Solibri tab is visible. Profile

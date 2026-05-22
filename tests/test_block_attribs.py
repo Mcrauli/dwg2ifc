@@ -1,12 +1,13 @@
-"""Tests for ATTRIB → FI_Tuote / FI_Tekninen routing.
+"""Tests for ATTRIB → FI_Tuote / FI_Komponentti / FI_Tekninen routing.
 
 AutoCAD ``ATTDEF`` lets a block carry user-typed fields (tag, prompt,
 value) that travel with each instance in the DWG. dwg2ifc reads
 ``INSERT.attribs`` into ``EntityRecord.block_attribs`` as a list of
 :class:`~dwg2ifc.core.types.BlockAttrib` records and
 :func:`apply_block_attribs` routes each one — FI_Tuote (product
-identity, by tag) or FI_Tekninen (every other field, verbatim, with the
-ATTDEF prompt as the Solibri label).
+identity, by tag), FI_Komponentti (device-tag fields LAITETUNNUS /
+LAITETUNNUS(YKSILÖLLINEN), by tag) or FI_Tekninen (every other field,
+verbatim, with the ATTDEF prompt as the Solibri label).
 """
 
 from __future__ import annotations
@@ -15,7 +16,11 @@ from pathlib import Path
 
 import ezdxf
 
-from dwg2ifc.core.block_attribs import apply_block_attribs, resolve_fi_tuote_field
+from dwg2ifc.core.block_attribs import (
+    apply_block_attribs,
+    resolve_fi_komponentti_field,
+    resolve_fi_tuote_field,
+)
 from dwg2ifc.core.dxf_reader import read_dxf
 from dwg2ifc.core.types import (
     BlockAttrib,
@@ -229,6 +234,75 @@ def test_attrib_merges_tuote_and_tekninen_together():
     apply_block_attribs([e])
     assert e.fi_tuote == {"nimi": "Polar XYZ-100", "valmistaja": "Polar"}
     assert e.fi_tekninen == {"Teho [kw]": "30", "Rakennepaine [bar]": "40"}
+
+
+# --- FI_Komponentti tag resolution -------------------------------------
+
+
+def test_resolve_fi_komponentti_laitetunnus():
+    assert resolve_fi_komponentti_field("LAITETUNNUS") == "laitetunnus"
+    assert resolve_fi_komponentti_field("Laitetunnus") == "laitetunnus"
+
+
+def test_resolve_fi_komponentti_yksilollinen_variants():
+    # Punctuation / casing / ö-vs-o all normalise to the same slot.
+    for tag in (
+        "LAITETUNNUS(YKSILÖLLINEN)",
+        "Laitetunnus, yksilöllinen",
+        "LAITETUNNUS_YKSILOLLINEN",
+        "laitetunnusYksilollinen",
+    ):
+        assert resolve_fi_komponentti_field(tag) == "laitetunnus_yksilollinen"
+
+
+def test_resolve_fi_komponentti_unknown_returns_none():
+    assert resolve_fi_komponentti_field("TEHO") is None
+    assert resolve_fi_komponentti_field("KYLMAAINE") is None
+    assert resolve_fi_komponentti_field("") is None
+
+
+# --- FI_Komponentti routing --------------------------------------------
+
+
+def test_attrib_routes_laitetunnus_into_extra_props():
+    e = _equipment_with_attribs(
+        [BlockAttrib(tag="LAITETUNNUS", prompt="Laitetunnus", value="JK1")]
+    )
+    apply_block_attribs([e])
+    assert e.extra_props["laitetunnus"] == "JK1"
+    # Device tags belong on FI_Komponentti, never on the technical tab.
+    assert e.fi_tekninen is None
+
+
+def test_attrib_routes_laitetunnus_yksilollinen_into_extra_props():
+    e = _equipment_with_attribs(
+        [BlockAttrib(tag="LAITETUNNUS(YKSILÖLLINEN)", prompt="", value="501")]
+    )
+    apply_block_attribs([e])
+    assert e.extra_props["laitetunnus_yksilollinen"] == "501"
+    assert e.fi_tekninen is None
+
+
+def test_attrib_blank_laitetunnus_does_not_wipe_positio_value():
+    # POSITIO ran first and set extra_props['laitetunnus']; an unfilled
+    # block ATTDEF must not blank it — and must not leak to FI_Tekninen.
+    e = _equipment_with_attribs(
+        [BlockAttrib(tag="LAITETUNNUS", prompt="Laitetunnus", value="")]
+    )
+    e.extra_props["laitetunnus"] = "from-positio"
+    apply_block_attribs([e])
+    assert e.extra_props["laitetunnus"] == "from-positio"
+    assert e.fi_tekninen is None
+
+
+def test_attrib_nonblank_laitetunnus_overrides_positio_value():
+    # A filled block ATTDEF wins over the POSITIO-derived value.
+    e = _equipment_with_attribs(
+        [BlockAttrib(tag="LAITETUNNUS", prompt="Laitetunnus", value="JK9")]
+    )
+    e.extra_props["laitetunnus"] = "from-positio"
+    apply_block_attribs([e])
+    assert e.extra_props["laitetunnus"] == "JK9"
 
 
 # --- end-to-end through dxf_reader -------------------------------------

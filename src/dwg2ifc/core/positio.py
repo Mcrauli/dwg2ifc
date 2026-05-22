@@ -8,15 +8,20 @@ Lauri's drawing convention: every cooling-equipment INSERT
 * ``NUMERO`` — the unique position number (e.g. "1", "47")
 * ``TEKSTI`` — the koneikko / compressor unit tag (e.g. "JK1", "JK3")
 
-The Finnish FI_Komponentti PropertySet wants both:
+The Finnish FI_Komponentti PropertySet takes both:
 
-* ``Laitetunnus`` ← TEKSTI (group / koneikko)
-* ``Laitetunnus, yksilöllinen`` ← NUMERO (per-instance number)
+* ``Koneikko`` ← TEKSTI (group / refrigeration unit tag)
+* ``Laitetunnus`` ← NUMERO (per-instance position number)
+
+A ``LAITETUNNUS(YKSILÖLLINEN)`` ATTDEF stamped on the block can also
+feed FI_Komponentti's "Laitetunnus, yksilöllinen" slot — that path is
+handled by :mod:`dwg2ifc.core.block_attribs`, not here.
 
 This module is a small two-function helper: index every POSITIO marker
 once at the start of a conversion, then find the nearest one (in 2D)
 for each equipment INSERT placement. No changes to the IFC writer
-itself — it just reads ``extras['laitetunnus']`` from the mapped entity.
+itself — it just writes ``extras['koneikko']`` / ``extras['laitetunnus']``
+on the mapped entity.
 """
 
 from __future__ import annotations

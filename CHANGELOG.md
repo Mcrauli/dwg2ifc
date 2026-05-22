@@ -6,6 +6,24 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha12 — 2026-05-22 (Laitetunnus-attribuutit FI_Komponentti-välilehdelle)
+
+- **Blokin `LAITETUNNUS`- ja `LAITETUNNUS(YKSILÖLLINEN)`-attribuutit
+  näkyvät Solibrissa nyt FI_Komponentti-välilehdellä — eivät enää
+  FI_Teknisessä.** Aiemmin jokainen ei-tuotetietotagi reititettiin
+  FI_Teknieen; koneikon ja lauhduttimen laitetunnukset ovat
+  laiteluokittelua, eivät teknisiä arvoja, joten ne kuuluvat
+  FI_Komponentti-tabille `Koneikko`-kentän viereen.
+- **Uusi FI_Komponentti-kenttä `Laitetunnus, yksilöllinen`** per-laite-
+  kohtaiselle yksilölliselle tunnukselle.
+- Tagintunnistus on välimerkki- ja kirjainkokoriippumaton
+  (`core/block_attribs.py`, `resolve_fi_komponentti_field`):
+  `LAITETUNNUS`, `Laitetunnus`, `LAITETUNNUS(YKSILÖLLINEN)`,
+  `LAITETUNNUS_YKSILOLLINEN` jne. osuvat samoihin kenttiin.
+- Laitetunnus-arvot kulkevat `extra_props`-kanavan kautta (sama kuin
+  POSITIO-blokkien parituksessa): blokin täytetty arvo voittaa
+  POSITIO-johdetun arvon, tyhjä arvo ei pyyhi sitä.
+
 ## v0.3.0-alpha11 — 2026-05-22 (anonyymiblokit STLOUT-polulle)
 
 - **Korjattu: BEDITissä muokattu tai kopioitu laite (esim. koneikko)
