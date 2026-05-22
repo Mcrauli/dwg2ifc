@@ -9,7 +9,7 @@ PropertySettiä per IFC-tuote (`FI_Asennus` / `FI_Geometria` /
 `FI_Komponentti` / `FI_Tuote` / `FI_Tekninen` / `FI_Sijainti`), ja
 Solibri-yhteensopivan IFC4-tiedoston yhdellä konversio-ajolla.
 
-Nykyinen versio: **v0.3.0-alpha1** (2026-05-18). Pre-release-vaiheessa.
+Nykyinen versio: **v0.3.0-alpha12** (2026-05-22). Pre-release-vaiheessa.
 
 > **Nimenmuutos `dxf2ifc` → `dwg2ifc`:** projekti syntyi DXF-syötteellä,
 > mutta DWG on alpha21:stä lähtien ensisijainen syöte (preconvertoidaan
@@ -166,18 +166,10 @@ sisältö — käytä kollegan `-MAGIIFCCD`-IFC:tä + `--magicad-ifc`-mergeä.
 | | Mihin |
 |---|---|
 | **Käyttäjälle** | Tämä README + GUI-tooltipit |
-| **Kontribuutio / arkkitehtuuri** | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
+| **Kehittäjälle / AI-agentille** | [`AGENTS.md`](AGENTS.md) + [`docs/task-map.md`](docs/task-map.md) |
+| **Arkkitehtuuri** | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
 | **MagiCAD-merge-ratkaisun historia** | [`docs/DWG_MAGICAD_PREPROCESSING.md`](docs/DWG_MAGICAD_PREPROCESSING.md) |
-| **Claude / fresh sessio** | [`CLAUDE.md`](CLAUDE.md) + [`docs/CLAUDE_TASKS.md`](docs/CLAUDE_TASKS.md) |
-| **Volatile state + open todos** | [`PROGRESS.md`](PROGRESS.md) |
 | **Versiohistoria** | [`CHANGELOG.md`](CHANGELOG.md) |
-| **Plan A→H -spec (historiallinen)** | [`docs/plans/`](docs/plans/) |
-| **Build #1–#36 -arkisto** | [`docs/PROGRESS-archive.md`](docs/PROGRESS-archive.md) |
-
-> Historialliset docit (`docs/ARCHITECTURE.md`, `docs/CLAUDE_TASKS.md`,
-> `docs/DWG_MAGICAD_PREPROCESSING.md`, `docs/plans/*`) viittaavat
-> tarkoituksellisesti vielä vanhaan nimeen `dxf2ifc` — ne kuvaavat
-> sen aikaisen toteutuksen historiaa eivätkä nykyistä tilaa.
 
 ## Lisenssi
 

@@ -1,13 +1,13 @@
 # Quality gates — kahden tason laatuprosessi
 
-dxf2ifc:n IFC-luovutuksen oikeellisuus varmistetaan kahdella toisiaan
+dwg2ifc:n IFC-luovutuksen oikeellisuus varmistetaan kahdella toisiaan
 täydentävällä portilla. Tason 1 portti automatisoituu CI:ssä joka pushilla.
 Tason 2 portin Lauri ajaa manuaalisesti ennen jokaista tag-pohjaista
 releasea.
 
 ## Taso 1 — automaattinen `ifcopenshell.validate` -gate
 
-**Mitä:** `dxf2ifc.core.quality.validate_ifc(path)` wrappaa
+**Mitä:** `dwg2ifc.core.quality.validate_ifc(path)` wrappaa
 `ifcopenshell.validate.validate(file, json=True, return_json=True)` ja
 palauttaa structured `ValidationReport`-tuloksen (errors, warnings,
 summary). Wrapperi täydentää schema-virheet myös YTV 2012 -spesifillä
@@ -25,7 +25,7 @@ classification"`.
 
 **Missä ajetaan:**
 
-- **CLI:** `dxf2ifc convert input.dxf out.ifc --validate` palauttaa exit
+- **CLI:** `dwg2ifc convert input.dxf out.ifc --validate` palauttaa exit
   1 jos errors > 0; warningit ja errors printataan stderr:ään. Käytä
   tätä tuotantoautomaation osana.
 - **GUI:** `convert_dxf` ajetaan validate=True -vaihtoehdolla, ja
@@ -42,7 +42,7 @@ Windowsilla samalla logiikalla.
 ## Taso 2 — manuaalinen Solibri-snapshot-verify
 
 **Mitä:** Lauri ajaa Solibri Anywhere CLI:n
-`tools/solibri/dxf2ifc.bcfzip`-rulesetillä referenssimallia vasten
+`tools/solibri/dwg2ifc.bcfzip`-rulesetillä referenssimallia vasten
 (esim. `tests/fixtures/solibri_reference_full.ifc`) ja vertaa tuloksen
 committed-baselineen `tests/snapshots/solibri/full_kylmaelement.json`.
 Helper-skriptit:
@@ -53,7 +53,7 @@ Helper-skriptit:
 - `python -m tools.solibri verify --ifc … --ruleset … --report …`
 - `tests/test_solibri_snapshot_chain.py` (gated `@pytest.mark.solibri`)
 
-**Mitä tarkistaa (`tools/solibri/dxf2ifc.bcfzip` 5 sääntöä):**
+**Mitä tarkistaa (`tools/solibri/dwg2ifc.bcfzip` 5 sääntöä):**
 
 1. Units are millimetres
 2. Talo2000 classification coverage
@@ -72,7 +72,7 @@ koska Solibri Anywhere on lisensoitu desktop-ohjelma. Pytest-marker
 1. Push master:iin → taso 1 ajaa CI:ssä.
 2. Kun `release.yml` on valmis julkaisemaan tagin, suorita
    [docs/packaging-smoke.md](packaging-smoke.md)-checklist Windowsilla.
-3. Avaa Solibri Anywhere, tuo `tools/solibri/dxf2ifc.bcfzip` ruleset:ksi,
+3. Avaa Solibri Anywhere, tuo `tools/solibri/dwg2ifc.bcfzip` ruleset:ksi,
    lataa referenssi-IFC, aja säännöt ja vie raportti.
 4. Aja `python -m tools.solibri verify ...` ja varmista että diff vs.
    baseline on tyhjä (`SnapshotDelta.is_clean is True`).
@@ -90,7 +90,7 @@ viralliset koodit on kuvattu [`docs/rava-classification.md`](rava-classification
 Plan G:n jälkeen Taso 1 -gate sisältää myös **CRS-coverage-tarkistuksen**
 (`crs_orphan_map_conversion`, `crs_missing_map_conversion`,
 `crs_possible_double_transform`). Solibri-rule-set:iin lisätty rule #7
-"CRS coverage" (`tools/solibri/dxf2ifc.bcfzip`) tekee saman
+"CRS coverage" (`tools/solibri/dwg2ifc.bcfzip`) tekee saman
 manuaalisesti Tasolla 2. Yksityiskohdat ja ETRS-TM35FIN-konventio:
 [`docs/coordinate-system.md`](coordinate-system.md).
 

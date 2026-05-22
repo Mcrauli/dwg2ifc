@@ -1,8 +1,8 @@
-# Solibri-säännöt — dxf2ifc.bcfzip
+# Solibri-säännöt — dwg2ifc.bcfzip
 
 Tämä dokumentti kuvaa suomeksi jokaisen säännön, joka kuljetetaan tiedostossa
-`tools/solibri/dxf2ifc.bcfzip`. Sääntölistaus on tarkoitettu luettavaksi ilman
-Solibrin avaamista, jotta dxf2ifc:n laatuporttia voi auditoida ja testata
+`tools/solibri/dwg2ifc.bcfzip`. Sääntölistaus on tarkoitettu luettavaksi ilman
+Solibrin avaamista, jotta dwg2ifc:n laatuporttia voi auditoida ja testata
 manuaalisesti.
 
 BCF 2.1 -arkisto sisältää kuusi `TopicType="Rule"`-tyyppistä topicia, yksi
@@ -34,8 +34,8 @@ samaan järjestykseen kuin `tools/solibri/build_bcfzip.py:RULES`-vakio.
 - **Viite:** RT 10-10962 + YTV 2012 osa 3 (RAK) ja osa 4 (TATE).
 - **Solibri-säännön tyyppi:** "Information takeoff / Classification"
   _Required classification reference present_.
-- **dxf2ifc:n vastaava automaattinen tarkistus:**
-  `dxf2ifc.core.quality.validate_ifc` emittaa
+- **dwg2ifc:n vastaava automaattinen tarkistus:**
+  `dwg2ifc.core.quality.validate_ifc` emittaa
   `"missing Talo2000 classification"` -warningin jos linkki puuttuu.
 
 ## 3. RAVA classification coverage
@@ -55,8 +55,8 @@ samaan järjestykseen kuin `tools/solibri/build_bcfzip.py:RULES`-vakio.
   TALOTEKNIIKKA-TUOTEOSA Versio 1.0 + Plan H Section 5.
 - **Solibri-säännön tyyppi:** "Information takeoff / Classification"
   _Required RAVA classification reference present_.
-- **dxf2ifc:n vastaava automaattinen tarkistus:**
-  `dxf2ifc.core.quality.validate_ifc` emittaa
+- **dwg2ifc:n vastaava automaattinen tarkistus:**
+  `dwg2ifc.core.quality.validate_ifc` emittaa
   `"missing RAVA classification"` -warningin jos linkki puuttuu.
 
 ## 4. IfcSystem grouping for refrigeration networks
@@ -89,7 +89,7 @@ samaan järjestykseen kuin `tools/solibri/build_bcfzip.py:RULES`-vakio.
 - **Viite:** RT 10-10962 koodi 1352 + YTV 2012 osa 3.
 - **Solibri-säännön tyyppi:** "Architecture / Walls" _Cold-room panels
   must be Proxy 1352, not Wall_.
-- **dxf2ifc:n vastaava automaattinen tarkistus:** Default-profiilin
+- **dwg2ifc:n vastaava automaattinen tarkistus:** Default-profiilin
   KYL-LEVY*-säännöt mappaavat suoraan `IfcBuildingElementProxy`:lle.
 
 ## 6. Cooling equipment uses MEP entity types
@@ -133,8 +133,8 @@ samaan järjestykseen kuin `tools/solibri/build_bcfzip.py:RULES`-vakio.
 # 1. Avaa Solibri Anywhere ja lataa baseline-IFC
 solibri_anywhere tests/fixtures/solibri_reference_full.ifc
 
-# 2. Tuo dxf2ifc.bcfzip ruleset:ksi (File → Open BCF…)
-solibri_anywhere/import tools/solibri/dxf2ifc.bcfzip
+# 2. Tuo dwg2ifc.bcfzip ruleset:ksi (File → Open BCF…)
+solibri_anywhere/import tools/solibri/dwg2ifc.bcfzip
 
 # 3. Aja ruleset (Checking → Run all rules)
 # 4. Vie raportti BCF:nä ja tallenna tests/snapshots/solibri/<malli>.json

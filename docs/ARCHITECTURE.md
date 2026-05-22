@@ -1,4 +1,4 @@
-# dxf2ifc — Architecture
+# dwg2ifc — Architecture
 
 Korkean tason yleiskuva. Ei spec, vaan pipeline-kartta jonka avulla
 osaa lokalisoida muutoksen oikeaan moduuliin.

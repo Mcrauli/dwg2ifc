@@ -1,6 +1,6 @@
 # Coordinate System & Georeferenced IFC
 
-dxf2ifc kirjoittaa Plan G:stä lähtien georeferensoituja IFC-tiedostoja:
+dwg2ifc kirjoittaa Plan G:stä lähtien georeferensoituja IFC-tiedostoja:
 geometria säilyy LOCAL-koordinaateissa (origo lähellä mallin keskipistettä),
 ja IFC-tiedostoon liitetään `IfcProjectedCRS` + `IfcMapConversion`-pari joka
 kertoo Solibri- / Trimble-/InfraBIM-yhteensopiville työkaluille miten LOCAL
@@ -10,7 +10,7 @@ projisoidaan WORLD-koordinaatistoon.
 
 Suomen virallinen projektioperhe rakennus- ja
 infrahankkeissa on **ETRS-TM35FIN**, joka tunnetaan myös EPSG-koodilla
-`EPSG:3067`. Tämä on dxf2ifc:n default-CRS — Helsingin keskustan
+`EPSG:3067`. Tämä on dwg2ifc:n default-CRS — Helsingin keskustan
 itäkoordinaatti (eastings) on noin 25 496 000 mm ja pohjoiskoordinaatti
 (northings) noin 6 672 000 mm.
 
@@ -29,7 +29,7 @@ orthogonal_height_mm = 0.0
 
 ## IfcProjectedCRS — kenttäkonventio
 
-dxf2ifc kirjoittaa `IfcProjectedCRS`-entiteetin seuraavin arvoin:
+dwg2ifc kirjoittaa `IfcProjectedCRS`-entiteetin seuraavin arvoin:
 
 | Kenttä | Arvo | Esimerkki |
 |---|---|---|
@@ -55,14 +55,14 @@ parserien kanssa.
 
 ## Geometria pysyy LOCAL — kaksoismuunnos kielletty
 
-**dxf2ifc kirjoittaa kaikki vertex-koordinaatit LOCAL-koordinaateissa.**
+**dwg2ifc kirjoittaa kaikki vertex-koordinaatit LOCAL-koordinaateissa.**
 WORLD-projektio tehdään katselusovelluksessa ajonaikaisesti
 `IfcMapConversion`:n perusteella. Jos geometriaan vahingossa upotetaan
 WORLD-koordinaatit (esim. 25 496 000 mm), `IfcMapConversion` projisoi ne
 *toisen kerran* — tämä on **double-transform-bug** ja tuottaa virheellisen
 mallin.
 
-dxf2ifc:n quality-gate (`validate_local_extent` + `validate_ifc`) tarkistaa
+dwg2ifc:n quality-gate (`validate_local_extent` + `validate_ifc`) tarkistaa
 että yksikään `IfcCartesianPoint` ei ole yli 1 km origosta — jos ylittyy,
 tulee varoitus `crs_possible_double_transform`. RuntimeError-versio
 `validate_local_extent(skeleton)` käytetään testeissä, jotka haluavat
@@ -101,7 +101,7 @@ ETRS-TM35FIN-koordinaatit projektillesi saat **Maanmittauslaitoksen
 karttapalvelusta** (https://kartta.paikkatietoikkuna.fi) tai
 **National Land Survey API:sta** (https://www.maanmittauslaitos.fi/karttapaikka).
 Klikkaa rakennuspaikkaa, valitse "Näytä koordinaatit", ja kopioi
-ETRS-TM35FIN-rivi (esim. `E: 25 496 123, N: 6 672 456`). dxf2ifc-
+ETRS-TM35FIN-rivi (esim. `E: 25 496 123, N: 6 672 456`). dwg2ifc-
 profiilissa eastings ja northings tulevat **millimetreissä** — kerro
 metri-arvo 1000:lla.
 
@@ -114,7 +114,7 @@ on selkeä tarve poikkeavasti suunnatulle mallille.
 
 ## Avaintyökalut
 
-- `CRSConfig` — `dxf2ifc.profiles.schema.CRSConfig` (pydantic)
+- `CRSConfig` — `dwg2ifc.profiles.schema.CRSConfig` (pydantic)
 - `build_ifc_project_skeleton(crs=..., storey_z_levels_mm=...)` — palauttaa
   `IfcSkeleton`
 - `resolve_storey(storeys, z_mm)` — anchor-Z → storey

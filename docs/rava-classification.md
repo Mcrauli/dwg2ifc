@@ -1,6 +1,6 @@
-# RAVA-luokitus dxf2ifc:ssä
+# RAVA-luokitus dwg2ifc:ssä
 
-dxf2ifc tukee Plan H:sta lähtien kahta erillistä **suunnitteluala-domainia**
+dwg2ifc tukee Plan H:sta lähtien kahta erillistä **suunnitteluala-domainia**
 (`Rule.domain`):
 
 | domain | Codeset                                | IfcClassification.Name | Käyttötarkoitus                             |
@@ -24,7 +24,7 @@ Tämä takaa että jokainen IFC-tuoteosa saa täsmälleen yhden
 
 RAVA-koodit ladataan virallisesta JSON-API:sta osoitteessa
 `https://koodistot.suomi.fi/codelist-api/api/v1/coderegistries/rytj/codeschemes/<scheme>_Versio_1_0/codes`.
-Neljä codeset:iä on cache:ttu repo:on tiedostoiksi `src/dxf2ifc/profiles/rava/`:
+Neljä codeset:iä on cache:ttu repo:on tiedostoiksi `src/dwg2ifc/profiles/rava/`:
 
 - `lvi_tuoteosa.json`
 - `lvi_jarjestelma.json`
@@ -32,7 +32,7 @@ Neljä codeset:iä on cache:ttu repo:on tiedostoiksi `src/dxf2ifc/profiles/rava/
 - `talotekniikka_jarjestelma.json`
 
 Cache:n päivitys: `python -m tools.rava.sync_codes` (Plan H Task 5).
-`dxf2ifc.profiles.rava.loader.load_rava_codes()` palauttaa dictin
+`dwg2ifc.profiles.rava.loader.load_rava_codes()` palauttaa dictin
 `code → RAVACode(code, name, codeset)` ja sallii koodien validoinnin
 profiili-editorissa.
 
@@ -59,7 +59,7 @@ TALOTEKNIIKKA-TUOTEOSA:
 
 ## Default-profiilin vaikutus
 
-`src/dxf2ifc/profiles/default_kylmalaite.toml` ohjaa:
+`src/dwg2ifc/profiles/default_kylmalaite.toml` ohjaa:
 
 - ARK-säännöt (KYL-ULKOSEINA, KYL-VALISEINA, KYL-OVET-*, KYL-IKKUNA, KYL-LEVY,
   KYL-LEVYHYLLY, KYL-TIKASHYLLY*, AR12xx-prefix-säännöt, K-prefix-säännöt) →
@@ -72,7 +72,7 @@ TALOTEKNIIKKA-TUOTEOSA:
 
 ## Quality gate (validate_ifc)
 
-`dxf2ifc.core.quality.validate_ifc` tarkistaa kaksi rinnakkaista warning-
+`dwg2ifc.core.quality.validate_ifc` tarkistaa kaksi rinnakkaista warning-
 sääntöä:
 
 - `_check_talo2000_classification` — IfcWall / IfcSlab / IfcDoor / IfcWindow
@@ -82,7 +82,7 @@ sääntöä:
   linkkiä.
 
 Solibri-puolella vastaavat säännöt toimitetaan
-`tools/solibri/dxf2ifc.bcfzip`:n topiceina **2** ("Talo2000 classification
+`tools/solibri/dwg2ifc.bcfzip`:n topiceina **2** ("Talo2000 classification
 coverage") ja **3** ("RAVA classification coverage") — ks. `docs/solibri-rules.md`.
 
 Yleinen laatuporttiarkkitehtuuri (auto + manuaali) on kuvattu

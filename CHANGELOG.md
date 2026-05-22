@@ -1,6 +1,6 @@
 # Changelog
 
-All notable user-facing changes to dxf2ifc are documented here. The format
+All notable user-facing changes to dwg2ifc are documented here. The format
 loosely follows [Keep a Changelog](https://keepachangelog.com/), and the
 project uses semantic versioning.
 
@@ -590,9 +590,6 @@ toistettavasti. Labeli kirjoitetaan `IfcBuildingStorey.Name`-kenttään
 sellaisenaan ("1.krs", "2.krs", "kellari", …). Maailma-Z =
 `kerroksen korko + DXF-objektin Z`, joten kaikki kerrokset @ 0 mm
 päästää AutoCADin absoluuttiset Z:t läpi sellaisinaan.
-
-Spec:
-[`docs/superpowers/specs/2026-05-13-multi-floor-merge-design.md`](docs/superpowers/specs/2026-05-13-multi-floor-merge-design.md).
 
 **Breaking changes**:
 

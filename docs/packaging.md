@@ -1,4 +1,4 @@
-# Packaging dxf2ifc
+# Packaging dwg2ifc
 
 PyInstaller bundlaa CLI:n ja PySide6-GUI:n yhdeksi käynnistettäväksi binääriksi
 joka voidaan jakaa loppukäyttäjälle ilman Python-asennusta. Tämä dokumentti
@@ -11,10 +11,10 @@ kuvaa paikallisen buildin, CI-buildin ja release-prosessin.
 uv sync --extra dev --extra gui
 
 # Aja PyInstaller checked-in spec-tiedostolla. --clean tyhjentää välivälineet.
-uv run pyinstaller build/dxf2ifc.spec --clean --noconfirm
+uv run pyinstaller build/dwg2ifc.spec --clean --noconfirm
 ```
 
-Output päätyy `dist/dxf2ifc(.exe)` -tiedostona. Spec on Plan E Section 1
+Output päätyy `dist/dwg2ifc(.exe)` -tiedostona. Spec on Plan E Section 1
 -skeleton (datas, hidden_imports ja version_info täydennetään Section 2:ssa).
 
 ## Installer (Inno Setup)
@@ -27,14 +27,14 @@ Apps & Features -uninstaller, version-info), mikä vähentää SmartScreenin
 
 ```powershell
 # Asenna Inno Setup 6 kerran: https://jrsoftware.org/isinfo.php
-# Build-ketju: PyInstaller exe → ISCC compile → dist/dxf2ifc-Setup-<v>.exe
+# Build-ketju: PyInstaller exe → ISCC compile → dist/dwg2ifc-Setup-<v>.exe
 .\scripts\build_installer.ps1
 ```
 
 Installer-konfig on `build/installer.iss`. Avainpäätökset:
 
 - **`PrivilegesRequired=lowest`** + `PrivilegesRequiredOverridesAllowed=dialog`
-  → asennetaan oletuksena per-user (`%LOCALAPPDATA%\Programs\dxf2ifc`), ei
+  → asennetaan oletuksena per-user (`%LOCALAPPDATA%\Programs\dwg2ifc`), ei
   UAC-promptia eikä admin-oikeuksia. Käyttäjä voi halutessaan elevoida
   Program Files -asennukseen wizard-dialogista.
 - **Stable `AppId`** GUID → upgrade/uninstall toimii oikein versioiden välillä.
@@ -48,11 +48,11 @@ Installer-konfig on `build/installer.iss`. Avainpäätökset:
 ### Build pipeline
 
 `scripts/build_installer.ps1` ajaa:
-1. `scripts/build_exe.ps1` → `dist/dxf2ifc.exe` + `dist/dxf2ifc-<v>.exe`
+1. `scripts/build_exe.ps1` → `dist/dwg2ifc.exe` + `dist/dwg2ifc-<v>.exe`
 2. `dist/LICENSES.md`-fallback (CI:n release.yml korvaa sen rikkaammalla
    versiolla ennen installerin compilea).
-3. ISCC-compile `build/installer.iss` → `dist/dxf2ifc-Setup-<v>.exe`
-4. SHA256-sidecar `dist/dxf2ifc-Setup-<v>.exe.sha256`
+3. ISCC-compile `build/installer.iss` → `dist/dwg2ifc-Setup-<v>.exe`
+4. SHA256-sidecar `dist/dwg2ifc-Setup-<v>.exe.sha256`
 
 CI:n `windows-latest`-runnerit pitävät Inno Setup 6:n esiasennettuna, joten
 workflowt eivät vaadi erillistä install-stepiä.
@@ -67,7 +67,7 @@ varoitusta täysin. Loppukäyttäjän ohje: **More info → Run anyway**.
 
 Code signing -hookki (`signtool sign /f cert.pfx /tr http://timestamp.digicert.com
 /fd sha256 /td sha256 ...`) lisätään `build_installer.ps1`:een kun
-sertifikaatti on hankittu — sekä `dxf2ifc.exe`:lle ennen ISCC-compilea
+sertifikaatti on hankittu — sekä `dwg2ifc.exe`:lle ennen ISCC-compilea
 että installerille sen jälkeen.
 
 ### Huomautus alustasta
@@ -75,14 +75,14 @@ että installerille sen jälkeen.
 PyInstaller ei tee cross-compilea: alustan natiivi binääri syntyy aina ajavan
 host-koneen alustalle.
 
-- **Linux-host** tuottaa ELF-binäärin nimellä `dist/dxf2ifc` (smoke-build,
+- **Linux-host** tuottaa ELF-binäärin nimellä `dist/dwg2ifc` (smoke-build,
   käytetään lähinnä CI-validointiin että .spec on suoritettavissa).
 - **Windows-host** (Windows 10/11 tai GitHub Actions `windows-latest`-runner)
-  tuottaa ohjelmoidun `dist/dxf2ifc.exe`-tiedoston, joka on lopullinen
+  tuottaa ohjelmoidun `dist/dwg2ifc.exe`-tiedoston, joka on lopullinen
   jakelumuoto loppukäyttäjälle.
 - **macOS** ei ole virallisesti tuettu — Lauri jakaa vain Windows-builds.
 
-Tämän projektin pääjakelu on `dxf2ifc.exe`, joka rakennetaan
+Tämän projektin pääjakelu on `dwg2ifc.exe`, joka rakennetaan
 GitHub Actions -workflow:lla (ks. Section 3 + 4).
 
 ## CI build
@@ -96,11 +96,11 @@ GitHub Actions ajaa `.github/workflows/build.yml`-workflow:n joka triggeröityy:
 
 1. Checkout + Python 3.12 + uv setup.
 2. Aja `scripts/build_exe.ps1`, joka kutsuu PyInstallerin spec-tiedostolla.
-3. Smoke-step: ajaa `dist/dxf2ifc-*.exe --version`. Vaaditaan exit code 0 ja
-   stdout joka sisältää merkkijonon `dxf2ifc`. Jos smoke epäonnistuu (puuttuva
+3. Smoke-step: ajaa `dist/dwg2ifc-*.exe --version`. Vaaditaan exit code 0 ja
+   stdout joka sisältää merkkijonon `dwg2ifc`. Jos smoke epäonnistuu (puuttuva
    ifcopenshell-skeema, hidden import, jne.), artifactia ei uploadata.
-4. Upload-step julkaisee artifactin nimellä `dxf2ifc-windows`. Sisältää
-   `dist/dxf2ifc-<version>.exe` ja `dist/dxf2ifc-<version>.exe.sha256`.
+4. Upload-step julkaisee artifactin nimellä `dwg2ifc-windows`. Sisältää
+   `dist/dwg2ifc-<version>.exe` ja `dist/dwg2ifc-<version>.exe.sha256`.
 
 ### Linux-smoke-job (`ubuntu-latest`)
 
@@ -131,7 +131,7 @@ buildin ja luo draft-releasen, mutta lopullisen julkaisun napauttaa
 ihminen GitHub-UI:ssa.
 
 1. **Bumpaa versio.** Päivitä molemmat:
-   - `src/dxf2ifc/_version.py` (`__version__ = "X.Y.Z"`)
+   - `src/dwg2ifc/_version.py` (`__version__ = "X.Y.Z"`)
    - `pyproject.toml` (`version = "X.Y.Z"`)
 2. **Päivitä CHANGELOG.md.** Lisää uusi `## vX.Y.Z — YYYY-MM-DD` -otsikko ja
    listaus käyttäjälle näkyvistä muutoksista (Added / Changed / Fixed).
@@ -139,7 +139,7 @@ ihminen GitHub-UI:ssa.
    GitHub Releasessa.
 3. **Commit + annotated tag.**
    ```bash
-   git add src/dxf2ifc/_version.py pyproject.toml CHANGELOG.md
+   git add src/dwg2ifc/_version.py pyproject.toml CHANGELOG.md
    git commit -m "release: vX.Y.Z"
    git tag -a vX.Y.Z -m "vX.Y.Z"
    git push origin master
@@ -148,8 +148,8 @@ ihminen GitHub-UI:ssa.
 4. **Workflow ajaa.** `.github/workflows/release.yml` triggeröityy `v*.*.*`
    -tagista, buildaa Windows-`.exe`:n + Inno Setup -installerin, ajaa
    smoke-testit, kerää `LICENSES.md`:n ja luo *draft* GitHub Releasen tagista.
-   Artifactit: `dxf2ifc-X.Y.Z.exe`, `dxf2ifc-X.Y.Z.exe.sha256`,
-   `dxf2ifc-Setup-X.Y.Z.exe`, `dxf2ifc-Setup-X.Y.Z.exe.sha256`, `LICENSES.md`.
+   Artifactit: `dwg2ifc-X.Y.Z.exe`, `dwg2ifc-X.Y.Z.exe.sha256`,
+   `dwg2ifc-Setup-X.Y.Z.exe`, `dwg2ifc-Setup-X.Y.Z.exe.sha256`, `LICENSES.md`.
 5. **Tarkista ja julkaise.** Lataa `.exe` GitHub-UI:n draft-releasesta omalle
    Windows-koneelle, vertaa SHA256:ta `.sha256`-sidecariin, aja
    `docs/packaging-smoke.md`-checklist (Task 20). Kun kaikki vihreää,
@@ -172,18 +172,18 @@ juuri ladatun tiedoston.
 - **Defender quarantine**: avaa "Virus & threat protection" → "Allowed
   threats" / "Protection history" ja palauta tiedosto. Tai pidä `.exe`
   user-folderin sijaan kansiossa joka ei ole reaaliaikaisen skannin
-  scopessa (esim. `C:\Tools\dxf2ifc\`).
+  scopessa (esim. `C:\Tools\dwg2ifc\`).
 - **Pitkän aikavälin ratkaisu**: code-signing-sertifikaatti (esim.
   Sectigo / SSL.com EV CodeSigning) lisätään tulevaisuudessa Plan E:n
   follow-up:ssa. SmartScreen-reputaatio rakentuu vasta kymmenien tuhansien
   asennuksien jälkeen.
 
-### `dxf2ifc.exe` käynnistyy mutta kaatuu "ifcopenshell schema not found"
+### `dwg2ifc.exe` käynnistyy mutta kaatuu "ifcopenshell schema not found"
 
 PyInstaller ei aina ymmärrä että `ifcopenshell` lataa `IFC4.exp` /
 `IFC4X3_ADD2.exp`-skemoja runtime-resourceina. Spec-tiedoston `Analysis(...)`
-pitää sisältää `(ifcopenshell-data, dxf2ifc/ifcopenshell)` tai vastaava
-`--add-data`. Tarkista `build/dxf2ifc.spec`:in `datas`-lista — jos puuttuu,
+pitää sisältää `(ifcopenshell-data, dwg2ifc/ifcopenshell)` tai vastaava
+`--add-data`. Tarkista `build/dwg2ifc.spec`:in `datas`-lista — jos puuttuu,
 lisää:
 
 ```python
@@ -207,7 +207,7 @@ käynnistyksessä, mikä lisää 3-8 sekuntia cold start -aikaa.
 
 - **`--onefile`** (nykyinen oletus): yksi `.exe`, helppo jakaa, hidas
   käynnistys, Windows Defender skannaa joka kerta.
-- **`--onedir`**: jakelu on `dxf2ifc/`-kansio + sen sisällä olevat DLL/PYD
+- **`--onedir`**: jakelu on `dwg2ifc/`-kansio + sen sisällä olevat DLL/PYD
   -tiedostot, käynnistys nopea (<1 s), mutta loppukäyttäjälle vaikeampi
   käsitellä (zip vaaditaan).
 
@@ -216,9 +216,9 @@ Jos cold start -aika nousee ongelmaksi, vaihda `.spec`:n `EXE(...)` →
 
 ## Icon
 
-`build/dxf2ifc.spec` ja `build/installer.iss` poimivat `assets/dxf2ifc.ico`:n
+`build/dwg2ifc.spec` ja `build/installer.iss` poimivat `assets/dwg2ifc.ico`:n
 automaattisesti jos tiedosto on olemassa — muuten PyInstaller-bootloaderin
 default-icon ja Inno Setupin default-installer-icon. ICO-vaatimukset:
 multi-resolution (16/32/48/256 px) ja sininen-amber-paletti (CLAUDE.md
-brand-värit). Kun `assets/dxf2ifc.ico` on lisätty, ei spec- eikä iss-tiedostoon
+brand-värit). Kun `assets/dwg2ifc.ico` on lisätty, ei spec- eikä iss-tiedostoon
 tarvitse koskea — seuraava build poimii sen automaattisesti.

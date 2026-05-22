@@ -1,8 +1,8 @@
-# Claude task map
+# Tehtäväkartta
 
 Per-tehtävä lukulista — minkä tiedostot avata ENSIN ja minkä JÄTTÄÄ
 LUKEMATTA. Pidä konteksti pienenä; lisää tiedostoja vain jos tehtävä
-sitä vaatii.
+sitä vaatii. Yleiskuva on [`../AGENTS.md`](../AGENTS.md):ssä.
 
 ## Layer mapping / profile
 
@@ -10,9 +10,9 @@ sitä vaatii.
 classification-koodeja, päivitä `default_kylmalaite.toml`.
 
 Lue ensin:
-- `src/dxf2ifc/profiles/default_kylmalaite.toml`
-- `src/dxf2ifc/profiles/schema.py` (pydantic-mallit)
-- `src/dxf2ifc/core/mapper.py` (`apply_profile`)
+- `src/dwg2ifc/profiles/default_kylmalaite.toml`
+- `src/dwg2ifc/profiles/schema.py` (pydantic-mallit)
+- `src/dwg2ifc/core/mapper.py` (`apply_profile`)
 
 Älä lue:
 - `core/dxf_reader.py`, `ifc_writer/builders.py`
@@ -26,11 +26,10 @@ Testit: `tests/test_mapper.py`, `tests/test_profile_*.py`.
 extrusion-säännöt, OCS/WCS-muunnokset.
 
 Lue ensin:
-- `src/dxf2ifc/core/dxf_reader.py` (759 r — huomaa että iso, mutta
-  paikalliset muutokset ovat usein dispatch-tason `if dxftype == ...`-
-  haaroissa)
-- `src/dxf2ifc/core/types.py` (Point3D, MeshGeometry, BlockInstance, …)
-- `src/dxf2ifc/core/geometry.py` (extrusion-dataclassit)
+- `src/dwg2ifc/core/dxf_reader.py` (iso tiedosto, mutta paikalliset
+  muutokset ovat usein dispatch-tason `if dxftype == ...`-haaroissa)
+- `src/dwg2ifc/core/types.py` (Point3D, MeshGeometry, BlockInstance, …)
+- `src/dwg2ifc/core/geometry.py` (extrusion-dataclassit)
 
 Älä lue:
 - `ifc_writer/`-puuta
@@ -40,18 +39,18 @@ dxf_reader_polyface, dxf_reader_insert_3dface).
 
 ## MagiCAD / DWG / COM / Object Enabler -tehtävät
 
-**Tehtävä**: mitä tahansa joka koskee MagiCAD-osia, DWG-tuen palauttamista,
+**Tehtävä**: mitä tahansa joka koskee MagiCAD-osia, DWG-tukea,
 AutoCAD COM:ia, render-only Object Enableria tai MAGIEXPLODE-ratkaisua.
 
 Lue ensin:
-- [`docs/DWG_MAGICAD_PREPROCESSING.md`](DWG_MAGICAD_PREPROCESSING.md) —
+- [`DWG_MAGICAD_PREPROCESSING.md`](DWG_MAGICAD_PREPROCESSING.md) —
   historiallinen päätös ja säännöt.
 
 **Tunne säännöt ennen koodimuutosta**:
-- DWG-input ja `dwg_preconvert.py` on poistettu v0.2.0-alpha10:ssä.
-  Älä palauta niitä ilman käyttäjän eksplisiittistä lupaa.
-- AutoCAD COM / `pywin32` ei kuulu enää dependencyihin. Älä lisää
-  takaisin ilman keskustelua.
+- DWG-syöte on tuettu accoreconsole + DXFOUT -preconversiolla
+  (`core/dwg_preconvert.py`). Älä yritä keystroke-COM:ia.
+- AutoCAD COM / `pywin32` ei kuulu dependencyihin. Älä lisää takaisin
+  ilman keskustelua.
 - MagiCAD-osille ainoa luotettava reitti: kollegan `-MAGIIFCCD` + merge.
 
 ## MagiCAD-IFC merge (kollegan -MAGIIFCCD)
@@ -60,9 +59,9 @@ Lue ensin:
 append_asset, container-linkitys, MAGI*-skip DXF-puolella.
 
 Lue ensin:
-- [`docs/DWG_MAGICAD_PREPROCESSING.md`](DWG_MAGICAD_PREPROCESSING.md) —
-  miksi DWG-input poistettiin ja miksi merge on oikea reitti
-- `src/dxf2ifc/core/ifc_merger.py` (186 r — pieni, lue koko)
+- [`DWG_MAGICAD_PREPROCESSING.md`](DWG_MAGICAD_PREPROCESSING.md) —
+  miksi merge on oikea reitti
+- `src/dwg2ifc/core/ifc_merger.py` (pieni — lue koko)
 - `tests/test_ifc_merger.py`
 
 Älä lue:
@@ -75,10 +74,10 @@ Lue ensin:
 mesh-vertex-deduplikointi.
 
 Lue ensin:
-- `src/dxf2ifc/core/preprocessing.py` (accoreconsole + STL parser)
-- `src/dxf2ifc/core/dxf_reader.py` — `_aggregate_3dface_from_insert`,
+- `src/dwg2ifc/core/preprocessing.py` (accoreconsole + STL parser)
+- `src/dwg2ifc/core/dxf_reader.py` — `_aggregate_3dface_from_insert`,
   `_record_from_entity`
-- `src/dxf2ifc/core/geometry.py`
+- `src/dwg2ifc/core/geometry.py`
 
 Älä lue:
 - `mapper.py`, `ifc_writer/builders.py` — geometriastrategia ei vaikuta
@@ -93,20 +92,32 @@ Testit: `tests/test_acis_extraction.py`, `tests/test_dxf_reader_polyface.py`,
 laajennus, suunnittelualat-luokitus.
 
 Lue ensin:
-- `src/dxf2ifc/core/ifc_writer/orchestrator.py` (733 r — kutsuu kaiken)
-- `src/dxf2ifc/core/ifc_writer/builders.py` (1321 r — ISO, mutta
-  `add_*`-funktiot ovat itsenäisiä; lue vain ne joita muutat)
-- `src/dxf2ifc/core/ifc_writer/skeleton.py` (CRS + storey)
-- `src/dxf2ifc/core/ifc_writer/mesh.py` (Brep helpers)
-- `src/dxf2ifc/core/ifc_writer/classification.py`
-- `src/dxf2ifc/core/finnish_psets.py`
+- `src/dwg2ifc/core/ifc_writer/orchestrator.py` (kutsuu kaiken)
+- `src/dwg2ifc/core/ifc_writer/builders.py` (ISO, mutta `add_*`-funktiot
+  ovat itsenäisiä; lue vain ne joita muutat)
+- `src/dwg2ifc/core/ifc_writer/skeleton.py` (CRS + storey)
+- `src/dwg2ifc/core/ifc_writer/mesh.py` (Brep helpers)
+- `src/dwg2ifc/core/ifc_writer/classification.py`
+- `src/dwg2ifc/core/finnish_psets.py`
 
 Älä lue:
 - `dxf_reader.py`, `dwg_preconvert.py`, `mapper.py`
 - `gui/`
 
-Testit: `tests/test_finnish_psets.py`, `tests/test_classification.py`,
+Testit: `tests/test_finnish_psets.py`, `tests/test_discipline_classification.py`,
 `tests/test_mesh_writer*.py`, `tests/test_ifc_writer*.py`.
+
+## Blokin ATTRIB-kentät (FI_*-PSet:t)
+
+**Tehtävä**: INSERT-blokin ATTDEF/ATTRIB-kentät → FI_Tuote /
+FI_Komponentti / FI_Tekninen -reititys.
+
+Lue ensin:
+- `src/dwg2ifc/core/block_attribs.py`
+- [`BLOCK_ATTRIBS.md`](BLOCK_ATTRIBS.md) — tagikonventio
+- `src/dwg2ifc/core/finnish_psets.py` (PSet:ien emittaus)
+
+Testit: `tests/test_block_attribs.py`, `tests/test_finnish_psets.py`.
 
 ## Energy specs (Excel/CSV)
 
@@ -114,14 +125,14 @@ Testit: `tests/test_finnish_psets.py`, `tests/test_classification.py`,
 tunnistus, forward-fill, uusien Excel-pohjien tuki.
 
 Lue ensin:
-- `src/dxf2ifc/core/energy_specs.py` (589 r)
-- `src/dxf2ifc/core/positio.py` (POSITIO-linkitys joka tuottaa lookup-
+- `src/dwg2ifc/core/energy_specs.py`
+- `src/dwg2ifc/core/positio.py` (POSITIO-linkitys joka tuottaa lookup-
   avaimen)
 
 Älä lue:
 - `dxf_reader.py`, `ifc_writer/`
 
-Testit: `tests/test_energy_specs.py`, `tests/test_positio.py`.
+Testit: `tests/test_energy_specs.py`.
 
 ## GUI (PySide6)
 
@@ -129,7 +140,7 @@ Testit: `tests/test_energy_specs.py`, `tests/test_positio.py`.
 itsepäivitys-banneri, layer-table.
 
 Lue ensin:
-- `src/dxf2ifc/gui/main_window.py` (yhdistää kaiken)
+- `src/dwg2ifc/gui/main_window.py` (yhdistää kaiken)
 - Kohdennettu widget-tiedosto: `file_panel.py`, `convert_worker.py`,
   `profile_editor.py`, `update_banner.py`, `layer_table.py`,
   `preview_log.py`
@@ -138,9 +149,8 @@ Lue ensin:
 - `core/`-puuta (ellei convert_worker tarvitse uutta core-API:a)
 - `style.qss` (paitsi jos tehtävä on visuaalinen)
 
-Testit: `tests/test_gui_*.py`.
-
-GUI-testit vaativat: `os.environ["QT_QPA_PLATFORM"] = "offscreen"`.
+Testit: `tests/test_gui_*.py`. GUI-testit vaativat offscreen QPA
+platformin (asetettu conftestissa).
 
 ## Packaging / release
 
@@ -149,12 +159,12 @@ workflow, version-bump, CHANGELOG-päivitys.
 
 Lue ensin:
 - `pyproject.toml`
-- `build/dxf2ifc.spec`
+- `build/dwg2ifc.spec`
 - `build/installer.iss`
 - `build/version_info.py`
 - `scripts/build_installer.ps1`
 - `.github/workflows/release.yml`
-- `CHANGELOG.md` + `src/dxf2ifc/_version.py`
+- `CHANGELOG.md` + `src/dwg2ifc/_version.py`
 
 Älä lue:
 - Lähdekoodia (paitsi jos versio-bump tai metadata)
@@ -165,51 +175,38 @@ Lue ensin:
 BCF-export, snapshot-chain.
 
 Lue ensin:
-- `src/dxf2ifc/core/quality.py`
+- `src/dwg2ifc/core/quality.py`
 - `tools/solibri/` (BCF-export + snapshot)
-- [`docs/quality-gates.md`](quality-gates.md)
-- [`docs/solibri-rules.md`](solibri-rules.md)
+- [`quality-gates.md`](quality-gates.md)
+- [`solibri-rules.md`](solibri-rules.md)
 
 Älä lue:
 - Builder/writer-puuta (paitsi jos validointi tarvitsee uuden tyypin)
 
 Testit: `tests/test_quality*.py`, `tests/test_solibri*.py`.
 
-## Memory
-
-**Tehtävä**: Lauri:n mieltymysten / projektin tilan tallentaminen
-muistiin, vanhan poisto.
-
-Lue ensin:
-- `~/.claude/projects/C--Users-LauriRekola/memory/MEMORY.md` (index)
-- `~/.claude/projects/C--Users-LauriRekola/memory/project_dxf2ifc.md`
-- Muut `feedback_*.md` / `project_*.md` jos relevantteja
-
-Älä lue:
-- POC v4 -tiedostoja jos kysymys on alpha7-tilasta
-
 ## Yleissääntö
 
-**Älä skannaa koko repoa ellei käyttäjä pyydä tai task map ei riitä.**
+**Älä skannaa koko repoa ellei käyttäjä pyydä tai tämä kartta ei riitä.**
 Per-tehtävä-lukulista yllä riittää 95 %:iin muutoksista. Koko `src/`-
 puun lukeminen tuhlaa kontekstia ja heikentää muutoksen täsmällisyyttä.
 
-## Documentation sync checklist
+## Dokumentaation synkronointi
 
 Jokaisen koodimuutoksen jälkeen tarkista pitääkö päivittää dokumentit.
 Muutos ei ole valmis ennen kuin dokumentit vastaavat koodin nykytilaa.
 
 | Muutoksen luonne | Päivitä |
 |---|---|
-| CLI-komento / -optio | `README.md`, `CLAUDE.md` |
+| CLI-komento / -optio | `README.md`, `AGENTS.md` |
 | GUI-käyttö (näkyvä) | `README.md`, tarvittaessa `docs/` |
-| Pipeline-rakenne | `docs/ARCHITECTURE.md` |
-| MagiCAD / DWG / Object Enabler / COM / MAGIEXPLODE | `docs/DWG_MAGICAD_PREPROCESSING.md`, `PROGRESS.md` |
-| Mapper / profiili / layer-logiikka | `README.md`, `docs/ARCHITECTURE.md`, esimerkki­profiilit |
+| Pipeline-rakenne | `AGENTS.md`, `docs/ARCHITECTURE.md` |
+| MagiCAD / DWG / Object Enabler / COM | `docs/DWG_MAGICAD_PREPROCESSING.md` |
+| Mapper / profiili / layer-logiikka | `README.md`, `docs/ARCHITECTURE.md`, esimerkkiprofiilit |
 | Release / build / signing | `README.md`, `CHANGELOG.md` |
-| Uusi feature | `CHANGELOG.md`, `PROGRESS.md` |
+| Uusi feature | `CHANGELOG.md` |
 | Poistettu / hylätty feature | Merkitse kaikkialle selkeästi, ei ristiriitaisia ohjeita |
-| Versiopumppi | `pyproject.toml`, `src/dxf2ifc/_version.py`, `CHANGELOG.md`, `README.md` "Nykyinen versio" -rivi, `PROGRESS.md` "Current state"-otsikko |
+| Versiopumppi | `pyproject.toml`, `src/dwg2ifc/_version.py`, `build/version_info.py`, `CHANGELOG.md`, `README.md` "Nykyinen versio" -rivi |
 
 **Definition of Done**: testit menevät läpi ja dokumentit vastaavat
 koodin nykytilaa. Jos joko-tai puuttuu, muutos on kesken.

@@ -1,7 +1,7 @@
 # DWG / MagiCAD preprocessing — historiallinen kontekstilappu
 
 > **Status v0.2.0-alpha21 (2026-05-13)**: DWG-syöte on **palautettu**
-> `accoreconsole.exe + DXFOUT` -reitillä (`src/dxf2ifc/core/dwg_preconvert.py`).
+> `accoreconsole.exe + DXFOUT` -reitillä (`src/dwg2ifc/core/dwg_preconvert.py`).
 > EI keystroke-sendkeys:iä, EI näkyvää acad.exe-COM:ia — sama headless-tekniikka
 > kuin 3DSOLID-tessellaatiossa, paitsi STLOUT:n sijasta DXFOUT. MagiCAD-DWG
 > ei silti ole tuettu syöte (Object Enabler tuottaa 2D-fragmentteja
@@ -22,7 +22,7 @@
 
 2. Lauri saa .dxf:n + .ifc:n kollegalta
 
-3. dxf2ifc:
+3. dwg2ifc:
      DXF input  = lähtö-DXF
      MagiCAD-IFC = kollegan .ifc
      Convert
@@ -105,10 +105,10 @@ geometria" -checkboxit poistettu — kaikki samalla committilla.
 
 ## Mitä jos käyttäjä haluaa silti DWG-tuen?
 
-Käyttäjän pitää muuntaa DWG → DXF itse ennen dxf2ifc:tä:
+Käyttäjän pitää muuntaa DWG → DXF itse ennen dwg2ifc:tä:
 
 1. **AutoCAD `DXFOUT`** — toimii kaikilla AutoCAD-versioilla, käyttäjä
-   ajaa tämän käsin ennen dxf2ifc:n käynnistystä
+   ajaa tämän käsin ennen dwg2ifc:n käynnistystä
 2. **ODA File Converter** — ilmainen kolmannen osapuolen työkalu
 3. **TrueView** — Autodesk:in ilmainen DWG-katselin tukee SaveAs
    DXF:ksi
