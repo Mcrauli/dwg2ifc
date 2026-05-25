@@ -337,6 +337,17 @@ def test_apply_block_attribs_routes_hole_reservation_fields():
     assert e.fi_tuote["tuotteen_kommentti"] == "Pakastehuoneen läpivienti"
 
 
+def test_apply_block_attribs_keeps_guid_verbatim_for_non_hole_blocks():
+    e = _equipment_with_attribs(
+        [BlockAttrib(tag="GUID", prompt="GUID", value="550e8400-e29b-41d4-a716-446655440000")]
+    )
+
+    apply_block_attribs([e])
+
+    assert "guid" not in e.extra_props
+    assert e.fi_tekninen == {"Guid": "550e8400-e29b-41d4-a716-446655440000"}
+
+
 # --- end-to-end through dxf_reader -------------------------------------
 
 

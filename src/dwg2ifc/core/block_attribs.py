@@ -115,6 +115,13 @@ def resolve_hole_reservation_field(
     return _HOLE_RESERVATION_EXTRA_PROPS.get(str(tag).strip().upper())
 
 
+def _is_hole_reservation_entity(entity: MappedEntity) -> bool:
+    return (
+        str(entity.layer or "").strip().upper() == "KYL-REIKAVARAUS"
+        and str(entity.dxf_type or "").strip().upper() == "INSERT"
+    )
+
+
 # FI_Komponentti device-tag ATTDEFs. The block author can stamp the
 # device identifier straight onto a koneikko / lauhdutin block; it
 # belongs on the FI_Komponentti tab. Both values route through
@@ -195,15 +202,16 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
                 entity.fi_tuote[tuote_field] = value
                 continue
 
-            hole_field = resolve_hole_reservation_field(tag)
-            if hole_field is not None:
-                key, caster = hole_field
-                if value:
-                    try:
-                        entity.extra_props[key] = caster(value) if caster is not None else value
-                    except (TypeError, ValueError):
-                        pass
-                continue
+            if _is_hole_reservation_entity(entity):
+                hole_field = resolve_hole_reservation_field(tag)
+                if hole_field is not None:
+                    key, caster = hole_field
+                    if value:
+                        try:
+                            entity.extra_props[key] = caster(value) if caster is not None else value
+                        except (TypeError, ValueError):
+                            pass
+                    continue
 
             if tag.strip().upper() == "KOMMENTTI" and value:
                 if entity.fi_tuote is None:
