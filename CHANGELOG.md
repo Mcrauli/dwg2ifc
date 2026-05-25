@@ -6,6 +6,22 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha14 - 2026-05-25 (levyhyllyn umpikylki käyttää LWPOLYLINE thickness -arvoa)
+
+- **Korjattu: uuden `KYL-LEVYHYLLY`-blokin umpinainen kylkilevy jäi pois
+  IFC:stä.** Ongelma ei ollut pelkkä rim-tunnistus, vaan uusi levyhylly
+  koodaa kyljen korkeuden `LWPOLYLINE.dxf.thickness`-arvoon (`60 mm`).
+  Parseri jätti tämän arvon huomiotta ja päätteli korkeutta vain
+  3DFACE-kansista. Tässä blokkimuodossa ainoa 3DFACE oli pohjalevyn top
+  (`z=1.25`), joten kylki typistyi pohjalevyn paksuiseksi ja näytti
+  puuttuvan Solibrissa.
+- `core/dxf_reader.py` käyttää nyt asetettua `LWPOLYLINE`-thickness-arvoa
+  ensisijaisena extrusion-korkeutena 3DFACE-parituksen sijaan. Tämä palauttaa
+  levyhyllyn yhtenäiset umpikyljet ja säilyttää tikashyllyjen toimivan
+  geometrian.
+- Lisätty regressiotesti `test_insert_levyhylly_sidewall_uses_lwpolyline_thickness`
+  (`tests/test_dxf_reader_insert_3dface.py`) uudelle hyllymuodolle.
+
 ## v0.3.0-alpha13 - 2026-05-25 (levyhyllyn kyljet näkyviin myös muokatulla blokkigeometrialla)
 
 - **Korjattu: `KYL-LEVYHYLLY` / `KYL-KOTELO` -blokkeihin tehdyn geometriamuokkauksen jälkeen hyllyn kyljet saattoivat kadota tai jäädä mataliksi IFC:ssä.** 3DFACE+LWPOLYLINE-aggregoinnin rim-tunnistus nojaasi aiemmin käytännössä vain absoluuttiseen `<=5 mm` strip-paksuuteen. Kun kylkipeltiä paksunnettiin blokissa, strip ei enää mennyt rim-haaraan ja extrudoitui väärään korkeuteen.

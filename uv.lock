@@ -115,7 +115,7 @@ wheels = [
 
 [[package]]
 name = "dwg2ifc"
-version = "0.3.0a13"
+version = "0.3.0a14"
 source = { editable = "." }
 dependencies = [
     { name = "ezdxf" },

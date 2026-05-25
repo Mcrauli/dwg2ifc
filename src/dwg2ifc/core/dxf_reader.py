@@ -193,6 +193,7 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
     polyline_records: list[tuple[
         list[tuple[float, float]],  # XY vertices in OCS (closed)
         float,  # base Z in OCS (= polyline elevation)
+        float,  # DXF thickness along OCS Z, 0 when unset
     ]] = []
 
     for v_ent in virt:
@@ -238,13 +239,14 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
             if len(ocs_pts) < 3:
                 continue
             elev = float(getattr(v_ent.dxf, "elevation", 0.0) or 0.0)
+            thickness = float(getattr(v_ent.dxf, "thickness", 0.0) or 0.0)
             # LWPOLYLINE vertices are already in OCS. Store the raw 2D
             # coordinates plus the OCS elevation as base Z. The shared
             # block OCS converts everything back to WCS at the end —
             # this is the path that previously dropped the Z and broke
             # 3D-rotated INSERTs (every rung collapsed onto WCS-Z).
             pts2d = [(float(p[0]), float(p[1])) for p in ocs_pts]
-            polyline_records.append((pts2d, elev))
+            polyline_records.append((pts2d, elev, thickness))
 
     if not face_records and not polyline_records:
         return None
@@ -297,8 +299,9 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
     if face_records:
         block_max_top = max(fz for _, fz, _ in face_records)
     elif polyline_records:
-        block_max_top = (
-            max(p[1] for p in polyline_records) + DEFAULT_TOP_OFFSET_MM
+        block_max_top = max(
+            p[1] + (p[2] if abs(p[2]) > EPS else DEFAULT_TOP_OFFSET_MM)
+            for p in polyline_records
         )
     else:
         block_max_top = 0.0
@@ -306,13 +309,13 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
     if polyline_records:
         all_x: list[float] = []
         all_y: list[float] = []
-        for pts2d, _ in polyline_records:
+        for pts2d, _, _ in polyline_records:
             all_x.extend(p[0] for p in pts2d)
             all_y.extend(p[1] for p in pts2d)
         if all_x and all_y:
             block_bbox_xy = (min(all_x), min(all_y), max(all_x), max(all_y))
 
-    for pts2d, base_z in polyline_records:
+    for pts2d, base_z, dxf_thickness in polyline_records:
         xs = [p[0] for p in pts2d]
         ys = [p[1] for p in pts2d]
         poly_bbox = (min(xs), min(ys), max(xs), max(ys))
@@ -338,7 +341,9 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
                 and touches_perimeter
                 and short_side <= (bbx_short * THIN_RIM_RELATIVE_RATIO)
             )
-        if is_thin_rim and block_max_top > base_z + EPS:
+        if abs(dxf_thickness) > EPS:
+            top_z = base_z + dxf_thickness
+        elif is_thin_rim and block_max_top > base_z + EPS:
             # Side rim: stretch from its base up to the entire block's
             # top. This is the only way to recover the side wall of a
             # shelf when the block-level encoding only contains the
