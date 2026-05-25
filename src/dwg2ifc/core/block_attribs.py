@@ -32,6 +32,13 @@ and this module routes each one to the right Finnish PSet:
   alias system for spreadsheet column headers — that is a separate
   input path and unaffected.)
 
+- **Hole reservations** — only `KYL-REIKAVARAUS` `INSERT` blocks get a
+  narrow extra promotion pass for reservation metadata tags
+  (``GUID``, ``VARAUS_TYYPPI``, ``HALKAISIJA``, ``PITUUS``, ``KORKO``,
+  ``VARAAJA``, ``TUNNUS``). These route into ``extra_props`` so the
+  reservation pipeline can consume typed values, while every non-hole
+  block still sends the same tags to FI_Tekninen verbatim.
+
   One cosmetic touch: a label written entirely in CAPS (a tag, or a
   prompt typed with caps lock on) is converted to sentence case so
   Solibri does not shout — ``TEHO [KW]`` → ``Teho [kw]``. A label that
@@ -171,12 +178,17 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
       1. **FI_Tuote** — product-identity tags (MALLI, VALMISTAJA, …)
          resolved by :func:`resolve_fi_tuote_field`. Blank values are
          skipped so an unfilled ATTRIB never wipes an existing name.
-      2. **FI_Komponentti** — device-tag fields (LAITETUNNUS,
+      2. **Hole reservations** — only `KYL-REIKAVARAUS` `INSERT`
+         entities promote the reservation metadata tags handled by
+         :func:`resolve_hole_reservation_field` into ``extra_props``.
+         This runs after FI_Tuote, so shared FI_Tuote tags such as
+         ``KOMMENTTI`` still keep their normal destination.
+      3. **FI_Komponentti** — device-tag fields (LAITETUNNUS,
          LAITETUNNUS(YKSILÖLLINEN)) resolved by
          :func:`resolve_fi_komponentti_field`. Written into
          ``extra_props`` so a non-blank block value overrides a
          POSITIO-derived one; a blank value is skipped.
-      3. **FI_Tekninen** — every other field, verbatim. The property
+      4. **FI_Tekninen** — every other field, verbatim. The property
          name is the ATTDEF prompt, or the raw tag when the prompt is
          empty. A blank value is kept as a placeholder row but never
          overwrites a value already set on the same label.
@@ -213,13 +225,7 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
                             pass
                     continue
 
-            if tag.strip().upper() == "KOMMENTTI" and value:
-                if entity.fi_tuote is None:
-                    entity.fi_tuote = {}
-                entity.fi_tuote["tuotteen_kommentti"] = value
-                continue
-
-            # 2. FI_Komponentti — device-tag ATTDEFs (Laitetunnus /
+            # 3. FI_Komponentti — device-tag ATTDEFs (Laitetunnus /
             #    Laitetunnus, yksilöllinen). Routed via extra_props, the
             #    same channel the POSITIO-marker pairing uses; because
             #    apply_block_attribs runs after the POSITIO pass a
@@ -232,7 +238,7 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
                     entity.extra_props[komponentti_key] = value
                 continue
 
-            # 3. FI_Tekninen — prompt as the Solibri label (raw tag when
+            # 4. FI_Tekninen — prompt as the Solibri label (raw tag when
             #    the prompt is empty). A label written entirely in CAPS
             #    is sentence-cased so Solibri does not shout; a label
             #    that already has a lowercase letter is kept verbatim

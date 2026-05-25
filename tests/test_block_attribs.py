@@ -337,15 +337,40 @@ def test_apply_block_attribs_routes_hole_reservation_fields():
     assert e.fi_tuote["tuotteen_kommentti"] == "Pakastehuoneen läpivienti"
 
 
-def test_apply_block_attribs_keeps_guid_verbatim_for_non_hole_blocks():
+def test_apply_block_attribs_keeps_hole_reservation_tags_verbatim_for_non_hole_blocks():
     e = _equipment_with_attribs(
-        [BlockAttrib(tag="GUID", prompt="GUID", value="550e8400-e29b-41d4-a716-446655440000")]
+        [
+            BlockAttrib(tag="GUID", prompt="GUID", value="550e8400-e29b-41d4-a716-446655440000"),
+            BlockAttrib(tag="VARAUS_TYYPPI", prompt="Varaustyyppi", value="SEINA"),
+            BlockAttrib(tag="HALKAISIJA", prompt="Halkaisija", value="200"),
+            BlockAttrib(tag="PITUUS", prompt="Pituus", value="350"),
+            BlockAttrib(tag="KORKO", prompt="Korko", value="2850"),
+            BlockAttrib(tag="VARAAJA", prompt="Varaaja", value="KYL"),
+            BlockAttrib(tag="TUNNUS", prompt="Tunnus", value="RV-101"),
+        ]
     )
 
     apply_block_attribs([e])
 
-    assert "guid" not in e.extra_props
-    assert e.fi_tekninen == {"Guid": "550e8400-e29b-41d4-a716-446655440000"}
+    for key in (
+        "guid",
+        "varaus_tyyppi",
+        "halkaisija_mm",
+        "pituus_mm",
+        "korko_mm",
+        "varaaja",
+        "tunnus",
+    ):
+        assert key not in e.extra_props
+    assert e.fi_tekninen == {
+        "Guid": "550e8400-e29b-41d4-a716-446655440000",
+        "Varaustyyppi": "SEINA",
+        "Halkaisija": "200",
+        "Pituus": "350",
+        "Korko": "2850",
+        "Varaaja": "KYL",
+        "Tunnus": "RV-101",
+    }
 
 
 # --- end-to-end through dxf_reader -------------------------------------
