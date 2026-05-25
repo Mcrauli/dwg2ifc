@@ -1027,6 +1027,39 @@ def test_add_cable_carrier_assigns_to_system():
     assert any(seg in r.RelatedObjects for r in rels)
 
 
+def test_add_cable_carrier_polygon_keeps_authored_profile():
+    ifc = build_ifc_project_skeleton(project_name="Cable Polygon")
+    storey = ifc.by_type("IfcBuildingStorey")[0]
+    polygon = PolygonGeometry(
+        vertices=(
+            Point3D(1000.0, 1000.0, 1500.0),
+            Point3D(1700.0, 1100.0, 1500.0),
+            Point3D(1600.0, 1500.0, 1500.0),
+            Point3D(900.0, 1400.0, 1500.0),
+        ),
+        closed=True,
+    )
+    mapped = MappedEntity(
+        layer="KYL-LEVYHYLLY",
+        dxf_type="LWPOLYLINE",
+        geometry=polygon,
+        ifc_type="IfcCableCarrierSegment",
+        predefined_type="CABLETRAYSEGMENT",
+        domain="KYL",
+        talotekniikka_code="T-TATE-01-01-001",
+        extra_props={"default_height_mm": 60.0},
+    )
+    seg = add_cable_carrier(
+        ifc, mapped, parent_storey=storey, predefined_type="CABLETRAYSEGMENT"
+    )
+
+    assert seg.Representation is not None
+    item = seg.Representation.Representations[0].Items[0]
+    assert item.is_a("IfcExtrudedAreaSolid")
+    assert item.SweptArea.is_a("IfcArbitraryClosedProfileDef")
+    assert item.Depth == 60.0
+
+
 def test_add_evaporator_with_mesh_geometry_emits_brep():
     ifc = build_ifc_project_skeleton(project_name="Evap Mesh")
     storey = ifc.by_type("IfcBuildingStorey")[0]

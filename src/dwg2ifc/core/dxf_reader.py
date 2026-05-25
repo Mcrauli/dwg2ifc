@@ -276,13 +276,14 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
     #    polyline's XY bbox (and is above the polyline's elevation).
     DEFAULT_TOP_OFFSET_MM = 9.0
     EPS = 1e-3
-    # Threshold: polylines whose shorter side is ≤5mm are
-    # "side rim" strips (e.g. levyhyllyn 1.2mm leveä etureunan kylki
-    # joka kiertää koko hyllyn pohjasta yläreunaan). Their proper
-    # extrusion top is NOT the matching 3DFACE Z (which gives only
-    # the deck thickness) but the highest top in the block — the
-    # rim wraps the entire shelf height.
+    # Absolute threshold for "very thin" side rims. Some newer shelf
+    # blocks use thicker side walls, so this is supplemented below by an
+    # adaptive, block-relative check.
     THIN_RIM_THRESHOLD_MM = 5.0
+    # Relative threshold: when a strip sits on the block perimeter and
+    # its short side is <= 15% of the block's short side, treat it as a
+    # side rim even if it's thicker than the absolute 5mm legacy limit.
+    THIN_RIM_RELATIVE_RATIO = 0.15
     # 3DFACEs are authoritative for the block's true top. The
     # ``max(polyline_elev) + DEFAULT_TOP_OFFSET_MM`` fallback is only
     # useful when the block has no 3DFACE info at all (legacy
@@ -301,6 +302,16 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
         )
     else:
         block_max_top = 0.0
+    block_bbox_xy: tuple[float, float, float, float] | None = None
+    if polyline_records:
+        all_x: list[float] = []
+        all_y: list[float] = []
+        for pts2d, _ in polyline_records:
+            all_x.extend(p[0] for p in pts2d)
+            all_y.extend(p[1] for p in pts2d)
+        if all_x and all_y:
+            block_bbox_xy = (min(all_x), min(all_y), max(all_x), max(all_y))
+
     for pts2d, base_z in polyline_records:
         xs = [p[0] for p in pts2d]
         ys = [p[1] for p in pts2d]
@@ -310,7 +321,23 @@ def _aggregate_3dface_from_insert(insert_entity) -> MeshGeometry | None:
         # Skip degenerate polylines (single-point loops).
         if poly_w < EPS or poly_h < EPS:
             continue
-        is_thin_rim = min(poly_w, poly_h) <= THIN_RIM_THRESHOLD_MM
+        short_side = min(poly_w, poly_h)
+        is_thin_rim = short_side <= THIN_RIM_THRESHOLD_MM
+        if not is_thin_rim and block_bbox_xy is not None:
+            bbx_w = block_bbox_xy[2] - block_bbox_xy[0]
+            bbx_h = block_bbox_xy[3] - block_bbox_xy[1]
+            bbx_short = min(bbx_w, bbx_h)
+            touches_perimeter = (
+                abs(poly_bbox[0] - block_bbox_xy[0]) <= EPS
+                or abs(poly_bbox[1] - block_bbox_xy[1]) <= EPS
+                or abs(poly_bbox[2] - block_bbox_xy[2]) <= EPS
+                or abs(poly_bbox[3] - block_bbox_xy[3]) <= EPS
+            )
+            is_thin_rim = (
+                bbx_short > EPS
+                and touches_perimeter
+                and short_side <= (bbx_short * THIN_RIM_RELATIVE_RATIO)
+            )
         if is_thin_rim and block_max_top > base_z + EPS:
             # Side rim: stretch from its base up to the entire block's
             # top. This is the only way to recover the side wall of a
