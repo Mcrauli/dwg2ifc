@@ -399,6 +399,98 @@ def add_window(
     return window
 
 
+def _compress_ifc_guid(uuid_value: str) -> str:
+    value = str(uuid_value or "").strip()
+    if not value:
+        raise ValueError("hole reservation GUID missing")
+    try:
+        return ifcopenshell.guid.compress(value)
+    except Exception as exc:  # noqa: BLE001
+        raise ValueError(f"invalid hole reservation GUID: {value}") from exc
+
+
+def add_provision_for_void(
+    ifc,
+    mapped: MappedEntity,
+    *,
+    parent_storey,
+) -> object:
+    if not isinstance(mapped.geometry, BlockInstance):
+        raise TypeError(
+            "add_provision_for_void expects BlockInstance, "
+            f"got {type(mapped.geometry).__name__}"
+        )
+
+    extras = mapped.extra_props or {}
+    guid = _compress_ifc_guid(extras.get("guid"))
+    diameter_mm = float(extras.get("halkaisija_mm", 200.0))
+    depth_mm = float(extras.get("pituus_mm", 300.0))
+    point = mapped.geometry.insertion_point
+
+    product = ifcopenshell.api.run(
+        "root.create_entity",
+        ifc,
+        ifc_class="IfcBuildingElementProxy",
+        name=(extras.get("tunnus") or mapped.layer),
+    )
+    product.GlobalId = guid
+    product.ObjectType = "IfcProvisionForVoid"
+    if extras.get("varaus_tyyppi"):
+        product.Description = str(extras["varaus_tyyppi"])
+
+    matrix = _z_rotation_matrix(point.x, point.y, point.z, mapped.geometry.rotation_rad)
+    ifcopenshell.api.run(
+        "geometry.edit_object_placement",
+        ifc,
+        product=product,
+        matrix=matrix,
+        is_si=False,
+    )
+
+    model_ctx = [
+        c
+        for c in ifc.by_type("IfcGeometricRepresentationSubContext")
+        if c.ContextIdentifier == "Body"
+    ][0]
+    circle = ifc.create_entity(
+        "IfcCircleProfileDef",
+        ProfileType="AREA",
+        Position=ifc.create_entity(
+            "IfcAxis2Placement2D",
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0)),
+        ),
+        Radius=diameter_mm / 2.0,
+    )
+    extruded = ifc.create_entity(
+        "IfcExtrudedAreaSolid",
+        SweptArea=circle,
+        Position=ifc.create_entity(
+            "IfcAxis2Placement3D",
+            Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
+        ),
+        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
+        Depth=depth_mm,
+    )
+    shape = ifc.create_entity(
+        "IfcShapeRepresentation",
+        ContextOfItems=model_ctx,
+        RepresentationIdentifier="Body",
+        RepresentationType="SweptSolid",
+        Items=[extruded],
+    )
+    product.Representation = ifc.create_entity(
+        "IfcProductDefinitionShape", Representations=[shape]
+    )
+
+    ifcopenshell.api.run(
+        "spatial.assign_container",
+        ifc,
+        products=[product],
+        relating_structure=parent_storey,
+    )
+    return product
+
+
 _IFC_PIPE_SEGMENT_TYPES = frozenset(
     {"CULVERT", "FLEXIBLESEGMENT", "RIGIDSEGMENT", "GUTTER", "SPOOL"}
 )

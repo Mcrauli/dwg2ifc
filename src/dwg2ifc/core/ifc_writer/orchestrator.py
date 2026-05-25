@@ -29,6 +29,7 @@ from dwg2ifc.core.ifc_writer.builders import (
     add_flow_controller,
     add_furniture,
     add_pipe_segment,
+    add_provision_for_void,
     add_slab,
     add_system,
     add_tank,
@@ -860,6 +861,14 @@ def convert(
                     )
                 _classify(pipe, m)
                 _record(m, pipe)
+            elif m.ifc_type == "IfcProvisionForVoid":
+                product = add_provision_for_void(
+                    ifc,
+                    m,
+                    parent_storey=_storey_for(m),
+                )
+                _classify(product, m)
+                _record(m, product)
             elif m.ifc_type == "IfcFurniture":
                 if isinstance(m.geometry, BlockInstance):
                     continue
