@@ -249,6 +249,14 @@ fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjest
 fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Polyesterimaalattu" }
 fi_tuote = { nimi = "Kotelo", valmistaja = "MEKA" }
 
+[[rules]]
+layer_pattern = "KYL-REIKAVARAUS"
+ifc_type = "IfcProvisionForVoid"
+predefined_type = "NOTDEFINED"
+domain = "KYL"
+talotekniikka_code = "T-TATE-02-01-001"
+fi_komponentti = { paaryhma = "TALOTEKNIIKAN VARAUKSET", alaryhma = "REIKÄVARAUKSET", yleisnimi = "Reikävaraus", yleistunnus = "RV" }
+
 # -----------------------------------------------------------------------------
 # Section 4: Cable carriers (electrical) — RAVA T-TATE-01-01-001.
 # -----------------------------------------------------------------------------

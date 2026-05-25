@@ -305,6 +305,38 @@ def test_attrib_nonblank_laitetunnus_overrides_positio_value():
     assert e.extra_props["laitetunnus"] == "JK9"
 
 
+def test_apply_block_attribs_routes_hole_reservation_fields():
+    e = MappedEntity(
+        layer="KYL-REIKAVARAUS",
+        dxf_type="INSERT",
+        geometry=BlockInstance(insertion_point=Point3D(0.0, 0.0, 0.0)),
+        block_name="REIKAVARAUS",
+        handle="ABCD",
+        block_attribs=[
+            BlockAttrib(tag="GUID", prompt="GUID", value="550e8400-e29b-41d4-a716-446655440000"),
+            BlockAttrib(tag="VARAUS_TYYPPI", prompt="Varaustyyppi", value="SEINA"),
+            BlockAttrib(tag="HALKAISIJA", prompt="Halkaisija", value="200"),
+            BlockAttrib(tag="PITUUS", prompt="Pituus", value="350"),
+            BlockAttrib(tag="KORKO", prompt="Korko", value="2850"),
+            BlockAttrib(tag="VARAAJA", prompt="Varaaja", value="KYL"),
+            BlockAttrib(tag="TUNNUS", prompt="Tunnus", value="RV-101"),
+            BlockAttrib(tag="KOMMENTTI", prompt="Kommentti", value="Pakastehuoneen läpivienti"),
+        ],
+        extra_props={},
+    )
+
+    apply_block_attribs([e])
+
+    assert e.extra_props["guid"] == "550e8400-e29b-41d4-a716-446655440000"
+    assert e.extra_props["varaus_tyyppi"] == "SEINA"
+    assert e.extra_props["halkaisija_mm"] == 200.0
+    assert e.extra_props["pituus_mm"] == 350.0
+    assert e.extra_props["korko_mm"] == 2850.0
+    assert e.extra_props["varaaja"] == "KYL"
+    assert e.extra_props["tunnus"] == "RV-101"
+    assert e.fi_tuote["tuotteen_kommentti"] == "Pakastehuoneen läpivienti"
+
+
 # --- end-to-end through dxf_reader -------------------------------------
 
 

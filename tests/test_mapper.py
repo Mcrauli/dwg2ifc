@@ -170,6 +170,25 @@ def test_apply_profile_propagates_block_attribs_to_mapped_entity():
     assert mapped[0].block_attribs == attribs
 
 
+def test_hole_reservation_layer_maps_to_ifc_provision_for_void():
+    profile = load_default_profile()
+    entity = EntityRecord(
+        layer="KYL-REIKAVARAUS",
+        dxf_type="INSERT",
+        geometry=BlockInstance(insertion_point=Point3D(1000.0, 2000.0, 3000.0)),
+        block_name="REIKAVARAUS",
+        handle="ABCD",
+    )
+
+    mapped = apply_profile([entity], profile)
+
+    assert len(mapped) == 1
+    assert mapped[0].ifc_type == "IfcProvisionForVoid"
+    assert mapped[0].talotekniikka_code == "T-TATE-02-01-001"
+    assert mapped[0].fi_komponentti["yleisnimi"] == "Reikävaraus"
+    assert mapped[0].fi_komponentti["yleistunnus"] == "RV"
+
+
 def test_apply_profile_propagates_system_name_to_extra_props():
     profile = Profile(
         name="system",

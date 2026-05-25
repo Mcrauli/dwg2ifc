@@ -52,7 +52,7 @@ Empty-value policy:
 from __future__ import annotations
 
 import re
-from typing import Iterable
+from typing import Callable, Iterable
 
 from dwg2ifc.core.types import MappedEntity
 
@@ -84,6 +84,16 @@ _FI_TUOTE_TAG_TO_FIELD: dict[str, str] = {
     for tag in tags
 }
 
+_HOLE_RESERVATION_EXTRA_PROPS: dict[str, tuple[str, Callable[[str], object] | None]] = {
+    "GUID": ("guid", str),
+    "VARAUS_TYYPPI": ("varaus_tyyppi", str),
+    "HALKAISIJA": ("halkaisija_mm", float),
+    "PITUUS": ("pituus_mm", float),
+    "KORKO": ("korko_mm", float),
+    "VARAAJA": ("varaaja", str),
+    "TUNNUS": ("tunnus", str),
+}
+
 
 def resolve_fi_tuote_field(tag: str) -> str | None:
     """Resolve an ATTRIB tag to its FI_Tuote field name (or ``None``).
@@ -95,6 +105,14 @@ def resolve_fi_tuote_field(tag: str) -> str | None:
     if not tag:
         return None
     return _FI_TUOTE_TAG_TO_FIELD.get(str(tag).strip().upper())
+
+
+def resolve_hole_reservation_field(
+    tag: str,
+) -> tuple[str, Callable[[str], object] | None] | None:
+    if not tag:
+        return None
+    return _HOLE_RESERVATION_EXTRA_PROPS.get(str(tag).strip().upper())
 
 
 # FI_Komponentti device-tag ATTDEFs. The block author can stamp the
@@ -175,6 +193,22 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
                 if entity.fi_tuote is None:
                     entity.fi_tuote = {}
                 entity.fi_tuote[tuote_field] = value
+                continue
+
+            hole_field = resolve_hole_reservation_field(tag)
+            if hole_field is not None:
+                key, caster = hole_field
+                if value:
+                    try:
+                        entity.extra_props[key] = caster(value) if caster is not None else value
+                    except (TypeError, ValueError):
+                        pass
+                continue
+
+            if tag.strip().upper() == "KOMMENTTI" and value:
+                if entity.fi_tuote is None:
+                    entity.fi_tuote = {}
+                entity.fi_tuote["tuotteen_kommentti"] = value
                 continue
 
             # 2. FI_Komponentti — device-tag ATTDEFs (Laitetunnus /
