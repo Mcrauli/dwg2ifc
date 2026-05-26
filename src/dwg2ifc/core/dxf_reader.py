@@ -23,6 +23,36 @@ from dwg2ifc.core.types import (
 )
 
 
+def _read_radika_reikavaraus_xdata(entity) -> dict[str, str]:
+    """Return RADIKA_REIKAVARAUS XDATA key/value pairs from one entity.
+
+    The LISP tool stores each field as a 1000-string tag in the shape
+    ``KEY=VALUE`` under app id ``RADIKA_REIKAVARAUS``.
+    """
+    try:
+        tags = entity.get_xdata("RADIKA_REIKAVARAUS")
+    except Exception:  # noqa: BLE001
+        return {}
+    out: dict[str, str] = {}
+    for tag in tags:
+        try:
+            code = int(tag.code)
+            value = tag.value
+        except Exception:  # noqa: BLE001
+            try:
+                code = int(tag[0])
+                value = tag[1]
+            except Exception:  # noqa: BLE001
+                continue
+        if code != 1000 or not isinstance(value, str) or "=" not in value:
+            continue
+        key, raw = value.split("=", 1)
+        key = key.strip().upper()
+        if key:
+            out[key] = raw.strip()
+    return out
+
+
 def _read_block_attribs(entity) -> list[BlockAttrib]:
     """Read an INSERT's ATTRIB subentities into :class:`BlockAttrib` records.
 
@@ -645,6 +675,13 @@ def _record_from_entity(
             return handle_override
         return str(getattr(entity.dxf, "handle", "")).upper()
 
+    def _attrs() -> dict[str, object]:
+        attrs: dict[str, object] = {}
+        xdata = _read_radika_reikavaraus_xdata(entity)
+        if xdata:
+            attrs["radika_reikavaraus_xdata"] = xdata
+        return attrs
+
     if (
         dxftype in ("LINE", "LWPOLYLINE", "POLYLINE")
         and layer in mesh_priority_layers
@@ -670,7 +707,7 @@ def _record_from_entity(
             layer=layer,
             dxf_type="3DSOLID",
             geometry=MeshGeometry(vertices=vertices, faces=faces),
-            attributes={},
+            attributes=_attrs(),
             handle=handle,
         )]
 
@@ -816,7 +853,7 @@ def _record_from_entity(
                     layer=layer,
                     dxf_type="INSERT",
                     geometry=MeshGeometry(vertices=vertices, faces=faces),
-                    attributes={},
+                    attributes=_attrs(),
                     block_name=entity.dxf.name,
                     handle=handle,
                     block_attribs=block_attribs,
@@ -834,7 +871,7 @@ def _record_from_entity(
                 layer=layer,
                 dxf_type="INSERT",
                 geometry=face_mesh,
-                attributes={},
+                attributes=_attrs(),
                 block_name=entity.dxf.name,
                 handle=handle,
                 block_attribs=block_attribs,
@@ -855,7 +892,7 @@ def _record_from_entity(
             layer=layer,
             dxf_type="INSERT",
             geometry=block_instance,
-            attributes={},
+            attributes=_attrs(),
             block_name=entity.dxf.name,
             handle=handle,
             block_attribs=block_attribs,
@@ -878,7 +915,7 @@ def _record_from_entity(
             geometry=MeshGeometry(
                 vertices=vertices, faces=faces, source="mesh"
             ),
-            attributes={},
+            attributes=_attrs(),
             handle=_handle(),
         )]
 

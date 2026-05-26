@@ -50,3 +50,9 @@ def test_build_parser_accepts_repeatable_floor():
         "--floor", "2krs.dwg:2.krs:3500",
     ])
     assert args.floor == ["1krs.dwg:1.krs:0", "2krs.dwg:2.krs:3500"]
+
+
+def test_build_parser_accepts_reservations_only_flag():
+    parser = build_parser()
+    args = parser.parse_args(["convert", "in.dxf", "out.ifc", "--reservations-only"])
+    assert args.reservations_only is True

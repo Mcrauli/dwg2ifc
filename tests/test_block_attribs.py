@@ -26,6 +26,7 @@ from dwg2ifc.core.types import (
     BlockAttrib,
     BlockInstance,
     MappedEntity,
+    MeshGeometry,
     Point3D,
 )
 
@@ -371,6 +372,46 @@ def test_apply_block_attribs_keeps_hole_reservation_tags_verbatim_for_non_hole_b
         "Varaaja": "KYL",
         "Tunnus": "RV-101",
     }
+
+
+def test_apply_block_attribs_routes_hole_reservation_xdata_fields():
+    e = MappedEntity(
+        layer="KYL-REIKAVARAUS",
+        dxf_type="3DSOLID",
+        geometry=MeshGeometry(
+            vertices=(
+                Point3D(0.0, 0.0, 0.0),
+                Point3D(1.0, 0.0, 0.0),
+                Point3D(1.0, 1.0, 1.0),
+                Point3D(0.0, 1.0, 1.0),
+            ),
+            faces=((0, 1, 2, 3),),
+            source="acis",
+        ),
+        handle="ABCD",
+        attributes={
+            "radika_reikavaraus_xdata": {
+                "GUID": "550e8400-e29b-41d4-a716-446655440000",
+                "VARAUS_TYYPPI": "SEINA",
+                "HALKAISIJA": "200",
+                "PITUUS": "180",
+                "YLITYS_MM": "10",
+                "KULMA_RAD": "1.5707963",
+                "KORKO": "2800",
+            }
+        },
+        extra_props={},
+    )
+
+    apply_block_attribs([e])
+
+    assert e.extra_props["guid"] == "550e8400-e29b-41d4-a716-446655440000"
+    assert e.extra_props["varaus_tyyppi"] == "SEINA"
+    assert e.extra_props["halkaisija_mm"] == 200.0
+    assert e.extra_props["pituus_mm"] == 180.0
+    assert e.extra_props["ylitys_mm"] == 10.0
+    assert e.extra_props["kulma_rad"] == 1.5707963
+    assert e.extra_props["korko_mm"] == 2800.0
 
 
 # --- end-to-end through dxf_reader -------------------------------------

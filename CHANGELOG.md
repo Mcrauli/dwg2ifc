@@ -6,6 +6,33 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha19 — 2026-05-26 (FI_Komponentti-kentät automaattisesti RAVA-hierarkiasta)
+
+- **Korjattu: Solibri tunnistaminen -tarkistus läpäisi 0 % tuotteista.**
+  FI_Komponentti-pääryhmä, alaryhmä, yleisnimi ja yleistunnus oli
+  kovakoodattu TOML-profiiliin omatekoisten arvojen kanssa, eivät
+  täsmänneet RAVA3Pro:n kanonisiin arvoihin joita Solibri vertaa koodin
+  perusteella.
+- **`profiles/rava/loader.py`**: Uusi `load_tuoteosa_hierarchy()`-funktio
+  lukee `lvi_tuoteosa.json` ja `talotekniikka_tuoteosa.json`:n, navigoi
+  `broaderCode`-ketjun tasolta 3 → 2 → 1 ja palauttaa kanonisen
+  pääryhmä/alaryhmä/yleisnimi/yleistunnus per RAVA-koodi. Tulos on
+  moduulitason välimuistissa.
+- **`core/finnish_psets.py`**: `build_fi_psets_for_product()` hakee
+  FI_Komponentti-kentät automaattisesti RAVA-hierarkiasta kunkin
+  säännön koodin perusteella; profiilissa ei enää tarvita käsin
+  asetettuja arvoja.
+- **`profiles/default_kylmalaite.toml`**: Korjattu 15+ väärää tai
+  olemattomaan koodiin viittaavaa RAVA-koodia:
+  - `T-LVI-02` (ryhmätason koodi) → `T-LVI-02-01-001` (Putki)
+  - `T-TATE-01-01-099` (ei olemassa) → oikeat koodit kullekin laitteelle
+  - CO2-anturi/sireeni/huolto-PC/hätäseis: `T-TATE-02-01-003` →
+    `T-LVI-01-01-999` (MUU - Lämmitys- ja jäähdytyslaitteistot)
+  - Magneettiventtiili → `T-LVI-03-02-002`, paisuntaventtiili →
+    `T-LVI-03-03-012`, sulkuventtiili → `T-LVI-03-03-001`,
+    pumppu → `T-LVI-03-06-001`, paisunta-astia → `T-LVI-03-07-002`,
+    mittarit → `T-LVI-03-05-999`, muut osat → `T-TATE-02-01-003`
+
 ## v0.3.0-alpha14 - 2026-05-25 (levyhyllyn umpikylki käyttää LWPOLYLINE thickness -arvoa)
 
 - **Korjattu: uuden `KYL-LEVYHYLLY`-blokin umpinainen kylkilevy jäi pois

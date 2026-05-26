@@ -20,7 +20,7 @@ EXPECTED_TALO2000_CODES = {
 }
 
 EXPECTED_RAVA_CODES = {
-    "T-LVI-02",  # LT IMU → IfcPipeSegment (refrigerant)
+    "T-LVI-02-01-001",  # LT IMU → IfcPipeSegment (refrigerant)
     "T-LVI-04-01-001",  # KYL-VIEMARI → IfcPipeSegment (drainpipe)
     "T-LVI-01-01-023",  # KYL-HOYRYSTIN → IfcEvaporator
     "T-TATE-01-01-001",  # KAAPELIHYLLY → IfcCableCarrierSegment

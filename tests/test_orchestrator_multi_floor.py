@@ -25,6 +25,62 @@ def _write_minimal_dxf(path: Path, layer: str = "KYL-LEVYHYLLY") -> None:
     doc.saveas(str(path))
 
 
+def _write_hole_reservation_dxf(path: Path) -> None:
+    doc = ezdxf.new("R2018")
+    doc.layers.add("KYL-REIKAVARAUS")
+    blk = doc.blocks.new(name="REIKAVARAUS")
+    blk.add_attdef("GUID", insert=(0, 0, 0), text="")
+    blk.add_attdef("VARAUS_TYYPPI", insert=(0, 10, 0), text="LATTIA")
+    blk.add_attdef("HALKAISIJA", insert=(0, 20, 0), text="200")
+    blk.add_attdef("PITUUS", insert=(0, 30, 0), text="300")
+    ins = doc.modelspace().add_blockref(
+        "REIKAVARAUS",
+        insert=(500, 500, 1000),
+        dxfattribs={"layer": "KYL-REIKAVARAUS"},
+    )
+    ins.add_auto_attribs(
+        {
+            "GUID": "550e8400-e29b-41d4-a716-446655440000",
+            "VARAUS_TYYPPI": "LATTIA",
+            "HALKAISIJA": "200",
+            "PITUUS": "300",
+        }
+    )
+    doc.saveas(str(path))
+
+
+def _write_mixed_with_hole_reservation_dxf(path: Path) -> None:
+    doc = ezdxf.new("R2018")
+    doc.layers.add("KYL-LEVYHYLLY")
+    doc.layers.add("KYL-REIKAVARAUS")
+    msp = doc.modelspace()
+    msp.add_lwpolyline(
+        [(0, 0), (1000, 0), (1000, 1000), (0, 1000)],
+        format="xy",
+        close=True,
+        dxfattribs={"layer": "KYL-LEVYHYLLY"},
+    )
+    blk = doc.blocks.new(name="REIKAVARAUS")
+    blk.add_attdef("GUID", insert=(0, 0, 0), text="")
+    blk.add_attdef("VARAUS_TYYPPI", insert=(0, 10, 0), text="LATTIA")
+    blk.add_attdef("HALKAISIJA", insert=(0, 20, 0), text="200")
+    blk.add_attdef("PITUUS", insert=(0, 30, 0), text="300")
+    ins = msp.add_blockref(
+        "REIKAVARAUS",
+        insert=(500, 500, 1000),
+        dxfattribs={"layer": "KYL-REIKAVARAUS"},
+    )
+    ins.add_auto_attribs(
+        {
+            "GUID": "550e8400-e29b-41d4-a716-446655440000",
+            "VARAUS_TYYPPI": "LATTIA",
+            "HALKAISIJA": "200",
+            "PITUUS": "300",
+        }
+    )
+    doc.saveas(str(path))
+
+
 def test_multi_floor_produces_two_storeys(tmp_path):
     floor1 = tmp_path / "1krs.dxf"
     floor2 = tmp_path / "2krs.dxf"
@@ -125,3 +181,26 @@ def test_multi_floor_products_attached_to_correct_storeys(tmp_path):
     # Each file contributes at least one product to its own storey.
     assert storey_buckets.get("1.krs", 0) >= 1
     assert storey_buckets.get("2.krs", 0) >= 1
+
+
+def test_reservations_only_exports_skeleton_and_hole_reservations(tmp_path):
+    mixed = tmp_path / "mixed.dxf"
+    _write_mixed_with_hole_reservation_dxf(mixed)
+    out = tmp_path / "reservations_only.ifc"
+
+    convert(
+        files=[FileEntry(path=mixed, floor_label="1.krs", elevation_mm=0.0)],
+        output_path=out,
+        profile=load_default_profile(),
+        preprocess_acis=False,
+        reservations_only=True,
+    )
+
+    ifc = ifcopenshell.open(str(out))
+    reservations = [
+        p for p in ifc.by_type("IfcBuildingElementProxy")
+        if (getattr(p, "PredefinedType", "") or "").upper() == "PROVISIONFORVOID"
+    ]
+    assert len(ifc.by_type("IfcBuildingStorey")) == 1
+    assert len(reservations) == 1
+    assert len(ifc.by_type("IfcCableCarrierSegment")) == 0

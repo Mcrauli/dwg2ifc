@@ -67,17 +67,17 @@ def test_load_default_profile_has_pipe_segment_rules():
     assert lt.ifc_type == "IfcPipeSegment"
     assert lt.predefined_type == "REFRIGERATION"
     assert lt.domain == "KYL"
-    assert lt.lvi_code == "T-LVI-02"
+    assert lt.lvi_code == "T-LVI-02-01-001"
     assert lt.talo2000_code is None
     assert lt.system_name == "Kylmä - suorahöyrysteinen"
     assert lt.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 22.0
     mt_imu = by_layer["MT IMU"]
     assert mt_imu.domain == "KYL"
-    assert mt_imu.lvi_code == "T-LVI-02"
+    assert mt_imu.lvi_code == "T-LVI-02-01-001"
     assert mt_imu.system_name == "Kylmä - suorahöyrysteinen"
     mt_neste = by_layer["MT NESTE"]
     assert mt_neste.domain == "KYL"
-    assert mt_neste.lvi_code == "T-LVI-02"
+    assert mt_neste.lvi_code == "T-LVI-02-01-001"
     assert mt_neste.system_name == "Kylmä - suorahöyrysteinen"
     assert mt_neste.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 12.0
 

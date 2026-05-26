@@ -24,6 +24,7 @@ class ConvertWorker(QtCore.QObject):
         validate: bool = False,
         energy_specs: str | None = None,
         magicad_ifc: str | None = None,
+        reservations_only: bool = False,
     ) -> None:
         runnable = _ConvertRunnable(
             self,
@@ -33,6 +34,7 @@ class ConvertWorker(QtCore.QObject):
             validate=validate,
             energy_specs=energy_specs,
             magicad_ifc=magicad_ifc,
+            reservations_only=reservations_only,
         )
         QtCore.QThreadPool.globalInstance().start(runnable)
 
@@ -48,6 +50,7 @@ class _ConvertRunnable(QtCore.QRunnable):
         validate: bool,
         energy_specs: str | None,
         magicad_ifc: str | None,
+        reservations_only: bool,
     ) -> None:
         super().__init__()
         self._worker = worker
@@ -57,6 +60,7 @@ class _ConvertRunnable(QtCore.QRunnable):
         self._validate = validate
         self._energy_specs = energy_specs
         self._magicad_ifc = magicad_ifc
+        self._reservations_only = reservations_only
 
     def run(self) -> None:  # type: ignore[override]
         try:
@@ -68,6 +72,7 @@ class _ConvertRunnable(QtCore.QRunnable):
                 progress=self._worker.progress.emit,
                 energy_specs_path=self._energy_specs or None,
                 magicad_ifc_path=self._magicad_ifc or None,
+                reservations_only=self._reservations_only,
             )
         except Exception as exc:  # noqa: BLE001 — surface every failure to the GUI
             self._worker.failed.emit(f"{type(exc).__name__}: {exc}")

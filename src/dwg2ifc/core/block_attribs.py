@@ -96,6 +96,8 @@ _HOLE_RESERVATION_EXTRA_PROPS: dict[str, tuple[str, Callable[[str], object] | No
     "VARAUS_TYYPPI": ("varaus_tyyppi", str),
     "HALKAISIJA": ("halkaisija_mm", float),
     "PITUUS": ("pituus_mm", float),
+    "YLITYS_MM": ("ylitys_mm", float),
+    "KULMA_RAD": ("kulma_rad", float),
     "KORKO": ("korko_mm", float),
     "VARAAJA": ("varaaja", str),
     "TUNNUS": ("tunnus", str),
@@ -125,7 +127,6 @@ def resolve_hole_reservation_field(
 def _is_hole_reservation_entity(entity: MappedEntity) -> bool:
     return (
         str(entity.layer or "").strip().upper() == "KYL-REIKAVARAUS"
-        and str(entity.dxf_type or "").strip().upper() == "INSERT"
     )
 
 
@@ -197,6 +198,23 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
     ``fi_tekninen`` in place.
     """
     for entity in mapped:
+        if _is_hole_reservation_entity(entity):
+            xdata = (entity.attributes or {}).get("radika_reikavaraus_xdata")
+            if isinstance(xdata, dict):
+                for raw_tag, raw_value in xdata.items():
+                    hole_field = resolve_hole_reservation_field(str(raw_tag))
+                    if hole_field is None:
+                        continue
+                    key, caster = hole_field
+                    value = str(raw_value or "").strip()
+                    if not value:
+                        continue
+                    try:
+                        entity.extra_props[key] = (
+                            caster(value) if caster is not None else value
+                        )
+                    except (TypeError, ValueError):
+                        pass
         for attrib in entity.block_attribs or []:
             tag = (attrib.tag or "").strip()
             if not tag:

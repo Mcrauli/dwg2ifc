@@ -92,6 +92,40 @@ def test_read_insert_returns_block_instance(tmp_path: Path):
     assert rec.geometry.scale_x == 1.0
 
 
+def test_read_insert_captures_radika_reikavaraus_xdata(tmp_path: Path):
+    dxf = tmp_path / "rv.dxf"
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name="KYL-REIKAVARAUS")
+    block = doc.blocks.new(name="REIKAVARAUS")
+    block.add_circle((0, 0), radius=100)
+    ins = doc.modelspace().add_blockref(
+        "REIKAVARAUS",
+        (1000, 2000, 2800),
+        dxfattribs={"layer": "KYL-REIKAVARAUS"},
+    )
+    ins.set_xdata(
+        "RADIKA_REIKAVARAUS",
+        [
+            (1000, "GUID=550e8400-e29b-41d4-a716-446655440000"),
+            (1000, "VARAUS_TYYPPI=SEINA"),
+            (1000, "HALKAISIJA=200"),
+            (1000, "PITUUS=180"),
+            (1000, "YLITYS_MM=10"),
+            (1000, "KULMA_RAD=1.5707963"),
+        ],
+    )
+    doc.saveas(str(dxf))
+
+    records = read_dxf(dxf)
+    inserts = [r for r in records if r.dxf_type == "INSERT"]
+    assert len(inserts) == 1
+    xdata = inserts[0].attributes.get("radika_reikavaraus_xdata")
+    assert isinstance(xdata, dict)
+    assert xdata["GUID"] == "550e8400-e29b-41d4-a716-446655440000"
+    assert xdata["VARAUS_TYYPPI"] == "SEINA"
+    assert xdata["YLITYS_MM"] == "10"
+
+
 def test_read_open_lwpolyline_yields_line_segments(tmp_path: Path):
     """v0.1.19+: open LWPOLYLINEs (common in MagiCAD proxy graphics for
     pipe centrelines and detail outlines) are no longer dropped — they

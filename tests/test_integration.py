@@ -71,7 +71,7 @@ def test_lt_imu_roundtrip_produces_ifcpipesegment(tmp_path: Path):
 
     # Plan H Task 14: refrigerant pipes are TATE-domain → RAVA-LVI.
     refs = ifc.by_type("IfcClassificationReference")
-    rava = [r for r in refs if r.Identification == "T-LVI-02"]
+    rava = [r for r in refs if r.Identification == "T-LVI-02-01-001"]
     assert len(rava) == 1
     assert rava[0].ReferencedSource.Name == "RAVA-LVI"
 

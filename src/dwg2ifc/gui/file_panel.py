@@ -19,6 +19,7 @@ class FilePanel(QtWidgets.QWidget):
             "output_path": str,
             "energy_specs_path": str,   # "" if unset
             "magicad_ifc_path": str,    # "" if unset
+            "reservations_only": bool,  # export skeleton + reservations only
         }
     """
 
@@ -104,12 +105,22 @@ class FilePanel(QtWidgets.QWidget):
         self.browse_magicad_ifc_button.clicked.connect(self._on_browse_magicad_ifc)
         layout.addWidget(self.browse_magicad_ifc_button, 4, 2)
 
+        # --- Reservations-only export --------------------------------------
+        self.reservations_only_check = QtWidgets.QCheckBox(
+            "Vain reikävaraukset + IFC skeleton"
+        )
+        self.reservations_only_check.setToolTip(
+            "Kun valittu, IFC:hen viedään vain KYL-REIKAVARAUS-"
+            "varaukset ja normaali IFC-skeleton."
+        )
+        layout.addWidget(self.reservations_only_check, 5, 1, 1, 2)
+
         # --- Convert button -------------------------------------------------
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setProperty("primary", "true")
         self.convert_button.setEnabled(False)
         self.convert_button.clicked.connect(self._on_convert)
-        layout.addWidget(self.convert_button, 5, 1, 1, 2)
+        layout.addWidget(self.convert_button, 6, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
 
@@ -222,6 +233,7 @@ class FilePanel(QtWidgets.QWidget):
                 "output_path": self.output_edit.text(),
                 "energy_specs_path": self.energy_edit.text(),
                 "magicad_ifc_path": self.magicad_ifc_edit.text(),
+                "reservations_only": self.reservations_only_check.isChecked(),
             }
         )
 

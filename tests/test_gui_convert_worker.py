@@ -82,3 +82,20 @@ def test_convert_worker_does_not_emit_report_when_validate_false(qtbot, tmp_path
             with qtbot.waitSignal(worker.finished, timeout=2000):
                 worker.run(files=_one_floor(tmp_path), out=out, profile=load_default_profile())
     assert mock_convert.call_args.kwargs.get("validate") is False
+
+
+def test_convert_worker_passes_reservations_only_to_convert(qtbot, tmp_path):
+    from dwg2ifc.gui.convert_worker import ConvertWorker
+    from dwg2ifc.profiles.loader import load_default_profile
+
+    worker = ConvertWorker()
+    out = str(tmp_path / "out.ifc")
+    with patch("dwg2ifc.gui.convert_worker.convert", return_value=({}, None)) as mock_convert:
+        with qtbot.waitSignal(worker.finished, timeout=2000):
+            worker.run(
+                files=_one_floor(tmp_path),
+                out=out,
+                profile=load_default_profile(),
+                reservations_only=True,
+            )
+    assert mock_convert.call_args.kwargs.get("reservations_only") is True

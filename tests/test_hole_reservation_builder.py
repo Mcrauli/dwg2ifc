@@ -2,7 +2,7 @@ import ifcopenshell.guid
 
 from dwg2ifc.core.ifc_writer.builders import add_provision_for_void
 from dwg2ifc.core.ifc_writer.skeleton import build_ifc_project_skeleton
-from dwg2ifc.core.types import BlockInstance, MappedEntity, Point3D
+from dwg2ifc.core.types import BlockInstance, MappedEntity, MeshGeometry, Point3D
 
 
 def _hole_reservation_mapped_entity() -> MappedEntity:
@@ -70,3 +70,55 @@ def test_floor_hole_reservation_creates_hole_reservation_body():
     assert pset["Diameter"] == 200.0
     assert pset["Depth"] == 300.0
     assert pset["System"] == "Refrigeration"
+
+
+def test_wall_hole_reservation_uses_horizontal_extrusion_direction():
+    skeleton = build_ifc_project_skeleton(project_name="Hole Test", schema="IFC4")
+    mapped = _hole_reservation_mapped_entity()
+    mapped.extra_props["varaus_tyyppi"] = "SEINA"
+    product = add_provision_for_void(
+        skeleton.file,
+        mapped,
+        parent_storey=skeleton.storeys[0],
+    )
+
+    body = product.Representation.Representations[0]
+    solid = body.Items[0]
+    assert tuple(solid.ExtrudedDirection.DirectionRatios) == (1.0, 0.0, 0.0)
+
+
+def test_hole_reservation_depth_includes_overrun_each_side():
+    skeleton = build_ifc_project_skeleton(project_name="Hole Test", schema="IFC4")
+    mapped = _hole_reservation_mapped_entity()
+    mapped.extra_props["ylitys_mm"] = 10.0
+    product = add_provision_for_void(
+        skeleton.file,
+        mapped,
+        parent_storey=skeleton.storeys[0],
+    )
+    pset = _pset_props(product, "Pset_ProvisionForVoid")
+    assert pset["Depth"] == 320.0
+    assert pset["BaseDepth"] == 300.0
+    assert pset["OverrunEachSide"] == 10.0
+
+
+def test_hole_reservation_accepts_mesh_geometry_with_xdata_rotation():
+    skeleton = build_ifc_project_skeleton(project_name="Hole Test", schema="IFC4")
+    mapped = _hole_reservation_mapped_entity()
+    mapped.geometry = MeshGeometry(
+        vertices=(
+            Point3D(0.0, 0.0, 0.0),
+            Point3D(200.0, 0.0, 0.0),
+            Point3D(200.0, 200.0, 300.0),
+            Point3D(0.0, 200.0, 300.0),
+        ),
+        faces=((0, 1, 2, 3),),
+        source="acis",
+    )
+    mapped.extra_props["kulma_rad"] = 1.0
+    product = add_provision_for_void(
+        skeleton.file,
+        mapped,
+        parent_storey=skeleton.storeys[0],
+    )
+    assert product.is_a("IfcBuildingElementProxy")

@@ -4,8 +4,8 @@ Six new device blocks (CO2-anturi, CO2-sireeni, Huolto-PC, RK-JK10,
 Säädinkeskus, Hätäseis) created in autocad-lisp-ohjeet/Laitteet/ and
 inserted via the VARUSTEET LISP command. The default profile maps
 their KYL-* layers to IFC4 distribution-element types with
-T-TATE-02-01-003 (Tilavaraus - laitteisto) or T-TATE-02-01-004
-(Tilavaraus - keskus) RAVA codes.
+T-LVI-01-01-999 (MUU - Lämmitys- ja jäähdytyslaitteistot) or
+T-TATE-02-01-004 (Tilavaraus - keskus) RAVA codes.
 """
 
 from __future__ import annotations
@@ -19,12 +19,12 @@ from dwg2ifc.profiles.loader import load_default_profile
 @pytest.mark.parametrize(
     "layer, expected_ifc, expected_predef, expected_code",
     [
-        ("KYL-CO2-ANTURI", "IfcSensor", "CO2SENSOR", "T-TATE-02-01-003"),
-        ("KYL-CO2-SIREENI", "IfcAlarm", "SIREN", "T-TATE-02-01-003"),
-        ("KYL-HUOLTO-PC", "IfcCommunicationsAppliance", "COMPUTER", "T-TATE-02-01-003"),
+        ("KYL-CO2-ANTURI", "IfcSensor", "CO2SENSOR", "T-LVI-01-01-999"),
+        ("KYL-CO2-SIREENI", "IfcAlarm", "SIREN", "T-LVI-01-01-999"),
+        ("KYL-HUOLTO-PC", "IfcCommunicationsAppliance", "COMPUTER", "T-LVI-01-01-999"),
         ("KYL-RK-JK10", "IfcElectricDistributionBoard", "DISTRIBUTIONBOARD", "T-TATE-02-01-004"),
         ("KYL-SAADINKESKUS-KU", "IfcController", "PROGRAMMABLE", "T-TATE-02-01-004"),
-        ("KYL-HATASEIS", "IfcSwitchingDevice", "EMERGENCYSTOP", "T-TATE-02-01-003"),
+        ("KYL-HATASEIS", "IfcSwitchingDevice", "EMERGENCYSTOP", "T-LVI-01-01-999"),
     ],
 )
 def test_varusteet_layer_maps_to_expected_ifc_type_and_rava_code(

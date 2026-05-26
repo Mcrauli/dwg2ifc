@@ -130,6 +130,7 @@ def test_convert_requested_emits_file_entries(qtbot, tmp_path):
     assert payload["output_path"] == str(tmp_path / "out.ifc")
     assert payload["energy_specs_path"] == ""
     assert payload["magicad_ifc_path"] == ""
+    assert payload["reservations_only"] is False
     assert len(payload["files"]) == 1
     fe = payload["files"][0]
     assert fe.path == Path(p1)
@@ -158,6 +159,27 @@ def test_convert_requested_emits_energy_and_magicad_paths(qtbot, tmp_path):
     panel.convert_button.click()
     assert received[0]["energy_specs_path"] == str(tmp_path / "energy.xlsx")
     assert received[0]["magicad_ifc_path"] == str(tmp_path / "magicad.ifc")
+
+
+def test_convert_requested_emits_reservations_only_flag(qtbot, tmp_path):
+    from dwg2ifc.gui.file_panel import FilePanel
+
+    panel = FilePanel()
+    qtbot.addWidget(panel)
+    panel.output_edit.setText(str(tmp_path / "out.ifc"))
+    panel.reservations_only_check.setChecked(True)
+    p1 = tmp_path / "1krs.dwg"
+    p1.write_bytes(b"")
+    with patch(
+        "dwg2ifc.gui.file_panel.QtWidgets.QFileDialog.getOpenFileNames",
+        return_value=([str(p1)], "*"),
+    ):
+        panel.add_files_button.click()
+
+    received: list[dict] = []
+    panel.convert_requested.connect(lambda payload: received.append(payload))
+    panel.convert_button.click()
+    assert received[0]["reservations_only"] is True
 
 
 def test_table_row_z_is_editable(qtbot, tmp_path):

@@ -416,17 +416,32 @@ def add_provision_for_void(
     *,
     parent_storey,
 ) -> object:
-    if not isinstance(mapped.geometry, BlockInstance):
+    if not isinstance(mapped.geometry, (BlockInstance, MeshGeometry)):
         raise TypeError(
-            "add_provision_for_void expects BlockInstance, "
+            "add_provision_for_void expects BlockInstance or MeshGeometry, "
             f"got {type(mapped.geometry).__name__}"
         )
 
     extras = mapped.extra_props or {}
     guid = _compress_ifc_guid(extras.get("guid"))
     diameter_mm = float(extras.get("halkaisija_mm", 200.0))
-    depth_mm = float(extras.get("pituus_mm", 300.0))
-    point = mapped.geometry.insertion_point
+    base_depth_mm = float(extras.get("pituus_mm", 300.0))
+    overrun_mm = float(extras.get("ylitys_mm", 0.0))
+    depth_mm = base_depth_mm + (2.0 * overrun_mm)
+    reservation_type = str(extras.get("varaus_tyyppi", "")).strip().upper()
+    if isinstance(mapped.geometry, BlockInstance):
+        point = mapped.geometry.insertion_point
+        rotation_rad = mapped.geometry.rotation_rad
+    else:
+        xs = [v.x for v in mapped.geometry.vertices]
+        ys = [v.y for v in mapped.geometry.vertices]
+        zs = [v.z for v in mapped.geometry.vertices]
+        point = Point3D(
+            (min(xs) + max(xs)) / 2.0,
+            (min(ys) + max(ys)) / 2.0,
+            (min(zs) + max(zs)) / 2.0,
+        )
+        rotation_rad = float(extras.get("kulma_rad", 0.0) or 0.0)
 
     product = ifcopenshell.api.run(
         "root.create_entity",
@@ -439,7 +454,7 @@ def add_provision_for_void(
     if extras.get("varaus_tyyppi"):
         product.Description = str(extras["varaus_tyyppi"])
 
-    matrix = _z_rotation_matrix(point.x, point.y, point.z, mapped.geometry.rotation_rad)
+    matrix = _z_rotation_matrix(point.x, point.y, point.z, rotation_rad)
     ifcopenshell.api.run(
         "geometry.edit_object_placement",
         ifc,
@@ -462,6 +477,7 @@ def add_provision_for_void(
         ),
         Radius=diameter_mm / 2.0,
     )
+    direction = (1.0, 0.0, 0.0) if reservation_type == "SEINA" else (0.0, 0.0, 1.0)
     extruded = ifc.create_entity(
         "IfcExtrudedAreaSolid",
         SweptArea=circle,
@@ -469,7 +485,7 @@ def add_provision_for_void(
             "IfcAxis2Placement3D",
             Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
         ),
-        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
+        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=direction),
         Depth=depth_mm,
     )
     shape = ifc.create_entity(
@@ -492,6 +508,8 @@ def add_provision_for_void(
         "VoidShape": "Round",
         "Diameter": diameter_mm,
         "Depth": depth_mm,
+        "BaseDepth": base_depth_mm,
+        "OverrunEachSide": overrun_mm,
     }
     if extras.get("system_name"):
         pset_props["System"] = str(extras["system_name"])

@@ -167,6 +167,7 @@ class MainWindow(QtWidgets.QMainWindow):
         out = payload.get("output_path", "")
         energy_specs = payload.get("energy_specs_path", "")
         magicad_ifc = payload.get("magicad_ifc_path", "")
+        reservations_only = bool(payload.get("reservations_only", False))
         if not files or not out:
             self.set_status(
                 "Lisää vähintään yksi tiedosto + IFC-output ennen konversiota",
@@ -197,6 +198,7 @@ class MainWindow(QtWidgets.QMainWindow):
             validate=True,
             energy_specs=energy_specs or None,
             magicad_ifc=magicad_ifc or None,
+            reservations_only=reservations_only,
         )
 
     def _on_convert_finished(self, out: str) -> None:

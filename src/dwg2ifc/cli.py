@@ -126,6 +126,14 @@ def build_parser() -> argparse.ArgumentParser:
             "first IfcBuildingStorey."
         ),
     )
+    convert.add_argument(
+        "--reservations-only",
+        action="store_true",
+        help=(
+            "Export only hole reservations "
+            "(IfcBuildingElementProxy/PROVISIONFORVOID) + IFC skeleton."
+        ),
+    )
     return parser
 
 
@@ -151,6 +159,7 @@ def main(argv: list[str] | None = None) -> int:
                 schema=args.schema.upper(),
                 energy_specs_path=args.energy_specs,
                 magicad_ifc_path=args.magicad_ifc,
+                reservations_only=args.reservations_only,
             )
         else:
             convert_dxf(
@@ -161,6 +170,7 @@ def main(argv: list[str] | None = None) -> int:
                 energy_specs_path=args.energy_specs,
                 floor_elevation_mm=args.floor_elevation,
                 magicad_ifc_path=args.magicad_ifc,
+                reservations_only=args.reservations_only,
             )
         print(f"Wrote {args.output}", file=sys.stderr)
         if args.validate:

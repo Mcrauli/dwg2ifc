@@ -127,6 +127,13 @@ def _emit(progress: object | None, message: str) -> None:
             pass
 
 
+def _is_hole_reservation(mapped: MappedEntity) -> bool:
+    return (
+        mapped.ifc_type == "IfcBuildingElementProxy"
+        and (mapped.predefined_type or "").upper() == "PROVISIONFORVOID"
+    )
+
+
 def _run_energy_spec_lookup(
     mapped: list,
     energy_specs_path: str | Path,
@@ -492,6 +499,7 @@ def _apply_block_bbox_fallback(
     candidates = [
         m for m in mapped
         if isinstance(m.geometry, BlockInstance)
+        and not _is_hole_reservation(m)
         and m.ifc_type in (
             _COOLING_EQUIPMENT_CLASSES
             | _DISTRIBUTION_ELEMENT_CLASSES
@@ -635,6 +643,7 @@ def convert_dxf(
     energy_specs_path: str | Path | None = None,
     floor_elevation_mm: float = 0.0,
     magicad_ifc_path: str | Path | None = None,
+    reservations_only: bool = False,
 ) -> tuple[dict[str, list], ValidationReport | None]:
     """Orchestrate DXF -> IFC conversion end-to-end.
 
@@ -681,6 +690,7 @@ def convert_dxf(
         progress=progress,
         energy_specs_path=energy_specs_path,
         magicad_ifc_path=magicad_ifc_path,
+        reservations_only=reservations_only,
     )
 
 
@@ -696,6 +706,7 @@ def convert(
     progress: object | None = None,
     energy_specs_path: str | Path | None = None,
     magicad_ifc_path: str | Path | None = None,
+    reservations_only: bool = False,
 ) -> tuple[dict[str, list], ValidationReport | None]:
     """Multi-file DXF/DWG → single IFC with one ``IfcBuildingStorey`` per file.
 
@@ -744,6 +755,9 @@ def convert(
         for m in mapped:
             m.storey_index = index
         all_mapped.extend(mapped)
+
+    if reservations_only:
+        all_mapped = [m for m in all_mapped if _is_hole_reservation(m)]
 
     # Determine the dominant discipline so Solibri can auto-detect the
     # role when the file is opened. A unanimous mapped-rule domain
@@ -883,8 +897,7 @@ def convert(
                 _classify(pipe, m)
                 _record(m, pipe)
             elif (
-                m.ifc_type == "IfcBuildingElementProxy"
-                and (m.predefined_type or "").upper() == "PROVISIONFORVOID"
+                _is_hole_reservation(m)
             ):
                 product = add_provision_for_void(
                     ifc,

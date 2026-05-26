@@ -84,9 +84,10 @@
     ;; Lataa kaikki LSP-tyokalut
     (foreach f '("hoyrystin.lsp" "kaato.lsp" "klhylly.lsp" "positio.lsp"
                  "putkityokalu.lsp" "varusteet.lsp"
-                 "kotelo.lsp" "koneikko.lsp" "lauhdutin.lsp")
+                 "kotelo.lsp" "koneikko.lsp" "lauhdutin.lsp"
+                 "reikavaraus.lsp")
       (rt-load-one RT-BASE f))
-    (princ "\n[RadikaTools] Valmis. Komennot: KLH KLHV KOTELO KORKO MTI LTI MTN POSITIO VPUTKI KAATO VARUSTEET HOYRYSTIN KONEIKKO LAUHDUTIN.")
+    (princ "\n[RadikaTools] Valmis. Komennot: KLH KLHV KOTELO KORKO MTI LTI MTN POSITIO VPUTKI KAATO VARUSTEET HOYRYSTIN KONEIKKO LAUHDUTIN REIKAVARAUS RV.")
   ))
 
 (princ "\n")

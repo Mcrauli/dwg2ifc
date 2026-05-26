@@ -548,8 +548,11 @@ def add_finnish_psets(
             syvyys_mm=extents.syvyys,
         )
 
-    # FI_Komponentti — koodi from RAVA / Talo2000, static fields from
-    # the profile rule's fi_komponentti table.
+    # FI_Komponentti — koodi from RAVA / Talo2000; paaryhma/alaryhma/
+    # yleisnimi/yleistunnus auto-derived from RAVA hierarchy when the code
+    # is a valid level-3 tuoteosa code (required for Solibri tunnistaminen).
+    # Falls back to the profile rule's fi_komponentti table when no RAVA
+    # entry is found (e.g., Talo2000 codes or missing RAVA codes).
     fi_k = mapped.fi_komponentti or {}
     code = (
         getattr(mapped, "lvi_code", None)
@@ -557,14 +560,20 @@ def add_finnish_psets(
         or getattr(mapped, "talo2000_code", None)
     )
     extras = mapped.extra_props or {}
+    try:
+        from dwg2ifc.profiles.rava.loader import load_tuoteosa_hierarchy
+
+        _rava_h = load_tuoteosa_hierarchy().get(code) if code else None
+    except Exception:
+        _rava_h = None
     add_fi_komponentti(
         ifc,
         product,
-        paaryhma=fi_k.get("paaryhma"),
-        alaryhma=fi_k.get("alaryhma"),
+        paaryhma=_rava_h.paaryhma if _rava_h else fi_k.get("paaryhma"),
+        alaryhma=_rava_h.alaryhma if _rava_h else fi_k.get("alaryhma"),
         koodi=code,
-        yleisnimi=fi_k.get("yleisnimi"),
-        yleistunnus=fi_k.get("yleistunnus"),
+        yleisnimi=_rava_h.yleisnimi if _rava_h else fi_k.get("yleisnimi"),
+        yleistunnus=_rava_h.yleistunnus if _rava_h else fi_k.get("yleistunnus"),
         koneikko=extras.get("koneikko"),
         laitetunnus=extras.get("laitetunnus"),
         laitetunnus_yksilollinen=extras.get("laitetunnus_yksilollinen"),

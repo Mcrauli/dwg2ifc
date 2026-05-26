@@ -88,3 +88,46 @@ def test_cli_convert_without_validate_does_not_call_validate(
     assert called["n"] == 0
 
 
+def test_cli_single_file_forwards_reservations_only(monkeypatch, tmp_path):
+    called: dict[str, object] = {}
+
+    monkeypatch.setattr(cli, "load_default_profile", lambda: object())
+
+    def _fake_convert_dxf(**kwargs):
+        called.update(kwargs)
+        return {}, None
+
+    monkeypatch.setattr(cli, "convert_dxf", _fake_convert_dxf)
+    rc = cli.main(
+        [
+            "convert",
+            str(tmp_path / "in.dxf"),
+            str(tmp_path / "out.ifc"),
+            "--reservations-only",
+        ]
+    )
+    assert rc == 0
+    assert called.get("reservations_only") is True
+
+
+def test_cli_multi_floor_forwards_reservations_only(monkeypatch, tmp_path):
+    called: dict[str, object] = {}
+
+    monkeypatch.setattr(cli, "load_default_profile", lambda: object())
+
+    def _fake_convert(**kwargs):
+        called.update(kwargs)
+        return {}, None
+
+    monkeypatch.setattr(cli, "convert", _fake_convert)
+    rc = cli.main(
+        [
+            "convert",
+            str(tmp_path / "out.ifc"),
+            "--floor",
+            "a.dxf:1.krs:0",
+            "--reservations-only",
+        ]
+    )
+    assert rc == 0
+    assert called.get("reservations_only") is True

@@ -11,6 +11,7 @@ molemmat päät käden ulottuvilla.
 - **`*.lsp`** — AutoLISP-komennot. Mm. `POSITIO` (numerointi), `KLH` /
   `KLHL` / `KLHT` (kylmälaitehyllyt), `HY1`–`HY3` (höyrystimet),
   `KONEIKKO`, `LAUHDUTIN`, `VARUSTEET` (sähkövarusteet), `KOTELO`,
+  `REIKAVARAUS` / `RV` (KYL-reikävarausblocki, GUID-attribuutilla),
   `KAATO3D`, putkityökalu. `klhylly.lsp` on AutoCAD-, `klhylly-brics.lsp`
   BricsCAD-variantti. `_loader.lsp` lataa työkalut.
 - **`*.dwg`** — blokkien lähde-DWG:t (höyrystin, koneikko, lauhdutin,

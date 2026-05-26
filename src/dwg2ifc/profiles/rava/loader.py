@@ -55,3 +55,70 @@ def load_rava_codes() -> dict[str, RAVACode]:
                 codeset=codeset,
             )
     return out
+
+
+@dataclass(frozen=True)
+class TuoteosaHierarchy:
+    """FI_Komponentti canonical fields derived from a RAVA tuoteosa code."""
+
+    paaryhma: str
+    alaryhma: str
+    yleisnimi: str
+    yleistunnus: str
+
+
+_tuoteosa_cache: dict[str, TuoteosaHierarchy] | None = None
+
+
+def load_tuoteosa_hierarchy() -> dict[str, TuoteosaHierarchy]:
+    """Return paaryhma/alaryhma/yleisnimi/yleistunnus for every level-3 tuoteosa code.
+
+    Navigates the broaderCode chain in the RAVA JSON (code → alaryhmä → paaryhma)
+    so that FI_Komponentti fields are always consistent with what RAVA defines
+    for a given code — which is what Solibri's tunnistaminen check verifies.
+
+    Only TUOTEOSA files (not JÄRJESTELMÄ) contain the hierarchy needed here.
+    """
+    global _tuoteosa_cache
+    if _tuoteosa_cache is not None:
+        return _tuoteosa_cache
+
+    tuoteosa_files = ("lvi_tuoteosa.json", "talotekniikka_tuoteosa.json")
+    flat: dict[str, dict] = {}
+    for filename in tuoteosa_files:
+        path = _RAVA_DIR / filename
+        if not path.is_file():
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for entry in data.get("results", []):
+            cv = entry.get("codeValue")
+            if cv:
+                flat[cv] = entry
+
+    result: dict[str, TuoteosaHierarchy] = {}
+    for cv, entry in flat.items():
+        if entry.get("hierarchyLevel", 0) != 3:
+            continue
+        label = entry.get("prefLabel", {})
+        yleisnimi = label.get("fi") or label.get("en") or ""
+        yleistunnus = entry.get("shortName") or ""
+
+        b1 = entry.get("broaderCode") or {}
+        alaryhma_cv = b1.get("codeValue", "")
+        alaryhma_entry = flat.get(alaryhma_cv, {})
+        alaryhma = (alaryhma_entry.get("prefLabel") or {}).get("fi") or ""
+
+        b2 = (alaryhma_entry.get("broaderCode") or {})
+        paaryhma_cv = b2.get("codeValue", "")
+        paaryhma_entry = flat.get(paaryhma_cv, {})
+        paaryhma = (paaryhma_entry.get("prefLabel") or {}).get("fi") or ""
+
+        result[cv] = TuoteosaHierarchy(
+            paaryhma=paaryhma,
+            alaryhma=alaryhma,
+            yleisnimi=yleisnimi,
+            yleistunnus=yleistunnus,
+        )
+
+    _tuoteosa_cache = result
+    return result
