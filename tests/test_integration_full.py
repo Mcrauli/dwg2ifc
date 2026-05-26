@@ -73,10 +73,10 @@ def test_full_kylmaelement_pipeline_emits_four_grouped_ifcsystems(
 
     ifc = ifcopenshell.open(str(out))
     expected_system_names = {
-        "Refrigeration LT",
-        "Drainage",
+        "Kylmä - suorahöyrysteinen",
+        "Viemäri - kondenssi",
         "Cable carriers",
-        "Refrigeration plant",
+        "Kylmäjärjestelmä",
     }
     actual_systems = {s.Name: s for s in ifc.by_type("IfcSystem")}
     missing = expected_system_names - actual_systems.keys()

@@ -69,16 +69,16 @@ def test_load_default_profile_has_pipe_segment_rules():
     assert lt.domain == "KYL"
     assert lt.lvi_code == "T-LVI-02"
     assert lt.talo2000_code is None
-    assert lt.system_name == "Refrigeration LT"
+    assert lt.system_name == "Kylmä - suorahöyrysteinen"
     assert lt.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 22.0
     mt_imu = by_layer["MT IMU"]
     assert mt_imu.domain == "KYL"
     assert mt_imu.lvi_code == "T-LVI-02"
-    assert mt_imu.system_name == "Refrigeration MT"
+    assert mt_imu.system_name == "Kylmä - suorahöyrysteinen"
     mt_neste = by_layer["MT NESTE"]
     assert mt_neste.domain == "KYL"
     assert mt_neste.lvi_code == "T-LVI-02"
-    assert mt_neste.system_name == "Refrigeration MT"
+    assert mt_neste.system_name == "Kylmä - suorahöyrysteinen"
     assert mt_neste.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 12.0
 
 
@@ -91,7 +91,7 @@ def test_load_default_profile_has_drainpipe_rule():
     assert drain.domain == "KYL"
     assert drain.lvi_code == "T-LVI-04-01-001"
     assert drain.talo2000_code is None
-    assert drain.system_name == "Drainage"
+    assert drain.system_name == "Viemäri - kondenssi"
     assert drain.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 110.0
 
 

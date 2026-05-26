@@ -194,11 +194,11 @@ def test_convert_dxf_returns_systems_dict_grouped_by_system_name(tmp_path: Path)
 
     assert report is None
     assert isinstance(systems, dict)
-    assert set(systems.keys()) >= {"Refrigeration LT", "Drainage"}
-    assert len(systems["Refrigeration LT"]) == 1
-    assert len(systems["Drainage"]) == 1
-    assert systems["Refrigeration LT"][0].is_a("IfcPipeSegment")
-    assert systems["Drainage"][0].is_a("IfcPipeSegment")
+    assert set(systems.keys()) >= {"Kylmä - suorahöyrysteinen", "Viemäri - kondenssi"}
+    assert len(systems["Kylmä - suorahöyrysteinen"]) == 1
+    assert len(systems["Viemäri - kondenssi"]) == 1
+    assert systems["Kylmä - suorahöyrysteinen"][0].is_a("IfcPipeSegment")
+    assert systems["Viemäri - kondenssi"][0].is_a("IfcPipeSegment")
 
 
 def test_convert_dxf_creates_ifcsystem_and_assigns_products(tmp_path: Path):
@@ -222,7 +222,7 @@ def test_convert_dxf_creates_ifcsystem_and_assigns_products(tmp_path: Path):
 
     ifc = ifcopenshell.open(str(out))
     systems_by_name = {s.Name: s for s in ifc.by_type("IfcSystem")}
-    assert {"Refrigeration LT", "Drainage"}.issubset(systems_by_name.keys())
+    assert {"Kylmä - suorahöyrysteinen", "Viemäri - kondenssi"}.issubset(systems_by_name.keys())
 
     rels = ifc.by_type("IfcRelAssignsToGroup")
     members_by_system = {
@@ -230,10 +230,10 @@ def test_convert_dxf_creates_ifcsystem_and_assigns_products(tmp_path: Path):
         for rel in rels
         if rel.RelatingGroup.is_a("IfcSystem")
     }
-    assert len(members_by_system["Refrigeration LT"]) == 1
-    assert members_by_system["Refrigeration LT"][0].is_a("IfcPipeSegment")
-    assert len(members_by_system["Drainage"]) == 1
-    assert members_by_system["Drainage"][0].is_a("IfcPipeSegment")
+    assert len(members_by_system["Kylmä - suorahöyrysteinen"]) == 1
+    assert members_by_system["Kylmä - suorahöyrysteinen"][0].is_a("IfcPipeSegment")
+    assert len(members_by_system["Viemäri - kondenssi"]) == 1
+    assert members_by_system["Viemäri - kondenssi"][0].is_a("IfcPipeSegment")
 
 
 def test_convert_dxf_system_gets_fi_jarjestelma_pset_with_rava_code(tmp_path: Path):

@@ -458,9 +458,11 @@ def test_convert_dxf_links_positio_to_evaporator(tmp_path: Path):
     pblock = doc.blocks.new(name="positiov2")
     pblock.add_line((0, 0), (1, 0))
 
-    # Höyrystin block (placeholder geometry)
+    # Höyrystin block (placeholder geometry — needs 2D extent so the
+    # bbox-fallback in orchestrator produces a non-degenerate mesh)
     hblock = doc.blocks.new(name="HÖY3")
     hblock.add_line((0, 0), (300, 0))
+    hblock.add_line((0, 0), (0, 300))
 
     msp = doc.modelspace()
     msp.add_blockref(
@@ -532,8 +534,8 @@ def test_convert_dxf_does_not_link_positio_to_shelf(tmp_path: Path):
 
 
 def test_convert_dxf_emits_fi_sijainti_with_system_name(tmp_path: Path):
-    """The pipe rule for ``LT IMU`` carries ``system_name = 'Refrigeration LT'``.
-    FI_Sijainti's Järjestelmien nimet/tunnukset must reflect that."""
+    """The pipe rule for ``LT IMU`` carries the RAVA3Pro system classification.
+    FI_Sijainti must emit J-LVI-09-02 (suorahöyrysteinen) for refrigerant pipes."""
     dxf = tmp_path / "pipe.dxf"
     doc = ezdxf.new("R2018")
     doc.layers.add(name="LT IMU")
@@ -554,7 +556,8 @@ def test_convert_dxf_emits_fi_sijainti_with_system_name(tmp_path: Path):
         and rel.RelatingPropertyDefinition.Name == "FI_Sijainti"
     )
     by_name = {p.Name: p.NominalValue.wrappedValue for p in sij.HasProperties}
-    assert by_name["Järjestelmien nimet"] == "Refrigeration LT"
+    assert by_name["Järjestelmien nimet"] == "Kylmä - suorahöyrysteinen"
+    assert by_name["Järjestelmien tunnukset"] == "J-LVI-09-02"
 
 
 def test_refrigeration_plant_uses_rava_system_code_fallback():

@@ -42,7 +42,8 @@ def test_load_rava_codes_covers_every_decision_log_code():
 
 
 def test_ravacode_dataclass_shape():
-    code = RAVACode(code="T-LVI-X", name="Test", codeset="LVI-TUOTEOSA")
+    code = RAVACode(code="T-LVI-X", name="Test", codeset="LVI-TUOTEOSA", short_name="TX")
     assert code.code == "T-LVI-X"
     assert code.name == "Test"
     assert code.codeset == "LVI-TUOTEOSA"
+    assert code.short_name == "TX"

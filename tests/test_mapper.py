@@ -279,9 +279,9 @@ def test_apply_profile_default_profile_emits_four_distinct_system_names():
     ]
     mapped = apply_profile(entities, profile)
     systems = {m.layer: m.extra_props.get("system_name") for m in mapped}
-    assert systems["LT IMU"] == "Refrigeration LT"
-    assert systems["MT IMU"] == "Refrigeration MT"
-    assert systems["KYL-VIEMARI-LATTIA"] == "Drainage"
+    assert systems["LT IMU"] == "Kylmä - suorahöyrysteinen"
+    assert systems["MT IMU"] == "Kylmä - suorahöyrysteinen"
+    assert systems["KYL-VIEMARI-LATTIA"] == "Viemäri - kondenssi"
     assert systems["KAAPELIHYLLY"] == "Cable carriers"
     assert systems["KYL-HOYRYSTIN"] == "Refrigeration plant"
 

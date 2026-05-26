@@ -45,9 +45,10 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "REFRIGERATION"
 domain = "KYL"
 lvi_code = "T-LVI-02"
-system_name = "Refrigeration LT"
+system_name = "Kylmä - suorahöyrysteinen"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 22.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "KYLMÄAINEPUTKISTOT", yleisnimi = "Kylmäaineputki", yleistunnus = "KP" }
+fi_sijainti = { jarjestelmien_nimet = "Kylmä - suorahöyrysteinen", jarjestelmien_tunnukset = "J-LVI-09-02" }
 
 [[rules]]
 layer_pattern = "MT IMU"
@@ -55,9 +56,10 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "REFRIGERATION"
 domain = "KYL"
 lvi_code = "T-LVI-02"
-system_name = "Refrigeration MT"
+system_name = "Kylmä - suorahöyrysteinen"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 18.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "KYLMÄAINEPUTKISTOT", yleisnimi = "Kylmäaineputki", yleistunnus = "KP" }
+fi_sijainti = { jarjestelmien_nimet = "Kylmä - suorahöyrysteinen", jarjestelmien_tunnukset = "J-LVI-09-02" }
 
 [[rules]]
 layer_pattern = "MT NESTE"
@@ -65,9 +67,10 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "REFRIGERATION"
 domain = "KYL"
 lvi_code = "T-LVI-02"
-system_name = "Refrigeration MT"
+system_name = "Kylmä - suorahöyrysteinen"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 12.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "KYLMÄAINEPUTKISTOT", yleisnimi = "Kylmäaineputki", yleistunnus = "KP" }
+fi_sijainti = { jarjestelmien_nimet = "Kylmä - suorahöyrysteinen", jarjestelmien_tunnukset = "J-LVI-09-02" }
 
 # -----------------------------------------------------------------------------
 # Section 2: Drain pipes (refrigeration condensate) — RAVA LVI-TUOTEOSA
@@ -91,9 +94,9 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Viemari - kondenssi"
+system_name = "Viemäri - kondenssi"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 32.0 } }
-fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "VEM.LVI" }
+fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 fi_tekninen = { Materiaali = "Muovi (PP)", Seinamapaksuus = "1.8 mm" }
 
@@ -103,9 +106,9 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Viemari - kondenssi"
+system_name = "Viemäri - kondenssi"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 50.0 } }
-fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "VEM.LVI" }
+fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 fi_tekninen = { Materiaali = "Muovi (PP)", Seinamapaksuus = "1.8 mm" }
 
@@ -115,9 +118,9 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Viemari - kondenssi"
+system_name = "Viemäri - kondenssi"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 75.0 } }
-fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "VEM.LVI" }
+fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 fi_tekninen = { Materiaali = "Muovi (PP)", Seinamapaksuus = "1.8 mm" }
 
@@ -131,9 +134,10 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Drainage"
+system_name = "Viemäri - kondenssi"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 110.0 } }
-fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Sulanapitoviemäri", yleistunnus = "SV" }
+fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Sulanapitoviemäri", yleistunnus = "KDV" }
+fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 
 # -----------------------------------------------------------------------------
 # Section 2b: MagiCAD-drawn refrigeration pipes + devices (v0.1.19+).
@@ -155,9 +159,10 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "CHILLEDWATER"
 domain = "KYL"
 lvi_code = "T-LVI-02"
-system_name = "Refrigeration JV1"
+system_name = "Jäähdytys - vedenjäähdytyskone"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 28.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "JÄÄHDYTYSVESIPUTKISTOT", yleisnimi = "Jäähdytysvesiputki", yleistunnus = "JV" }
+fi_sijainti = { jarjestelmien_nimet = "Jäähdytys - vedenjäähdytyskone", jarjestelmien_tunnukset = "J-LVI-06-07" }
 
 [[rules]]
 layer_pattern = "KYL-JV1-LAITE"
@@ -174,8 +179,9 @@ ifc_type = "IfcTank"
 predefined_type = "BASIN"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Drainage"
+system_name = "Viemäri - kondenssi"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Lauhdevesiastia", yleistunnus = "LVA" }
+fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 
 # -----------------------------------------------------------------------------
 # Section 3: Cold-storage shelving — IfcCableCarrierSegment per Granlund
@@ -275,13 +281,6 @@ fi_komponentti = { paaryhma = "LAITTEISTOT - SÄHKÖ", alaryhma = "KAAPELOINTIJ�
 # Patterns use the Ö-spelling AutoCAD layers actually use plus an ASCII
 # fallback (str.casefold does NOT fold Ö→o). Stems "HÖYRYSTI"/"LAUHDUTI"
 # match both singular ("HÖYRYSTIN") and plural ("HÖYRYSTIMET") forms.
-# Aspirational codes (not yet drawn by LISP toolset) are commented:
-#   • jäähdytyskompressorikoneikko  T-LVI-01-01-005
-#   • vedenjäähdytyskone            T-LVI-01-01-003
-#   • kompressorilauhdutin          T-LVI-01-01-019
-#   • välijäähdytin                 T-LVI-01-01-024
-#   • kylmävesiasema                T-LVI-01-01-004
-#   • kylmäainevaraajasäiliö        T-LVI-03-07-012
 # -----------------------------------------------------------------------------
 
 [[rules]]
@@ -290,7 +289,7 @@ ifc_type = "IfcEvaporator"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-023"
 system_name = "Refrigeration plant"
-fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Höyrystin", yleistunnus = "HÖY" }
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Höyrystin", yleistunnus = "HÖ" }
 
 [[rules]]
 layer_pattern = "KYL-HOYRYSTI*"
@@ -298,7 +297,7 @@ ifc_type = "IfcEvaporator"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-023"
 system_name = "Refrigeration plant"
-fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Höyrystin", yleistunnus = "HÖY" }
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Höyrystin", yleistunnus = "HÖ" }
 
 [[rules]]
 layer_pattern = "KYL-LAUHDUTI*"
@@ -306,7 +305,7 @@ ifc_type = "IfcCondenser"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-018"
 system_name = "Refrigeration plant"
-fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Lauhdutin", yleistunnus = "LAU" }
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Lauhdutin", yleistunnus = "LA" }
 
 [[rules]]
 layer_pattern = "KYL-KOMPRESSO*"
@@ -314,7 +313,7 @@ ifc_type = "IfcCompressor"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-017"
 system_name = "Refrigeration plant"
-fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kompressori", yleistunnus = "KOMP" }
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kompressori", yleistunnus = "K" }
 
 # -----------------------------------------------------------------------------
 # Section 6: Miscellaneous parts (KYL-MUUT_OSAT) — IfcBuildingElementProxy.
@@ -385,7 +384,7 @@ predefined_type = "USERDEFINED"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-005"
 system_name = "Refrigeration plant"
-fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Jäähdytyskompressorikoneikko", yleistunnus = "KKO" }
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Jäähdytyskompressorikoneikko", yleistunnus = "JKK" }
 
 [[rules]]
 layer_pattern = "KYL-VALIJAAHD*"
@@ -410,7 +409,7 @@ ifc_type = "IfcCondenser"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-027"
 system_name = "Refrigeration plant"
-fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kaasunjäähdytin", yleistunnus = "KAJ" }
+fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kaasunjäähdytin", yleistunnus = "KJ" }
 
 [[rules]]
 layer_pattern = "KYL-NESTEJAAHD*"
@@ -427,7 +426,7 @@ predefined_type = "STORAGE"
 domain = "KYL"
 lvi_code = "T-LVI-03-07-012"
 system_name = "Refrigeration plant"
-fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kylmäainevaraajasäiliö", yleistunnus = "VAR" }
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "KYLMÄLAITTEISTOT", yleisnimi = "Kylmäainevaraajasäiliö", yleistunnus = "KVSL" }
 
 # -----------------------------------------------------------------------------
 # Section 7b: Cold-storage furniture (kylmäkalusteet) — IfcUnitaryEquipment.
@@ -522,7 +521,7 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Drainage - kondenssi"
+system_name = "Viemäri - kondenssi"
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KVE" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 
@@ -532,7 +531,7 @@ ifc_type = "IfcWasteTerminal"
 predefined_type = "FLOORTRAP"
 domain = "KYL"
 lvi_code = "T-LVI-05-01-001"
-system_name = "Drainage - kondenssi"
+system_name = "Viemäri - kondenssi"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Lattiakaivo", yleistunnus = "LK" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 
@@ -542,7 +541,7 @@ ifc_type = "IfcWasteTerminal"
 predefined_type = "WASTETRAP"
 domain = "KYL"
 lvi_code = "T-LVI-04-02-002"
-system_name = "Drainage - kondenssi"
+system_name = "Viemäri - kondenssi"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Vesilukko", yleistunnus = "VL" }
 
 [[rules]]
@@ -551,8 +550,8 @@ ifc_type = "IfcValve"
 predefined_type = "CHECKVALVE"
 domain = "KYL"
 lvi_code = "T-LVI-04-02-005"
-system_name = "Drainage - kondenssi"
-fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Padotusventtiili", yleistunnus = "PVT" }
+system_name = "Viemäri - kondenssi"
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Padotusventtiili", yleistunnus = "PAV" }
 
 # -----------------------------------------------------------------------------
 # Section 7d: Sensors and control devices (anturit / säätö).
@@ -612,7 +611,7 @@ predefined_type = "USERDEFINED"
 domain = "KYL"
 lvi_code = "T-LVI-02"
 system_name = "Refrigeration plant"
-fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VENTTIILIT", yleisnimi = "Paisuntaventtiili", yleistunnus = "PAV" }
+fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VENTTIILIT", yleisnimi = "Paisuntaventtiili", yleistunnus = "EV" }
 
 [[rules]]
 layer_pattern = "KYL-SULATUSVAST*"

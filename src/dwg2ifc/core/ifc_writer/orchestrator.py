@@ -919,7 +919,7 @@ def convert(
                 _classify(proxy, m)
                 _record(m, proxy)
             elif m.ifc_type in _COOLING_EQUIPMENT_CLASSES:
-                if isinstance(m.geometry, (LineGeometry, BlockInstance)):
+                if isinstance(m.geometry, LineGeometry):
                     continue
                 equipment = add_cooling_equipment(ifc, m, parent_storey=_storey_for(m))
                 _classify(equipment, m)
