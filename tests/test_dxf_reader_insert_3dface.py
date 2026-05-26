@@ -256,6 +256,101 @@ def test_insert_kotelo_thin_rim_extrudes_to_3dface_top_not_polyline_default(tmp_
     )
 
 
+def test_insert_kotelo_thicker_rim_still_extrudes_to_block_top(tmp_path: Path):
+    """Regression: side wall strips may be thicker than 5mm after block edits.
+    They must still be recognised as perimeter rims and extrude to the
+    3DFACE-defined block top."""
+    doc = ezdxf.new("R2018")
+    doc.layers.add(name="KYL-KOTELO")
+    blk = doc.blocks.new(name="KOTELO_WIDE_RIM")
+
+    p = blk.add_lwpolyline([(0, 0), (1000, 0), (1000, 305), (0, 305)], close=True)
+    p.dxf.thickness = 1.8
+    p = blk.add_lwpolyline([(0, 0), (1000, 0), (1000, 305), (0, 305)], close=True)
+    p.dxf.elevation = 118.2
+    p.dxf.thickness = 1.8
+
+    # Thicker (12mm) perimeter strip on one side. Old <=5mm-only logic
+    # did not classify this as rim.
+    p = blk.add_lwpolyline([(0, 0), (1000, 0), (1000, 12), (0, 12)], close=True)
+    p.dxf.thickness = 120
+
+    blk.add_3dface([(0, 0, 0), (1000, 0, 0), (1000, 305, 0), (0, 305, 0)])
+    blk.add_3dface([(0, 0, 1.8), (1000, 0, 1.8), (1000, 305, 1.8), (0, 305, 1.8)])
+    blk.add_3dface(
+        [(0, 0, 118.2), (1000, 0, 118.2), (1000, 305, 118.2), (0, 305, 118.2)]
+    )
+    blk.add_3dface([(0, 0, 120), (1000, 0, 120), (1000, 305, 120), (0, 305, 120)])
+    doc.modelspace().add_blockref(
+        "KOTELO_WIDE_RIM", (0, 0, 0), dxfattribs={"layer": "KYL-KOTELO"}
+    )
+
+    records = _save_and_read(doc, tmp_path)
+    insert_records = [
+        r for r in records if r.dxf_type == "INSERT"
+        and isinstance(r.geometry, MeshGeometry)
+    ]
+    assert len(insert_records) == 1
+    zs = [v.z for v in insert_records[0].geometry.vertices]
+    assert abs(max(zs) - 120.0) < 0.01, (
+        f"thicker rim did not reach block top: max Z = {max(zs)} (expected 120)"
+    )
+
+
+def test_insert_levyhylly_sidewall_uses_lwpolyline_thickness(tmp_path: Path):
+    """New levyhylly blocks encode the solid side wall as a perimeter
+    LWPOLYLINE at z=0 with dxf.thickness=60. The only 3DFACE is the
+    bottom plate top at z=1.25, so the parser must not derive the side
+    wall height from 3DFACE pairing alone.
+    """
+    doc = ezdxf.new("R2018")
+    doc.layers.add(name="KYL-LEVYHYLLY")
+    blk = doc.blocks.new(name="LEVYHYLLY_THICKNESS_SIDE")
+
+    # Bottom plate.
+    p = blk.add_lwpolyline([(0, 0), (3000, 0), (3000, 300), (0, 300)], close=True)
+    p.dxf.thickness = 1.25
+
+    # Solid side walls: the height is carried by LWPOLYLINE thickness,
+    # not by a matching top 3DFACE.
+    p = blk.add_lwpolyline([(0, 0), (3000, 0), (3000, 1.25), (0, 1.25)], close=True)
+    p.dxf.thickness = 60.0
+    p = blk.add_lwpolyline(
+        [(0, 298.75), (3000, 298.75), (3000, 300), (0, 300)], close=True
+    )
+    p.dxf.thickness = 60.0
+
+    # Top lip folds.
+    p = blk.add_lwpolyline([(0, 1.25), (3000, 1.25), (3000, 10.25), (0, 10.25)], close=True)
+    p.dxf.elevation = 58.75
+    p.dxf.thickness = 1.25
+    p = blk.add_lwpolyline(
+        [(0, 289.75), (3000, 289.75), (3000, 298.75), (0, 298.75)], close=True
+    )
+    p.dxf.elevation = 58.75
+    p.dxf.thickness = 1.25
+
+    # The only face cap in this updated block shape is for the bottom plate.
+    blk.add_3dface([(0, 0, 1.25), (3000, 0, 1.25), (3000, 300, 1.25), (0, 300, 1.25)])
+    doc.modelspace().add_blockref(
+        "LEVYHYLLY_THICKNESS_SIDE", (0, 0, 0), dxfattribs={"layer": "KYL-LEVYHYLLY"}
+    )
+
+    records = _save_and_read(doc, tmp_path)
+    mesh = next(r.geometry for r in records if r.dxf_type == "INSERT")
+    assert isinstance(mesh, MeshGeometry)
+
+    pts = mesh.vertices
+    tall_side_faces = 0
+    for face in mesh.faces:
+        face_pts = [pts[i] for i in face]
+        z_span = max(p.z for p in face_pts) - min(p.z for p in face_pts)
+        y_span = max(p.y for p in face_pts) - min(p.y for p in face_pts)
+        if z_span >= 59.0 and y_span <= 1.25 + 0.01:
+            tall_side_faces += 1
+    assert tall_side_faces >= 2
+
+
 def test_insert_without_3dface_falls_back_to_blockinstance(tmp_path: Path):
     """If a block has no 3DFACE entities, INSERT must still yield a
     BlockInstance — the existing fallback path for height-extrusion

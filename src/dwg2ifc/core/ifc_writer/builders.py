@@ -907,30 +907,11 @@ def add_cable_carrier(
             predefined_type=enum_value,
         )
     else:
-        # BlockInstance or PolygonGeometry fallback: width × depth × height
-        # extrusion box. PolygonGeometry typically comes from a closed
-        # LWPOLYLINE outlining the carrier footprint; bbox-extrude into a
-        # default-thickness shelf board.
-        if isinstance(mapped.geometry, PolygonGeometry):
-            xs = [v.x for v in mapped.geometry.vertices]
-            ys = [v.y for v in mapped.geometry.vertices]
-            zs = [v.z for v in mapped.geometry.vertices]
-            width = max(xs) - min(xs)
-            depth = max(ys) - min(ys)
-            if width < 50.0 or depth < 50.0:
-                raise ValueError(
-                    "add_cable_carrier polygon outline is degenerate "
-                    f"(width={width:.1f} mm, depth={depth:.1f} mm; min side 50 mm)"
-                )
-            height = float(mapped.extra_props.get("default_height_mm", 80.0))
-            box = FurnitureBoxExtrusion(
-                anchor=Point3D(min(xs), min(ys), min(zs)),
-                angle_rad=0.0,
-                width_mm=width,
-                depth_mm=depth,
-                height_mm=height,
-            )
-        else:
+        # BlockInstance fallback: width × depth × height extrusion box.
+        # PolygonGeometry is handled below as an exact closed profile
+        # extrusion so rotated/non-rectangular trays keep their authored
+        # footprint instead of being axis-aligned bbox boxes.
+        if not isinstance(mapped.geometry, PolygonGeometry):
             width = float(mapped.extra_props.get("default_width_mm", 300.0))
             depth = float(mapped.extra_props.get("default_depth_mm", 600.0))
             height = float(mapped.extra_props.get("default_height_mm", 80.0))
@@ -946,7 +927,27 @@ def add_cable_carrier(
             predefined_type=enum_value,
         )
 
-        matrix = _z_rotation_matrix(box.anchor.x, box.anchor.y, box.anchor.z, box.angle_rad)
+        if isinstance(mapped.geometry, PolygonGeometry):
+            verts = list(mapped.geometry.vertices)
+            if len(verts) < 3:
+                raise ValueError("add_cable_carrier polygon outline has fewer than 3 vertices")
+            xs = [v.x for v in verts]
+            ys = [v.y for v in verts]
+            zs = [v.z for v in verts]
+            width = max(xs) - min(xs)
+            depth = max(ys) - min(ys)
+            if width < 50.0 or depth < 50.0:
+                raise ValueError(
+                    "add_cable_carrier polygon outline is degenerate "
+                    f"(width={width:.1f} mm, depth={depth:.1f} mm; min side 50 mm)"
+                )
+            base_x = min(xs)
+            base_y = min(ys)
+            base_z = min(zs)
+            height = float(mapped.extra_props.get("default_height_mm", 80.0))
+            matrix = _z_rotation_matrix(base_x, base_y, base_z, 0.0)
+        else:
+            matrix = _z_rotation_matrix(box.anchor.x, box.anchor.y, box.anchor.z, box.angle_rad)
         ifcopenshell.api.run(
             "geometry.edit_object_placement",
             ifc,
@@ -960,29 +961,45 @@ def add_cable_carrier(
             for c in ifc.by_type("IfcGeometricRepresentationSubContext")
             if c.ContextIdentifier == "Body"
         ][0]
-        rect = ifc.create_entity(
-            "IfcRectangleProfileDef",
-            ProfileType="AREA",
-            ProfileName=None,
-            Position=ifc.create_entity(
-                "IfcAxis2Placement2D",
-                Location=ifc.create_entity(
-                    "IfcCartesianPoint",
-                    Coordinates=(box.width_mm / 2.0, box.depth_mm / 2.0),
+        if isinstance(mapped.geometry, PolygonGeometry):
+            ring = [(float(v.x - base_x), float(v.y - base_y)) for v in verts]
+            if len(ring) > 1 and ring[0] == ring[-1]:
+                ring = ring[:-1]
+            polyline_points = [
+                ifc.create_entity("IfcCartesianPoint", Coordinates=(x, y))
+                for x, y in ring
+            ]
+            polyline_points.append(polyline_points[0])
+            polyline = ifc.create_entity("IfcPolyline", Points=polyline_points)
+            profile = ifc.create_entity(
+                "IfcArbitraryClosedProfileDef",
+                ProfileType="AREA",
+                OuterCurve=polyline,
+            )
+        else:
+            profile = ifc.create_entity(
+                "IfcRectangleProfileDef",
+                ProfileType="AREA",
+                ProfileName=None,
+                Position=ifc.create_entity(
+                    "IfcAxis2Placement2D",
+                    Location=ifc.create_entity(
+                        "IfcCartesianPoint",
+                        Coordinates=(box.width_mm / 2.0, box.depth_mm / 2.0),
+                    ),
                 ),
-            ),
-            XDim=box.width_mm,
-            YDim=box.depth_mm,
-        )
+                XDim=box.width_mm,
+                YDim=box.depth_mm,
+            )
         extruded = ifc.create_entity(
             "IfcExtrudedAreaSolid",
-            SweptArea=rect,
+            SweptArea=profile,
             Position=ifc.create_entity(
                 "IfcAxis2Placement3D",
                 Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
             ),
             ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
-            Depth=box.height_mm,
+            Depth=height,
         )
         shape = ifc.create_entity(
             "IfcShapeRepresentation",

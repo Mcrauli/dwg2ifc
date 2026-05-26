@@ -9,7 +9,7 @@ PropertySettiä per IFC-tuote (`FI_Asennus` / `FI_Geometria` /
 `FI_Komponentti` / `FI_Tuote` / `FI_Tekninen` / `FI_Sijainti`), ja
 Solibri-yhteensopivan IFC4-tiedoston yhdellä konversio-ajolla.
 
-Nykyinen versio: **v0.3.0-alpha12** (2026-05-22). Pre-release-vaiheessa.
+Nykyinen versio: **v0.3.0-alpha14** (2026-05-25). Pre-release-vaiheessa.
 
 > **Nimenmuutos `dxf2ifc` → `dwg2ifc`:** projekti syntyi DXF-syötteellä,
 > mutta DWG on alpha21:stä lähtien ensisijainen syöte (preconvertoidaan
