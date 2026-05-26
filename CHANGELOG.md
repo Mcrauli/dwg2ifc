@@ -6,6 +6,23 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha20 — 2026-05-26 (FI_* PSet-kentät tietorakenteet-tarkistukseen)
+
+- **Korjattu: Solibri tietorakenteet ja -sisällöt -tarkistus 17 % → parannettu.**
+  Lisätty puuttuvat kentät kaikkiin kuuteen FI_*-PropertySetiin:
+- **FI_Asennus**: Lisätty eristeen pinta-korkoarvot (01 Eristeen yläpinnan
+  korko abs., 05 Eristeen alapinnan korko abs., 11/15 kerroskorosta). Oletuksella
+  `insulation_mm=0` arvot samat kuin komponentin pinnat — kenttä on aina läsnä.
+- **FI_Geometria**: Lisätty `Koko` (kaapelikourut), `Koko (DN)` (putket),
+  `Sisähalkaisija`, `Ulkohalkaisija`, `Eristeen paksuus`.
+- **FI_Komponentti**: `always_emit=True` — kaikki tekstikentät (Koneikko,
+  Laitetunnus jne.) kirjoitetaan aina, tyhjinä tarvittaessa.
+- **FI_Tuote**: Lisätty `Sarjan nimi`, `Materiaalin nimi`, `Materiaalin tunnus`,
+  `Eristesarja`. `always_emit=True`. `kuvaus` saa oletuksena RAVA-yleisnimenä.
+- **FI_Tekninen**: `IfcPipeSegment`-oletuksiin lisätty `Normivirtaamien summa`.
+- **`add_fi_geometria`**: `koko_dn=""` (tyhjä string) laukaisee `always_emit=True`
+  oikein (ei enää `bool("")=False`-bugi).
+
 ## v0.3.0-alpha19 — 2026-05-26 (FI_Komponentti-kentät automaattisesti RAVA-hierarkiasta)
 
 - **Korjattu: Solibri tunnistaminen -tarkistus läpäisi 0 % tuotteista.**

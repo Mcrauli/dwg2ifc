@@ -61,7 +61,7 @@ def _pset_props(product, name: str) -> dict[str, object]:
 # --- FI_Asennus ------------------------------------------------------------
 
 
-def test_add_fi_asennus_emits_seven_length_props():
+def test_add_fi_asennus_emits_eleven_length_props():
     ifc, product = _make_ifc_with_product()
     add_fi_asennus(
         ifc,
@@ -72,10 +72,15 @@ def test_add_fi_asennus_emits_seven_length_props():
         storey_elevation_mm=0.0,
     )
     props = _pset_props(product, "FI_Asennus")
-    assert len(props) == 7  # 6 levels + Liitoskorko
+    # 01,02,03,04,05,11,12,13,14,15 + Liitoskorko = 11
+    assert len(props) == 11
+    assert props["01 Eristeen yläpinnan korko, abs."] == 2700.0  # no insulation → same as top
     assert props["02 Komponentin yläpinnan korko, abs."] == 2700.0
     assert props["04 Komponentin alapinnan korko, abs."] == 0.0
+    assert props["05 Eristeen alapinnan korko, abs."] == 0.0  # no insulation → same as bottom
+    assert props["11 Eristeen yläpinnan korko, kerroskorosta"] == 2700.0
     assert props["12 Komponentin yläpinnan korko, kerroskorosta"] == 2700.0
+    assert props["15 Eristeen alapinnan korko, kerroskorosta"] == 0.0
 
 
 def test_fi_asennus_storey_relative_subtracts_storey_elevation():
@@ -106,7 +111,7 @@ def test_fi_asennus_omits_liitoskorko_when_disabled():
     )
     props = _pset_props(product, "FI_Asennus")
     assert "Liitoskorko, kerroskorosta" not in props
-    assert len(props) == 6
+    assert len(props) == 10
 
 
 # --- FI_Geometria ----------------------------------------------------------
@@ -144,7 +149,7 @@ def test_fi_komponentti_emits_static_fields_and_default_status():
     assert props["01 Komponentin pääryhmä"] == "LAITTEISTOT - LVI"
     assert props["03 Komponentin koodi"] == "T-LVI-01-01-023"
     assert props["Status"] == "New"
-    assert "Laitetunnus" not in props  # skipped per skip-on-empty
+    assert props.get("Laitetunnus", "") == ""  # always emitted as empty placeholder
 
 
 def test_fi_komponentti_includes_koneikko_and_laitetunnus():
@@ -197,6 +202,10 @@ def test_fi_tuote_always_emit_creates_tab_with_blanks():
         "Tuotetyypin valmistaja",
         "Tuotetyypin valmistajan linkki",
         "Tuotteen kommentti",
+        "Sarjan nimi",
+        "Materiaalin nimi",
+        "Materiaalin tunnus",
+        "Eristesarja",
     }
     assert all(v == "" for v in props.values())
 
@@ -528,9 +537,9 @@ def test_convert_dxf_does_not_link_positio_to_shelf(tmp_path: Path):
         and rel.RelatingPropertyDefinition.Name == "FI_Komponentti"
     )
     by_name = {p.Name: p.NominalValue.wrappedValue for p in komp.HasProperties}
-    # Shelves never have Koneikko / Laitetunnus from POSITIO scope rule.
-    assert "Koneikko" not in by_name
-    assert "Laitetunnus" not in by_name
+    # Shelves never get real POSITIO data — Koneikko/Laitetunnus are empty placeholders.
+    assert by_name.get("Koneikko", "") == ""
+    assert by_name.get("Laitetunnus", "") == ""
 
 
 def test_convert_dxf_emits_fi_sijainti_with_system_name(tmp_path: Path):

@@ -95,20 +95,31 @@ def add_fi_asennus(
     install_z_mm: float,
     storey_elevation_mm: float,
     include_liitoskorko: bool = True,
+    insulation_mm: float = 0.0,
 ) -> object | None:
-    """Attach the FI_Asennus PSet (six elevation properties + optional liitoskorko).
+    """Attach the FI_Asennus PSet.
 
     Storey-relative values are computed as ``abs - storey_elevation``.
-    Solibri displays installations metric, IfcLengthMeasure in mm.
+    ``insulation_mm`` adds/subtracts from component surface to yield
+    eriste (insulation) surface elevations 01/05/11/15. Default 0 means
+    no insulation: insulation surface = component surface.
     """
     storey_top_z = top_z_mm - storey_elevation_mm
     storey_install_z = install_z_mm - storey_elevation_mm
     storey_bottom_z = bottom_z_mm - storey_elevation_mm
+    ins = float(insulation_mm)
+    eriste_yla_abs = top_z_mm + ins
+    eriste_ala_abs = bottom_z_mm - ins
+    eriste_yla_storey = eriste_yla_abs - storey_elevation_mm
+    eriste_ala_storey = eriste_ala_abs - storey_elevation_mm
 
     properties: list[tuple[str, str, object]] = [
+        ("01 Eristeen yläpinnan korko, abs.", "IfcLengthMeasure", eriste_yla_abs),
         ("02 Komponentin yläpinnan korko, abs.", "IfcLengthMeasure", top_z_mm),
         ("03 Asennuskorko, abs.", "IfcLengthMeasure", install_z_mm),
         ("04 Komponentin alapinnan korko, abs.", "IfcLengthMeasure", bottom_z_mm),
+        ("05 Eristeen alapinnan korko, abs.", "IfcLengthMeasure", eriste_ala_abs),
+        ("11 Eristeen yläpinnan korko, kerroskorosta", "IfcLengthMeasure", eriste_yla_storey),
         (
             "12 Komponentin yläpinnan korko, kerroskorosta",
             "IfcLengthMeasure",
@@ -120,11 +131,9 @@ def add_fi_asennus(
             "IfcLengthMeasure",
             storey_bottom_z,
         ),
+        ("15 Eristeen alapinnan korko, kerroskorosta", "IfcLengthMeasure", eriste_ala_storey),
     ]
     if include_liitoskorko:
-        # Most of Lauri's elements share install_z with the connection
-        # elevation. RAVA3Pro keeps the field even when it duplicates
-        # asennuskorko — Solibri rule sets check its presence.
         properties.append(
             (
                 "Liitoskorko, kerroskorosta",
@@ -148,24 +157,42 @@ def add_fi_geometria(
     leveys_mm: float | None,
     syvyys_mm: float | None,
     third_label: str = "Syvyys",
+    koko: str | None = None,
+    koko_dn: str | None = None,
+    sisahalkaisija_mm: float | None = None,
+    ulkohalkaisija_mm: float | None = None,
+    eristeen_paksuus_mm: float | None = None,
 ) -> object | None:
-    """Attach FI_Geometria with Korkeus / Leveys / Syvyys (mm).
+    """Attach FI_Geometria.
 
-    ``third_label`` controls the third property's label — for box-like
-    products (evaporators, cabinets) "Syvyys" is the natural term; for
-    elongated products (cable carriers, pipes) "Pituus" is more
-    accurate. Each missing dimension is skipped. PSet is omitted
-    entirely if all three are unknown / non-positive.
+    Standard dims (Korkeus/Leveys/Syvyys or Pituus) are IfcPositiveLengthMeasure
+    and skipped when non-positive. Additional fields:
+    - ``koko``: cross-section label, e.g. "200x80" for cable carriers (IfcText).
+    - ``koko_dn``: nominal pipe size, e.g. "DN32" (IfcText placeholder).
+    - ``sisahalkaisija_mm``, ``ulkohalkaisija_mm``, ``eristeen_paksuus_mm``:
+      pipe geometry in mm (IfcPositiveLengthMeasure; placeholder strings also accepted).
     """
+    properties: list[tuple[str, str, object]] = [
+        ("Korkeus", "IfcPositiveLengthMeasure", korkeus_mm),
+        ("Leveys", "IfcPositiveLengthMeasure", leveys_mm),
+        (third_label, "IfcPositiveLengthMeasure", syvyys_mm),
+    ]
+    if koko is not None:
+        properties.append(("Koko", "IfcText", koko))
+    if koko_dn is not None:
+        properties.append(("Koko (DN)", "IfcText", koko_dn))
+    if sisahalkaisija_mm is not None:
+        properties.append(("Sisähalkaisija", "IfcPositiveLengthMeasure", sisahalkaisija_mm))
+    if ulkohalkaisija_mm is not None:
+        properties.append(("Ulkohalkaisija", "IfcPositiveLengthMeasure", ulkohalkaisija_mm))
+    if eristeen_paksuus_mm is not None:
+        properties.append(("Eristeen paksuus", "IfcPositiveLengthMeasure", eristeen_paksuus_mm))
     return _emit_pset(
         ifc,
         product=product,
         name="FI_Geometria",
-        properties=[
-            ("Korkeus", "IfcPositiveLengthMeasure", korkeus_mm),
-            ("Leveys", "IfcPositiveLengthMeasure", leveys_mm),
-            (third_label, "IfcPositiveLengthMeasure", syvyys_mm),
-        ],
+        properties=properties,
+        always_emit=(koko is not None or koko_dn is not None),
     )
 
 
@@ -250,6 +277,7 @@ def add_fi_komponentti(
         ifc,
         product=product,
         name="FI_Komponentti",
+        always_emit=True,
         properties=[
             ("01 Komponentin pääryhmä", "IfcText", paaryhma),
             ("02 Komponentin alaryhmä", "IfcText", alaryhma),
@@ -279,13 +307,17 @@ def add_fi_tuote(
     valmistaja: str | None = None,
     valmistajan_linkki: str | None = None,
     tuotteen_kommentti: str | None = None,
+    sarjan_nimi: str | None = None,
+    materiaalin_nimi: str | None = None,
+    materiaalin_tunnus: str | None = None,
+    eristesarja: str | None = None,
     always_emit: bool = True,
 ) -> object | None:
     """Attach FI_Tuote with product description / manufacturer / URLs.
 
-    Defaults to ``always_emit=True`` so the Solibri tab is visible even
-    on products without TOML-supplied data — empty fields then render as
-    blanks the designer can fill in by hand.
+    ``always_emit=True`` so the Solibri tab is visible even when no
+    TOML data is supplied. New fields (sarjan_nimi, materiaalin_nimi,
+    materiaalin_tunnus, eristesarja) are empty placeholders by default.
     """
     return _emit_pset(
         ifc,
@@ -299,6 +331,10 @@ def add_fi_tuote(
             ("Tuotetyypin valmistaja", "IfcText", valmistaja),
             ("Tuotetyypin valmistajan linkki", "IfcText", valmistajan_linkki),
             ("Tuotteen kommentti", "IfcText", tuotteen_kommentti),
+            ("Sarjan nimi", "IfcText", sarjan_nimi),
+            ("Materiaalin nimi", "IfcText", materiaalin_nimi),
+            ("Materiaalin tunnus", "IfcText", materiaalin_tunnus),
+            ("Eristesarja", "IfcText", eristesarja),
         ],
     )
 
@@ -360,6 +396,7 @@ _FI_TEKNINEN_DEFAULTS: dict[str, dict[str, str]] = {
         "Eristys": "",
         "Eristyspaksuus (mm)": "",
         "Painekestävyys (bar)": "",
+        "Normivirtaamien summa": "",
     },
 }
 
@@ -509,8 +546,11 @@ def add_finnish_psets(
     in keeps this function pure-IFC and unit-testable.
     """
     storey_elev = float(parent_storey.Elevation or 0.0) if parent_storey is not None else 0.0
+    extras = mapped.extra_props or {}
 
     # FI_Asennus — always emitted; placement is always known.
+    # insulation_mm from extras (TOML fi_asennus.insulation_mm); default 0.
+    ins_mm = float(extras.get("insulation_mm", 0) or 0)
     add_fi_asennus(
         ifc,
         product,
@@ -518,6 +558,7 @@ def add_finnish_psets(
         bottom_z_mm=extents.bottom_z,
         install_z_mm=extents.install_z,
         storey_elevation_mm=storey_elev,
+        insulation_mm=ins_mm,
     )
 
     # FI_Geometria — emitted if any dimension is positive. For
@@ -531,6 +572,17 @@ def add_finnish_psets(
         if leveys is not None and syvyys is not None:
             short, long_ = sorted([leveys, syvyys])
             leveys, syvyys = short, long_
+        # Koko: cross-section label for cable carriers (e.g. "200x80"),
+        # DN placeholder for pipes.
+        koko: str | None = None
+        koko_dn: str | None = None
+        if mapped.ifc_type == "IfcCableCarrierSegment":
+            w = leveys or 0.0
+            h = extents.korkeus or 0.0
+            if w > 0 and h > 0:
+                koko = f"{round(w)}x{round(h)}"
+        elif mapped.ifc_type == "IfcPipeSegment":
+            koko_dn = extras.get("koko_dn", "")
         add_fi_geometria(
             ifc,
             product,
@@ -538,6 +590,8 @@ def add_finnish_psets(
             leveys_mm=leveys,
             syvyys_mm=syvyys,
             third_label="Pituus",
+            koko=koko,
+            koko_dn=koko_dn,
         )
     else:
         add_fi_geometria(
@@ -559,7 +613,6 @@ def add_finnish_psets(
         or getattr(mapped, "talotekniikka_code", None)
         or getattr(mapped, "talo2000_code", None)
     )
-    extras = mapped.extra_props or {}
     try:
         from dwg2ifc.profiles.rava.loader import load_tuoteosa_hierarchy
 
@@ -579,21 +632,25 @@ def add_finnish_psets(
         laitetunnus_yksilollinen=extras.get("laitetunnus_yksilollinen"),
     )
 
-    # FI_Tuote — always emitted so the Solibri tab is visible. Profile
-    # TOML can supply nimi/kuvaus/valmistaja/etc; "Tuotetyypin nimi"
-    # falls back to a per-IFC-type Finnish device label
-    # (``fi_tuote_default_nimi``) so the tuoteosa view always answers
-    # "what device is this?" instead of an empty placeholder.
+    # FI_Tuote — always emitted so the Solibri tab is visible.
+    # Tuotetyypin kuvaus defaults to RAVA yleisnimi (same as FI_Komponentti
+    # yleisnimi) so Solibri tunnistaminen and tietorakenteet both see a
+    # non-empty canonical product description.
     fi_t = mapped.fi_tuote or {}
     nimi = fi_t.get("nimi") or fi_tuote_default_nimi(mapped.ifc_type)
+    kuvaus = fi_t.get("kuvaus") or (_rava_h.yleisnimi if _rava_h else None)
     add_fi_tuote(
         ifc,
         product,
         nimi=nimi,
-        kuvaus=fi_t.get("kuvaus"),
+        kuvaus=kuvaus,
         kommentti=fi_t.get("kommentti"),
         valmistaja=fi_t.get("valmistaja"),
         valmistajan_linkki=fi_t.get("valmistajan_linkki"),
+        sarjan_nimi=fi_t.get("sarjan_nimi"),
+        materiaalin_nimi=fi_t.get("materiaalin_nimi"),
+        materiaalin_tunnus=fi_t.get("materiaalin_tunnus"),
+        eristesarja=fi_t.get("eristesarja"),
     )
 
     # FI_Tekninen — schema differs per IFC entity type. Priority:
