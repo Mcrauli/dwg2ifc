@@ -945,10 +945,17 @@ def convert(
                 _classify(element, m)
                 _record(m, element)
 
+        lvi_child_systems: list = []
         for system_name, products in systems.items():
             system_code = system_codes.get(system_name)
             system = add_system(ifc, name=system_name, system_code=system_code)
             assign_to_system(ifc, products=products, system=system)
+            if system_code and system_code.startswith("J-LVI"):
+                lvi_child_systems.append(system)
+
+        if lvi_child_systems:
+            parent = add_system(ifc, name="Jakelujärjestelmä")
+            assign_to_system(ifc, products=lvi_child_systems, system=parent)
 
         write_ifc(ifc, output_path)
 

@@ -58,13 +58,13 @@ def test_full_kylmaelement_pipeline_passes_ifcopenshell_validate(
 
 
 
-def test_full_kylmaelement_pipeline_emits_three_grouped_ifcsystems(
+def test_full_kylmaelement_pipeline_emits_grouped_ifcsystems(
     full_kylmaelement_dxf: Path, tmp_path: Path
 ):
     """The full fixture's LT IMU / KYL-VIEMARI-LATTIA / KAAPELIHYLLY /
     KYL-HOYRYSTIN layers produce IfcSystems with assigned products.
-    Drain pipes (KYL-VIEMARI-LATTIA) share the Kylmäjärjestelmä group
-    with cooling equipment instead of getting a separate IfcSystem."""
+    Drain pipes share the Kylmäjärjestelmä group (J-LVI-09-02).
+    J-LVI child systems nest under a Jakelujärjestelmä parent."""
     out = tmp_path / "full_kylmaelement.ifc"
     convert_dxf(
         dxf_path=full_kylmaelement_dxf,
@@ -77,6 +77,7 @@ def test_full_kylmaelement_pipeline_emits_three_grouped_ifcsystems(
         "Kylmä - suorahöyrysteinen",
         "Cable carriers",
         "Kylmäjärjestelmä",
+        "Jakelujärjestelmä",
     }
     actual_systems = {s.Name: s for s in ifc.by_type("IfcSystem")}
     missing = expected_system_names - actual_systems.keys()

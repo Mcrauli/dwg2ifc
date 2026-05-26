@@ -243,7 +243,7 @@ def test_convert_dxf_system_gets_fi_jarjestelma_pset_with_rava_code(tmp_path: Pa
 
     ifc = ifcopenshell.file(schema="IFC4")
     ifc_run("root.create_entity", ifc, ifc_class="IfcProject", name="t")
-    system = add_system(ifc, name="Refrigeration plant", system_code="J-LVI-09-99")
+    system = add_system(ifc, name="Refrigeration plant", system_code="J-LVI-09-02")
     pset = None
     for rel in (system.IsDefinedBy or []):
         if rel.is_a("IfcRelDefinesByProperties"):
@@ -256,5 +256,5 @@ def test_convert_dxf_system_gets_fi_jarjestelma_pset_with_rava_code(tmp_path: Pa
         p.Name: (p.NominalValue.wrappedValue if p.NominalValue else None)
         for p in (pset.HasProperties or [])
     }
-    assert by_name["03 Järjestelmätyypin koodi"] == "J-LVI-09-99"
+    assert by_name["03 Järjestelmätyypin koodi"] == "J-LVI-09-02"
     assert by_name["06 Järjestelmän nimi"] == "Refrigeration plant"

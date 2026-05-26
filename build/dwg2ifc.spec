@@ -41,6 +41,10 @@ a = Analysis(
     binaries=[],
     datas=[
         (os.path.join(ROOT, 'src/dwg2ifc/profiles/default_kylmalaite.toml'), 'dwg2ifc/profiles'),
+        (os.path.join(ROOT, 'src/dwg2ifc/profiles/rava/lvi_tuoteosa.json'), 'dwg2ifc/profiles/rava'),
+        (os.path.join(ROOT, 'src/dwg2ifc/profiles/rava/lvi_jarjestelma.json'), 'dwg2ifc/profiles/rava'),
+        (os.path.join(ROOT, 'src/dwg2ifc/profiles/rava/talotekniikka_tuoteosa.json'), 'dwg2ifc/profiles/rava'),
+        (os.path.join(ROOT, 'src/dwg2ifc/profiles/rava/talotekniikka_jarjestelma.json'), 'dwg2ifc/profiles/rava'),
         (os.path.join(ROOT, 'src/dwg2ifc/gui/style.qss'), 'dwg2ifc/gui'),
         (os.path.join(ROOT, 'assets/dwg2ifc.ico'), 'dwg2ifc/gui'),
         (os.path.join(ROOT, 'assets/dwg2ifc.png'), 'dwg2ifc/gui'),

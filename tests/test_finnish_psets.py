@@ -562,7 +562,7 @@ def test_convert_dxf_emits_fi_sijainti_with_system_name(tmp_path: Path):
 
 def test_refrigeration_plant_uses_rava_system_code_fallback():
     """When fi_sijainti is not set explicitly, Refrigeration plant rules
-    must emit J-LVI-09-99 as Järjestelmien tunnukset."""
+    must emit J-LVI-09-02 as Järjestelmien tunnukset."""
     ifc, valve = _make_ifc_with_product("IfcValve")
     mapped = SimpleNamespace(
         ifc_type="IfcValve",
@@ -595,4 +595,4 @@ def test_refrigeration_plant_uses_rava_system_code_fallback():
     )
     by_name = {p.Name: p.NominalValue.wrappedValue for p in sij.HasProperties}
     assert by_name["Järjestelmien nimet"] == "Kylmäjärjestelmä"
-    assert by_name["Järjestelmien tunnukset"] == "J-LVI-09-99"
+    assert by_name["Järjestelmien tunnukset"] == "J-LVI-09-02"

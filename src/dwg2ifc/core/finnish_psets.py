@@ -183,8 +183,8 @@ _LENGTH_BASED_IFC_TYPES = frozenset(
 
 _SYSTEM_CODE_FALLBACKS: dict[str, str] = {
     # RAVA LVI-JARJESTELMA codes for the systems produced by default_kylmalaite.toml.
-    "Refrigeration plant": "J-LVI-09-99",
-    "Kylmäjärjestelmä": "J-LVI-09-99",
+    "Refrigeration plant": "J-LVI-09-02",
+    "Kylmäjärjestelmä": "J-LVI-09-02",
     "Kylmä - suorahöyrysteinen": "J-LVI-09-02",
     "Jäähdytys - vedenjäähdytyskone": "J-LVI-06-07",
 }
