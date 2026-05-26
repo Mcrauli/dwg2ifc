@@ -94,7 +94,7 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Viemäri - kondenssi"
+system_name = "Refrigeration plant"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 32.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
@@ -106,7 +106,7 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Viemäri - kondenssi"
+system_name = "Refrigeration plant"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 50.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
@@ -118,7 +118,7 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Viemäri - kondenssi"
+system_name = "Refrigeration plant"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 75.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
@@ -134,7 +134,7 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Viemäri - kondenssi"
+system_name = "Refrigeration plant"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 110.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Sulanapitoviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
@@ -179,7 +179,7 @@ ifc_type = "IfcTank"
 predefined_type = "BASIN"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Viemäri - kondenssi"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Lauhdevesiastia", yleistunnus = "LVA" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 
@@ -521,7 +521,7 @@ ifc_type = "IfcPipeSegment"
 predefined_type = "DRAINPIPE"
 domain = "KYL"
 lvi_code = "T-LVI-04-01-001"
-system_name = "Viemäri - kondenssi"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KVE" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 
@@ -531,7 +531,7 @@ ifc_type = "IfcWasteTerminal"
 predefined_type = "FLOORTRAP"
 domain = "KYL"
 lvi_code = "T-LVI-05-01-001"
-system_name = "Viemäri - kondenssi"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Lattiakaivo", yleistunnus = "LK" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 
@@ -541,7 +541,7 @@ ifc_type = "IfcWasteTerminal"
 predefined_type = "WASTETRAP"
 domain = "KYL"
 lvi_code = "T-LVI-04-02-002"
-system_name = "Viemäri - kondenssi"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Vesilukko", yleistunnus = "VL" }
 
 [[rules]]
@@ -550,7 +550,7 @@ ifc_type = "IfcValve"
 predefined_type = "CHECKVALVE"
 domain = "KYL"
 lvi_code = "T-LVI-04-02-005"
-system_name = "Viemäri - kondenssi"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Padotusventtiili", yleistunnus = "PAV" }
 
 # -----------------------------------------------------------------------------

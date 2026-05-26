@@ -24,6 +24,7 @@ from dwg2ifc.core.geometry import (
     panel_to_proxy_solid,
     polygon_to_slab_extrusion,
 )
+from dwg2ifc.core.ifc_writer.classification import add_system_classification
 from dwg2ifc.core.ifc_writer.mesh import (
     _add_mesh_product,
 )
@@ -1404,6 +1405,7 @@ def add_system(ifc, *, name: str, system_code: str | None = None) -> object:
             name=name,
         )
     _attach_fi_jarjestelma_pset(ifc, system=system, system_name=name, system_code=system_code)
+    add_system_classification(ifc, system, system_code=system_code)
     return system
 
 
@@ -1437,6 +1439,8 @@ def _attach_fi_jarjestelma_pset(
     system_tunnus = ""
     if rava_short_name and rava_short_name.casefold() != "ei tunnusta":
         system_tunnus = rava_short_name
+    if rava_name and not system.Description:
+        system.Description = rava_name
     pset = None
     for rel in getattr(system, "IsDefinedBy", None) or []:
         if not rel.is_a("IfcRelDefinesByProperties"):

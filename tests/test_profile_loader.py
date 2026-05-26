@@ -91,7 +91,7 @@ def test_load_default_profile_has_drainpipe_rule():
     assert drain.domain == "KYL"
     assert drain.lvi_code == "T-LVI-04-01-001"
     assert drain.talo2000_code is None
-    assert drain.system_name == "Viemäri - kondenssi"
+    assert drain.system_name == "Refrigeration plant"
     assert drain.pset_overrides["Pset_PipeSegmentOccurrence"]["NominalDiameter"] == 110.0
 
 

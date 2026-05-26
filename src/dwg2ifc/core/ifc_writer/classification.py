@@ -14,6 +14,14 @@ _CLASSIFICATION_SOURCES: dict[str, dict[str, str]] = {
         "Source": "Rakennustietojärjestelmä RYTJ",
         "Edition": "TALOTEKNIIKKA-TUOTEOSA v1.0",
     },
+    "RAVA-LVI-JÄRJESTELMÄ": {
+        "Source": "Rakennustietojärjestelmä RYTJ",
+        "Edition": "LVI-JÄRJESTELMÄ v1.0",
+    },
+    "RAVA-TATE-JÄRJESTELMÄ": {
+        "Source": "Rakennustietojärjestelmä RYTJ",
+        "Edition": "TALOTEKNIIKKA-JÄRJESTELMÄ v1.0",
+    },
 }
 
 
@@ -65,6 +73,46 @@ def add_classification(
         "IfcRelAssociatesClassification",
         GlobalId=ifcopenshell.guid.new(),
         RelatedObjects=[product],
+        RelatingClassification=reference,
+    )
+    return reference
+
+
+def add_system_classification(ifc, system, *, system_code: str | None) -> object | None:
+    """Attach an IfcClassificationReference to an IfcSystem for J-LVI/J-TATE codes.
+
+    Makes the RAVA järjestelmä code visible in Solibri's model tree alongside
+    the product-level T-LVI/T-TATE references.  Returns None when system_code
+    is empty or is not a recognised J-LVI/J-TATE prefix.
+    """
+    if not system_code:
+        return None
+    if system_code.startswith("J-LVI"):
+        classification_name = "RAVA-LVI-JÄRJESTELMÄ"
+    elif system_code.startswith("J-TATE"):
+        classification_name = "RAVA-TATE-JÄRJESTELMÄ"
+    else:
+        return None
+    existing = [c for c in ifc.by_type("IfcClassification") if c.Name == classification_name]
+    if existing:
+        classification = existing[0]
+    else:
+        meta = _CLASSIFICATION_SOURCES[classification_name]
+        classification = ifc.create_entity(
+            "IfcClassification",
+            Source=meta["Source"],
+            Edition=meta["Edition"],
+            Name=classification_name,
+        )
+    reference = ifc.create_entity(
+        "IfcClassificationReference",
+        Identification=system_code,
+        ReferencedSource=classification,
+    )
+    ifc.create_entity(
+        "IfcRelAssociatesClassification",
+        GlobalId=ifcopenshell.guid.new(),
+        RelatedObjects=[system],
         RelatingClassification=reference,
     )
     return reference

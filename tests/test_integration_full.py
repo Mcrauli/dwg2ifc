@@ -58,12 +58,13 @@ def test_full_kylmaelement_pipeline_passes_ifcopenshell_validate(
 
 
 
-def test_full_kylmaelement_pipeline_emits_four_grouped_ifcsystems(
+def test_full_kylmaelement_pipeline_emits_three_grouped_ifcsystems(
     full_kylmaelement_dxf: Path, tmp_path: Path
 ):
-    """Plan C Task 11: the full fixture's LT IMU / KYL-VIEMARI-LATTIA /
-    KAAPELIHYLLY / KYL-HOYRYSTIN layers each produce one IfcSystem with
-    at least one assigned product via IfcRelAssignsToGroup."""
+    """The full fixture's LT IMU / KYL-VIEMARI-LATTIA / KAAPELIHYLLY /
+    KYL-HOYRYSTIN layers produce IfcSystems with assigned products.
+    Drain pipes (KYL-VIEMARI-LATTIA) share the Kylmäjärjestelmä group
+    with cooling equipment instead of getting a separate IfcSystem."""
     out = tmp_path / "full_kylmaelement.ifc"
     convert_dxf(
         dxf_path=full_kylmaelement_dxf,
@@ -74,7 +75,6 @@ def test_full_kylmaelement_pipeline_emits_four_grouped_ifcsystems(
     ifc = ifcopenshell.open(str(out))
     expected_system_names = {
         "Kylmä - suorahöyrysteinen",
-        "Viemäri - kondenssi",
         "Cable carriers",
         "Kylmäjärjestelmä",
     }
