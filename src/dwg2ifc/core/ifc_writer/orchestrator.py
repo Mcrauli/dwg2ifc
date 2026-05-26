@@ -767,6 +767,18 @@ def convert(
 
     ifc = skeleton.file
     systems: dict[str, list] = {}
+    system_codes: dict[str, str] = {}
+
+    def _prefer_system_code(current: str | None, candidate: str | None) -> str | None:
+        if not candidate:
+            return current
+        if not current:
+            return candidate
+        cand_is_rava = candidate.startswith("J-")
+        cur_is_rava = current.startswith("J-")
+        if cand_is_rava and not cur_is_rava:
+            return candidate
+        return current
 
     def _storey_for(m) -> object:
         return skeleton.storeys[m.storey_index]
@@ -774,7 +786,16 @@ def convert(
     def _record(m: object, product: object) -> None:
         sys_name = m.extra_props.get("system_name") if m.extra_props else None
         if sys_name:
-            systems.setdefault(sys_name, []).append(product)
+            from dwg2ifc.core.finnish_psets import resolve_system_fields
+
+            resolved_name, sys_code = resolve_system_fields(
+                system_name=sys_name,
+                fi_sijainti=None,
+                fallback_code_to_name=False,
+            )
+            key_name = resolved_name or sys_name
+            systems.setdefault(key_name, []).append(product)
+            system_codes[key_name] = _prefer_system_code(system_codes.get(key_name), sys_code)
         try:
             _attach_fi_psets(product, m)
         except Exception:  # noqa: BLE001 — never block convert
@@ -861,7 +882,10 @@ def convert(
                     )
                 _classify(pipe, m)
                 _record(m, pipe)
-            elif m.ifc_type == "IfcProvisionForVoid":
+            elif (
+                m.ifc_type == "IfcBuildingElementProxy"
+                and (m.predefined_type or "").upper() == "PROVISIONFORVOID"
+            ):
                 product = add_provision_for_void(
                     ifc,
                     m,
@@ -922,7 +946,8 @@ def convert(
                 _record(m, element)
 
         for system_name, products in systems.items():
-            system = add_system(ifc, name=system_name)
+            system_code = system_codes.get(system_name)
+            system = add_system(ifc, name=system_name, system_code=system_code)
             assign_to_system(ifc, products=products, system=system)
 
         write_ifc(ifc, output_path)

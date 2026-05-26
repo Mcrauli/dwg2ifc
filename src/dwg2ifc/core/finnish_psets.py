@@ -181,6 +181,34 @@ _LENGTH_BASED_IFC_TYPES = frozenset(
     }
 )
 
+_SYSTEM_CODE_FALLBACKS: dict[str, str] = {
+    # RAVA LVI-JARJESTELMA: MUU - Kylmäjärjestelmät.
+    "Refrigeration plant": "J-LVI-09-99",
+    "Kylmäjärjestelmä": "J-LVI-09-99",
+}
+
+_SYSTEM_NAME_CANONICAL: dict[str, str] = {
+    "Refrigeration plant": "Kylmäjärjestelmä",
+}
+
+
+def resolve_system_fields(
+    *,
+    system_name: str | None,
+    fi_sijainti: dict | None,
+    fallback_code_to_name: bool = True,
+) -> tuple[str | None, str | None]:
+    """Resolve FI_Sijainti system name/code with RAVA-aware fallbacks."""
+    if system_name:
+        system_name = _SYSTEM_NAME_CANONICAL.get(system_name, system_name)
+    fi_si = fi_sijainti or {}
+    resolved_name = fi_si.get("jarjestelmien_nimet") or system_name
+    fallback_code = _SYSTEM_CODE_FALLBACKS.get(str(system_name)) if system_name else None
+    resolved_code = fi_si.get("jarjestelmien_tunnukset") or fallback_code
+    if fallback_code_to_name and not resolved_code:
+        resolved_code = system_name
+    return resolved_name, resolved_code
+
 
 # ---------------------------------------------------------------------------
 # FI_Komponentti
@@ -575,12 +603,17 @@ def add_finnish_psets(
     # FI_Sijainti — RAVA system grouping. When the profile rule supplies
     # explicit järjestelmien nimet/tunnukset (e.g. "Asennushyllyjärjes-
     # telmä - LVI" / "AHJ.LVI" for shelves), use those verbatim.
-    # Otherwise fall back to the rule's ``system_name`` for both fields.
-    fi_si = mapped.fi_sijainti or {}
+    # Otherwise use the rule's ``system_name`` as name, and resolve
+    # known system-code fallbacks for ``Järjestelmien tunnukset``.
     sys_name = extras.get("system_name")
+    resolved_name, resolved_code = resolve_system_fields(
+        system_name=sys_name,
+        fi_sijainti=mapped.fi_sijainti,
+        fallback_code_to_name=True,
+    )
     add_fi_sijainti(
         ifc,
         product,
-        jarjestelmien_nimet=fi_si.get("jarjestelmien_nimet") or sys_name,
-        jarjestelmien_tunnukset=fi_si.get("jarjestelmien_tunnukset") or sys_name,
+        jarjestelmien_nimet=resolved_name,
+        jarjestelmien_tunnukset=resolved_code,
     )

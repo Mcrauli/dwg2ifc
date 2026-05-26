@@ -432,9 +432,9 @@ def add_provision_for_void(
         ifc,
         ifc_class="IfcBuildingElementProxy",
         name=(extras.get("tunnus") or mapped.layer),
+        predefined_type="PROVISIONFORVOID",
     )
     product.GlobalId = guid
-    product.ObjectType = "IfcProvisionForVoid"
     if extras.get("varaus_tyyppi"):
         product.Description = str(extras["varaus_tyyppi"])
 
@@ -480,6 +480,25 @@ def add_provision_for_void(
     )
     product.Representation = ifc.create_entity(
         "IfcProductDefinitionShape", Representations=[shape]
+    )
+    pset = ifcopenshell.api.run(
+        "pset.add_pset",
+        ifc,
+        product=product,
+        name="Pset_ProvisionForVoid",
+    )
+    pset_props: dict[str, object] = {
+        "VoidShape": "Round",
+        "Diameter": diameter_mm,
+        "Depth": depth_mm,
+    }
+    if extras.get("system_name"):
+        pset_props["System"] = str(extras["system_name"])
+    ifcopenshell.api.run(
+        "pset.edit_pset",
+        ifc,
+        pset=pset,
+        properties=pset_props,
     )
 
     ifcopenshell.api.run(
@@ -1366,20 +1385,81 @@ def add_distribution_element(
     )
 
 
-def add_system(ifc, *, name: str) -> object:
+def add_system(ifc, *, name: str, system_code: str | None = None) -> object:
     """Return an IfcSystem entity with the given name, creating it once per file.
 
     Repeated calls with the same name yield the same instance so callers can
     safely group products without bookkeeping.
     """
+    system = None
     for existing in ifc.by_type("IfcSystem"):
         if existing.Name == name:
-            return existing
-    return ifcopenshell.api.run(
-        "root.create_entity",
+            system = existing
+            break
+    if system is None:
+        system = ifcopenshell.api.run(
+            "root.create_entity",
+            ifc,
+            ifc_class="IfcSystem",
+            name=name,
+        )
+    _attach_fi_jarjestelma_pset(ifc, system=system, system_name=name, system_code=system_code)
+    return system
+
+
+def _attach_fi_jarjestelma_pset(
+    ifc, *, system, system_name: str, system_code: str | None
+) -> None:
+    """Attach FI_Järjestelmä on IfcSystem (RAVA3Pro style)."""
+    rava_name = ""
+    rava_short_name = ""
+    jarjestelmalaji = ""
+    jarjestelmaluokka = ""
+    if system_code:
+        try:
+            from dwg2ifc.profiles.rava.loader import load_rava_codes
+
+            code = load_rava_codes().get(system_code)
+            if code is not None:
+                rava_name = code.name or ""
+                rava_short_name = code.short_name or ""
+                if code.codeset == "LVI-JARJESTELMA":
+                    jarjestelmalaji = "LVI-JÄRJESTELMÄT"
+                elif code.codeset == "TALOTEKNIIKKA-JARJESTELMA":
+                    jarjestelmalaji = "TALOTEKNIIKKA-JÄRJESTELMÄT"
+        except Exception:
+            pass
+    if system_code:
+        if system_code.startswith("J-LVI-09"):
+            jarjestelmaluokka = "KYLMÄJÄRJESTELMÄT"
+        elif system_code.startswith("J-LVI-04"):
+            jarjestelmaluokka = "VIEMÄRIJÄRJESTELMÄT"
+    system_tunnus = ""
+    if rava_short_name and rava_short_name.casefold() != "ei tunnusta":
+        system_tunnus = rava_short_name
+    pset = None
+    for rel in getattr(system, "IsDefinedBy", None) or []:
+        if not rel.is_a("IfcRelDefinesByProperties"):
+            continue
+        pd = rel.RelatingPropertyDefinition
+        if pd and pd.is_a("IfcPropertySet") and pd.Name == "FI_Järjestelmä":
+            pset = pd
+            break
+    if pset is None:
+        pset = ifcopenshell.api.run("pset.add_pset", ifc, product=system, name="FI_Järjestelmä")
+    ifcopenshell.api.run(
+        "pset.edit_pset",
         ifc,
-        ifc_class="IfcSystem",
-        name=name,
+        pset=pset,
+        properties={
+            "01 Järjestelmälaji": jarjestelmalaji,
+            "02 Järjestelmäluokka": jarjestelmaluokka,
+            "03 Järjestelmätyypin koodi": system_code or "",
+            "04 Järjestelmätyyppi": rava_name,
+            "05 Järjestelmätyypin yleistunnus": rava_short_name,
+            "06 Järjestelmän nimi": system_name or "",
+            "07 Järjestelmän tunnus": system_tunnus,
+        },
     )
 
 

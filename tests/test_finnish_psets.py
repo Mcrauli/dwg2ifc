@@ -4,12 +4,14 @@ FI_Komponentti / FI_Tuote)."""
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import ezdxf
 import ifcopenshell
 import pytest
 
 from dwg2ifc.core.finnish_psets import (
+    add_finnish_psets,
     add_fi_asennus,
     add_fi_geometria,
     add_fi_komponentti,
@@ -553,3 +555,41 @@ def test_convert_dxf_emits_fi_sijainti_with_system_name(tmp_path: Path):
     )
     by_name = {p.Name: p.NominalValue.wrappedValue for p in sij.HasProperties}
     assert by_name["Järjestelmien nimet"] == "Refrigeration LT"
+
+
+def test_refrigeration_plant_uses_rava_system_code_fallback():
+    """When fi_sijainti is not set explicitly, Refrigeration plant rules
+    must emit J-LVI-09-99 as Järjestelmien tunnukset."""
+    ifc, valve = _make_ifc_with_product("IfcValve")
+    mapped = SimpleNamespace(
+        ifc_type="IfcValve",
+        fi_komponentti={},
+        fi_tuote={},
+        fi_tekninen=None,
+        fi_sijainti=None,
+        block_attribs=[],
+        extra_props={"system_name": "Refrigeration plant"},
+        lvi_code="T-LVI-02",
+        talotekniikka_code=None,
+        talo2000_code=None,
+    )
+    extents = GeometryExtents(
+        top_z=1000.0, bottom_z=0.0, install_z=0.0, korkeus=1000.0, leveys=100.0, syvyys=1000.0
+    )
+    add_finnish_psets(
+        ifc,
+        product=valve,
+        mapped=mapped,
+        parent_storey=None,
+        extents=extents,
+    )
+    sij = next(
+        rel.RelatingPropertyDefinition
+        for rel in (valve.IsDefinedBy or [])
+        if rel.is_a("IfcRelDefinesByProperties")
+        and rel.RelatingPropertyDefinition.is_a("IfcPropertySet")
+        and rel.RelatingPropertyDefinition.Name == "FI_Sijainti"
+    )
+    by_name = {p.Name: p.NominalValue.wrappedValue for p in sij.HasProperties}
+    assert by_name["Järjestelmien nimet"] == "Kylmäjärjestelmä"
+    assert by_name["Järjestelmien tunnukset"] == "J-LVI-09-99"
