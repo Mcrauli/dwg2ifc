@@ -234,3 +234,27 @@ def test_convert_dxf_creates_ifcsystem_and_assigns_products(tmp_path: Path):
     assert members_by_system["Refrigeration LT"][0].is_a("IfcPipeSegment")
     assert len(members_by_system["Drainage"]) == 1
     assert members_by_system["Drainage"][0].is_a("IfcPipeSegment")
+
+
+def test_convert_dxf_system_gets_fi_jarjestelma_pset_with_rava_code(tmp_path: Path):
+    from ifcopenshell.api import run as ifc_run
+
+    from dwg2ifc.core.ifc_writer.builders import add_system
+
+    ifc = ifcopenshell.file(schema="IFC4")
+    ifc_run("root.create_entity", ifc, ifc_class="IfcProject", name="t")
+    system = add_system(ifc, name="Refrigeration plant", system_code="J-LVI-09-99")
+    pset = None
+    for rel in (system.IsDefinedBy or []):
+        if rel.is_a("IfcRelDefinesByProperties"):
+            pd = rel.RelatingPropertyDefinition
+            if pd and pd.is_a("IfcPropertySet") and pd.Name == "FI_Järjestelmä":
+                pset = pd
+                break
+    assert pset is not None
+    by_name = {
+        p.Name: (p.NominalValue.wrappedValue if p.NominalValue else None)
+        for p in (pset.HasProperties or [])
+    }
+    assert by_name["03 Järjestelmätyypin koodi"] == "J-LVI-09-99"
+    assert by_name["06 Järjestelmän nimi"] == "Refrigeration plant"

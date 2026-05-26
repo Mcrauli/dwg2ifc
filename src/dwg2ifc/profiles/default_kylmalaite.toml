@@ -251,8 +251,8 @@ fi_tuote = { nimi = "Kotelo", valmistaja = "MEKA" }
 
 [[rules]]
 layer_pattern = "KYL-REIKAVARAUS"
-ifc_type = "IfcProvisionForVoid"
-predefined_type = "NOTDEFINED"
+ifc_type = "IfcBuildingElementProxy"
+predefined_type = "PROVISIONFORVOID"
 domain = "KYL"
 talotekniikka_code = "T-TATE-02-01-001"
 fi_komponentti = { paaryhma = "TALOTEKNIIKAN VARAUKSET", alaryhma = "REIKÄVARAUKSET", yleisnimi = "Reikävaraus", yleistunnus = "RV" }
@@ -444,7 +444,7 @@ ifc_type = "IfcUnitaryEquipment"
 predefined_type = "USERDEFINED"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-999"
-system_name = "Refrigeration cabinets"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Pakastekaappi", yleistunnus = "PKK" }
 
 [[rules]]
@@ -453,7 +453,7 @@ ifc_type = "IfcUnitaryEquipment"
 predefined_type = "USERDEFINED"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-999"
-system_name = "Refrigeration cabinets"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Kylmäkaappi", yleistunnus = "KKK" }
 
 [[rules]]
@@ -462,7 +462,7 @@ ifc_type = "IfcUnitaryEquipment"
 predefined_type = "USERDEFINED"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-999"
-system_name = "Refrigeration cabinets"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Pakasteallas", yleistunnus = "PKA" }
 
 [[rules]]
@@ -471,7 +471,7 @@ ifc_type = "IfcUnitaryEquipment"
 predefined_type = "USERDEFINED"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-999"
-system_name = "Refrigeration cabinets"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Pakastearkku", yleistunnus = "PKR" }
 
 [[rules]]
@@ -480,7 +480,7 @@ ifc_type = "IfcUnitaryEquipment"
 predefined_type = "USERDEFINED"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-999"
-system_name = "Refrigeration cabinets"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Kylmäallas", yleistunnus = "KAL" }
 
 [[rules]]
@@ -489,7 +489,7 @@ ifc_type = "IfcUnitaryEquipment"
 predefined_type = "USERDEFINED"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-999"
-system_name = "Refrigeration cabinets"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Marja-allas", yleistunnus = "MJA" }
 
 [[rules]]
@@ -498,7 +498,7 @@ ifc_type = "IfcUnitaryEquipment"
 predefined_type = "USERDEFINED"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-999"
-system_name = "Refrigeration cabinets"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Pikajäähdytyskaappi", yleistunnus = "PJK" }
 
 [[rules]]
@@ -507,7 +507,7 @@ ifc_type = "IfcUnitaryEquipment"
 predefined_type = "USERDEFINED"
 domain = "KYL"
 lvi_code = "T-LVI-01-01-999"
-system_name = "Refrigeration cabinets"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "KYLMÄKALUSTEET", yleisnimi = "Omakoneellinen kylmäkaluste", yleistunnus = "OMK" }
 
 # -----------------------------------------------------------------------------
@@ -639,7 +639,7 @@ ifc_type = "IfcElectricDistributionBoard"
 predefined_type = "USERDEFINED"
 domain = "KYL"
 talotekniikka_code = "T-TATE-02-01-004"
-system_name = "Refrigeration power"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "SÄHKÖKESKUKSET", yleisnimi = "Koneikkokeskus", yleistunnus = "KK" }
 
 [[rules]]
@@ -648,7 +648,7 @@ ifc_type = "IfcElectricDistributionBoard"
 predefined_type = "DISTRIBUTIONBOARD"
 domain = "KYL"
 talotekniikka_code = "T-TATE-02-01-004"
-system_name = "Refrigeration power"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "SÄHKÖKESKUKSET", yleisnimi = "Ryhmäkeskus", yleistunnus = "RK" }
 
 [[rules]]
@@ -657,7 +657,7 @@ ifc_type = "IfcController"
 predefined_type = "PROGRAMMABLE"
 domain = "KYL"
 talotekniikka_code = "T-TATE-02-01-004"
-system_name = "Refrigeration power"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "LAITTEISTOT - LVI", alaryhma = "SÄHKÖKESKUKSET", yleisnimi = "Säädinkeskus", yleistunnus = "SK" }
 
 # -----------------------------------------------------------------------------
@@ -680,7 +680,7 @@ ifc_type = "IfcSensor"
 predefined_type = "CO2SENSOR"
 domain = "KYL"
 talotekniikka_code = "T-TATE-02-01-003"
-system_name = "Refrigeration safety"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TALOTEKNIIKAN VARUSTEET", alaryhma = "ANTURIT", yleisnimi = "CO2-anturi", yleistunnus = "CO2A" }
 
 [[rules]]
@@ -689,7 +689,7 @@ ifc_type = "IfcAlarm"
 predefined_type = "SIREN"
 domain = "KYL"
 talotekniikka_code = "T-TATE-02-01-003"
-system_name = "Refrigeration safety"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TALOTEKNIIKAN VARUSTEET", alaryhma = "HÄLYTYSLAITTEET", yleisnimi = "CO2-sireeni", yleistunnus = "CO2S" }
 
 [[rules]]
@@ -698,7 +698,7 @@ ifc_type = "IfcCommunicationsAppliance"
 predefined_type = "COMPUTER"
 domain = "KYL"
 talotekniikka_code = "T-TATE-02-01-003"
-system_name = "Refrigeration control"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TALOTEKNIIKAN VARUSTEET", alaryhma = "TIETOTEKNIIKKA", yleisnimi = "Huolto-PC", yleistunnus = "PC" }
 
 [[rules]]
@@ -707,7 +707,7 @@ ifc_type = "IfcSwitchingDevice"
 predefined_type = "EMERGENCYSTOP"
 domain = "KYL"
 talotekniikka_code = "T-TATE-02-01-003"
-system_name = "Refrigeration safety"
+system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TALOTEKNIIKAN VARUSTEET", alaryhma = "TURVAKYTKIMET", yleisnimi = "Hätäseispainike", yleistunnus = "HS" }
 
 # -----------------------------------------------------------------------------

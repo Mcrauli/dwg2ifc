@@ -29,6 +29,7 @@ class RAVACode:
 
     code: str
     name: str
+    short_name: str
     codeset: str
 
 
@@ -46,5 +47,11 @@ def load_rava_codes() -> dict[str, RAVACode]:
                 continue
             label = entry.get("prefLabel", {})
             name = label.get("fi") or label.get("en") or ""
-            out[code_value] = RAVACode(code=code_value, name=name, codeset=codeset)
+            short_name = entry.get("shortName") or ""
+            out[code_value] = RAVACode(
+                code=code_value,
+                name=name,
+                short_name=short_name,
+                codeset=codeset,
+            )
     return out
