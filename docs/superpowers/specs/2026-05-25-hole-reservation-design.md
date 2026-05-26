@@ -1,113 +1,96 @@
 # Reikavaraus / IfcProvisionForVoid design
 
-## Tavoite
+## Goal
 
-Lisataan dwg2ifc-projektiin uusi reikävarauspolku, jossa:
+Add a new hole reservation workflow that starts in AutoCAD and exports to IFC as a real `IfcProvisionForVoid`.
 
-- AutoCAD-kayttaja luo reikävarauksen omalla LISP-tyokalulla.
-- Tyokalu sijoittaa objektin aina layerille `KYL-REIKAVARAUS`.
-- Objekti on CADissa attribuuttiblokki, jolla on pysyva oma `GUID`.
-- IFC-exportissa objekti kirjoitetaan itsenaisena `IfcProvisionForVoid`-entiteettina.
-- Sama varaus pysyy samana objektina paivityksissa, kun blokkia muokataan eika poisteta ja luoda uudelleen.
-- Solibrissa nakyvat kaikki olennaiset reikävarauksen tiedot ilman kasityota.
+The first version must:
 
-Tama ei ole `IfcOpeningElement`-tyyppinen aukko eika sido varausta suoraan rakenteeseen. Rakennesuunnittelija kayttaa varauskappaletta oman mallinsa pohjana ja paattaa itse varsinainen aukotusratkaisun.
+- add a dedicated AutoCAD tool named `REIKAVARAUS`
+- always place reservations on layer `KYL-REIKAVARAUS`
+- store a persistent GUID on each reservation block
+- export reservations as true `IfcProvisionForVoid` objects
+- include reservations in normal exports by default
+- add a GUI checkbox for "reservations only" export
+- produce a reservations-only IFC that contains only the IFC skeleton and hole reservations
 
-## Lahteet ja nykytila
+The reservation is not an `IfcOpeningElement`. It is an independent reservation object used by structural design later.
 
-- YTV osa 4 sanoo, etta varausobjektista tulee ilmeta varaaja, koko, tunnisteet, oikea sijainti ja absoluuttinen korkeusasema. Objektia tulee ensisijaisesti muokata, ei korvata uudella, jotta ohjelmistot tunnistavat saman varauksen muuttuneeksi eivatka uudeksi.
-- RAVA-koodisto sisaltaa nimikkeen `Reikävaraus`, koodi `T-TATE-02-01-001`, lyhenne `RV`.
-- Nykyinen dwg2ifc osaa jo lukea INSERT-blokkien attribuutit, mapata `KYL-*`-layereita ja kirjoittaa FI_* PropertySetit Solibria varten.
-- Reikävaraukselle ei ole viela omaa CAD-tyokalua, profile-saantoa eika IFC-builderia.
-- AutoCAD-lahteet ovat tassa repossa, mutta loppukayttajan bundle, CUIX ja asennuspakkaus elavat erillisessa `autocad-lisp-ohjeet`-repossa. Muutos on siis kaksiosainen: lahde muokataan tahan repossa ja peilataan jakelurepoon.
+## Current state
 
-## Hyvaksytyt paatokset
+- The DXF -> IFC pipeline already supports layer/profile mapping and block attribute routing.
+- `KYL-REIKAVARAUS` is now recognized in profile mapping.
+- Hole reservation block attributes are promoted only for `INSERT` entities on `KYL-REIKAVARAUS`.
+- The current IFC tree is a normal spatial tree:
+  - `IfcProject -> IfcSite -> IfcBuilding -> IfcBuildingStorey -> products`
+- A basic worker implementation for hole reservations was attempted, but local IfcOpenShell/schema support does not currently expose `IfcProvisionForVoid`.
+- A proxy fallback (`IfcBuildingElementProxy` with `ObjectType = "IfcProvisionForVoid"`) was tested and rejected as the final solution.
 
-- IFC-entiteetti: `IfcProvisionForVoid`
-- Geometrian ensimmainen versio: pyorea varauskappale
-- Kayttoliittyma: yksi komento, jonka alussa kayttaja valitsee `Lattia` tai `Seina`
-- CAD-malli: attribuuttiblokki, ei pelkka viiva/geometria
-- Layer: aina `KYL-REIKAVARAUS`
-- Tunniste: blokkiin tallennettu pysyva `GUID`-attribuutti
-- Ensimmainen syottojoukko:
-  - `Lattia`: keskipiste, halkaisija, pituus/paksuus, korko
-  - `Seina`: suunnan maarittely kahdella pisteella, halkaisija, lapaisypituus
+## Approved decisions
 
-## Ratkaisun yleisrakenne
+### IFC semantics
 
-Ratkaisu jakautuu kolmeen osaan:
+- Hole reservations must be exported as true `IfcProvisionForVoid`.
+- Final implementation must not silently fall back to `IfcBuildingElementProxy`.
+- If current writer/tooling cannot create `IfcProvisionForVoid`, the write path must be changed so the correct entity can be produced.
 
-1. AutoCAD-tyokalu luo ja muokkaa reikävarausblokkia.
-2. dwg2ifc tunnistaa `KYL-REIKAVARAUS`-blokin ja sen attribuutit.
-3. IFC writer kirjoittaa blokista `IfcProvisionForVoid`-objektin pysyvalla `GlobalId`:lla ja Solibriin sopivilla FI_* tiedoilla.
+### Spatial tree and Solibri visibility
 
-## CAD-tyokalu
+- Hole reservations stay in the normal IFC spatial tree under storeys.
+- No separate branch or special model tree grouping is created for reservations.
+- In Solibri they should appear with the rest of the model content under the normal building/storey structure.
 
-### Uusi komento
+### Export modes
 
-Lisataan `autocad-tools/`-kansioon uusi LISP-komento nimella `REIKAVARAUS`.
+- Normal export includes hole reservations together with the rest of the model.
+- A GUI checkbox adds a new "reservations only" export mode.
+- In "reservations only" mode, the IFC contains:
+  - the normal IFC skeleton
+  - only hole reservation objects from `KYL-REIKAVARAUS`
+- Other products, systems, and geometry are omitted in this mode.
+- Filtering is applied late in the pipeline, in the export/orchestration stage, not in the parser.
 
-Komennon kulku:
+### CAD authoring model
 
-1. Varmista layer `KYL-REIKAVARAUS` olemassaolevalla layer-helper-tyylilla.
-2. Aseta `CLAYER` valiaikaisesti `KYL-REIKAVARAUS`-layeriin.
-3. Kysy kayttajalta varauksen tyyppi:
-   - `Lattia`
-   - `Seina`
-4. Kysy geometriset syotteet:
-   - `Lattia`: keskipiste, halkaisija, pituus/paksuus, korko
-   - `Seina`: ensimmainen piste, toinen piste seinasuuntaa varten, halkaisija, lapaisypituus
-5. Luo tai insertoi reikävarausblokin instanssi.
-6. Tayta blokin attribuutit.
-7. Palauta kayttajan alkuperainen `CLAYER`, `OSMODE`, `CMDECHO` jne.
+- The AutoCAD tool is block-based.
+- A dedicated reservation block carries geometry-driving parameters and all export metadata.
+- The command name is `REIKAVARAUS`.
+- The tool always inserts to layer `KYL-REIKAVARAUS`.
+- A ribbon button named `Reikavaraus` must be added.
+- A dedicated ribbon icon is needed.
 
-### Blokkirakenne
+### First geometry version
 
-Reikävaraus toteutetaan omana DWG-blokkinaan. Blokin geometria on BYBLOCK/BYLAYER-yhteensopiva kuten muissakin tyokaluissa, jotta instanssin layer maarittaa lopputuloksen.
+- First version supports a round reservation body only.
+- The IFC geometry is a cylindrical or equivalent round extruded provision body.
+- Users can later edit diameter or length.
 
-Ensimmainen versio voi olla yksi blokki, jonka orientaatio ja mitat asetetaan dynaamisten propertyjen tai insertointijalkikasittelyn avulla. Erillista lattia- ja seinablockia ei tarvita ensimmaiseen versioon.
+### Orientation workflow
 
-### Pysyva GUID
+- At command start the user explicitly chooses:
+  - `Lattia`
+  - `Seina`
+- No automatic orientation guessing is used in v1.
 
-Blokilla on attribuutti `GUID`.
+Suggested input flow:
 
-- Jos uusi varaus luodaan, tyokalu generoi tavallisen UUID:n ja kirjoittaa sen `GUID`-attribuuttiin.
-- Jos olemassaolevaa blokkia muokataan, sama `GUID`-attribuutti sailytetaan.
-- IFC-exportti ei kayta suoraan satunnaista `guid.new()`-arvoa vaan johtaa `GlobalId`:n taman attribuutin pohjalta.
+- `Lattia`: center point, diameter, length/thickness, elevation
+- `Seina`: center point or direction points, diameter, wall penetration length
 
-UUID kannattaa tallentaa tavallisessa 36 merkin muodossa, esimerkiksi `550e8400-e29b-41d4-a716-446655440000`. Writer muuntaa sen IFC:n 22-merkkiseen `GlobalId`-muotoon `ifcopenshell.guid.compress(...)`-helperilla.
+### GUID strategy
 
-### Ribbon ja ikoni
+- Each reservation block stores its own persistent `GUID` attribute.
+- The CAD-side value should be a normal UUID string.
+- Export converts that UUID to IFC `GlobalId` format.
+- If the block has no GUID yet, the reservation creation tool generates one once and stores it on the block.
+- The same edited reservation must keep the same GUID across exports.
 
-Lisataan uusi ribbon-nappi nimella `Reikävaraus`.
+## Required reservation data
 
-- Nappi ajaa komentoa `REIKAVARAUS`.
-- Napille tehdaan oma ikoni.
-- Ikonit ja CUIX-muutokset eivat jakaudu suoraan taman repon kautta, vaan ne pitaa peilata `autocad-lisp-ohjeet`-repon bundleen/CUIXiin.
-
-Tassa repossa tulee dokumentoida, mika komento ja tiedostot jakelurepossa on paivitettava.
-
-## IFC-mappaus
-
-### Profiilisaanto
-
-Lisataan `src/dwg2ifc/profiles/default_kylmalaite.toml`:iin uusi saanto layerille `KYL-REIKAVARAUS`.
-
-Saannon ominaisuudet:
-
-- `ifc_type = "IfcProvisionForVoid"`
-- domain pidetaan TATE/KYL-linjan mukaisena nykyisten saantojen kanssa
-- RAVA-koodiksi sidotaan `T-TATE-02-01-001`
-- FI_Komponentti-tauluun asetetaan yleisnimi `Reikävaraus` ja yleistunnus `RV`
-
-### Parseri ja attribuutit
-
-Nykyinen INSERT-attribuuttiketju hyodynnetaan. Reikävarauksen kentat pidetaan tavallisina blokkiattribuutteina, jotta ne kulkevat olemassa olevan `block_attribs.py`-polun kautta.
-
-Lisattavat attribuutit:
+The reservation block should contain at least these attributes in the first version:
 
 - `GUID`
-- `VARAUS_TYYPPI`
+- `VARAUS_TYYPPI` (`LATTIA` or `SEINA`)
 - `HALKAISIJA`
 - `PITUUS`
 - `KORKO`
@@ -115,172 +98,81 @@ Lisattavat attribuutit:
 - `VARAAJA`
 - `KOMMENTTI`
 
-Tarvittaessa voidaan lisata myohemmin:
+This set is intended to cover the information that must remain visible in downstream model checking and Solibri usage.
 
-- `PALOLUOKKA`
-- `TIIVISTYS`
-- `JARJESTELMA`
-- `URAKOITSIJA`
+## IFC mapping design
 
-Ensimmainen versio rajataan kuitenkin niin, etta Solibriin saadaan varmasti ainakin YTV:n minimikentat: varaaja, koko, tunniste, sijainti ja absoluuttinen korkeusasema.
+### Entity target
 
-### Builder
+- Hole reservations map to `ifc_type = "IfcProvisionForVoid"`.
+- They are not mapped to `IfcOpeningElement`.
+- They are not modeled as a generic proxy in the final design.
 
-Lisataan `builders.py`:hin oma builder pyorealle `IfcProvisionForVoid`-objektille.
+### Builder responsibilities
 
-Builderin vastuut:
+The hole reservation builder must:
 
-- validoi, etta syotteen geometria on reikävaraukselle tuettu
-- muodostaa pyorean kappaleen halkaisijasta ja pituudesta
-- sijoittaa kappaleen oikein lattia- tai seinasuuntaan
-- asettaa `GlobalId`:n blokin `GUID`-attribuutin pohjalta
-- liittaa olemassa olevat FI_* PropertySetit
+- create the reservation entity as `IfcProvisionForVoid`
+- set a stable IFC `GlobalId` derived from block attribute `GUID`
+- build round geometry from diameter and length
+- place the object in the normal spatial structure
+- attach the needed property sets / metadata so the reservation remains useful in Solibri and RAVA-oriented workflows
 
-Ensimmainen versio voidaan mallintaa sylinterina extruusiona:
+### Writer/tooling constraint
 
-- `Lattia`: extruusio Z-suunnassa
-- `Seina`: extruusio kayttajan valitseman seinasuunnan mukaan
+Because the currently verified local IfcOpenShell/schema path does not expose `IfcProvisionForVoid`, implementation must explicitly solve that tooling gap instead of masking it with a proxy fallback.
 
-Jos nykyinen helper-polku ei tue pyoreaa profiilia suoraan, builderi saa tehda oman `IfcCircleProfileDef` + `IfcExtrudedAreaSolid` -polun.
+## GUI behavior
 
-## Solibri- ja RAVA-tiedot
+Add a checkbox in the GUI export settings for a reservations-only IFC.
 
-Reikävarauksen tulee nayttaa Solibrissa valmiina tuotteena, ei geneerisena tyhjana kappaleena.
+Expected behavior:
 
-Kenttien sijoittuminen:
+- checkbox off:
+  - export the normal model
+  - include hole reservations with everything else
+- checkbox on:
+  - export only IFC skeleton + hole reservations
 
-- `FI_Komponentti`
-  - paaryhma
-  - alaryhma
-  - koodi = `T-TATE-02-01-001`
-  - yleisnimi = `Reikävaraus`
-  - yleistunnus = `RV`
-  - `Laitetunnus` tai vastaava -> `TUNNUS`
-- `FI_Asennus`
-  - absoluuttinen korkeusasema `KORKO`-tiedosta
-  - yla/alapinta ja asennuskorko geometrian perusteella
-- `FI_Geometria`
-  - halkaisija ja pituus
-  - kolmannen mitan nimea voidaan joutua laajentamaan tai kuvaamaan `FI_Tekninen`-puolella, jos nykyinen Korkeus/Leveys/Syvyys ei sovi hyvin pyorealle varaukselle
-- `FI_Tuote`
-  - `KOMMENTTI`
-- `FI_Tekninen`
-  - `VARAUS_TYYPPI`
-  - `VARAAJA`
-  - mahdolliset lisatiedot joita ei ole luontevaa pakottaa `FI_Komponentti`-kenttiin
+This is a GUI-level option that passes an export flag into the convert/orchestrator pipeline.
 
-Periaate on, etta Solibri-kayttaja nakee heti:
+## Implementation boundaries
 
-- mita varaus koskee
-- kuka sen on varannut
-- mika sen tunnus on
-- mika sen koko on
-- missa korkotasossa se on
-- onko kyse lattia- vai seinavarauksesta
+### Files likely affected
 
-## Orientaatio
+- AutoCAD tool / Lisp files for block insertion and ribbon command wiring
+- ribbon/CUIX-related assets and icon resources
+- profile mapping config
+- block attribute promotion logic
+- GUI export settings and convert call path
+- export orchestrator filtering
+- IFC builders / writer dispatch
+- tests for mapper, builder, and reservations-only export mode
 
-### Lattiavaraus
+### Tests required
 
-- Keskiakseli on maailman Z-suuntainen.
-- Pituus kulkee positiiviseen Z-suuntaan tai symmetrisesti keskipisteen ymparille. Ensimmainen toteutus paattaa yhden mallin ja dokumentoi sen.
-- `KORKO` tulkitaan absoluuttisena asennus-/referenssikorkona.
+- normal export still includes reservations
+- reservations-only export contains only skeleton + reservations
+- reservations-only export does not change normal export behavior when disabled
+- reservation GUID is stable across repeated exports of the same source block
+- final writer path creates real `IfcProvisionForVoid`, not a proxy fallback
 
-Suositus: kayta keskipisteen Z-arvona kayttajan antamaa korkoa ja extrudoi kappale symmetrisesti puoliksi ylos, puoliksi alas referenssipisteesta. Tama tekee visualisoinnista vakaamman kun varauskappaletta halutaan kayttaa rakenteen lapaisyn kohdalla.
+## Implementation order
 
-### Seinavaraus
-
-- Kayttaja antaa kaksi pistetta, joista saadaan vaakasuuntainen tai yleinen suuntavektori.
-- Builder ja CAD-komento orientoivat sylinterin taman vektorin suuntaiseksi.
-- `PITUUS` on lapaisypituus suuntavektorin suunnassa.
-
-Suositus: tulkitse ensimmainen piste varauksen keskipisteeksi ja toinen piste suunnan maarittajaksi. Tama tekee seinavarauksesta nopean sijoittaa ilman erillista rotaatiokomentoa.
-
-## GUID-strategia
-
-Pysyvyysvaatimus tarkoittaa, etta IFC `GlobalId` ei saa perustua export-hetken satunnaisuuteen.
-
-Strategia:
-
-1. CAD-blokissa on attribuutti `GUID` tavallisena UUID:na.
-2. Exportissa writer lukee attribuutin.
-3. UUID muunnetaan IFC-muotoon `ifcopenshell.guid.compress(uuid)`.
-4. Tulos asetetaan `IfcProvisionForVoid.GlobalId`:ksi.
-
-Jos `GUID` puuttuu tai on viallinen:
-
-- writer voi joko failata selkealla virheella tai generoida uuden UUID:n vain jos kyse on aidosti uudesta blokista
-- ensimmainen toteutus kannattaa tehda mieluummin fail-fast-periaatteella, jotta GUID-ketju ei rikkoudu huomaamatta
-
-## Tiedostot joita muutos koskee
-
-Tassa repossa:
-
-- `autocad-tools/reikavaraus.lsp` uusi
-- `autocad-tools/README.md`
-- mahdollinen uusi reikävarausblokin `.dwg`
-- `autocad-tools/_loader.lsp` jos uusi komento tarvitsee eksplisiittisen latauksen
-- `src/dwg2ifc/profiles/default_kylmalaite.toml`
-- `src/dwg2ifc/core/block_attribs.py`
-- `src/dwg2ifc/core/types.py` jos tarvitaan oma stable-id-kentta
-- `src/dwg2ifc/core/ifc_writer/builders.py`
-- `src/dwg2ifc/core/ifc_writer/orchestrator.py`
-- testit CAD-attribuuteille, mappaukselle ja builderille
-- dokumentaatio
-
-Jakelurepossa `autocad-lisp-ohjeet`:
-
-- `files/`-kansioon uusi `.lsp` ja mahdollinen `.dwg`
-- ribbon/CUIX-maaritykset
-- uusi ikoni
-- bundle/zip-paketointi
-- mahdolliset asennusohjeet
-
-## Virhetilanteet
-
-- Jos kayttaja keskeyttaa komennon, ymparistomuuttujat palautetaan aina.
-- Jos blokkia ei loydy, komento raportoi puuttuvan DWG-resurssin selkeasti.
-- Jos halkaisija tai pituus ei ole positiivinen, komento ei luo blokkia.
-- Jos seinasuunta ei maarity kahdesta pisteesta, komento pyytää syotteen uudelleen.
-- Jos IFC-exportissa `GUID` ei ole kelvollinen UUID, konversio ilmoittaa selkean virheen ja kertoo objektin layerin/handlen.
-
-## Testaus
-
-Vahintaan seuraavat testit:
-
-- profiilisaanto tunnistaa `KYL-REIKAVARAUS`-layerin oikein
-- blokkattribuutit reitittyvat oikeisiin FI_* kenttiin
-- `GUID` muunnetaan stabiiliksi IFC `GlobalId`:ksi
-- sama `GUID` tuottaa saman `GlobalId`:n kahdessa exportissa
-- `IfcProvisionForVoid` syntyy oikealla RAVA-koodilla
-- `Lattia`-varaus kirjoittuu pystysuuntaisena
-- `Seina`-varaus kirjoittuu valitun suuntavektorin mukaisena
-
-## Toteutusjarjestys
-
-1. Lisaa profiilisaanto, attribuuttikentat ja writerin builder rajatusti.
-2. Lisaa CAD-blokki ja `REIKAVARAUS`-LISP.
-3. Lisaa GUID-muunnos ja pysyvyystestit.
-4. Lisaa ribbon-komento ja ikoni jakelurepoon.
-5. Paivita dokumentaatio molempiin repoihin.
-
-## Rajaukset ensimmaiseen versioon
-
-- Vain pyorea varaus
-- Ei automaattista rakenteen tunnistusta
-- Ei `IfcOpeningElement`-relaatioita
-- Ei vapaan muotoisia reikävarauksia
-- Ei automaattista seinanormaalin paattelya mallista
+1. Finalize CAD-side reservation data contract and block metadata.
+2. Add GUI checkbox and late-stage orchestrator filtering for reservations-only export.
+3. Implement a real IFC write path for `IfcProvisionForVoid` without proxy fallback.
+4. Complete stable GUID handling end to end.
+5. Add ribbon button and icon.
+6. Add or update tests and documentation.
 
 ## Definition of done
 
-Muutos on valmis kun:
+The feature is done when:
 
-- kayttaja voi luoda `REIKAVARAUS`-komennolla lattia- tai seinavarauksen
-- objekti menee aina `KYL-REIKAVARAUS`-layerille
-- blokissa on pysyva `GUID`
-- exportti tuottaa `IfcProvisionForVoid`-objektin
-- Solibrissa nakyvat sovitut tunniste-, koko-, varaaja- ja korkotiedot
-- samaa blokkia muokkaamalla IFC-objekti sailyttaa saman `GlobalId`:n
-- ribbonissa on oma `Reikävaraus`-nappi omalla ikonilla
-- jakelurepo on paivitetty niin, etta loppukayttaja saa komennon bundleen/CUIXiin
+- AutoCAD users can place a `REIKAVARAUS` block on `KYL-REIKAVARAUS`
+- the block stores a persistent GUID and reservation metadata
+- normal export includes reservations with the rest of the model
+- GUI can export skeleton + reservations only
+- exported reservations are true `IfcProvisionForVoid` entities
+- no final proxy fallback remains in the writer path
