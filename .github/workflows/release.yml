@@ -200,6 +200,17 @@ jobs:
           # banner picks it up immediately. The updater filters drafts
           # but accepts prereleases — and every 0.2.0a* tag is alpha
           # quality anyway.
+          #
+          # If a release for this tag already exists (e.g. manually created
+          # before the workflow ran), delete it first so gh release create
+          # does not fail with "a release with the same tag name already
+          # exists" and accidentally leave the wrong exe in place.
+          $existing = gh release view $tag --repo $env:GITHUB_REPOSITORY 2>&1
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Existing release found for $tag — deleting before recreate"
+            gh release delete $tag --repo $env:GITHUB_REPOSITORY --yes --cleanup-tag=false
+            if ($LASTEXITCODE -ne 0) { throw "gh release delete failed" }
+          }
           gh release create $tag @assets `
             --title $tag `
             --notes-file CHANGELOG.md `
