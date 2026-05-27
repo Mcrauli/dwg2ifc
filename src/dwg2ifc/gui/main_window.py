@@ -70,6 +70,7 @@ class MainWindow(QtWidgets.QMainWindow):
         root.addWidget(self._update_banner)
         self._update_checker = UpdateChecker(self)
         self._update_checker.result.connect(self._on_update_check_done)
+        self._update_notice_shown = False
         # Defer the network call until the window is on screen — there's no
         # value in slowing down first paint for a background poll.
         QtCore.QTimer.singleShot(500, self._update_checker.start)
@@ -240,6 +241,17 @@ class MainWindow(QtWidgets.QMainWindow):
         if info is None:
             return  # no update or check failed silently
         self._update_banner.show_for(info)  # type: ignore[arg-type]
+        if not self._update_notice_shown:
+            self._update_notice_shown = True
+            update = info  # type: ignore[assignment]
+            QtWidgets.QMessageBox.information(
+                self,
+                "Uusi päivitys saatavilla",
+                (
+                    f"Uusi versio {update.tag} on saatavilla.\n\n"
+                    "Päivityspainike näkyy ikkunan yläreunan bannerissa."
+                ),
+            )
 
     def _on_update_requested(self, info: object) -> None:
         perform_update(info, self)  # type: ignore[arg-type]
