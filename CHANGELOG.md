@@ -6,6 +6,24 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha22 — 2026-05-27 (FI_Geometria Koko (DN) + Uponor HTP viemäriputkille)
+
+- **Korjattu: FI_Geometria puuttui kokonaan `IfcPipeSegment`-tuotteilta.** Koodi yritti
+  lukea `mapped.pset_overrides`-attribuuttia jota `MappedEntity`-luokassa ei ole;
+  AttributeError nieltiin hiljaa ja kaikki FI_*-PSetit FI_Asennuksen jälkeen jäivät
+  kirjoittamatta. Korjattu käyttämään `extras["default_diameter_mm"]`:ää, jonne
+  mapper kopioi NominalDiameter:n profiilisäännöstä.
+- **FI_Geometria: Koko (DN) johdetaan automaattisesti.** Kun putken TOML-säännössä on
+  `Pset_PipeSegmentOccurrence.NominalDiameter`, kenttä `Koko (DN)` kirjoitetaan
+  muodossa "DN\<pyöristetty arvo\>" (esim. `DN32`). `Ulkohalkaisija` asetetaan
+  NominalDiameter-arvoon.
+- **FI_Tuote: Uponor HTP -tuotedata KYL-VIEMARI-säännöille.** Lisätty profiiliin
+  `fi_tuote = { valmistaja = "Uponor", sarjan_nimi = "Uponor HTP", materiaalin_nimi = "PP" }`
+  kaikille KYL-VIEMARI-putkisäännöille (32 / 50 / 75 / yleinen).
+- **Skeema: `FiTuoteOverrides` lisäkentät.** `sarjan_nimi`, `materiaalin_nimi`,
+  `materiaalin_tunnus`, `eristesarja` lisätty Pydantic-malliin — TOML-profiili voi
+  nyt asettaa nämä ilman validointivirhettä.
+
 ## v0.3.0-alpha21 — 2026-05-27 (FI_Geometria viemäriputket + FI_Järjestelmä IfcText-bugi)
 
 - **Korjattu: KYL-VIEMARI FI_Geometria Sisähalkaisija/Ulkohalkaisija/Eristeen paksuus

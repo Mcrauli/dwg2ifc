@@ -582,6 +582,7 @@ def add_finnish_psets(
         # DN placeholder for pipes.
         koko: str | None = None
         koko_dn: str | None = None
+        nominal_d: float | None = None
         if mapped.ifc_type == "IfcCableCarrierSegment":
             w = leveys or 0.0
             h = extents.korkeus or 0.0
@@ -589,6 +590,11 @@ def add_finnish_psets(
                 koko = f"{round(w)}x{round(h)}"
         elif mapped.ifc_type == "IfcPipeSegment":
             koko_dn = extras.get("koko_dn", "")
+            if not koko_dn:
+                nd = extras.get("default_diameter_mm")
+                if nd:
+                    nominal_d = float(nd)
+                    koko_dn = f"DN{round(nominal_d)}"
         add_fi_geometria(
             ifc,
             product,
@@ -598,6 +604,7 @@ def add_finnish_psets(
             third_label="Pituus",
             koko=koko,
             koko_dn=koko_dn,
+            ulkohalkaisija_mm=nominal_d,
         )
     else:
         add_fi_geometria(

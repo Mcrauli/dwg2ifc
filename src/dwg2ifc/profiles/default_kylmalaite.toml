@@ -99,6 +99,7 @@ pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 32.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 fi_tekninen = { Materiaali = "Muovi (PP)", Seinamapaksuus = "1.8 mm" }
+fi_tuote = { valmistaja = "Uponor", sarjan_nimi = "Uponor HTP", materiaalin_nimi = "PP", materiaalin_tunnus = "2420030" }
 
 [[rules]]
 layer_pattern = "KYL-VIEMARI-50"
@@ -111,6 +112,7 @@ pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 50.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 fi_tekninen = { Materiaali = "Muovi (PP)", Seinamapaksuus = "1.8 mm" }
+fi_tuote = { valmistaja = "Uponor", sarjan_nimi = "Uponor HTP", materiaalin_nimi = "PP" }
 
 [[rules]]
 layer_pattern = "KYL-VIEMARI-75"
@@ -123,6 +125,7 @@ pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 75.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Kondenssiviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
 fi_tekninen = { Materiaali = "Muovi (PP)", Seinamapaksuus = "1.8 mm" }
+fi_tuote = { valmistaja = "Uponor", sarjan_nimi = "Uponor HTP", materiaalin_nimi = "PP" }
 
 # Fallback for legacy/general drain layers (KYL-VIEMARI-LATTIA, -KATTO,
 # -110 etc.) that don't match the size-specific VPUTKI rules above.
@@ -138,6 +141,7 @@ system_name = "Refrigeration plant"
 pset_overrides = { Pset_PipeSegmentOccurrence = { NominalDiameter = 110.0 } }
 fi_komponentti = { paaryhma = "PUTKISTOT - LVI", alaryhma = "VIEMÄRIPUTKISTOT", yleisnimi = "Sulanapitoviemäri", yleistunnus = "KDV" }
 fi_sijainti = { jarjestelmien_nimet = "Viemäri - kondenssi", jarjestelmien_tunnukset = "J-LVI-04-04" }
+fi_tuote = { valmistaja = "Uponor", sarjan_nimi = "Uponor HTP", materiaalin_nimi = "PP" }
 
 # -----------------------------------------------------------------------------
 # Section 2b: MagiCAD-drawn refrigeration pipes + devices (v0.1.19+).

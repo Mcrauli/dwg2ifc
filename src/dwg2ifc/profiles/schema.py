@@ -41,6 +41,10 @@ class FiTuoteOverrides(BaseModel):
     kommentti: str | None = None
     valmistaja: str | None = None
     valmistajan_linkki: str | None = None
+    sarjan_nimi: str | None = None
+    materiaalin_nimi: str | None = None
+    materiaalin_tunnus: str | None = None
+    eristesarja: str | None = None
 
 
 # FI_Tekninen is FREE-FORM. The relevant technical properties differ
