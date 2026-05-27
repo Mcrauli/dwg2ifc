@@ -6,6 +6,15 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha29 — 2026-05-27 (DWG GUID näkyviin Solibriin FI_Tekninen-kentässä)
+
+- **Uusi: DWG GUID näkyy Solibrissa FI_Tekninen-ominaisuutena "DWG GUID".**
+  Kaikille KYL-\*-elementeille joille RADIKA_REIKAVARAUS-xdata löytyy, GUID kirjoitetaan
+  myös FI_Tekninen-PSet:iin UUID-muodossa (esim. `550e8400-e29b-41d4-a716-446655440000`).
+  Aiemmin se asetettiin vain IFC GlobalId:ksi (kompressoitu 22-merkkinen muoto — ei luettava).
+- **Diagnostiikka: progress-logissa näkyy nyt "N DWG-GUIDia luettu → IFC GlobalId + FI_Tekninen"**
+  jotta voidaan varmistaa lukeeko parseri GUIDit vai jättääkö DXFOUT ne pois.
+
 ## v0.3.0-alpha28 — 2026-05-27 (GUID-auditointi: puuttuvat ja duplikaatit varoituksina)
 
 - **Uusi: GUID-yhteenveto konversion progress-logissa.** Konversio tarkistaa

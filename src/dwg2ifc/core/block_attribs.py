@@ -282,8 +282,8 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
 _GUID_ELIGIBLE_TYPES = frozenset({"INSERT", "3DSOLID", "MESH", "POLYLINE", "LWPOLYLINE"})
 
 
-def audit_entity_guids(mapped: Iterable[MappedEntity]) -> tuple[int, int]:
-    """Scan guid-eligible KYL-* entities and return (missing, duplicate) counts.
+def audit_entity_guids(mapped: Iterable[MappedEntity]) -> tuple[int, int, int]:
+    """Scan guid-eligible KYL-* entities and return (missing, duplicate, found) counts.
 
     *guid-eligible*: INSERT / 3DSOLID / MESH / POLYLINE / LWPOLYLINE on a
     layer that starts with ``KYL`` (case-insensitive) and does not contain
@@ -294,6 +294,7 @@ def audit_entity_guids(mapped: Iterable[MappedEntity]) -> tuple[int, int]:
         duplicate — GUIDs that appear on more than one entity (count of
                     *extra* occurrences, i.e. total duplicates minus one
                     per group, matching what RGUID_REPAIR_AUTO would fix).
+        found     — entities that have a valid GUID.
     """
     missing = 0
     guid_counts: Counter[str] = Counter()
@@ -312,5 +313,6 @@ def audit_entity_guids(mapped: Iterable[MappedEntity]) -> tuple[int, int]:
         else:
             guid_counts[guid.casefold()] += 1
 
+    found = sum(guid_counts.values())
     duplicate = sum(n - 1 for n in guid_counts.values() if n > 1)
-    return missing, duplicate
+    return missing, duplicate, found

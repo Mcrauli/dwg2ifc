@@ -392,7 +392,9 @@ def _process_one_file(
 
     apply_block_attribs(mapped)
 
-    guid_missing, guid_dup = audit_entity_guids(mapped)
+    guid_missing, guid_dup, guid_found = audit_entity_guids(mapped)
+    if guid_found:
+        _emit(progress, f"  {guid_found} DWG-GUIDia luettu → IFC GlobalId + FI_Tekninen")
     if guid_missing:
         _emit(
             progress,
