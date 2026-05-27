@@ -198,9 +198,14 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
     ``fi_tekninen`` in place.
     """
     for entity in mapped:
-        if _is_hole_reservation_entity(entity):
-            xdata = (entity.attributes or {}).get("radika_reikavaraus_xdata")
-            if isinstance(xdata, dict):
+        xdata = (entity.attributes or {}).get("radika_reikavaraus_xdata")
+        if isinstance(xdata, dict):
+            # Promote GUID for ALL KYL-* entities → stable IFC GlobalId across
+            # repeated conversions of the same DWG.
+            guid_raw = str(xdata.get("GUID") or "").strip()
+            if guid_raw:
+                entity.extra_props["guid"] = guid_raw
+            if _is_hole_reservation_entity(entity):
                 for raw_tag, raw_value in xdata.items():
                     hole_field = resolve_hole_reservation_field(str(raw_tag))
                     if hole_field is None:

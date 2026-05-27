@@ -6,6 +6,15 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha27 — 2026-05-27 (Stable IFC GlobalIds: DWG GUID → kaikki KYL-* elementit)
+
+- **Korjattu: DWG:n RADIKA_REIKAVARAUS-xdata GUID luetaan nyt kaikille KYL-\*-entiteeteille.**
+  `guid-tools.lsp`-ribbon-työkalu kirjoittaa GUIDin (RADIKA_REIKAVARAUS xdata) kaikkiin
+  INSERT/3DSOLID/POLYLINE/LWPOLYLINE-entiteetteihin KYL-\*-layereillä. Aiemmin parseri luki
+  GUIDin vain KYL-REIKAVARAUS-layerin entiteeteiltä (reikävaraus-sylinteri → IfcBuildingElementProxy).
+  Nyt GUID ylitetään `extra_props["guid"]`:iin kaikille entiteeteille, ja jokainen `add_*`-rakentaja
+  käyttää sitä IFC GlobalId:nä. Sama DWG → sama IFC GlobalId jokaisella konversiokerralla.
+
 ## v0.3.0-alpha26 — 2026-05-27 (versiopumppu: a25-fixit mukaan banneriin)
 
 - Versiopumppu jotta GUI-banneri triggeröityy: a25-release buildattiin ennen

@@ -4,8 +4,8 @@
 
 VSVersionInfo(
     ffi=FixedFileInfo(
-        filevers=(0, 3, 0, 26),
-        prodvers=(0, 3, 0, 26),
+        filevers=(0, 3, 0, 27),
+        prodvers=(0, 3, 0, 27),
         mask=0x3F,
         flags=0x0,
         OS=0x40004,
@@ -21,14 +21,14 @@ VSVersionInfo(
                     [
                         StringStruct("CompanyName", "Lauri Rekola"),
                         StringStruct("FileDescription", "dwg2ifc DWG/DXF to IFC 4 converter"),
-                        StringStruct("FileVersion", "0.3.0a26"),
+                        StringStruct("FileVersion", "0.3.0a27"),
                         StringStruct("InternalName", "dwg2ifc"),
                         StringStruct(
                             "LegalCopyright", "(c) 2026 Lauri Rekola"
                         ),
                         StringStruct("OriginalFilename", "dwg2ifc.exe"),
                         StringStruct("ProductName", "dwg2ifc"),
-                        StringStruct("ProductVersion", "0.3.0a26"),
+                        StringStruct("ProductVersion", "0.3.0a27"),
                     ],
                 )
             ]

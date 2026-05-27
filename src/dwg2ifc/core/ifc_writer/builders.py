@@ -410,6 +410,19 @@ def _compress_ifc_guid(uuid_value: str) -> str:
         raise ValueError(f"invalid hole reservation GUID: {value}") from exc
 
 
+def _apply_stable_guid(product, extras: dict | None) -> None:
+    """Override product's auto-generated GlobalId with the stable DWG GUID
+    from RADIKA_REIKAVARAUS xdata, if present, so the same DWG entity always
+    produces the same IFC GlobalId across repeated conversions."""
+    raw = str((extras or {}).get("guid") or "").strip()
+    if not raw:
+        return
+    try:
+        product.GlobalId = ifcopenshell.guid.compress(raw)
+    except Exception:  # noqa: BLE001
+        pass
+
+
 def add_provision_for_void(
     ifc,
     mapped: MappedEntity,
@@ -582,6 +595,7 @@ def add_pipe_segment(
         name=mapped.layer,
         predefined_type=enum_value,
     )
+    _apply_stable_guid(pipe, mapped.extra_props)
 
     pipe_type = _ensure_pipe_segment_type(ifc, predefined_type, enum_value)
     ifcopenshell.api.run("type.assign_type", ifc, related_objects=[pipe], relating_type=pipe_type)
@@ -668,12 +682,14 @@ def add_furniture(
     the placement at the mesh's bounding-box minimum.
     """
     if isinstance(mapped.geometry, MeshGeometry):
-        return _add_mesh_product(
+        product = _add_mesh_product(
             ifc,
             mapped,
             ifc_class="IfcFurniture",
             parent_storey=parent_storey,
         )
+        _apply_stable_guid(product, mapped.extra_props)
+        return product
     if isinstance(mapped.geometry, BlockInstance):
         width = float(mapped.extra_props.get("default_width_mm", 1000.0))
         depth = float(mapped.extra_props.get("default_depth_mm", 600.0))
@@ -734,6 +750,7 @@ def add_furniture(
         ifc_class="IfcFurniture",
         name=mapped.layer,
     )
+    _apply_stable_guid(furniture, mapped.extra_props)
 
     matrix = _z_rotation_matrix(box.anchor.x, box.anchor.y, box.anchor.z, box.angle_rad)
     ifcopenshell.api.run(
@@ -832,6 +849,7 @@ def add_cable_carrier_segment(
         name=mapped.layer,
         predefined_type=enum_value,
     )
+    _apply_stable_guid(seg, mapped.extra_props)
 
     seg_type = _ensure_cable_carrier_segment_type(ifc, predefined_type, enum_value)
     ifcopenshell.api.run("type.assign_type", ifc, related_objects=[seg], relating_type=seg_type)
@@ -1048,6 +1066,7 @@ def add_cable_carrier(
             relating_structure=parent_storey,
         )
 
+    _apply_stable_guid(seg, mapped.extra_props)
     seg_type = _ensure_cable_carrier_segment_type(ifc, predefined_type, enum_value)
     ifcopenshell.api.run("type.assign_type", ifc, related_objects=[seg], relating_type=seg_type)
 
@@ -1084,6 +1103,7 @@ def add_building_element_proxy(
             predefined_type="USERDEFINED",
         )
         product.ObjectType = element_type
+        _apply_stable_guid(product, mapped.extra_props)
         ifcopenshell.api.run(
             "type.assign_type", ifc, related_objects=[product], relating_type=proxy_type
         )
@@ -1157,6 +1177,7 @@ def add_building_element_proxy(
         products=[proxy],
         relating_structure=parent_storey,
     )
+    _apply_stable_guid(proxy, mapped.extra_props)
     ifcopenshell.api.run(
         "type.assign_type", ifc, related_objects=[proxy], relating_type=proxy_type
     )
@@ -1201,6 +1222,7 @@ def add_cooling_equipment(
             ifc_class=mapped.ifc_type,
             parent_storey=parent_storey,
         )
+        _apply_stable_guid(product, mapped.extra_props)
         ifcopenshell.api.run(
             "type.assign_type", ifc, related_objects=[product], relating_type=cooling_type
         )
@@ -1276,6 +1298,7 @@ def add_cooling_equipment(
         products=[product],
         relating_structure=parent_storey,
     )
+    _apply_stable_guid(product, mapped.extra_props)
     ifcopenshell.api.run(
         "type.assign_type", ifc, related_objects=[product], relating_type=cooling_type
     )
@@ -1292,13 +1315,15 @@ def add_tank(ifc, mapped: MappedEntity, *, parent_storey) -> object:
     bbox cuboid fallback. Either way, a faceted Brep representation is
     enough for Solibri to display the tank in the IFC.
     """
-    return _add_mesh_product(
+    product = _add_mesh_product(
         ifc,
         mapped,
         ifc_class="IfcTank",
         parent_storey=parent_storey,
         predefined_type=mapped.predefined_type or "BASIN",
     )
+    _apply_stable_guid(product, mapped.extra_props)
+    return product
 
 
 def add_flow_controller(ifc, mapped: MappedEntity, *, parent_storey) -> object:
@@ -1309,13 +1334,15 @@ def add_flow_controller(ifc, mapped: MappedEntity, *, parent_storey) -> object:
     Object Enabler for full geometry; without enabler, a bbox cuboid is
     emitted and the user is warned in the progress log.
     """
-    return _add_mesh_product(
+    product = _add_mesh_product(
         ifc,
         mapped,
         ifc_class="IfcFlowController",
         parent_storey=parent_storey,
         predefined_type=mapped.predefined_type or "USERDEFINED",
     )
+    _apply_stable_guid(product, mapped.extra_props)
+    return product
 
 
 # Generic distribution-element classes added 2026-05-08 for the broad
@@ -1405,13 +1432,15 @@ def add_distribution_element(
             f"add_distribution_element supports {sorted(_DISTRIBUTION_ELEMENT_CLASSES)}, "
             f"got {ifc_class!r}"
         )
-    return _add_mesh_product(
+    product = _add_mesh_product(
         ifc,
         mapped,
         ifc_class=ifc_class,
         parent_storey=parent_storey,
         predefined_type=mapped.predefined_type or "USERDEFINED",
     )
+    _apply_stable_guid(product, mapped.extra_props)
+    return product
 
 
 def add_system(ifc, *, name: str, system_code: str | None = None) -> object:

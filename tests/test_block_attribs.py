@@ -414,6 +414,34 @@ def test_apply_block_attribs_routes_hole_reservation_xdata_fields():
     assert e.extra_props["korko_mm"] == 2800.0
 
 
+def test_apply_block_attribs_promotes_guid_for_non_reservation_kyl_entities():
+    """RADIKA_REIKAVARAUS xdata GUID is promoted to extra_props for ALL
+    KYL-* entities, not just KYL-REIKAVARAUS, so every entity gets a
+    stable IFC GlobalId across repeated conversions."""
+    e = MappedEntity(
+        layer="KYL-KONEIKKO",
+        dxf_type="INSERT",
+        geometry=BlockInstance(
+            insertion_point=Point3D(0.0, 0.0, 0.0),
+            rotation_rad=0.0,
+        ),
+        handle="CAFE",
+        attributes={
+            "radika_reikavaraus_xdata": {
+                "GUID": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            }
+        },
+        extra_props={},
+    )
+
+    apply_block_attribs([e])
+
+    assert e.extra_props["guid"] == "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+    # Hole-reservation fields (varaus_tyyppi etc.) must NOT be set for non-reservation layer.
+    assert "varaus_tyyppi" not in e.extra_props
+    assert "halkaisija_mm" not in e.extra_props
+
+
 # --- end-to-end through dxf_reader -------------------------------------
 
 
