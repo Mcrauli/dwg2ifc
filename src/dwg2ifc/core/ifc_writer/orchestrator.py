@@ -388,9 +388,23 @@ def _process_one_file(
     # Per-block ATTRIB tech-spec overrides. Runs AFTER the energy-spec
     # Excel merge so per-instance values on a specific lauhdutin /
     # koneikko block win over project-wide spreadsheet rows.
-    from dwg2ifc.core.block_attribs import apply_block_attribs
+    from dwg2ifc.core.block_attribs import apply_block_attribs, audit_entity_guids
 
     apply_block_attribs(mapped)
+
+    guid_missing, guid_dup = audit_entity_guids(mapped)
+    if guid_missing:
+        _emit(
+            progress,
+            f"  varoitus: {guid_missing} KYL-* elementtiä ilman GUIDia"
+            " — aja RGUID_REFRESH_AUTO AutoCADissa",
+        )
+    if guid_dup:
+        _emit(
+            progress,
+            f"  varoitus: {guid_dup} duplikaatti-GUID"
+            " — aja RGUID_REPAIR_AUTO AutoCADissa",
+        )
 
     # Bbox fallback: when accoreconsole STLOUT crashed (or didn't run),
     # cooling equipment / proxies / etc. remain BlockInstance-only and

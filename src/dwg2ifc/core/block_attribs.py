@@ -59,6 +59,7 @@ Empty-value policy:
 from __future__ import annotations
 
 import re
+from collections import Counter
 from typing import Callable, Iterable
 
 from dwg2ifc.core.types import MappedEntity
@@ -275,3 +276,41 @@ def apply_block_attribs(mapped: Iterable[MappedEntity]) -> None:
             # placeholder row and never clobbers an existing value.
             if value or label not in entity.fi_tekninen:
                 entity.fi_tekninen[label] = value
+
+
+# Entity types that guid-tools.lsp writes GUIDs to (matches rg-guid-eligible-p).
+_GUID_ELIGIBLE_TYPES = frozenset({"INSERT", "3DSOLID", "MESH", "POLYLINE", "LWPOLYLINE"})
+
+
+def audit_entity_guids(mapped: Iterable[MappedEntity]) -> tuple[int, int]:
+    """Scan guid-eligible KYL-* entities and return (missing, duplicate) counts.
+
+    *guid-eligible*: INSERT / 3DSOLID / MESH / POLYLINE / LWPOLYLINE on a
+    layer that starts with ``KYL`` (case-insensitive) and does not contain
+    ``KALUSTE`` — mirrors ``rg-guid-eligible-p`` in ``guid-tools.lsp``.
+
+    Returns:
+        missing   — entities without a GUID in ``extra_props``.
+        duplicate — GUIDs that appear on more than one entity (count of
+                    *extra* occurrences, i.e. total duplicates minus one
+                    per group, matching what RGUID_REPAIR_AUTO would fix).
+    """
+    missing = 0
+    guid_counts: Counter[str] = Counter()
+
+    for entity in mapped:
+        layer = str(entity.layer or "").strip().upper()
+        if not layer.startswith("KYL"):
+            continue
+        if "KALUSTE" in layer:
+            continue
+        if str(entity.dxf_type or "").upper() not in _GUID_ELIGIBLE_TYPES:
+            continue
+        guid = str((entity.extra_props or {}).get("guid") or "").strip()
+        if not guid:
+            missing += 1
+        else:
+            guid_counts[guid.casefold()] += 1
+
+    duplicate = sum(n - 1 for n in guid_counts.values() if n > 1)
+    return missing, duplicate

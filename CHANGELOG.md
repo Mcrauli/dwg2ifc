@@ -6,6 +6,14 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha28 — 2026-05-27 (GUID-auditointi: puuttuvat ja duplikaatit varoituksina)
+
+- **Uusi: GUID-yhteenveto konversion progress-logissa.** Konversio tarkistaa
+  GUID-kelvolliset KYL-\*-entiteetit (INSERT/3DSOLID/MESH/POLYLINE/LWPOLYLINE,
+  ei \*KALUSTE\*) ja raportoi:
+  - `"N KYL-* elementtiä ilman GUIDia — aja RGUID_REFRESH_AUTO AutoCADissa"`
+  - `"N duplikaatti-GUID — aja RGUID_REPAIR_AUTO AutoCADissa"`
+
 ## v0.3.0-alpha27 — 2026-05-27 (Stable IFC GlobalIds: DWG GUID → kaikki KYL-* elementit)
 
 - **Korjattu: DWG:n RADIKA_REIKAVARAUS-xdata GUID luetaan nyt kaikille KYL-\*-entiteeteille.**
