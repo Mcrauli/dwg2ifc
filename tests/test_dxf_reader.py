@@ -126,6 +126,35 @@ def test_read_insert_captures_radika_reikavaraus_xdata(tmp_path: Path):
     assert xdata["YLITYS_MM"] == "10"
 
 
+def test_read_lwpolyline_captures_radika_reikavaraus_xdata(tmp_path: Path):
+    dxf = tmp_path / "rv_poly.dxf"
+    doc = ezdxf.new("R2010")
+    doc.layers.add(name="KYL-REIKAVARAUS")
+    pl = doc.modelspace().add_lwpolyline(
+        [(0, 0), (100, 0), (100, 100), (0, 100)],
+        close=True,
+        dxfattribs={"layer": "KYL-REIKAVARAUS"},
+    )
+    pl.set_xdata(
+        "RADIKA_REIKAVARAUS",
+        [
+            (1000, "GUID=550e8400-e29b-41d4-a716-446655440000"),
+            (1000, "VARAUS_TYYPPI=LATTIA"),
+            (1000, "HALKAISIJA=200"),
+            (1000, "PITUUS=180"),
+        ],
+    )
+    doc.saveas(str(dxf))
+
+    records = read_dxf(dxf)
+    polys = [r for r in records if r.dxf_type == "LWPOLYLINE"]
+    assert len(polys) == 1
+    xdata = polys[0].attributes.get("radika_reikavaraus_xdata")
+    assert isinstance(xdata, dict)
+    assert xdata["GUID"] == "550e8400-e29b-41d4-a716-446655440000"
+    assert xdata["VARAUS_TYYPPI"] == "LATTIA"
+
+
 def test_read_open_lwpolyline_yields_line_segments(tmp_path: Path):
     """v0.1.19+: open LWPOLYLINEs (common in MagiCAD proxy graphics for
     pipe centrelines and detail outlines) are no longer dropped — they

@@ -718,7 +718,7 @@ def _record_from_entity(
             layer=layer,
             dxf_type="LINE",
             geometry=LineGeometry(start=start, end=end),
-            attributes={},
+            attributes=_attrs(),
             handle=_handle(),
         )]
 
@@ -734,7 +734,7 @@ def _record_from_entity(
                 layer=layer,
                 dxf_type="LWPOLYLINE",
                 geometry=PolygonGeometry(vertices=tuple(world_vertices), closed=True),
-                attributes={},
+                attributes=_attrs(),
                 handle=_handle(),
             )]
         # Open polyline: emit one LineGeometry per consecutive vertex pair.
@@ -748,7 +748,7 @@ def _record_from_entity(
                 layer=layer,
                 dxf_type="LWPOLYLINE",
                 geometry=LineGeometry(start=v0, end=v1),
-                attributes={},
+                attributes=_attrs(),
                 handle=h,
             )
             for v0, v1 in zip(world_vertices, world_vertices[1:])
@@ -786,7 +786,7 @@ def _record_from_entity(
                     faces=pf_faces,
                     source="polyface",
                 ),
-                attributes={},
+                attributes=_attrs(),
                 handle=_handle(),
             )]
         # Proxy-graphics streams emit POLYLINE for n-gons in the older
@@ -812,7 +812,7 @@ def _record_from_entity(
                     vertices=tuple(world_vertices),
                     closed=True,
                 ),
-                attributes={},
+                attributes=_attrs(),
                 handle=_handle(),
             )]
         if len(world_vertices) < 2:
@@ -823,7 +823,7 @@ def _record_from_entity(
                 layer=layer,
                 dxf_type="POLYLINE",
                 geometry=LineGeometry(start=v0, end=v1),
-                attributes={},
+                attributes=_attrs(),
                 handle=h,
             )
             for v0, v1 in zip(world_vertices, world_vertices[1:])
@@ -951,7 +951,7 @@ def _record_from_entity(
             geometry=MeshGeometry(
                 vertices=verts, faces=faces, source="3dface"
             ),
-            attributes={},
+            attributes=_attrs(),
             handle=_handle(),
         )]
 
