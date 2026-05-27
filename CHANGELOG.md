@@ -6,6 +6,12 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha26 — 2026-05-27 (versiopumppu: a25-fixit mukaan banneriin)
+
+- Versiopumppu jotta GUI-banneri triggeröityy: a25-release buildattiin ennen
+  yleistunnus-korjausta, joten a26 tuo sen käyttäjille automaattisesti.
+- Sisältö identtinen a25:n kanssa (yleistunnus RAVA-arvo + TOML auto-numerointi-avain).
+
 ## v0.3.0-alpha25 — 2026-05-27 (Tunnistaminen 100% takaisin: yleistunnus RAVA-arvo, auto-numerointi TOML-avaimella)
 
 - **Korjattu: a24 rikkoi tunnistamisen 88 elementille.** a24:ssä TOML fi_komponentti.yleistunnus
