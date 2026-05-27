@@ -6,6 +6,18 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha25 — 2026-05-27 (Tunnistaminen 100% takaisin: yleistunnus RAVA-arvo, auto-numerointi TOML-avaimella)
+
+- **Korjattu: a24 rikkoi tunnistamisen 88 elementille.** a24:ssä TOML fi_komponentti.yleistunnus
+  ohitti RAVA:n arvon, mutta validaattori tarkistaa "05 Komponentin yleistunnus" -kentän
+  RAVA:n virallista shortNameä vasten. T-LVI-02-01-001 / T-LVI-04-01-001 / T-LVI-01-01-999
+  koodien shortName on "ei tunnusta" — TOML:n "KP" / "CO2A" / "CO2S" yms. aiheuttivat
+  "Tuoteosakoodistojen arvoissa puutteita" -virheen 88 elementille.
+- **FI_Komponentti yleistunnus käyttää aina RAVA:n kanonista arvoa** (tai TOML:a kun
+  RAVA-koodia ei ole). Tunnistaminen palaa 100%:iin.
+- **Laitetunnus auto-numerointi käyttää silti TOML-yleistunnusta avaimena** kun RAVA sanoo
+  "ei tunnusta": CO2-anturi → "CO2A-01", CO2-sireeni → "CO2S-01", KP-putket → "KP-01" jne.
+
 ## v0.3.0-alpha24 — 2026-05-27 (CO2A/CO2S-tunnukset + Jakelujärjestelmä-luokka + hylly-sarjanimet)
 
 - **Korjattu: CO2-anturin ja CO2-sirreenin yleistunnus ja Laitetunnus auto-numerointi.**

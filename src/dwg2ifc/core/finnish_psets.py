@@ -637,17 +637,18 @@ def add_finnish_psets(
         _rava_h = load_tuoteosa_hierarchy().get(code) if code else None
     except Exception:
         _rava_h = None
-    _rava_yt = _rava_h.yleistunnus if _rava_h else None
+    # yleistunnus_val: always use RAVA's canonical value — the validator checks that
+    # "05 Komponentin yleistunnus" matches the RAVA-defined shortName for the code.
+    # Overriding with a TOML-defined value (e.g. "KP", "CO2A") would cause the
+    # "Tuoteosakoodistojen arvoissa puutteita" tunnistaminen failure.
+    yleistunnus_val = _rava_h.yleistunnus if _rava_h else fi_k.get("yleistunnus") or ""
+    # For auto-numbering: use TOML fi_k yleistunnus as key when RAVA says "ei tunnusta"
+    # so that CO2A → "CO2A-01", KP-putket → "KP-01" etc. (more meaningful than ifc_type).
     _toml_yt = fi_k.get("yleistunnus")
-    if _rava_yt and _rava_yt.casefold() != "ei tunnusta":
-        yleistunnus_val = _rava_yt
-    else:
-        # RAVA says "ei tunnusta" or is absent — prefer an explicit TOML override
-        # (e.g. CO2A / CO2S), but keep the RAVA value when no TOML override exists.
-        yleistunnus_val = _toml_yt or _rava_yt or ""
     raw_laitetunnus = extras.get("laitetunnus")
     if not raw_laitetunnus and laitetunnus_counter is not None:
-        key = yleistunnus_val if yleistunnus_val and yleistunnus_val.casefold() != "ei tunnusta" else mapped.ifc_type
+        _yt_for_key = yleistunnus_val if yleistunnus_val and yleistunnus_val.casefold() != "ei tunnusta" else None
+        key = _yt_for_key or _toml_yt or mapped.ifc_type
         n = laitetunnus_counter.get(key, 0) + 1
         laitetunnus_counter[key] = n
         raw_laitetunnus = f"{key}-{n:02d}"

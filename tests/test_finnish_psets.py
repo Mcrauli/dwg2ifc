@@ -407,7 +407,7 @@ def test_convert_dxf_emits_fi_psets_on_pipe_segment(tmp_path: Path):
     by_name = {p.Name: p.NominalValue.wrappedValue for p in komp.HasProperties}
     assert by_name["01 Komponentin pääryhmä"] == "PUTKISTOT"
     assert by_name["03 Komponentin koodi"] == "T-LVI-02-01-001"
-    assert by_name["05 Komponentin yleistunnus"] == "KP"
+    assert by_name["05 Komponentin yleistunnus"] == "ei tunnusta"
     assert by_name["Status"] == "New"
 
 
