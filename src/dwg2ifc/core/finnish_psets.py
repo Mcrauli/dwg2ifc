@@ -637,7 +637,14 @@ def add_finnish_psets(
         _rava_h = load_tuoteosa_hierarchy().get(code) if code else None
     except Exception:
         _rava_h = None
-    yleistunnus_val = _rava_h.yleistunnus if _rava_h else fi_k.get("yleistunnus") or ""
+    _rava_yt = _rava_h.yleistunnus if _rava_h else None
+    _toml_yt = fi_k.get("yleistunnus")
+    if _rava_yt and _rava_yt.casefold() != "ei tunnusta":
+        yleistunnus_val = _rava_yt
+    else:
+        # RAVA says "ei tunnusta" or is absent — prefer an explicit TOML override
+        # (e.g. CO2A / CO2S), but keep the RAVA value when no TOML override exists.
+        yleistunnus_val = _toml_yt or _rava_yt or ""
     raw_laitetunnus = extras.get("laitetunnus")
     if not raw_laitetunnus and laitetunnus_counter is not None:
         key = yleistunnus_val if yleistunnus_val and yleistunnus_val.casefold() != "ei tunnusta" else mapped.ifc_type

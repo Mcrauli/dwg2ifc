@@ -104,9 +104,19 @@ def add_system_classification(ifc, system, *, system_code: str | None) -> object
             Edition=meta["Edition"],
             Name=classification_name,
         )
+    ref_name: str | None = None
+    try:
+        from dwg2ifc.profiles.rava.loader import load_rava_codes
+
+        entry = load_rava_codes().get(system_code)
+        if entry:
+            ref_name = entry.name or None
+    except Exception:
+        pass
     reference = ifc.create_entity(
         "IfcClassificationReference",
         Identification=system_code,
+        Name=ref_name,
         ReferencedSource=classification,
     )
     ifc.create_entity(

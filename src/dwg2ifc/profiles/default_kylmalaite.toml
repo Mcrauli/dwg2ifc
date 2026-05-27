@@ -214,7 +214,7 @@ system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Tikashylly (pystysuora)", yleistunnus = "AHJ.LVI" }
 fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjestelmien_tunnukset = "AHJ.LVI" }
 fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Kuumasinkitty" }
-fi_tuote = { nimi = "KS20-500 K L=6000 PG", valmistaja = "MEKA" }
+fi_tuote = { nimi = "KS20-500 K L=6000 PG", valmistaja = "MEKA", sarjan_nimi = "KS20" }
 
 [[rules]]
 layer_pattern = "KYL-TIKASHYLLY*"
@@ -226,7 +226,7 @@ system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Tikashylly", yleistunnus = "AHJ.LVI" }
 fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjestelmien_tunnukset = "AHJ.LVI" }
 fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Kuumasinkitty" }
-fi_tuote = { nimi = "KS20-500 K L=6000 PG", valmistaja = "MEKA" }
+fi_tuote = { nimi = "KS20-500 K L=6000 PG", valmistaja = "MEKA", sarjan_nimi = "KS20" }
 
 [[rules]]
 layer_pattern = "KYL-LEVYHYLLY*"
@@ -238,7 +238,7 @@ system_name = "Refrigeration plant"
 fi_komponentti = { paaryhma = "TUOTEOSAT - LVI", alaryhma = "ASENNUSHYLLYJÄRJESTELMÄT", yleisnimi = "Levyhylly", yleistunnus = "AHJ.LVI" }
 fi_sijainti = { jarjestelmien_nimet = "Asennushyllyjärjestelmä - LVI", jarjestelmien_tunnukset = "AHJ.LVI" }
 fi_tekninen = { Materiaali = "Teräs", Pinnoite = "Polyesterimaalattu" }
-fi_tuote = { nimi = "KRA-60-500 L=3000 M", valmistaja = "MEKA" }
+fi_tuote = { nimi = "KRA-60-500 L=3000 M", valmistaja = "MEKA", sarjan_nimi = "KRA-60" }
 
 # Kotelo — koteloitu (suljettu) kaapelireitti / asennuskotelo. Sama
 # polyline+thickness-dynamic-block-rakenne kuin KLHYLLY-hyllyillä, mutta

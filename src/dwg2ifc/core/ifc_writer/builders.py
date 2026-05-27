@@ -1464,6 +1464,12 @@ def _attach_fi_jarjestelma_pset(
             jarjestelmaluokka = "KYLMÄJÄRJESTELMÄT"
         elif system_code.startswith("J-LVI-04"):
             jarjestelmaluokka = "VIEMÄRIJÄRJESTELMÄT"
+        elif system_code.startswith("J-LVI"):
+            jarjestelmaluokka = "LVI-JÄRJESTELMÄT"
+        elif system_code.startswith("J-TATE"):
+            jarjestelmaluokka = "TALOTEKNIIKKAJÄRJESTELMÄT"
+    if not rava_short_name or rava_short_name.casefold() == "ei tunnusta":
+        rava_short_name = system_code or ""
     system_tunnus = ""
     if rava_short_name and rava_short_name.casefold() != "ei tunnusta":
         system_tunnus = rava_short_name

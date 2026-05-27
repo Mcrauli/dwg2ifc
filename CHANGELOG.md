@@ -6,6 +6,23 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha24 — 2026-05-27 (CO2A/CO2S-tunnukset + Jakelujärjestelmä-luokka + hylly-sarjanimet)
+
+- **Korjattu: CO2-anturin ja CO2-sirreenin yleistunnus ja Laitetunnus auto-numerointi.**
+  RAVA-koodi T-LVI-01-01-999 palauttaa shortName = "ei tunnusta", jolloin auto-numerointi
+  käytti fallbackina `mapped.ifc_type` → Laitetunnus oli "IfcSensor-01" / "IfcAlarm-01".
+  Korjattu: kun RAVA sanoo "ei tunnusta", käytetään TOML fi_komponentti.yleistunnus-arvoa.
+  CO2-anturi → laitetunnus "CO2A-01", CO2-sireeni → "CO2S-01".
+- **Korjattu: Jakelujärjestelmä Järjestelmäluokka ja Järjestelmätyypin yleistunnus
+  puuttuivat.** J-LVI on RAVA:n ylin taso (hierarchyLevel=1) — shortName tyhjä eikä
+  J-LVI-09/J-LVI-04-haaroja ollut käsitelty. Korjattu: level-1 J-LVI saa
+  `jarjestelmaluokka = "LVI-JÄRJESTELMÄT"` ja `yleistunnus = "J-LVI"`.
+- **Korjattu: IfcSystem-luokitusviite (IfcClassificationReference) ilman Name-kenttää.**
+  `add_system_classification` lisää nyt RAVA:n prefLabel:n Name-kentäksi
+  (esim. "Kylmä - suorahöyrysteinen" Kylmäjärjestelmälle).
+- **FI_Tuote: Sarjan nimi lisätty MEKA-hyllysäännöille.** KYL-TIKASHYLLY* → `sarjan_nimi = "KS20"`,
+  KYL-LEVYHYLLY* → `sarjan_nimi = "KRA-60"`.
+
 ## v0.3.0-alpha23 — 2026-05-27 (Laitetunnus auto-numerointi + Jakelujärjestelmä-koodi)
 
 - **Uusi: Laitetunnus auto-numerointi.** Kaikki laitteet joilla ei ole POSITIO- tai
