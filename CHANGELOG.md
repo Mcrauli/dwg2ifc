@@ -6,6 +6,18 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha23 — 2026-05-27 (Laitetunnus auto-numerointi + Jakelujärjestelmä-koodi)
+
+- **Uusi: Laitetunnus auto-numerointi.** Kaikki laitteet joilla ei ole POSITIO- tai
+  ATTDEF-pohjaista laitetunnusta saavat automaattisen tunnuksen muodossa
+  `<yleistunnus>-01`, `<yleistunnus>-02` jne. per konversioajo. Numero kasvaa
+  yleistunnus-kohtaisesti (esim. CO2A-01/CO2A-02 ja CO2S-01 erikseen).
+  Laskuri jaetaan kaikille tuotteille saman IFC-tiedoston sisällä. POSITIOsta
+  tai ATTDEFistä tuleva tunnus ohittaa auto-numeroinnin aina.
+- **Korjattu: Jakelujärjestelmä FI_Järjestelmä tyhjät kentät.** `add_system()`
+  kutsuttiin ilman `system_code`-parametria → kaikki kentät olivat tyhjiä.
+  Korjattu: `system_code="J-LVI"` (RAVA LVI-JÄRJESTELMÄT, ylin taso).
+
 ## v0.3.0-alpha22 — 2026-05-27 (FI_Geometria Koko (DN) + Uponor HTP viemäriputkille)
 
 - **Korjattu: FI_Geometria puuttui kokonaan `IfcPipeSegment`-tuotteilta.** Koodi yritti

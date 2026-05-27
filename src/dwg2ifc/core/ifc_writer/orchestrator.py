@@ -830,6 +830,8 @@ def convert(
             add_classification(ifc, product, domain=m.domain, code=code)
         add_discipline_classification(ifc, product, domain=m.domain)
 
+    _laitetunnus_counter: dict[str, int] = {}
+
     def _attach_fi_psets(product: object, m: object) -> None:
         from dwg2ifc.core.finnish_psets import add_finnish_psets
         from dwg2ifc.core.geometry import extents_from_geometry
@@ -848,6 +850,7 @@ def convert(
             mapped=m,
             parent_storey=_storey_for(m),
             extents=extents,
+            laitetunnus_counter=_laitetunnus_counter,
         )
 
     try:
@@ -967,7 +970,7 @@ def convert(
                 lvi_child_systems.append(system)
 
         if lvi_child_systems:
-            parent = add_system(ifc, name="Jakelujärjestelmä")
+            parent = add_system(ifc, name="Jakelujärjestelmä", system_code="J-LVI")
             assign_to_system(ifc, products=lvi_child_systems, system=parent)
 
         write_ifc(ifc, output_path)

@@ -541,6 +541,7 @@ def add_finnish_psets(
     mapped,
     parent_storey,
     extents: GeometryExtents,
+    laitetunnus_counter: dict[str, int] | None = None,
 ) -> None:
     """Attach all four FI_* PSets to ``product`` based on a MappedEntity.
 
@@ -550,6 +551,10 @@ def add_finnish_psets(
     storey-relative elevations). ``extents`` is precomputed by the
     caller (``extents_from_geometry`` in :mod:`geometry`) — passing it
     in keeps this function pure-IFC and unit-testable.
+
+    ``laitetunnus_counter`` is a shared mutable dict passed by the
+    orchestrator so sequential numbering persists across all products in
+    one conversion run. When ``None`` no auto-numbering is applied.
     """
     storey_elev = float(parent_storey.Elevation or 0.0) if parent_storey is not None else 0.0
     extras = mapped.extra_props or {}
@@ -632,6 +637,13 @@ def add_finnish_psets(
         _rava_h = load_tuoteosa_hierarchy().get(code) if code else None
     except Exception:
         _rava_h = None
+    yleistunnus_val = _rava_h.yleistunnus if _rava_h else fi_k.get("yleistunnus") or ""
+    raw_laitetunnus = extras.get("laitetunnus")
+    if not raw_laitetunnus and laitetunnus_counter is not None:
+        key = yleistunnus_val if yleistunnus_val and yleistunnus_val.casefold() != "ei tunnusta" else mapped.ifc_type
+        n = laitetunnus_counter.get(key, 0) + 1
+        laitetunnus_counter[key] = n
+        raw_laitetunnus = f"{key}-{n:02d}"
     add_fi_komponentti(
         ifc,
         product,
@@ -639,9 +651,9 @@ def add_finnish_psets(
         alaryhma=_rava_h.alaryhma if _rava_h else fi_k.get("alaryhma"),
         koodi=code,
         yleisnimi=_rava_h.yleisnimi if _rava_h else fi_k.get("yleisnimi"),
-        yleistunnus=_rava_h.yleistunnus if _rava_h else fi_k.get("yleistunnus"),
+        yleistunnus=yleistunnus_val or None,
         koneikko=extras.get("koneikko"),
-        laitetunnus=extras.get("laitetunnus"),
+        laitetunnus=raw_laitetunnus,
         laitetunnus_yksilollinen=extras.get("laitetunnus_yksilollinen"),
     )
 

@@ -537,9 +537,11 @@ def test_convert_dxf_does_not_link_positio_to_shelf(tmp_path: Path):
         and rel.RelatingPropertyDefinition.Name == "FI_Komponentti"
     )
     by_name = {p.Name: p.NominalValue.wrappedValue for p in komp.HasProperties}
-    # Shelves never get real POSITIO data — Koneikko/Laitetunnus are empty placeholders.
+    # POSITIO.TEKSTI must not leak to shelves (scope guard still works).
     assert by_name.get("Koneikko", "") == ""
-    assert by_name.get("Laitetunnus", "") == ""
+    # POSITIO.NUMERO must not leak; auto-numbering assigns "AH-01" instead.
+    assert by_name.get("Laitetunnus", "") != "1"
+    assert by_name.get("Laitetunnus", "") == "AH-01"
 
 
 def test_convert_dxf_emits_fi_sijainti_with_system_name(tmp_path: Path):
