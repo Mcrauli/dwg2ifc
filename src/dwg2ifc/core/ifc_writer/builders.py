@@ -413,12 +413,17 @@ def _compress_ifc_guid(uuid_value: str) -> str:
 def _apply_stable_guid(product, extras: dict | None) -> None:
     """Override product's auto-generated GlobalId with the stable DWG GUID
     from RADIKA_REIKAVARAUS xdata, if present, so the same DWG entity always
-    produces the same IFC GlobalId across repeated conversions."""
+    produces the same IFC GlobalId across repeated conversions.
+    Also sets Tag to the raw UUID string so Solibri shows it in identiteetti."""
     raw = str((extras or {}).get("guid") or "").strip()
     if not raw:
         return
     try:
         product.GlobalId = ifcopenshell.guid.compress(raw)
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        product.Tag = raw
     except Exception:  # noqa: BLE001
         pass
 

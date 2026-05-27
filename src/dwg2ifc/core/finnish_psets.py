@@ -699,12 +699,6 @@ def add_finnish_psets(
     fi_te = mapped.fi_tekninen
     if not fi_te and not mapped.block_attribs:
         fi_te = fi_tekninen_default_fields(mapped.ifc_type)
-    # Expose DWG GUID (from RADIKA_REIKAVARAUS xdata) as a visible property
-    # so it appears in Solibri's properties panel in the original UUID format.
-    _dwg_guid = str(extras.get("guid") or "").strip()
-    if _dwg_guid:
-        fi_te = dict(fi_te) if fi_te else {}
-        fi_te.setdefault("DWG GUID", _dwg_guid)
     add_fi_tekninen(ifc, product, fields=fi_te)
 
     # FI_Sijainti — RAVA system grouping. When the profile rule supplies

@@ -6,6 +6,15 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha30 — 2026-05-27 (DWG GUID Solibrin identiteetti-osioon: IFC Tag -attribuutti)
+
+- **Korjattu: DWG GUID näkyy nyt Solibrin "BIM tiedot → Identiteetti tiedot" -osiossa.**
+  `product.Tag` asetetaan UUID-muotoiseksi GUIDiksi (esim. `893866db-c43b-4725-9988-d035d13710ed`),
+  joka on sama kuin `guid-tools.lsp`:n AutoCADiin kirjoittama RADIKA_REIKAVARAUS xdata -GUID.
+  `product.GlobalId` on edelleen kompressoitu 22-merkkinen IFC-muoto.
+- **Poistettu: "DWG GUID" FI_Komponentti-PSet:stä.** GUID ei kuulu FI_*-ominaisuustaululle
+  vaan suoraan elementin identiteettitietoihin.
+
 ## v0.3.0-alpha29 — 2026-05-27 (DWG GUID näkyviin Solibriin FI_Tekninen-kentässä)
 
 - **Uusi: DWG GUID näkyy Solibrissa FI_Tekninen-ominaisuutena "DWG GUID".**
