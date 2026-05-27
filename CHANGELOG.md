@@ -6,6 +6,16 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha21 — 2026-05-27 (FI_Geometria viemäriputket + FI_Järjestelmä IfcText-bugi)
+
+- **Korjattu: KYL-VIEMARI FI_Geometria Sisähalkaisija/Ulkohalkaisija/Eristeen paksuus
+  puuttui kokonaan.** Solibri laski nämä 64 putkea "tietorakenteet-puutteeksi" (❌).
+  Pipe-kontekstissa (koko_dn asetettu) kentät kirjoitetaan nyt aina `IfcLengthMeasure`
+  0.0-oletuksella kun todellista arvoa ei ole — property on läsnä.
+- **Korjattu: FI_Järjestelmä-kentät käyttivät `IFCLABEL`-tyyppiä `IfcText`:n sijaan.**
+  `pset.edit_pset` wrappasi plain stringit automaattisesti IfcLabel:iksi. Korjattu
+  eksplisiittisillä `ifc.create_entity("IfcText", ...)` -kutsuilla.
+
 ## v0.3.0-alpha20 — 2026-05-26 (FI_* PSet-kentät tietorakenteet-tarkistukseen)
 
 - **Korjattu: Solibri tietorakenteet ja -sisällöt -tarkistus 17 % → parannettu.**

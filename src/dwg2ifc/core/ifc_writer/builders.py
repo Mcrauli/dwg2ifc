@@ -454,7 +454,18 @@ def add_provision_for_void(
     if extras.get("varaus_tyyppi"):
         product.Description = str(extras["varaus_tyyppi"])
 
-    matrix = _z_rotation_matrix(point.x, point.y, point.z, rotation_rad)
+    if reservation_type == "SEINA":
+        # Keep swept-solid extrusion in local +Z (IFC-valid for circle profile in XY),
+        # but rotate object placement so local Z aligns with wall direction in XY.
+        c, s = math.cos(rotation_rad), math.sin(rotation_rad)
+        matrix = [
+            [-s, 0.0, c, point.x],
+            [c, 0.0, s, point.y],
+            [0.0, 1.0, 0.0, point.z],
+            [0.0, 0.0, 0.0, 1.0],
+        ]
+    else:
+        matrix = _z_rotation_matrix(point.x, point.y, point.z, rotation_rad)
     ifcopenshell.api.run(
         "geometry.edit_object_placement",
         ifc,
@@ -477,7 +488,6 @@ def add_provision_for_void(
         ),
         Radius=diameter_mm / 2.0,
     )
-    direction = (1.0, 0.0, 0.0) if reservation_type == "SEINA" else (0.0, 0.0, 1.0)
     extruded = ifc.create_entity(
         "IfcExtrudedAreaSolid",
         SweptArea=circle,
@@ -485,7 +495,7 @@ def add_provision_for_void(
             "IfcAxis2Placement3D",
             Location=ifc.create_entity("IfcCartesianPoint", Coordinates=(0.0, 0.0, 0.0)),
         ),
-        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=direction),
+        ExtrudedDirection=ifc.create_entity("IfcDirection", DirectionRatios=(0.0, 0.0, 1.0)),
         Depth=depth_mm,
     )
     shape = ifc.create_entity(
@@ -1474,13 +1484,13 @@ def _attach_fi_jarjestelma_pset(
         ifc,
         pset=pset,
         properties={
-            "01 Järjestelmälaji": jarjestelmalaji,
-            "02 Järjestelmäluokka": jarjestelmaluokka,
-            "03 Järjestelmätyypin koodi": system_code or "",
-            "04 Järjestelmätyyppi": rava_name,
-            "05 Järjestelmätyypin yleistunnus": rava_short_name,
-            "06 Järjestelmän nimi": system_name or "",
-            "07 Järjestelmän tunnus": system_tunnus,
+            "01 Järjestelmälaji": ifc.create_entity("IfcText", jarjestelmalaji),
+            "02 Järjestelmäluokka": ifc.create_entity("IfcText", jarjestelmaluokka),
+            "03 Järjestelmätyypin koodi": ifc.create_entity("IfcText", system_code or ""),
+            "04 Järjestelmätyyppi": ifc.create_entity("IfcText", rava_name),
+            "05 Järjestelmätyypin yleistunnus": ifc.create_entity("IfcText", rava_short_name),
+            "06 Järjestelmän nimi": ifc.create_entity("IfcText", system_name or ""),
+            "07 Järjestelmän tunnus": ifc.create_entity("IfcText", system_tunnus),
         },
     )
 

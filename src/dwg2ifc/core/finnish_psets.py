@@ -181,12 +181,18 @@ def add_fi_geometria(
         properties.append(("Koko", "IfcText", koko))
     if koko_dn is not None:
         properties.append(("Koko (DN)", "IfcText", koko_dn))
-    if sisahalkaisija_mm is not None:
-        properties.append(("Sisähalkaisija", "IfcPositiveLengthMeasure", sisahalkaisija_mm))
-    if ulkohalkaisija_mm is not None:
-        properties.append(("Ulkohalkaisija", "IfcPositiveLengthMeasure", ulkohalkaisija_mm))
-    if eristeen_paksuus_mm is not None:
-        properties.append(("Eristeen paksuus", "IfcPositiveLengthMeasure", eristeen_paksuus_mm))
+        # Pipe context: always emit these three even as 0 placeholders so the
+        # property exists in Solibri (avoids "Ominaisuus puuttuu kokonaan").
+        properties.append(("Sisähalkaisija", "IfcLengthMeasure", float(sisahalkaisija_mm or 0)))
+        properties.append(("Ulkohalkaisija", "IfcLengthMeasure", float(ulkohalkaisija_mm or 0)))
+        properties.append(("Eristeen paksuus", "IfcLengthMeasure", float(eristeen_paksuus_mm or 0)))
+    else:
+        if sisahalkaisija_mm is not None:
+            properties.append(("Sisähalkaisija", "IfcPositiveLengthMeasure", sisahalkaisija_mm))
+        if ulkohalkaisija_mm is not None:
+            properties.append(("Ulkohalkaisija", "IfcPositiveLengthMeasure", ulkohalkaisija_mm))
+        if eristeen_paksuus_mm is not None:
+            properties.append(("Eristeen paksuus", "IfcPositiveLengthMeasure", eristeen_paksuus_mm))
     return _emit_pset(
         ifc,
         product=product,
