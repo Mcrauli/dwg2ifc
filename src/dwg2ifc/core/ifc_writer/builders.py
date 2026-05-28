@@ -1485,12 +1485,16 @@ def _attach_fi_jarjestelma_pset(
 
             code = load_rava_codes().get(system_code)
             if code is not None:
-                rava_name = code.name or ""
-                rava_short_name = code.short_name or ""
                 if code.codeset == "LVI-JARJESTELMA":
                     jarjestelmalaji = "LVI-JÄRJESTELMÄT"
                 elif code.codeset == "TALOTEKNIIKKA-JARJESTELMA":
                     jarjestelmalaji = "TALOTEKNIIKKA-JÄRJESTELMÄT"
+                # Root laji codes (J-LVI, J-TATE) are grouping nodes — their
+                # prefLabel equals the laji name itself, so skip rava_name to
+                # avoid field 04 duplicating field 01.
+                if "-" in system_code[2:]:
+                    rava_name = code.name or ""
+                    rava_short_name = code.short_name or ""
         except Exception:
             pass
     if system_code:
@@ -1498,9 +1502,9 @@ def _attach_fi_jarjestelma_pset(
             jarjestelmaluokka = "KYLMÄJÄRJESTELMÄT"
         elif system_code.startswith("J-LVI-04"):
             jarjestelmaluokka = "VIEMÄRIJÄRJESTELMÄT"
-        elif system_code.startswith("J-LVI"):
+        elif system_code.startswith("J-LVI-"):
             jarjestelmaluokka = "LVI-JÄRJESTELMÄT"
-        elif system_code.startswith("J-TATE"):
+        elif system_code.startswith("J-TATE-"):
             jarjestelmaluokka = "TALOTEKNIIKKAJÄRJESTELMÄT"
     if not rava_short_name or rava_short_name.casefold() == "ei tunnusta":
         rava_short_name = system_code or ""

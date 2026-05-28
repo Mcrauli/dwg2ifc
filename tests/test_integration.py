@@ -258,3 +258,32 @@ def test_convert_dxf_system_gets_fi_jarjestelma_pset_with_rava_code(tmp_path: Pa
     }
     assert by_name["03 Järjestelmätyypin koodi"] == "J-LVI-09-02"
     assert by_name["06 Järjestelmän nimi"] == "Refrigeration plant"
+
+
+def test_add_system_j_lvi_root_has_empty_luokka_and_tyyppi():
+    """Bare J-LVI (the laji root) must not duplicate the laji name in
+    fields 02 (Järjestelmäluokka) and 04 (Järjestelmätyyppi)."""
+    import ifcopenshell
+    from ifcopenshell.api import run as ifc_run
+
+    from dwg2ifc.core.ifc_writer.builders import add_system
+
+    ifc = ifcopenshell.file(schema="IFC4")
+    ifc_run("root.create_entity", ifc, ifc_class="IfcProject", name="t")
+    system = add_system(ifc, name="Jakelujärjestelmä", system_code="J-LVI")
+    pset = None
+    for rel in (system.IsDefinedBy or []):
+        if rel.is_a("IfcRelDefinesByProperties"):
+            pd = rel.RelatingPropertyDefinition
+            if pd and pd.is_a("IfcPropertySet") and pd.Name == "FI_Järjestelmä":
+                pset = pd
+                break
+    assert pset is not None
+    by_name = {
+        p.Name: (p.NominalValue.wrappedValue if p.NominalValue else None)
+        for p in (pset.HasProperties or [])
+    }
+    assert by_name["01 Järjestelmälaji"] == "LVI-JÄRJESTELMÄT"
+    assert by_name["02 Järjestelmäluokka"] == "", "luokka must be empty for bare J-LVI root"
+    assert by_name["03 Järjestelmätyypin koodi"] == "J-LVI"
+    assert by_name["04 Järjestelmätyyppi"] == "", "tyyppi must be empty for bare J-LVI root"
