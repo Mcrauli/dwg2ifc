@@ -6,6 +6,14 @@ project uses semantic versioning.
 
 ## Unreleased
 
+## v0.3.0-alpha31 — 2026-05-28 (FI_Järjestelmä-korjaus: poistettiin virheellinen Jakelujärjestelmä-parent)
+
+- **Korjattu: Solibrin FI_Järjestelmä-validointi menee nyt läpi.**
+  Jakelujärjestelmä-parent (J-LVI) poistettu — J-LVI on JÄRJESTELMÄLAJI-taso
+  jolla ei ole luokkaa eikä tyyppiä, joten kentät 01/02/04 olivat identtiset.
+  Child-systeemit (esim. J-LVI-09-02 "Kylmä - suorahöyrysteinen") tuottavat
+  kaikki viisi FI_Järjestelmä-kenttää oikeilla eri arvoilla.
+
 ## v0.3.0-alpha30 — 2026-05-27 (DWG GUID Solibrin identiteetti-osioon: IFC Tag -attribuutti)
 
 - **Korjattu: DWG GUID näkyy nyt Solibrin "BIM tiedot → Identiteetti tiedot" -osiossa.**
