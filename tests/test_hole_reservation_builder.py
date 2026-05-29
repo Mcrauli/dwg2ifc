@@ -72,7 +72,7 @@ def test_floor_hole_reservation_creates_hole_reservation_body():
     assert pset["System"] == "Refrigeration"
 
 
-def test_wall_hole_reservation_uses_horizontal_extrusion_direction():
+def test_wall_hole_reservation_rotates_placement_axis_horizontal():
     skeleton = build_ifc_project_skeleton(project_name="Hole Test", schema="IFC4")
     mapped = _hole_reservation_mapped_entity()
     mapped.extra_props["varaus_tyyppi"] = "SEINA"
@@ -84,7 +84,10 @@ def test_wall_hole_reservation_uses_horizontal_extrusion_direction():
 
     body = product.Representation.Representations[0]
     solid = body.Items[0]
-    assert tuple(solid.ExtrudedDirection.DirectionRatios) == (1.0, 0.0, 0.0)
+    assert tuple(solid.ExtrudedDirection.DirectionRatios) == (0.0, 0.0, 1.0)
+    placement = product.ObjectPlacement.RelativePlacement
+    axis = tuple(placement.Axis.DirectionRatios)
+    assert axis == (1.0, 0.0, 0.0)
 
 
 def test_hole_reservation_depth_includes_overrun_each_side():

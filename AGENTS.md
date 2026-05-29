@@ -90,7 +90,7 @@ kutsujat). Yksityiskohtainen pipeline: [`docs/ARCHITECTURE.md`](docs/ARCHITECTUR
 | `src/dwg2ifc/core/block_attribs.py` | INSERT-ATTRIB → FI_Tuote / FI_Komponentti / FI_Tekninen |
 | `src/dwg2ifc/core/energy_specs.py` | Excel/CSV → FI_Tekninen-merge |
 | `src/dwg2ifc/core/positio.py` | POSITIO-blokki → Koneikko/Laitetunnus |
-| `src/dwg2ifc/core/finnish_psets.py` | 6 FI_*-PSet:tä per tuote |
+| `src/dwg2ifc/core/finnish_psets.py` | 6 FI_*-PSet:tä per tuote; `FI_Järjestelmä` (7 kenttää) IfcSystem:ille `builders.py`:ssä |
 | `src/dwg2ifc/core/ifc_merger.py` | MagiCAD-IFC merge (optional) |
 | `src/dwg2ifc/core/ifc_writer/orchestrator.py` | `convert` end-to-end |
 | `src/dwg2ifc/core/ifc_writer/builders.py` | `add_*` per IFC-tyyppi |
@@ -169,7 +169,7 @@ Nämä ovat siistimistä, eivät bugeja — projekti toimii.
 
 ## Testit
 
-~520+ pytest-testiä. Aja `uv run pytest -q`.
+~650+ pytest-testiä. Aja `uv run pytest -q`.
 
 - `pytest.mark.accoreconsole` — vaatii `accoreconsole.exe`:n PATH:ssa.
   **End-to-end-testit jotka ajavat `convert_dxf`:n DWG/accoreconsole-
@@ -221,6 +221,14 @@ dwg2ifc:n syöte syntyy AutoCAD/BricsCAD-piirtotyökaluilla jotka tuottavat
 `KYL-*`-layerit ja -blokit. Näiden työkalujen lähde (`.lsp` + blokki-
 `.dwg`) on repon kansiossa [`autocad-tools/`](autocad-tools/) — LISP-puoli
 ja parseri ovat sama kytketty kokonaisuus, joten ne ylläpidetään yhdessä.
+
+`guid-tools.lsp` (komennot `RGUID_REFRESH_AUTO` / `AUDIT` / `REPAIR`)
+pitää XDATA-pohjaisen pysyvän GUID:n yllä jokaisessa `KYL-*`-entiteetissä.
+dwg2ifc ylennetään nämä GUID:t IfcProduct/IfcOpeningElement-globaali-ID:ksi
+jotta piirustuksen ja IFC:n välinen identiteetti säilyy päivityssyklissä.
+`reikavaraus.lsp` (komento `REIKAVARAUS`/`RV`) piirtää KYL-REIKAVARAUS-
+layerille IfcOpeningElement:iksi konvertoituvan varauksen samalla GUID-
+tekniikalla.
 
 Jos `KYL-*`-layerien nimet tai blokkien ATTDEF-attribuutit muuttuvat,
 `profiles/default_kylmalaite.toml` ja `core/block_attribs.py` voivat

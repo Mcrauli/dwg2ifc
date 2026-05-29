@@ -6,10 +6,11 @@
 LVI-suunnitteluun.** Layer-pohjainen mappaus tuottaa Talo2000-luokituksen
 (ARK) ja RAVA-LVI / RAVA-TATE -luokituksen (TATE), 6 suomalaista
 PropertySettiä per IFC-tuote (`FI_Asennus` / `FI_Geometria` /
-`FI_Komponentti` / `FI_Tuote` / `FI_Tekninen` / `FI_Sijainti`), ja
-Solibri-yhteensopivan IFC4-tiedoston yhdellä konversio-ajolla.
+`FI_Komponentti` / `FI_Tuote` / `FI_Tekninen` / `FI_Sijainti`) sekä
+`FI_Järjestelmä`-PSet IfcSystem-entiteeteille, ja Solibri-yhteensopivan
+IFC4-tiedoston yhdellä konversio-ajolla.
 
-Nykyinen versio: **v0.3.0-alpha14** (2026-05-25). Pre-release-vaiheessa.
+Nykyinen versio: **v0.3.0-alpha31** (2026-05-28). Pre-release-vaiheessa.
 
 > **Nimenmuutos `dxf2ifc` → `dwg2ifc`:** projekti syntyi DXF-syötteellä,
 > mutta DWG on alpha21:stä lähtien ensisijainen syöte (preconvertoidaan
@@ -38,7 +39,9 @@ AutoCAD-asennuksen. MagiCAD-DWG ei ole tuettu syöte; käytä `-MAGIIFCCD`
 - `KYL-LEVYHYLLY*` → IfcCableCarrierSegment / CABLETRAYSEGMENT
 - `KYL-KOTELO*` → IfcCableCarrierSegment / CABLETRUNKINGSEGMENT
 - `KYL-HOYRYSTIN*` → IfcEvaporator (T-LVI-01-01-023)
-- `KYL-LAUHDUTIN*`, `KYL-KOMPRESSORI*`, `KYL-VPUTKI-*`, varusteet, …
+- `KYL-LAUHDUTIN*`, `KYL-KOMPRESSORI*`, `KYL-KONEIKKO*`, varusteet, …
+- `KYL-REIKAVARAUS*` → IfcOpeningElement (GUID pysyy DWG-piirustuksen
+  ja IFC:n välillä XDATA-pohjaisella `guid-tools.lsp`:llä)
 
 Dynamic block -muotoiset hyllyt (anonyymit `*U*`-blockit joissa
 `closed LWPOLYLINE + thickness` + `3DFACE`) luetaan ezdxf:n
@@ -92,7 +95,7 @@ DXF:stä — käytä MagiCAD:in omaa IFC-exportia ja merge:ä:
 1. **Kollega ajaa AutoCAD:in command-linelle `-MAGIIFCCD`** (FULL-MagiCAD).
    MagiCAD tuottaa korkealaatuisen IFC:n oikeilla
    `IfcDuctSegment` / `IfcAirTerminal` / MagiCAD-PSet:eillä.
-2. **Lauri valitsee dwg2ifc-GUI:ssa DWG/DXF + tuon MagiCAD-IFC:n**.
+2. **Käyttäjä valitsee dwg2ifc-GUI:ssa DWG/DXF + tuon MagiCAD-IFC:n**.
    Konvertteri yhdistää ne yhdeksi master-IFC:ksi
    (`core/ifc_merger.py`, `ifcopenshell.api.project.append_asset`).
 3. **DXF:n MagiCAD-osat (MAGI*-natiivit luokat + ACAD_PROXY_ENTITY)
