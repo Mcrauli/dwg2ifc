@@ -2,7 +2,7 @@
 
 `dwg2ifc` on AutoCAD **DWG/DXF → IFC4** -konvertteri suomalaiseen
 kylmälaite- ja LVI-suunnitteluun: layer-pohjainen mappaus tuottaa
-Talo2000-luokituksen (ARK), RAVA-LVI / RAVA-TATE -luokituksen (TATE),
+RAVA3Pro-luokituksen (LVI- ja TATE-elementit), Talo2000-luokituksen (ARK),
 6 suomalaista PropertySettiä per IFC-tuote ja Solibri-yhteensopivan
 IFC4-tiedoston yhdellä konversioajolla.
 

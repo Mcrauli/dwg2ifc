@@ -3,8 +3,8 @@
 [![Latest release](https://img.shields.io/github/v/release/Mcrauli/dwg2ifc?include_prereleases&sort=semver)](https://github.com/Mcrauli/dwg2ifc/releases/latest)
 
 **AutoCAD DWG/DXF → IFC 4 -konvertteri suomalaiseen kylmälaite- ja
-LVI-suunnitteluun.** Layer-pohjainen mappaus tuottaa Talo2000-luokituksen
-(ARK) ja RAVA-LVI / RAVA-TATE -luokituksen (TATE), 6 suomalaista
+LVI-suunnitteluun.** Layer-pohjainen mappaus tuottaa RAVA3Pro-luokituksen
+(LVI- ja TATE-elementit) ja Talo2000-luokituksen (ARK), 6 suomalaista
 PropertySettiä per IFC-tuote (`FI_Asennus` / `FI_Geometria` /
 `FI_Komponentti` / `FI_Tuote` / `FI_Tekninen` / `FI_Sijainti`) sekä
 `FI_Järjestelmä`-PSet IfcSystem-entiteeteille, ja Solibri-yhteensopivan
@@ -23,7 +23,7 @@ Nykyinen versio: **v0.3.0-alpha31** (2026-05-28). Pre-release-vaiheessa.
 
 | Input | Tuotos |
 |---|---|
-| **DWG / DXF** (KYL-* layerit, dynamic blockit, 3DSOLID, 3DFACE, INSERT, polylinet) | IFC4 + Talo2000/RAVA + FI_*-PSet:t |
+| **DWG / DXF** (KYL-* layerit, dynamic blockit, 3DSOLID, 3DFACE, INSERT, polylinet) | IFC4 + RAVA3Pro + FI_*-PSet:t (+ Talo2000 ARK) |
 | **Energiateho-Excel** (xlsx/csv, valinnainen) | tehot → FI_Tekninen-merge POSITIO-linkityksen kautta |
 | **MagiCAD-IFC** (kollegan `-MAGIIFCCD`-tuotos, valinnainen) | yhdistetään master-IFC:hen samaan storey:hin |
 
