@@ -146,7 +146,7 @@ value = "Tikashylly"
 
 ## Test-strategia
 
-- ~520+ testiä `pytest`-pohjaisesti
+- ~650+ testiä `pytest`-pohjaisesti
 - `pytest.mark.solibri` — vaatii Solibri.exe:n
 - `pytest.mark.accoreconsole` — vaatii accoreconsole.exe:n
 - GUI-testit: `pytest-qt` + `qtbot` + offscreen QPA platform
